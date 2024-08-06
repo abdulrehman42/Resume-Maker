@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
 import com.example.resumemaker.R
 import com.google.android.material.snackbar.Snackbar
 
@@ -47,7 +48,9 @@ abstract class BaseActivity : AppCompatActivity() {
     }*/
 
     abstract fun attachViewMode()
-
+    fun replaceChoiceFragment(action: Int) {
+        Navigation.findNavController(this, R.id.choiceHostFragment).navigate(action, null, options)
+    }
     /*fun replaceMainFragment(action: Int) {
         Navigation.findNavController(this, R.id.fragmentMain).navigate(action, null, options)
     }

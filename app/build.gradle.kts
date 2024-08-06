@@ -59,6 +59,8 @@ dependencies {
     implementation (libs.sdp.android)
     implementation (libs.glide)
     implementation (libs.androidx.recyclerview)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     annotationProcessor (libs.compiler)
 
     //SSP
@@ -76,6 +78,9 @@ dependencies {
     implementation (libs.androidx.lifecycle.livedata.ktx)
     implementation (libs.androidx.lifecycle.common.java8)
     implementation (libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.viewpager2)
+    implementation (libs.material.v190)
+
 
     /*//hilt
     implementation (libs.hilt.android)

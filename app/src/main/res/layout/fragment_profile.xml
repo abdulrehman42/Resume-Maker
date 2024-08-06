@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/navy_blue"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".views.fragments.profile.ProfileFragment">
+   <include
+       android:id="@+id/include_tool"
+       layout="@layout/toolbars"
+       android:layout_marginTop="@dimen/_10sdp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       />
+   <androidx.recyclerview.widget.RecyclerView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+       tools:itemCount="2"
+       android:background="@color/white"
+       android:layout_gravity="center"
+       tools:listitem="@layout/customprofileitem"
+       android:id="@+id/recyclerview"/>
+
+</LinearLayout>

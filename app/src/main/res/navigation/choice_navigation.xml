@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/choice_navigation"
+    app:startDestination="@id/nav_choice">
+    <fragment
+        android:id="@+id/nav_basicFragment"
+        android:name="com.example.resumemaker.views.fragments.choose.BasicFragment"
+        tools:layout="@layout/fragment_basic" />
+    <fragment
+        android:id="@+id/nav_standardFragment"
+        android:name="com.example.resumemaker.views.fragments.choose.StandardFragment"
+        tools:layout="@layout/fragment_standard" />
+    <fragment
+        android:id="@+id/nav_premuim"
+        android:name="com.example.resumemaker.views.fragments.choose.PremiumFragment"
+        android:label="fragment_role_selection"
+        tools:layout="@layout/fragment_premium" />
+    <fragment
+        android:id="@+id/nav_choice"
+        android:name="com.example.resumemaker.views.fragments.choose.ChooseTemplateFragment"
+        tools:layout="@layout/fragment_choose_template" />
+
+</navigation>

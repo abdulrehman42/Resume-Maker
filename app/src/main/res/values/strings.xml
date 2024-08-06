@@ -5,4 +5,25 @@
     <string name="skip">Skip</string>
     <string name="welcome_to_your_shortcut_for_standout_resumes_and_cover_letters">Welcome to your shortcut for standout resumes and cover letters.</string>
     <string name="next">Next</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main_activty">MainActivty</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Resume Maker</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="menu_more_app">More App</string>
+    <string name="menu_privacy">Privacy Policy</string>
+    <string name="menu_restore">Restore Purshase</string>
+    <string name="menu_share">Share App</string>
+    <string name="menu_term">Term of Use</string>
+    <string name="menu_delete">Delete</string>
+    <string name="pro_text"><![CDATA["You'll get a smooth ad-free experience, our devs will get their morning coffee it's a win-win deal! 🤝 "]]></string>
 </resources>

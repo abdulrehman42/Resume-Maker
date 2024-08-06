@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.example.resumemaker.views.activities.MainActivity
 import com.example.resumemaker.utils.SharePref
+import com.example.resumemaker.views.activities.ChoiceTemplate
+import com.example.resumemaker.views.activities.MainActivty
+import com.example.resumemaker.views.activities.ProfileActivity
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
@@ -30,7 +33,7 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = inflate.invoke(inflater, container, false)
-        sharePref = SharePref.mInstence!!
+//        sharePref = SharePref.mInstence!!
         return binding.root
 
     }
@@ -47,6 +50,9 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
         mActivity = when (context) {
            // is AuthActivity -> context
             is MainActivity -> context
+            is MainActivty->context
+            is ChoiceTemplate->context
+            is ProfileActivity->context
             else -> context as BaseActivity
         }
     }

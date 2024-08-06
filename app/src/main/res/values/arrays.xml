@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="on_boarding_titles">
+        <item>Craft Your Success Story</item>
+        <item>Let AI do your Job</item>
+        <item>Reread the Job Advertisement</item>
+        <item>Keep it short</item>
+    </string-array>
+    <string-array name="on_boarding_texts">
+        <item>Welcome to your shortcut for standout resumes and coverletters.</item>
+        <item>Easily create professional resumes and cover letters with AI. Our smart system highlights your strengths and fit job descriptions.</item>
+        <item>The job advertisement you are replying to tells you exactly what the employer is looking for in a candidate.</item>
+    <item>"Unless you're a high level executive or scholar, your resume should be one page long"</item>
+    </string-array>
+</resources>
