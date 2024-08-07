@@ -19,7 +19,7 @@
             android:name=".views.activities.ChoiceTemplate"
             android:exported="false" />
         <activity
-            android:name=".views.activities.MainActivty"
+            android:name=".views.activities.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main_activty"
             android:theme="@style/Theme.ResumeMaker.NoActionBar" />
@@ -35,9 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".views.activities.MainActivity"
-            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -53,6 +53,15 @@
         <item name="android:gravity">center</item>
         <item name="fontFamily">@font/montserrat_medium</item>
     </style>
+    <style name="ShapeAppearanceOverlayExtended" parent="ThemeOverlay.Material3.FloatingActionButton.Primary">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+        <item name="cornerSizeTopLeft">50%</item>
+    </style>
+    <style name="Custom_Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
 
     <style name="Theme.ResumeMaker.NoActionBar">
         <item name="windowActionBar">false</item>

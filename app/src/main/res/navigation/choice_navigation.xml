@@ -21,5 +21,10 @@
         android:id="@+id/nav_choice"
         android:name="com.example.resumemaker.views.fragments.choose.ChooseTemplateFragment"
         tools:layout="@layout/fragment_choose_template" />
+    <fragment
+        android:id="@+id/nav_add_detail"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddDetailMainFragment"
+        tools:layout="@layout/fragment_add_detail_main" />
+
 
 </navigation>

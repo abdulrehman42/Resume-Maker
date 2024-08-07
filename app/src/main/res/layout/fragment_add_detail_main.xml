@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/navy_blue"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".views.fragments.adddetail.AddDetailMainFragment">
+    <include
+        android:id="@+id/include_tool"
+        layout="@layout/toolbars"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/Tab_layout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:background="@color/navy_blue"
+        android:screenOrientation="portrait"
+        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_tool"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/green_light"
+        app:tabIndicatorHeight="1dp"
+        app:tabMode="scrollable"
+        app:tabRippleColor="@null"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextAppearance="@style/MyTabTextCustom"
+        app:tabTextColor="@color/off_white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:focusable="true"
+        android:padding="@dimen/_20sdp"
+        android:backgroundTint="@color/green_light"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_tool" />
+
+    <com.example.resumemaker.views.fragments.tablayout.NonSwipeableViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/Tab_layout"
+        app:layout_constraintTop_toBottomOf="@+id/Tab_layout">
+
+
+    </com.example.resumemaker.views.fragments.tablayout.NonSwipeableViewPager>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

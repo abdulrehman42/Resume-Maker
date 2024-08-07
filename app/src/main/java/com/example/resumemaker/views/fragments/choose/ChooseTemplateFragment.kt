@@ -42,6 +42,7 @@ class ChooseTemplateFragment : BaseFragment<FragmentChooseTemplateBinding>() {
         vadapter.addFragment(PremiumFragment(), "Premuim")
         viewPager.adapter = vadapter
         tabLayout.setupWithViewPager(viewPager)
+
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val icon = tab.icon

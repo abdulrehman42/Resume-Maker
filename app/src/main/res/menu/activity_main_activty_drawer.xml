@@ -10,11 +10,11 @@
             android:title="@string/rate_us" />
         <item
             android:id="@+id/nav_more"
-            android:icon="@drawable/rate"
+            android:icon="@drawable/more_app"
             android:title="@string/menu_more_app" />
         <item
             android:id="@+id/nav_privacy"
-            android:icon="@drawable/more"
+            android:icon="@drawable/privacy_link"
             android:title="@string/menu_privacy" />
         <item
             android:id="@+id/nav_retore"
@@ -26,7 +26,7 @@
             android:title="@string/menu_share" />
         <item
             android:id="@+id/nav_term"
-            android:icon="@drawable/privacy"
+            android:icon="@drawable/term"
             android:title="@string/menu_term" />
         <item
             android:id="@+id/nav_delete"

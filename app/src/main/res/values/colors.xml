@@ -8,4 +8,5 @@
     <color name="purple">#6200EE</color>
     <color name="yellow">#FBC02D</color>
     <color name="grey">#717171</color>
+    <color name="grey_light">#0D00003D</color>
 </resources>

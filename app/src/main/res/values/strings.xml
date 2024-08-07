@@ -21,9 +21,17 @@
     <string name="rate_us">Rate Us</string>
     <string name="menu_more_app">More App</string>
     <string name="menu_privacy">Privacy Policy</string>
-    <string name="menu_restore">Restore Purshase</string>
+    <string name="menu_restore">Restore Purchases</string>
     <string name="menu_share">Share App</string>
     <string name="menu_term">Term of Use</string>
-    <string name="menu_delete">Delete</string>
+    <string name="menu_delete">Delete Account</string>
     <string name="pro_text"><![CDATA["You'll get a smooth ad-free experience, our devs will get their morning coffee it's a win-win deal! 🤝 "]]></string>
+    <string name="delete">Delete</string>
+    <string name="logout">Logout</string>
+    <string name="version_2_7">version:2.7</string>
+    <string name="add_more_sections">Add More Sections</string>
+    <string name="interest">Interest</string>
+    <string name="language">Language</string>
+    <string name="project">Project</string>
+    <string name="achievment">Achievements</string>
 </resources>

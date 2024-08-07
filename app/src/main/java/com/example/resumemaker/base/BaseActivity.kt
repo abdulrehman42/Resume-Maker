@@ -48,6 +48,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }*/
 
     abstract fun attachViewMode()
+
     fun replaceChoiceFragment(action: Int) {
         Navigation.findNavController(this, R.id.choiceHostFragment).navigate(action, null, options)
     }

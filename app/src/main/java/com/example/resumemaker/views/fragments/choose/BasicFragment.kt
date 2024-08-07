@@ -21,7 +21,9 @@ class BasicFragment : BaseFragment<FragmentBasicBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-
+        binding.text.setOnClickListener {
+            currentActivity().replaceChoiceFragment(R.id.nav_add_detail)
+        }
 
     }
 

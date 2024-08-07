@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.activities.ui.home.HomeFragment">
+    tools:context=".views.fragments.HomeFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout5"
@@ -19,19 +19,19 @@
 
         <LinearLayout
             android:id="@+id/linearLayout1"
-            android:layout_width="@dimen/_140sdp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_115sdp"
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/_5sdp"
-            android:background="@drawable/customripple"
+            android:background="@drawable/purpleroundbg"
             android:backgroundTint="#1A6200EE"
             android:orientation="vertical"
-            android:padding="@dimen/_10sdp"
+            android:padding="@dimen/_16sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/_50sdp"
+                android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/cv" />
@@ -41,23 +41,25 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
+                style="@style/subheading"
+                android:textSize="@dimen/_10ssp"
                 android:text="CV or Resume" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="@dimen/_140sdp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_115sdp"
             android:layout_weight="1"
-            android:background="@drawable/customripple"
+            android:background="@drawable/greenroundbg"
             android:backgroundTint="#1A00ABA5"
             android:orientation="vertical"
-            android:padding="@dimen/_10sdp"
+            android:padding="@dimen/_16sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/_50sdp"
+                android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/coverletter" />
@@ -65,7 +67,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                style="@style/subheading"
+                android:textSize="@dimen/_10ssp"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
                 android:text="CoverLetter" />
@@ -85,20 +88,20 @@
 
         <LinearLayout
             android:id="@+id/linearLayout3"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_115sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:layout_weight="1"
-            android:background="@drawable/customripple"
+            android:background="@drawable/yellowbg"
             android:backgroundTint="#19FBC02D"
 
             android:orientation="vertical"
-            android:padding="@dimen/_10sdp"
+            android:padding="@dimen/_16sdp"
             app:layout_constraintStart_toStartOf="@+id/linearLayout1"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
 
             <ImageView
-                android:layout_width="@dimen/_50sdp"
+                android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/download" />
@@ -106,7 +109,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                style="@style/subheading"
+                android:textSize="@dimen/_10ssp"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
                 android:text="Download" />
@@ -114,26 +118,28 @@
 
         <LinearLayout
             android:id="@+id/linearLayout4"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_115sdp"
             android:layout_weight="1"
-            android:background="@drawable/customripple"
+            android:background="@drawable/blue_lightroundbg"
             android:backgroundTint="#145080FF"
             android:orientation="vertical"
-            android:padding="@dimen/_10sdp"
+            android:padding="@dimen/_16sdp"
             app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <ImageView
-                android:layout_width="@dimen/_50sdp"
+                android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
-                android:src="@drawable/profile" />
+                android:src="@drawable/profilebg" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                style="@style/subheading"
+                android:textSize="@dimen/_10ssp"
                 android:layout_margin="@dimen/_5sdp"
                 android:text="My Profile" />
         </LinearLayout>

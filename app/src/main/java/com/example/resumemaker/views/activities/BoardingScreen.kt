@@ -34,7 +34,7 @@ class BoardingScreen : AppCompatActivity() {
             binding.viewPager.setCurrentItem(getItem(+1), true)
         }
         binding.skipbtn.setOnClickListener {
-            startActivity(Intent(this, MainActivty::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
