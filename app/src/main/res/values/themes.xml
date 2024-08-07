@@ -62,6 +62,13 @@
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
+    <style name="RoundedDialogStyle">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@drawable/bottomsheet_radius</item>
+
+    </style>
 
     <style name="Theme.ResumeMaker.NoActionBar">
         <item name="windowActionBar">false</item>

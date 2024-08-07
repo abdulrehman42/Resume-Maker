@@ -171,6 +171,8 @@
         android:background="@drawable/radius_corner"
         android:backgroundTint="@color/grey_light"
         android:padding="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">

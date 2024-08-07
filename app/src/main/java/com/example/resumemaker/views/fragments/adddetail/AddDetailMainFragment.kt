@@ -110,7 +110,7 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
     fun alertbox(
     ) {
         val binding1=AddmorealertdialogueBinding.inflate(layoutInflater)
-        val dialogBuilder = Dialog(currentActivity())
+        val dialogBuilder = Dialog(currentActivity(),R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding1.root)
        binding1.switchid.setOnClickListener {
            if (binding1.switchid.isChecked) {
