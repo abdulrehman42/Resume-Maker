@@ -34,4 +34,9 @@
     <string name="language">Language</string>
     <string name="project">Project</string>
     <string name="achievment">Achievements</string>
+    <string name="view_all">View All</string>
+    <string name="samples">Samples</string>
+    <string name="back">Back</string>
+    <string name="objectives">Objectives</string>
+    <string name="add_education">Add Education</string>
 </resources>

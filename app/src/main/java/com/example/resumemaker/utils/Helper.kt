@@ -10,6 +10,7 @@ import com.example.resumemaker.R
 import com.example.resumemaker.databinding.ActivityBoardingScreenBinding
 import com.example.resumemaker.models.BoardingItems
 import com.example.resumemaker.models.ProfileModel
+import com.example.resumemaker.models.SampleModel
 import com.google.android.material.tabs.TabLayout
 
 object Helper {
@@ -106,4 +107,17 @@ object Helper {
         list.add(ProfileModel("", "Mubarshir", "Web Developer"))
         return list
     }
+
+
+    fun getSampleList(): List<SampleModel> {
+        val list = ArrayList<SampleModel>()
+        list.add(SampleModel("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
+        list.add(SampleModel("Brus aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
+        list.add(SampleModel("Alif aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
+        list.add(SampleModel("Dick aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
+        list.add(SampleModel("Locifer aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
+        list.add(SampleModel("Gamer aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
+        return list
+    }
+
 }

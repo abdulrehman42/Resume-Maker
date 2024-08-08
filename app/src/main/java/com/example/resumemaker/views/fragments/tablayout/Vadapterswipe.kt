@@ -9,7 +9,6 @@ class Vadapterswipe(getFragmentManager: FragmentManager): FragmentPagerAdapter(g
 ) {
     private val fragmentArrayList = ArrayList<Fragment>()
     private val fragmenttitle = ArrayList<String>()
-    private val fragmentImage = ArrayList<String>()
 
     override fun getItem(position: Int): Fragment {
         return fragmentArrayList[position]

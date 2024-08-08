@@ -25,6 +25,10 @@
         android:id="@+id/nav_add_detail"
         android:name="com.example.resumemaker.views.fragments.adddetail.AddDetailMainFragment"
         tools:layout="@layout/fragment_add_detail_main" />
+    <fragment
+        android:id="@+id/nav_objective"
+        android:name="com.example.resumemaker.views.fragments.adddetail.ObjectiveFragment"
+        tools:layout="@layout/fragment_objective" />
 
 
 </navigation>

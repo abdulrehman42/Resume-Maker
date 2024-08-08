@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.viewpager.widget.ViewPager
@@ -12,6 +13,7 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.AddmorealertdialogueBinding
 import com.example.resumemaker.databinding.FragmentAddDetailMainBinding
+import com.example.resumemaker.models.TablayoutModel
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.fragments.tablayout.Vadapterswipe
 import com.google.android.material.tabs.TabLayout
@@ -19,6 +21,7 @@ import com.google.android.material.tabs.TabLayout
 class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
+    var itemArraylist=ArrayList<TablayoutModel>()
     lateinit var vadapter:Vadapterswipe
     override val inflate: Inflate<FragmentAddDetailMainBinding>
         get() = FragmentAddDetailMainBinding::inflate
@@ -49,18 +52,11 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
 
     private fun setUpTablayout() {
         viewPager = binding.viewPager
-        tabLayout = binding.TabLayout
+        tabLayout = binding.tabLayoutAdddetail
         vadapter =
             Vadapterswipe(childFragmentManager) // Use childFragmentManager for fragments within a fragment
-        vadapter.addFragment(InformationFragment(), "Info")
-        vadapter.addFragment(ObjectiveFragment(), "Objectives")
-        vadapter.addFragment(EducationFragment(), "Education")
-        vadapter.addFragment(SkillFragment(), "Skill")
-        vadapter.addFragment(ExperienceFragment(), "Experience")
-        vadapter.addFragment(ReferrenceFragment(), "Reference")
-        viewPager.adapter = vadapter
-        tabLayout.setupWithViewPager(viewPager)
-        for (i in 0 until tabLayout.tabCount) {
+        addItems(itemArraylist)
+        /*for (i in 0 until tabLayout.tabCount) {
             val tab = tabLayout.getTabAt(i)
             if (tab != null) {
                 tab.customView = Helper.getTabView(requireActivity(), i)
@@ -68,7 +64,7 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
             if (i==5)
             {
             }
-        }
+        }*/
 
 
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
@@ -106,6 +102,36 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
 
         tabLayout.addOnTabSelectedListener(tabSelectedListener)
     }
+    fun addItems(list: List<TablayoutModel>){
+
+        vadapter.addFragment(InformationFragment(), "\nInfo")
+        vadapter.addFragment(ObjectiveFragment(), "\nObjectives")
+        vadapter.addFragment(EducationFragment(), "\nEducation")
+        vadapter.addFragment(SkillFragment(), "\nSkill")
+        vadapter.addFragment(ExperienceFragment(), "\nExperience")
+        vadapter.addFragment(ReferrenceFragment(), "\nReference")
+        list?.let {
+            for (i in list)
+            {
+                vadapter.addFragment(i.fragment,i.title)
+            }
+
+           /* tabLayout.getTabAt(6)?.setIcon(it.get(0).image)
+            tabLayout.getTabAt(7)?.setIcon(it.get(1).image)
+            tabLayout.getTabAt(8)?.setIcon(it.get(2).image)
+*/
+        }
+        viewPager.adapter = vadapter
+        tabLayout.setupWithViewPager(viewPager)
+       /* tabLayout.getTabAt(0)?.setIcon(R.drawable.info)
+        tabLayout.getTabAt(1)?.setIcon(R.drawable.objectives)
+        tabLayout.getTabAt(2)?.setIcon(R.drawable.education)
+        tabLayout.getTabAt(3)?.setIcon(R.drawable.skill)
+        tabLayout.getTabAt(4)?.setIcon(R.drawable.experience)
+        tabLayout.getTabAt(5)?.setIcon(R.drawable.referrence)
+*/
+
+    }
 
     fun alertbox(
     ) {
@@ -116,35 +142,32 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         dialogBuilder.setContentView(binding1.root)
        binding1.switchid.setOnClickListener {
            if (binding1.switchid.isChecked) {
-               vadapter.addFragment(InterestFragment(), "Interest")
-               viewPager.adapter = vadapter
-
+               itemArraylist.add(TablayoutModel(InterestFragment(),"\nInterest",R.drawable.interest))
+               addItems(itemArraylist)
 
            }
        }
         binding1.switchid1.setOnClickListener {
             if (binding1.switchid1.isChecked) {
-                vadapter.addFragment(LanguageFragment(), "Language")
-                viewPager.adapter = vadapter
+                itemArraylist.add(TablayoutModel(LanguageFragment(),"\nLanguage",R.drawable.language))
+                addItems(itemArraylist)
 
             }
         }
         binding1.switchid2.setOnClickListener {
             if (binding1.switchid2.isChecked) {
-                vadapter.addFragment(ProjectFragment(), "Project")
-
-                viewPager.adapter = vadapter
+                itemArraylist.add(TablayoutModel(ProjectFragment(),"\nProject",R.drawable.project))
+                addItems(itemArraylist)
 
             }
         }
         binding1.switchid3.setOnClickListener {
             if (binding1.switchid3.isChecked) {
-                vadapter.addFragment(AchievementFragment(), "Achievement")
-                viewPager.adapter = vadapter
-
+                itemArraylist.add(TablayoutModel(AchievementFragment(),"\nAchievement",R.drawable.achievment))
+                addItems(itemArraylist)
             }
         }
-
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }

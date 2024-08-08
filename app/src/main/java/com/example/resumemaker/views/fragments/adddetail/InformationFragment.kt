@@ -1,60 +1,46 @@
 package com.example.resumemaker.views.fragments.adddetail
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.example.resumemaker.R
+import com.example.resumemaker.base.BaseFragment
+import com.example.resumemaker.base.Inflate
+import com.example.resumemaker.databinding.FragmentInformationBinding
+import com.google.android.material.tabs.TabLayout
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [InformationFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class InformationFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class InformationFragment : BaseFragment<FragmentInformationBinding>(){
+    override val inflate: Inflate<FragmentInformationBinding>
+        get() = FragmentInformationBinding::inflate
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun observeLiveData() {
+    }
+
+    override fun init(savedInstanceState: Bundle?) {
+        onclick()
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun onclick() {
+        binding.man.setOnClickListener {
+
+            binding.man.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.dark_navy_blue))
+            binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
+            binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
+            binding.woman.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.grey_dim))
+
         }
+        binding.woman.setOnClickListener {
+            binding.man.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.grey_dim))
+            binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
+            binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
+            binding.woman.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.dark_navy_blue))
+        }
+        binding.nextbtn.setOnClickListener {
+            val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
+            tabhost.getTabAt(1)!!.select()        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_information, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment InformationFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            InformationFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

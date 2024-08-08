@@ -22,6 +22,7 @@ class ChoiceTemplate : BaseActivity() {
     }
 
     override fun attachViewMode() {
+
     }
 
     @SuppressLint("ResourceAsColor")

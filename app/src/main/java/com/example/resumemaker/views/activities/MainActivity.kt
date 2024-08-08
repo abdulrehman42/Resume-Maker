@@ -6,6 +6,7 @@ import android.view.Display
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.cardview.widget.CardView
@@ -122,7 +123,14 @@ class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListe
         val beginTranstion:FragmentTransaction=supportFragmentManager.beginTransaction()
         beginTranstion.replace(R.id.nav_host_fragment_content_main_activty,fragment).commit()
     }
-
+    @SuppressLint("ResourceAsColor")
+    override fun onStart() {
+        super.onStart()
+        val window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        window.statusBarColor=getResources().getColor(R.color.navy_blue)
+    }
 
 
 }
