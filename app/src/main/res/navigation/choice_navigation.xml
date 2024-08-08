@@ -29,6 +29,22 @@
         android:id="@+id/nav_objective"
         android:name="com.example.resumemaker.views.fragments.adddetail.ObjectiveFragment"
         tools:layout="@layout/fragment_objective" />
+    <fragment
+        android:id="@+id/nav_add_education"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddEducation"
+        tools:layout="@layout/fragment_add_education" />
+    <fragment
+        android:id="@+id/nav_add_skill"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddSkillFragment"
+        tools:layout="@layout/fragment_add_skill" />
+    <fragment
+        android:id="@+id/nav_add_experience"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddExperienceFragment"
+        tools:layout="@layout/fragment_add_experience" />
+    <fragment
+        android:id="@+id/nav_add_referrence"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddReferenceFragment"
+        tools:layout="@layout/fragment_add_reference" />
 
 
 </navigation>

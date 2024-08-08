@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.adddetail.AddEducation">
+    tools:context=".views.fragments.adddetail.AddExperienceFragment">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/include_tool"/>
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/instituate_textInputLayout"
+        android:id="@+id/jobtitle_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
@@ -28,11 +28,11 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/institue_name" />
+            android:hint="@string/job_title" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/degree_textInputLayout2"
+        android:id="@+id/companyName_textInputLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -41,13 +41,32 @@
         android:layout_margin="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/instituate_textInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/jobtitle_textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/degree" />
+            android:hint="@string/company_name" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/description_textInputLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_75sdp"
+        app:boxStrokeColor="@color/green_light"
+        app:hintTextColor="@color/green_light"
+        android:layout_margin="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/companyName_textInputLayout2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_65sdp"
+            android:gravity="top"
+            android:hint="@string/description" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/startdate_textInputLayout2"
@@ -59,7 +78,7 @@
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/degree_textInputLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/description_textInputLayout2">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/startdateedittext"
@@ -97,7 +116,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/currently_enrolled"
+        android:text="@string/i_am_currently_working_in_this_role"
         app:layout_constraintBottom_toBottomOf="@+id/check_itscontinue"
         app:layout_constraintStart_toEndOf="@+id/check_itscontinue"
         app:layout_constraintTop_toTopOf="@+id/check_itscontinue" />

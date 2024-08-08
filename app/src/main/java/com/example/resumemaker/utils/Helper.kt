@@ -9,8 +9,10 @@ import android.widget.TextView
 import com.example.resumemaker.R
 import com.example.resumemaker.databinding.ActivityBoardingScreenBinding
 import com.example.resumemaker.models.BoardingItems
+import com.example.resumemaker.models.EducationModel
 import com.example.resumemaker.models.ProfileModel
 import com.example.resumemaker.models.SampleModel
+import com.example.resumemaker.models.SuggestionModel
 import com.google.android.material.tabs.TabLayout
 
 object Helper {
@@ -91,6 +93,7 @@ object Helper {
         textView?.setTextColor(if (isSelected) Color.WHITE else Color.GRAY)
         // Optionally, change other attributes like background, text style, etc.
     }
+
     fun getProfileList(): List<ProfileModel> {
         val list = ArrayList<ProfileModel>()
         list.add(ProfileModel("", "Ali", "UI/UX"))
@@ -119,5 +122,38 @@ object Helper {
         list.add(SampleModel("Gamer aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatu Duis aute irure dolor in reprehenderit in voluptate velit esse cillum "))
         return list
     }
+
+    fun getDegreeList(): List<EducationModel> {
+        val list = ArrayList<EducationModel>()
+        list.add(EducationModel("Lahore Garrision University", "BSSE", "2019", "2023"))
+        list.add(EducationModel("University Of Lahore","BSIT","2012","2016"))
+        list.add(EducationModel("University Of Punjab","BSCS","2009","2013"))
+        return list
+    }
+    fun getExperienceList(): List<EducationModel> {
+        val list = ArrayList<EducationModel>()
+        list.add(EducationModel("ML Bench", "Android Developer", "2023", "2024"))
+        list.add(EducationModel("Synare System","Android Developer","2024","2024"))
+        list.add(EducationModel("Pentabit Lab","Android Developer","2024","2024"))
+        return list
+    }
+    fun getreferrenceList(): List<EducationModel> {
+        val list = ArrayList<EducationModel>()
+        list.add(EducationModel("Ali", "Backend Developer", "ali@gmail.com", ""))
+        list.add(EducationModel("wahid","FrontEnd Developer","wahid@gmail.com",""))
+        return list
+    }
+    fun getSuggestions(): List<SuggestionModel> {
+        val list = ArrayList<SuggestionModel>()
+        list.add(SuggestionModel("Android Developer"))
+        list.add(SuggestionModel("Helper"))
+        list.add(SuggestionModel("Laravel Developer"))
+        list.add(SuggestionModel("Backend Developer"))
+        list.add(SuggestionModel("FrontEnd Developer"))
+        list.add(SuggestionModel("SQA"))
+        list.add(SuggestionModel("Chemical Knowledge"))
+        return list
+    }
+
 
 }
