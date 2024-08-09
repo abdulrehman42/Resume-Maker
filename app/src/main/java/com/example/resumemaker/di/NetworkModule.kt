@@ -1,6 +1,8 @@
-package com.example.resumemaker.http
+package com.example.resumemaker.di
 
-/*
+
+
+import com.example.resumemaker.http.AppIntercepter
 import com.example.resumemaker.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -31,15 +33,5 @@ class NetworkModule {
             .connectTimeout(4, TimeUnit.MINUTES).build()
     }
 
-   */
-/* @Singleton
-    @Provides
-    fun providesAuthAPI(retrofitBuilder: Retrofit.Builder): AuthService {
-        return retrofitBuilder.build().create(AuthService::class.java)
-    }*//*
 
-
-
-
-
-}*/
+}

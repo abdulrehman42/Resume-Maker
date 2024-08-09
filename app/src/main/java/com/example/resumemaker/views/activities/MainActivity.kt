@@ -23,8 +23,9 @@ import com.example.resumemaker.databinding.ActivityMainActivtyBinding
 import com.example.resumemaker.views.fragments.HomeFragment
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListener {
     lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration

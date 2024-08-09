@@ -6,15 +6,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.CustomprofileitemBinding
-import com.example.resumemaker.models.ProfileModel
+import com.example.resumemaker.models.ProfileModelData
 
-class ProfileAdapter(val context: Context,val list: List<ProfileModel>): RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
+class ProfileAdapter(val context: Context, val list: List<ProfileModelData>,val onclick:(ProfileModelData)->Unit): RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: CustomprofileitemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun setData(model: ProfileModel) {
-            binding.name.text = model.name
+        fun setData(model: ProfileModelData) {
+            binding.name.text = model.userName
             binding.profession.text=model.profession
+            binding.textView4.setOnClickListener {
+                onclick(model)
+            }
 
         }
     }

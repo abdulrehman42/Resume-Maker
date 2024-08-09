@@ -40,7 +40,7 @@ class AchievementFragment : BaseFragment<FragmentAchievementBinding>() {
         }
     }
     private fun setAdapter() {
-        educationAdapter= EducationAdapter(currentActivity(), Helper.achievementList())
+        educationAdapter= EducationAdapter(currentActivity(), Helper.achievementList(),false)
         binding.recyclerviewAchievements.adapter=educationAdapter
     }
 

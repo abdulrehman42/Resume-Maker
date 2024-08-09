@@ -34,6 +34,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+
+
             <ImageView
                 android:id="@+id/resume_preview_image"
                 android:layout_width="wrap_content"
@@ -43,9 +45,15 @@
                 android:src="@drawable/resume_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-            </ImageView>
+                app:layout_constraintTop_toTopOf="parent"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/search"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.847"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="44dp" />
 
             <LinearLayout
                 android:id="@+id/linearLayout7"

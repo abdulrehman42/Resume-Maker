@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_10sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/experiencename"
+        style="@style/subheading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:singleLine="true"
+        android:text="Android Developer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/office_name"
+        style="@style/regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lahore-Full Time"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="@+id/experiencename"
+        app:layout_constraintTop_toBottomOf="@id/experiencename" />
+    <TextView
+        android:id="@+id/experience_time"
+        style="@style/regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="May2019-July2023"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="@+id/office_name"
+        app:layout_constraintTop_toBottomOf="@id/office_name" />
+    <TextView
+        android:id="@+id/office_Address"
+        style="@style/regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lahore"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="@+id/experience_time"
+        app:layout_constraintTop_toBottomOf="@id/experience_time"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

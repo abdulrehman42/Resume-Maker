@@ -24,7 +24,7 @@ class ExperienceFragment : BaseFragment<FragmentExperienceBinding>() {
     }
 
     private fun setadapter() {
-        educationAdapter= EducationAdapter(currentActivity(), Helper.getExperienceList())
+        educationAdapter= EducationAdapter(currentActivity(), Helper.getExperienceList(),false)
         binding.recyclerviewExperience.adapter=educationAdapter
     }
 

@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    /*id ("kotlin-kapt")
-    id ("com.google.dagger.hilt.android")*/
+    id ("kotlin-kapt")
+    id ("com.google.dagger.hilt.android")
 }
 
 android {
@@ -82,15 +82,14 @@ dependencies {
     implementation (libs.material.v190)
 
 
-    /*//hilt
+    //hilt
     implementation (libs.hilt.android)
-    kapt (libs.hilt.compiler)*/
+    kapt (libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
-/*
 kapt {
     correctErrorTypes = true
-}*/
+}

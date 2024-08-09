@@ -58,4 +58,6 @@
     <string name="add_project">Add Project</string>
     <string name="add_achievement">Add Achievement</string>
     <string name="download">Download</string>
+    <string name="experience">Experience</string>
+    <string name="certificate">Certificate</string>
 </resources>

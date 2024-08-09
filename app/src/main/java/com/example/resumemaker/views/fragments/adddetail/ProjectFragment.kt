@@ -38,7 +38,7 @@ class ProjectFragment : BaseFragment<FragmentProjectBinding>(){
         }
     }
     private fun setAdapter() {
-        educationAdapter= EducationAdapter(currentActivity(), Helper.projectsList())
+        educationAdapter= EducationAdapter(currentActivity(), Helper.projectsList(),false)
         binding.recyclerviewProjects.adapter=educationAdapter
     }
 

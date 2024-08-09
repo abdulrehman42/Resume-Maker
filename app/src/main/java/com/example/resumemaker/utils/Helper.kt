@@ -10,7 +10,9 @@ import com.example.resumemaker.R
 import com.example.resumemaker.databinding.ActivityBoardingScreenBinding
 import com.example.resumemaker.models.BoardingItems
 import com.example.resumemaker.models.EducationModel
+import com.example.resumemaker.models.ExperienceModel
 import com.example.resumemaker.models.ProfileModel
+import com.example.resumemaker.models.ProfileModelData
 import com.example.resumemaker.models.SampleModel
 import com.example.resumemaker.models.SuggestionModel
 import com.google.android.material.tabs.TabLayout
@@ -111,6 +113,30 @@ object Helper {
         return list
     }
 
+    fun getProfileList1(): List<ProfileModelData> {
+        val list = ArrayList<ProfileModelData>()
+        list.add(ProfileModelData("Ali", "Android Developer",ProfileModelData.Detail("hey im ali","Male","Lahore","My objec to achieve goal",
+            getSuggestions(),
+            getExperienceList1(),
+            getDegreeList(),
+            getCertificateist(),
+        )))
+/*
+        list.add(ProfileModelData("", "Abdul Rehman", "Android Developer"))
+        list.add(ProfileModelData("", "Numan", "Laravel Developer"))
+        list.add(ProfileModelData("", "Syed Ali", "IOS Developer"))
+        list.add(ProfileModelData("", "Zeeshan", "Mobile App Developer"))
+        list.add(ProfileModelData("", "Zubair", "Electrical Engineer"))
+        list.add(ProfileModelData("", "Hammad", "chemical Engineer"))
+        list.add(ProfileModelData("", "Abu Bakar", "Mechanical Engineer"))
+        list.add(ProfileModelData("", "Zafar Ali", "Game Developer"))
+        list.add(ProfileModelData("", "Ubaid", "Helper"))
+        list.add(ProfileModelData("", "Wali", "SQA"))
+        list.add(ProfileModelData("", "Mubarshir", "Web Developer"))
+*/
+        return list
+    }
+
 
     fun getSampleList(): List<SampleModel> {
         val list = ArrayList<SampleModel>()
@@ -130,11 +156,24 @@ object Helper {
         list.add(EducationModel("University Of Punjab","BSCS","2009","2013"))
         return list
     }
+    fun getCertificateist(): List<EducationModel> {
+        val list = ArrayList<EducationModel>()
+        list.add(EducationModel("CCNA","Lahore Garrision University",  "2019", "2023"))
+        list.add(EducationModel("Android Developer","University Of Lahore","2012","2016"))
+        return list
+    }
     fun getExperienceList(): List<EducationModel> {
         val list = ArrayList<EducationModel>()
         list.add(EducationModel("ML Bench", "Android Developer", "2023", "2024"))
         list.add(EducationModel("Synare System","Android Developer","2024","2024"))
         list.add(EducationModel("Pentabit Lab","Android Developer","2024","2024"))
+        return list
+    }
+    fun getExperienceList1(): List<ExperienceModel> {
+        val list = ArrayList<ExperienceModel>()
+        list.add(ExperienceModel( "Android Developer","ML Bench", "August2023-Mar2024", "Lahore"))
+        list.add(ExperienceModel("Android Developer","Synare System","April2024-Jul2024","Lahore"))
+        list.add(ExperienceModel("Android Developer","Pentabit Lab","Aug2024-Present","Lahore"))
         return list
     }
     fun getreferrenceList(): List<EducationModel> {

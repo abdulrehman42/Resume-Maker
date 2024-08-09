@@ -4,33 +4,27 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.EducationitemsBinding
-import com.example.resumemaker.databinding.SampleitemsBinding
+import com.example.resumemaker.databinding.ProfileexperienceitemBinding
 import com.example.resumemaker.models.EducationModel
-import com.example.resumemaker.models.SampleModel
+import com.example.resumemaker.models.ExperienceModel
 
-class EducationAdapter(val context: Context, val list:List<EducationModel>,val check:Boolean): RecyclerView.Adapter<EducationAdapter.ViewHolder>() {
-    inner class ViewHolder(private val binding: EducationitemsBinding) :
+class ExperienceProfAdapter (val context: Context, val list:List<ExperienceModel>): RecyclerView.Adapter<ExperienceProfAdapter.ViewHolder>() {
+    inner class ViewHolder(private val binding: ProfileexperienceitemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun setData(model: EducationModel) {
-            binding.universityname.text=model.universityName
-            binding.degreeName.text=model.degree
-            binding.degreeYears.text=model.startDate+"-"+model.endDate
-            if (check)
-            {
-                binding.editEdu.isGone=true
-                binding.deleteEdu.isGone=true
-            }
+        fun setData(model: ExperienceModel) {
+            binding.experiencename.text=model.fieldName
+            binding.officeName.text=model.officeName+"-Full Time"
+            binding.experienceTime.text=model.experienceTime
+            binding.officeAddress.text=model.officeAddress
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = EducationitemsBinding.inflate(
+        val binding = ProfileexperienceitemBinding.inflate(
             LayoutInflater.from(context),
             parent,
             false

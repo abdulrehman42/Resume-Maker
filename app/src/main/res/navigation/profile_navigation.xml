@@ -7,5 +7,10 @@
     <fragment
         android:id="@+id/nav_profileFragment"
         android:name="com.example.resumemaker.views.fragments.profile.ProfileFragment"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_profileDetailFragment"
+        android:name="com.example.resumemaker.views.fragments.profile.ProfileDetailFragment"
+        tools:layout="@layout/fragment_profile_detail" />
 </navigation>

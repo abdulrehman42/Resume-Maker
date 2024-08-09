@@ -52,6 +52,9 @@ abstract class BaseActivity : AppCompatActivity() {
     fun replaceChoiceFragment(action: Int) {
         Navigation.findNavController(this, R.id.choiceHostFragment).navigate(action, null, options)
     }
+    fun replaceProfileFragment(action: Int) {
+        Navigation.findNavController(this, R.id.profileHostFragment).navigate(action, null, options)
+    }
     /*fun replaceMainFragment(action: Int) {
         Navigation.findNavController(this, R.id.fragmentMain).navigate(action, null, options)
     }

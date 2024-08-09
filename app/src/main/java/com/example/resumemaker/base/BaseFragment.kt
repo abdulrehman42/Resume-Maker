@@ -32,7 +32,7 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = inflate.invoke(inflater, container, false)
-//        sharePref = SharePref.mInstence!!
+        sharePref = SharePref.mInstence!!
         return binding.root
 
     }

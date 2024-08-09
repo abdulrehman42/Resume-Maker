@@ -42,7 +42,7 @@ class EducationFragment : BaseFragment<FragmentEducationBinding>() {
     }
 
     private fun setAdapter() {
-        educationAdapter= EducationAdapter(currentActivity(),Helper.getDegreeList())
+        educationAdapter= EducationAdapter(currentActivity(),Helper.getDegreeList(),false)
         binding.recyclerviewEducation.adapter=educationAdapter
     }
 

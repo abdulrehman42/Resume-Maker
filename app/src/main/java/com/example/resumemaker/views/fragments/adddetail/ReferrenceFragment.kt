@@ -29,7 +29,7 @@ class ReferrenceFragment : BaseFragment<FragmentReferrenceBinding>() {
     }
 
     private fun setadapter() {
-        educationAdapter= EducationAdapter(currentActivity(), Helper.getreferrenceList())
+        educationAdapter= EducationAdapter(currentActivity(), Helper.getreferrenceList(),false)
         binding.recyclerviewReference.adapter=educationAdapter
     }
 

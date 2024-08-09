@@ -1,7 +1,6 @@
 package com.example.resumemaker.http
 
 
-/*
 import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -22,4 +21,4 @@ class AppIntercepter @Inject constructor() : Interceptor {
 
     }
 
-}*/
+}

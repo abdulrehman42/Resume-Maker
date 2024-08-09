@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".views.fragments.profile.ProfileDetailFragment">
+
+
+    <include
+        android:id="@+id/include_tool"
+        layout="@layout/toolbarwithshareoption"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_25sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_tool">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/shapeableImageView"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_55sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:src="@drawable/imgplaceholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/Circular" />
+
+            <TextView
+                android:id="@+id/userName"
+                style="@style/heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="Christen Willer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shapeableImageView"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/user_Intro"
+                style="@style/regular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="Graphic Designer I UI/UX I Social Media I Video Animator/Editor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:src="@drawable/gender"
+                app:layout_constraintStart_toStartOf="@+id/user_Intro"
+                app:layout_constraintTop_toBottomOf="@+id/user_Intro" />
+
+            <TextView
+                android:id="@+id/gender"
+                style="@style/regular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+                app:layout_constraintEnd_toEndOf="@+id/user_Intro"
+                app:layout_constraintStart_toEndOf="@+id/imageView8"
+                app:layout_constraintTop_toTopOf="@+id/imageView8" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:src="@drawable/location"
+                app:layout_constraintStart_toStartOf="@+id/user_Intro"
+                app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+            <TextView
+                android:id="@+id/location"
+                style="@style/regular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="Lahore,pakistion"
+                android:singleLine="true"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+                app:layout_constraintEnd_toEndOf="@+id/user_Intro"
+                app:layout_constraintStart_toEndOf="@+id/imageView8"
+                app:layout_constraintTop_toTopOf="@id/imageView9" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/grey_dim"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/location" />
+
+            <TextView
+                android:id="@+id/textView10"
+                style="@style/heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="@string/objectives"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <TextView
+                android:id="@+id/objexttext"
+                style="@style/regular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Graphic Designer I UI/UX I Social Media I Video Animator/Editor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/grey_dim"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/objexttext"/>
+
+
+            <TextView
+                android:id="@+id/textView11"
+                style="@style/heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="@string/skill"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/skill_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/grey_dim"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/skill_recyclerview"/>
+            <TextView
+                android:id="@+id/textView12"
+                style="@style/heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="@string/experience"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view2"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/experience_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/textView12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/grey_dim"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/experience_recyclerview"/>
+            <TextView
+                android:id="@+id/textView13"
+                style="@style/heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="Education"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view3"
+                tools:ignore="HardcodedText" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/education_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/textView13"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/grey_dim"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/education_recyclerview"/>
+            <TextView
+                android:id="@+id/textView14"
+                style="@style/heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="@string/certificate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view4"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/certificate_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/textView14" />
+
+            <LinearLayout
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:backgroundTint="@color/purple"
+                android:background="@drawable/greyripple_roundbtn"
+                android:padding="@dimen/_10sdp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@+id/experience_recyclerview"
+                app:layout_constraintEnd_toEndOf="@+id/experience_recyclerview"
+                app:layout_constraintTop_toTopOf="@+id/experience_recyclerview">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/baseline_add_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    style="@style/regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView4"
+                    app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

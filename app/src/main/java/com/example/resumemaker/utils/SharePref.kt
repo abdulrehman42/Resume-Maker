@@ -3,6 +3,8 @@ package com.example.resumemaker.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import com.example.resumemaker.models.ProfileModelData
 import com.example.resumemaker.utils.Constants.PREFS_TOKEN_FILE
 import com.google.gson.Gson
 
@@ -76,8 +78,19 @@ class SharePref constructor(ctx: Context){
     fun readData(key: String?, defValue: String): String? {
         return prefs!!.getString(key, defValue)
     }
-   /* fun writeData(user: UserMainModel.Data) {
-        val data=gson.toJson(user)
-        prefs!!.edit().putString(Constants.DATA, data).apply()
-    }*/
+    fun readDataProfile(): ProfileModelData {
+        val json = prefs!!.getString(Constants.DATA, null)
+        val gson = Gson()
+        return gson.fromJson(json, ProfileModelData::class.java)
+    }
+    fun writeData(user: ProfileModelData) {
+        try {
+            val data=gson.toJson(user)
+            prefs!!.edit().putString(Constants.DATA, data).apply()
+        }catch (e:Exception)
+        {
+            Log.e("TAGException", e.message.toString())
+        }
+
+    }
 }

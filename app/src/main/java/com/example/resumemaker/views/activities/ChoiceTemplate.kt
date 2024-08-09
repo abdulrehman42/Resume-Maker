@@ -9,8 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityChoiceTemplateBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ChoiceTemplate : BaseActivity() {
     lateinit var binding: ActivityChoiceTemplateBinding
     override fun onCreate(savedInstanceState: Bundle?) {

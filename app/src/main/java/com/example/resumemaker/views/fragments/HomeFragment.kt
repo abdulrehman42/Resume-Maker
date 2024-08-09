@@ -29,7 +29,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         }
         binding.linearLayout4.setOnClickListener {
-            requireActivity().startActivity(Intent(requireActivity(),ProfileActivity::class.java))
+            requireActivity().startActivity(Intent(currentActivity(),ProfileActivity::class.java))
         }
 
     }

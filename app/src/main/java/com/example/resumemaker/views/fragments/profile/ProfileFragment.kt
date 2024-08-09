@@ -1,8 +1,8 @@
 package com.example.resumemaker.views.fragments.profile
 
 import android.os.Bundle
-import androidx.core.view.isGone
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentProfileBinding
@@ -26,13 +26,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun setadapter() {
-
-        val profileAdapter=ProfileAdapter(requireActivity(),Helper.getProfileList())
+        val profileAdapter=ProfileAdapter(requireActivity(),Helper.getProfileList1())
+        {
+            sharePref.writeData(it)
+            currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
+        }
         binding.recyclerview.apply {
             layoutManager = GridLayoutManager(requireActivity(), 2)
 
             adapter=profileAdapter
-
         }
     }
 
