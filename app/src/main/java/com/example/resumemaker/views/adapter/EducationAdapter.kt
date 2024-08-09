@@ -24,7 +24,6 @@ class EducationAdapter(val context: Context, val list:List<EducationModel>,val c
             if (check)
             {
                 binding.editEdu.isGone=true
-
                 binding.deleteEdu.isGone=true
             }
         }
