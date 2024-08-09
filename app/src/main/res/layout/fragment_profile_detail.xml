@@ -256,7 +256,7 @@
                 app:layout_constraintTop_toBottomOf="@id/textView14" />
 
             <LinearLayout
-                android:layout_width="@dimen/_80sdp"
+                android:layout_width="@dimen/_85sdp"
                 android:layout_height="@dimen/_35sdp"
                 android:backgroundTint="@color/purple"
                 android:background="@drawable/greyripple_roundbtn"
@@ -270,7 +270,6 @@
                     android:id="@+id/imageView4"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:layout_marginStart="@dimen/_5sdp"
                     android:src="@drawable/baseline_add_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -281,6 +280,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Create"
+                    android:textSize="@dimen/_9ssp"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView4"
                     app:layout_constraintEnd_toEndOf="parent"

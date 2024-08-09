@@ -7,9 +7,10 @@
     <TextView
         android:id="@+id/skill_name"
         style="@style/regular"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_margin="@dimen/_10sdp"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:textSize="@dimen/_8ssp"
+        android:layout_margin="@dimen/_5sdp"
         android:gravity="center"
         android:background="@drawable/greyripple_roundbtn"
         android:padding="@dimen/_10sdp"
