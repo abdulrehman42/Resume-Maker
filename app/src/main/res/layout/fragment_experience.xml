@@ -26,6 +26,7 @@
         android:backgroundTint="@color/purple"
         android:drawableLeft="@drawable/baseline_add_24"
         android:gravity="end|center"
+        android:textSize="@dimen/_10ssp"
         android:text="@string/add_experience"
         android:textColor="@color/white"
         app:circularflow_defaultRadius="@dimen/_20sdp"
@@ -66,7 +67,7 @@
         android:textSize="@dimen/_12ssp"
 
         app:layout_constraintBottom_toBottomOf="@+id/nextbtn"
-        app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
+        app:layout_constraintStart_toStartOf="@+id/recyclerview_experience"
         app:layout_constraintTop_toTopOf="@+id/nextbtn" />
 
 

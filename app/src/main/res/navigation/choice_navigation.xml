@@ -47,4 +47,26 @@
         tools:layout="@layout/fragment_add_reference" />
 
 
+    <fragment
+        android:id="@+id/nav_Add_interest"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddInterestFragment"
+        tools:layout="@layout/fragment_add_interest" />
+    <fragment
+        android:id="@+id/nav_add_language"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddLanguageFragment"
+        tools:layout="@layout/fragment_add_language" />
+    <fragment
+        android:id="@+id/nav_add_projects"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddProjectFragment"
+        tools:layout="@layout/fragment_add_project" />
+    <fragment
+        android:id="@+id/nav_add_achievement"
+        android:name="com.example.resumemaker.views.fragments.adddetail.AddAchievementsFRagment"
+        tools:layout="@layout/fragment_add_achievements_f_ragment" />
+    <fragment
+        android:id="@+id/nav_add_preview_resume"
+        android:name="com.example.resumemaker.views.fragments.adddetail.ResumePreviewFragment"
+        tools:layout="@layout/fragment_resume_preview" />
+
+
 </navigation>

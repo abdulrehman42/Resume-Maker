@@ -20,6 +20,7 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        binding.includeTool.textView.text="Add Experience"
         onclick()
 
     }

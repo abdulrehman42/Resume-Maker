@@ -3,10 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.adddetail.AddSkillFragment">
-
+    tools:context=".views.fragments.adddetail.AddAchievementsFRagment">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -17,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/include_tool"/>
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/skill_textInputLayout"
+        android:id="@+id/achievementtitle_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
@@ -25,36 +23,53 @@
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/include_tool"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/skill_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/skill" />
+            android:hint="Achieveemnt"
+            tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/textView6"
-        style="@style/heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:text="Suggestions"
-        app:layout_constraintStart_toStartOf="@+id/skill_textInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/skill_textInputLayout" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_suggestions"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/companyName_textInputLayout2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/_5sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/savebtn"
+        android:layout_height="wrap_content"
+
+        app:boxStrokeColor="@color/green_light"
+        app:hintTextColor="@color/green_light"
+        android:layout_margin="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/description_textInputLayout2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Issue Date"
+            tools:ignore="HardcodedText" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/description_textInputLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_85sdp"
+        app:boxStrokeColor="@color/green_light"
+        app:hintTextColor="@color/green_light"
+        android:layout_margin="@dimen/_10sdp"
+        app:counterMaxLength="500"
+        app:counterEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievementtitle_textInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_65sdp"
+            android:gravity="top"
+            android:hint="@string/description" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/savebtn"

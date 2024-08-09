@@ -9,21 +9,25 @@ import android.view.ViewGroup
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
-import com.example.resumemaker.databinding.FragmentAddReferenceBinding
+import com.example.resumemaker.databinding.FragmentAddProjectBinding
 
-class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>()
-{
-    override val inflate: Inflate<FragmentAddReferenceBinding>
-        get() = FragmentAddReferenceBinding::inflate
+
+class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
+    override val inflate: Inflate<FragmentAddProjectBinding>
+        get() = FragmentAddProjectBinding::inflate
 
     override fun observeLiveData() {
     }
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text="Add Reference"
+        binding.includeTool.textView.text="Add Project"
+
         onclick()
+
     }
+
+
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
@@ -32,6 +36,8 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>()
         binding.savebtn.setOnClickListener {
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
+
     }
+
 
 }

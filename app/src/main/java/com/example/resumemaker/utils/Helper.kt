@@ -154,6 +154,33 @@ object Helper {
         list.add(SuggestionModel("Chemical Knowledge"))
         return list
     }
+    fun achievementList():List<EducationModel> {
+        val list = ArrayList<EducationModel>()
+        list.add(EducationModel("LawAdvat", "Artificial Intelligence and robotics research", "2023", "2024"))
+        list.add(EducationModel("MyMufti App", "Product & Api Services", "2022", "2024"))
+        return list
+    }
+    fun projectsList():List<EducationModel> {
+        val list = ArrayList<EducationModel>()
+        list.add(EducationModel("LawAdvat", "Artificial Intelligence and robotics research", "", ""))
+        list.add(EducationModel("MyMufti App", "Product & Api Services", "", ""))
+        return list
+    }
+    fun getLanuages(): List<SuggestionModel> {
+        val list = ArrayList<SuggestionModel>()
+        list.add(SuggestionModel("English"))
+        list.add(SuggestionModel("Urdu"))
+        return list
+    }
+    fun getInterests(): List<SuggestionModel> {
+        val list = ArrayList<SuggestionModel>()
+        list.add(SuggestionModel("Gaming"))
+        list.add(SuggestionModel("Movie"))
+        list.add(SuggestionModel("Season"))
+        list.add(SuggestionModel("Self Motivated"))
+        return list
+    }
+
 
 
 }

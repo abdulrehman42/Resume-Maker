@@ -3,10 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.adddetail.AddSkillFragment">
-
+    tools:context=".views.fragments.adddetail.AddLanguageFragment">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -17,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/include_tool"/>
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/skill_textInputLayout"
+        android:id="@+id/language_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
@@ -32,21 +30,11 @@
             android:id="@+id/skill_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/skill" />
+            android:hint="@string/language" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/textView6"
-        style="@style/heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:text="Suggestions"
-        app:layout_constraintStart_toStartOf="@+id/skill_textInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/skill_textInputLayout" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_suggestions"
+        android:id="@+id/recyclerview_language"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_5sdp"
@@ -54,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/savebtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/language_textInputLayout" />
 
     <TextView
         android:id="@+id/savebtn"
@@ -68,5 +56,7 @@
         app:layout_constraintHorizontal_bias="0.659"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

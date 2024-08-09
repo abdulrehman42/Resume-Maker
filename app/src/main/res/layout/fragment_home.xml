@@ -104,7 +104,7 @@
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
-                android:src="@drawable/download" />
+                android:src="@drawable/download_cv" />
 
             <TextView
                 android:layout_width="wrap_content"

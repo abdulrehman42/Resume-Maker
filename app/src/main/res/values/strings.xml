@@ -54,4 +54,8 @@
     <string name="description">Description</string>
     <string name="i_am_currently_working_in_this_role">I am currently working in this role</string>
     <string name="reference_name">Reference Name</string>
+    <string name="add_language">Add Language</string>
+    <string name="add_project">Add Project</string>
+    <string name="add_achievement">Add Achievement</string>
+    <string name="download">Download</string>
 </resources>

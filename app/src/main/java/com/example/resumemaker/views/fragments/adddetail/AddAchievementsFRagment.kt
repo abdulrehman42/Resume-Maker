@@ -6,24 +6,32 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
-import com.example.resumemaker.databinding.FragmentAddReferenceBinding
+import com.example.resumemaker.databinding.FragmentAddAchievementsFRagmentBinding
+import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.adapter.SuggestionAdapter
 
-class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>()
+
+class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBinding>()
 {
-    override val inflate: Inflate<FragmentAddReferenceBinding>
-        get() = FragmentAddReferenceBinding::inflate
+    override val inflate: Inflate<FragmentAddAchievementsFRagmentBinding>
+        get() = FragmentAddAchievementsFRagmentBinding::inflate
 
     override fun observeLiveData() {
     }
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text="Add Reference"
+        binding.includeTool.textView.text="Add Achievement"
+
         onclick()
+
     }
+
+
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
@@ -32,6 +40,8 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>()
         binding.savebtn.setOnClickListener {
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
+
     }
+
 
 }

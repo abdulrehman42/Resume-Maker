@@ -19,11 +19,12 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/addreferrenebtn"
-        style="@style/regular"
+        style="@style/subheading"
         android:layout_width="@dimen/_155sdp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_10sdp"
         android:backgroundTint="@color/purple"
+        android:textSize="@dimen/_10ssp"
         android:drawableLeft="@drawable/baseline_add_24"
         android:gravity="end|center"
         android:text="@string/add_referrence"

@@ -40,7 +40,7 @@ class ReferrenceFragment : BaseFragment<FragmentReferrenceBinding>() {
 
         }
         binding.nextbtn.setOnClickListener {
-           // tabhost.getTabAt()!!.select()
+            tabhost.getTabAt(6)!!.select()
         }
         binding.addreferrenebtn.setOnClickListener {
             currentActivity().replaceChoiceFragment(R.id.nav_add_referrence)

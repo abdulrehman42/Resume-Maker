@@ -26,17 +26,20 @@ class InformationFragment : BaseFragment<FragmentInformationBinding>(){
     private fun onclick() {
         binding.man.setOnClickListener {
 
-            binding.man.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.dark_navy_blue))
+
+            binding.man.setBackgroundResource(R.drawable.bluebgradius)
+            binding.woman.setBackgroundResource(R.drawable.greybgradius)
+
             binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
             binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
-            binding.woman.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.grey_dim))
 
         }
         binding.woman.setOnClickListener {
-            binding.man.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.grey_dim))
+            binding.man.setBackgroundResource(R.drawable.greybgradius)
+            binding.woman.setBackgroundResource(R.drawable.bluebgradius)
+
             binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
             binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
-            binding.woman.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.dark_navy_blue))
         }
         binding.nextbtn.setOnClickListener {
             val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout

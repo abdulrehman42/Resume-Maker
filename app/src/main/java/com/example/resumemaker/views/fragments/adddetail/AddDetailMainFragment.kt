@@ -110,6 +110,12 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         vadapter.addFragment(SkillFragment(), "\nSkill")
         vadapter.addFragment(ExperienceFragment(), "\nExperience")
         vadapter.addFragment(ReferrenceFragment(), "\nReference")
+        vadapter.addFragment(InterestFragment(), "\nInterest")
+        vadapter.addFragment(LanguageFragment(), "\nLanguage")
+        vadapter.addFragment(ProjectFragment(), "\nProjects")
+        vadapter.addFragment(AchievementFragment(), "\nAchievements")
+
+
         list?.let {
             for (i in list)
             {
