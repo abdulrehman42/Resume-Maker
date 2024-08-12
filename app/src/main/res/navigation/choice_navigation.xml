@@ -21,68 +21,89 @@
         android:id="@+id/nav_choice"
         android:name="com.example.resumemaker.views.fragments.choose.ChooseTemplateFragment"
         tools:layout="@layout/fragment_choose_template" />
+
+    <!--coverletter-->
+
     <fragment
         android:id="@+id/nav_add_detail_coverletter"
-        android:name="com.example.resumemaker.views.fragments.choose.coverletter.AddDetailCoverLetterFragment"
+        android:name="com.example.resumemaker.views.fragments.coverletter.AddDetailCoverLetterFragment"
         tools:layout="@layout/fragment_add_detail_cover_letter" />
     <fragment
         android:id="@+id/nav_ai_writing_coverletter_sample"
-        android:name="com.example.resumemaker.views.fragments.choose.coverletter.AIWritingFragment"
+        android:name="com.example.resumemaker.views.fragments.coverletter.AIWritingFragment"
         tools:layout="@layout/fragment_a_i_writing" />
     <fragment
+        android:id="@+id/nav_sample_detail_cover_letter"
+        android:name="com.example.resumemaker.views.fragments.coverletter.SampleDetail"
+        tools:layout="@layout/fragment_sample_detail" />
+    <fragment
         android:id="@+id/nav_sample_cover_letter"
-        android:name="com.example.resumemaker.views.fragments.choose.coverletter.CoverLetterSampleFragment"
+        android:name="com.example.resumemaker.views.fragments.coverletter.CoverLetterSampleFragment"
         tools:layout="@layout/fragment_cover_letter_sample" />
 
 
-
+    <!--cv-->
 
     <fragment
         android:id="@+id/nav_add_detail"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddDetailMainFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddDetailMainFragment"
         tools:layout="@layout/fragment_add_detail_main" />
     <fragment
         android:id="@+id/nav_objective"
-        android:name="com.example.resumemaker.views.fragments.adddetail.ObjectiveFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.ObjectiveFragment"
         tools:layout="@layout/fragment_objective" />
     <fragment
         android:id="@+id/nav_add_education"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddEducation"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddEducation"
         tools:layout="@layout/fragment_add_education" />
     <fragment
         android:id="@+id/nav_add_skill"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddSkillFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddSkillFragment"
         tools:layout="@layout/fragment_add_skill" />
     <fragment
         android:id="@+id/nav_add_experience"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddExperienceFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddExperienceFragment"
         tools:layout="@layout/fragment_add_experience" />
     <fragment
         android:id="@+id/nav_add_referrence"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddReferenceFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddReferenceFragment"
         tools:layout="@layout/fragment_add_reference" />
 
 
     <fragment
         android:id="@+id/nav_Add_interest"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddInterestFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddInterestFragment"
         tools:layout="@layout/fragment_add_interest" />
     <fragment
         android:id="@+id/nav_add_language"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddLanguageFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddLanguageFragment"
         tools:layout="@layout/fragment_add_language" />
     <fragment
         android:id="@+id/nav_add_projects"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddProjectFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddProjectFragment"
         tools:layout="@layout/fragment_add_project" />
     <fragment
         android:id="@+id/nav_add_achievement"
-        android:name="com.example.resumemaker.views.fragments.adddetail.AddAchievementsFRagment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddAchievementsFRagment"
         tools:layout="@layout/fragment_add_achievements_f_ragment" />
     <fragment
         android:id="@+id/nav_add_preview_resume"
-        android:name="com.example.resumemaker.views.fragments.adddetail.ResumePreviewFragment"
+        android:name="com.example.resumemaker.views.fragments.addDetailResume.ResumePreviewFragment"
         tools:layout="@layout/fragment_resume_preview" />
 
+   <!-- &lt;!&ndash;download&ndash;&gt;
+    <fragment
+        android:id="@+id/nav_resume_fragment"
+        android:name="com.example.resumemaker.views.fragments.download.ResumeFragment"
+        tools:layout="@layout/fragment_resume" />
+    <fragment
+        android:id="@+id/nav_cover_letter_fragment"
+        android:name="com.example.resumemaker.views.fragments.download.CoverLetterFragment"
+        tools:layout="@layout/fragment_cover_letter" />
+    <fragment
+        android:id="@+id/nav_download"
+        android:name="com.example.resumemaker.views.fragments.download.DownloadFragment"
+        tools:layout="@layout/fragment_download" />
+-->
 
 </navigation>

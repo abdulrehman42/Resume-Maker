@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.fragments.choose.coverletter.SampleDetail">
+    tools:context=".views.fragments.coverletter.SampleDetail">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
         layout="@layout/toolbarwithshareoption"
-        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

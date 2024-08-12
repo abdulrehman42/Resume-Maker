@@ -5,7 +5,9 @@ import android.os.Bundle
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentHomeBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.views.activities.ChoiceTemplate
+import com.example.resumemaker.views.activities.DownloadActivity
 import com.example.resumemaker.views.activities.ProfileActivity
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -21,16 +23,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun onclick() {
         binding.linearLayout1.setOnClickListener {
-
+            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.CV)
             requireActivity().startActivity(Intent(requireActivity(),ChoiceTemplate::class.java))
         }
         binding.linearLayout2.setOnClickListener {
+            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.COVERLETTER)
             requireActivity().startActivity(Intent(requireActivity(),ChoiceTemplate::class.java))
 
+        }
+        binding.linearLayout3.setOnClickListener {
+            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.DOWNLOAD)
+            requireActivity().startActivity(Intent(requireActivity(),DownloadActivity::class.java))
         }
         binding.linearLayout4.setOnClickListener {
             requireActivity().startActivity(Intent(currentActivity(),ProfileActivity::class.java))
         }
+
 
     }
 

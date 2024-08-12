@@ -14,7 +14,12 @@ class SampleAdapter (val context: Context, val list:List<SuggestionModel>,val on
 
         @SuppressLint("SetTextI18n")
         fun setData(model: SuggestionModel) {
-            binding.sampleText.text=model.skillName
+            binding.sampleText.apply {
+                text=model.skillName
+                setOnClickListener {
+                    onclick(model)
+                }
+            }
         }
     }
 

@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ResumeMaker" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/navy_blue</item>
-        <item name="colorPrimaryVariant">@color/white</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/navy_blue</item>
+        <item name="colorOnPrimary">@color/navy_blue</item>
     </style>
 
     <style name="Theme.ResumeMaker" parent="Base.Theme.ResumeMaker" />

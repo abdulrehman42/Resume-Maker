@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.adddetail.AddExperienceFragment">
+    tools:context=".views.fragments.addDetailResume.AddExperienceFragment">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -53,6 +53,9 @@
         android:id="@+id/description_textInputLayout2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_75sdp"
+        app:endIconDrawable="@drawable/ai"
+        app:endIconMode="custom"
+        app:endIconTint="@null"
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         android:layout_margin="@dimen/_10sdp"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".views.fragments.adddetail.ObjectiveFragment">
+    tools:context=".views.fragments.addDetailResume.ObjectiveFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,10 +22,11 @@
             android:layout_margin="@dimen/_10sdp"
             app:counterMaxLength="500"
             app:counterEnabled="true"
-            app:endIconDrawable="@drawable/interest"
-            app:endIconTint="@color/green_light"
+            app:endIconDrawable="@drawable/ai"
+            app:endIconTint="@null"
             app:boxStrokeColor="@color/green_light"
             app:hintTextColor="@color/green_light"
+            app:endIconMode="custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

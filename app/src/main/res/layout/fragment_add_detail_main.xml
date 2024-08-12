@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/navy_blue"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.adddetail.AddDetailMainFragment">
+    tools:context=".views.fragments.addDetailResume.AddDetailMainFragment">
     <include
         android:id="@+id/include_tool"
         layout="@layout/toolbars"

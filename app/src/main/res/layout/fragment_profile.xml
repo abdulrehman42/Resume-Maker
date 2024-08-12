@@ -9,7 +9,7 @@
    <include
        android:id="@+id/include_tool"
        layout="@layout/toolbars"
-       android:layout_marginTop="@dimen/_25sdp"
+       android:layout_marginTop="@dimen/_15sdp"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        app:layout_constraintTop_toTopOf="parent"

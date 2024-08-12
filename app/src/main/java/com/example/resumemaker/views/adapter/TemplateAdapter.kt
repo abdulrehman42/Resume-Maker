@@ -19,7 +19,7 @@ class TemplateAdapter(
         @SuppressLint("SetTextI18n")
         fun setData(model: TemplateModel) {
             Glide.with(context).load(model.image).into(binding.templateimage)
-            binding.templateimage.setOnClickListener {
+            binding.eyeIconId.setOnClickListener {
                 onclick(model)
             }
 

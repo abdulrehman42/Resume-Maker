@@ -1,6 +1,8 @@
 package com.example.resumemaker.views.activities
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Display
 import android.view.Menu
@@ -10,6 +12,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -26,7 +29,7 @@ import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainActivtyBinding
@@ -39,22 +42,27 @@ class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListe
 
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        enableEdgeToEdge()
+        binding.appBarMainActivty.toolbar.title = getString(R.string.app_name)
         setSupportActionBar(binding.appBarMainActivty.toolbar)
-
-
-        drawerLayout= binding.drawerLayout
+        drawerLayout = binding.drawerLayout
         drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
 
         val navView: NavigationView = binding.navView
-        navView.setNavigationItemSelectedListener (this)
-        val toggle =ActionBarDrawerToggle(this,drawerLayout,binding.appBarMainActivty.toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close)
+        navView.setNavigationItemSelectedListener(this)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            binding.appBarMainActivty.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        if (savedInstanceState==null){
+        if (savedInstanceState == null) {
             replaceFragment(HomeFragment())
         }
-        val mainContent=findViewById<CardView>(R.id.cardviewContent)
+        val mainContent = findViewById<CardView>(R.id.cardviewContent)
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 val slideX = drawerView.width * slideOffset
@@ -67,7 +75,7 @@ class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListe
 
             override fun onDrawerOpened(drawerView: View) {
                 toggle.onDrawerOpened(drawerView)
-                 getActivity(this@MainActivity)!!. windowManager.defaultDisplay
+                getActivity(this@MainActivity)!!.windowManager.defaultDisplay
 
                 flagDrawer = true
                 mainContent.radius = 30f
@@ -86,6 +94,7 @@ class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListe
         })
 
     }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_rate -> Toast.makeText(this, "rate us", Toast.LENGTH_SHORT).show()
@@ -100,9 +109,9 @@ class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListe
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
-        }else{
+        } else {
             onBackPressedDispatcher.onBackPressed()
         }
     }
@@ -119,19 +128,32 @@ class MainActivity : BaseActivity(),NavigationView.OnNavigationItemSelectedListe
     }
 
 
-
-    fun replaceFragment(fragment: Fragment){
-        val beginTranstion:FragmentTransaction=supportFragmentManager.beginTransaction()
-        beginTranstion.replace(R.id.nav_host_fragment_content_main_activty,fragment).commit()
+    fun replaceFragment(fragment: Fragment) {
+        val beginTranstion: FragmentTransaction = supportFragmentManager.beginTransaction()
+        beginTranstion.replace(R.id.nav_host_fragment_content_main_activty, fragment).commit()
     }
-    @SuppressLint("ResourceAsColor")
-    override fun onStart() {
-        super.onStart()
+
+    private fun enableEdgeToEdge() {
+        // Set the decor view to enable full-screen layout
         val window = window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
-        window.statusBarColor=getResources().getColor(R.color.navy_blue)
-    }
 
+        // Make sure that the content extends into the system bars (status bar and navigation bar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
+
+        // Set system bars to be transparent
+        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
+        window.navigationBarColor = Color.TRANSPARENT
+
+        // Optionally, handle light or dark mode for the status bar icons
+        var flags = window.decorView.systemUiVisibility
+        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // Light status bar (dark icons)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            flags =
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
+        }
+        window.decorView.systemUiVisibility = flags
+    }
 
 }

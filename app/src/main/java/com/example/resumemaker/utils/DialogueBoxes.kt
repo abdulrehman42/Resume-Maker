@@ -7,18 +7,21 @@ import com.example.resumemaker.R
 import com.example.resumemaker.databinding.TemplateSelectLayoutBinding
 
 object DialogueBoxes {
-    fun alertbox(template:Int,currentActivity:Activity):Boolean {
+    interface DialogCallback {
+        fun onButtonClick(isConfirmed: Boolean)
+    }
+    fun alertbox(template: Int, currentActivity: Activity, param: DialogCallback) {
+        var check=false
         val binding= TemplateSelectLayoutBinding.inflate(currentActivity.layoutInflater)
         val dialogBuilder = Dialog(currentActivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         Glide.with(currentActivity).load(template).into(binding.templateimage)
-        binding.textView8.setOnClickListener {
-            return@setOnClickListener
+        binding.linearbtn.setOnClickListener {
+            param.onButtonClick(true)
+            dialogBuilder.dismiss()
         }
-
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
-        return false
     }
 }

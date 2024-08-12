@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.choose.coverletter.AddDetailCoverLetterFragment">
+    tools:context=".views.fragments.coverletter.AddDetailCoverLetterFragment">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
         layout="@layout/toolbars"
-        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,6 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/purplebtncircular"
         android:backgroundTint="@color/purple"
-        android:elevation="@dimen/_20sdp"
         android:text="@string/select_sample"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,10 +31,14 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/coverletter_textInputLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_185sdp"
+        android:layout_height="0dp"
         android:layout_margin="@dimen/_10sdp"
+        app:endIconDrawable="@drawable/ai"
+        app:endIconTint="@null"
+        app:endIconMode="custom"
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
+        app:layout_constraintBottom_toTopOf="@+id/nextbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_samplebtn">
@@ -43,8 +46,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/coverletter_textInput"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_180sdp"
+            android:layout_height="match_parent"
             android:gravity="start"
+            android:inputType="textMultiLine"
             android:hint="@string/cover_letter" />
     </com.google.android.material.textfield.TextInputLayout>
 
