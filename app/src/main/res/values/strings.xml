@@ -60,4 +60,11 @@
     <string name="download">Download</string>
     <string name="experience">Experience</string>
     <string name="certificate">Certificate</string>
+    <string name="select_sample">Select Sample</string>
+    <string name="cover_letter">Cover Letter</string>
+    <string name="sample_detail_text">Dear HR Manager,\n I am writing to apply for the position of Senior FullStack Engineer (Backend/Mobile) - (Data Platform) at Delivery Hero, as advertised. I have three years of experience working at Vodafone Egypt, and I believe I possess the necessary skills, knowledge and experience for the role. I have 4+ years of experience working with mobile programming languages for Android or iOS (Kotlin or Swift), as well as 5+ years of experience in developing complex software systems scaling to millions of users. I am comfortable working in an environment where I can experiment and iterate quickly, and have the ability to understand business drivers and strategic needs for features. I am passionate about secure, clean and beautiful code, and have strong customer empathy and experience sensitivity. I am confident that I would make a great addition to your team, and I am excited at the prospect of working with you. I look forward to discussing this opportunity further. Sincerely, Ahmed</string>
+    <string name="job_description">Job Description</string>
+    <string name="short_text">Short</string>
+    <string name="long_text">Long</string>
+    <string name="medium_text">Medium</string>
 </resources>

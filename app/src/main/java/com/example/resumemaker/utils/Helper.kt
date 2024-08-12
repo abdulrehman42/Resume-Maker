@@ -15,6 +15,7 @@ import com.example.resumemaker.models.ProfileModel
 import com.example.resumemaker.models.ProfileModelData
 import com.example.resumemaker.models.SampleModel
 import com.example.resumemaker.models.SuggestionModel
+import com.example.resumemaker.models.TemplateModel
 import com.google.android.material.tabs.TabLayout
 
 object Helper {
@@ -191,6 +192,17 @@ object Helper {
         list.add(SuggestionModel("FrontEnd Developer"))
         list.add(SuggestionModel("SQA"))
         list.add(SuggestionModel("Chemical Knowledge"))
+        return list
+    }
+    fun getTemplateImages(): List<TemplateModel> {
+        val list = ArrayList<TemplateModel>()
+        list.add(TemplateModel(R.drawable.resume_placeholder))
+        list.add(TemplateModel(R.drawable.resume_placeholder))
+        list.add(TemplateModel(R.drawable.resume_placeholder))
+        list.add(TemplateModel(R.drawable.resume_placeholder))
+        list.add(TemplateModel(R.drawable.resume_placeholder))
+        list.add(TemplateModel(R.drawable.resume_placeholder))
+        list.add(TemplateModel(R.drawable.resume_placeholder))
         return list
     }
     fun achievementList():List<EducationModel> {

@@ -141,37 +141,35 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
 
     fun alertbox(
     ) {
-
-
         val binding1=AddmorealertdialogueBinding.inflate(layoutInflater)
         val dialogBuilder = Dialog(currentActivity(),R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding1.root)
        binding1.switchid.setOnClickListener {
-           if (binding1.switchid.isChecked) {
+          /* if (binding1.switchid.isChecked) {
                itemArraylist.add(TablayoutModel(InterestFragment(),"\nInterest",R.drawable.interest))
                addItems(itemArraylist)
 
-           }
+           }*/
        }
         binding1.switchid1.setOnClickListener {
-            if (binding1.switchid1.isChecked) {
+           /* if (binding1.switchid1.isChecked) {
                 itemArraylist.add(TablayoutModel(LanguageFragment(),"\nLanguage",R.drawable.language))
                 addItems(itemArraylist)
 
-            }
+            }*/
         }
         binding1.switchid2.setOnClickListener {
-            if (binding1.switchid2.isChecked) {
+            /*if (binding1.switchid2.isChecked) {
                 itemArraylist.add(TablayoutModel(ProjectFragment(),"\nProject",R.drawable.project))
                 addItems(itemArraylist)
 
-            }
+            }*/
         }
         binding1.switchid3.setOnClickListener {
-            if (binding1.switchid3.isChecked) {
+           /* if (binding1.switchid3.isChecked) {
                 itemArraylist.add(TablayoutModel(AchievementFragment(),"\nAchievement",R.drawable.achievment))
                 addItems(itemArraylist)
-            }
+            }*/
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
         dialogBuilder.setCancelable(true)

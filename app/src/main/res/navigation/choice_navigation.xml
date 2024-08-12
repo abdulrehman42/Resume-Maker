@@ -22,6 +22,22 @@
         android:name="com.example.resumemaker.views.fragments.choose.ChooseTemplateFragment"
         tools:layout="@layout/fragment_choose_template" />
     <fragment
+        android:id="@+id/nav_add_detail_coverletter"
+        android:name="com.example.resumemaker.views.fragments.choose.coverletter.AddDetailCoverLetterFragment"
+        tools:layout="@layout/fragment_add_detail_cover_letter" />
+    <fragment
+        android:id="@+id/nav_ai_writing_coverletter_sample"
+        android:name="com.example.resumemaker.views.fragments.choose.coverletter.AIWritingFragment"
+        tools:layout="@layout/fragment_a_i_writing" />
+    <fragment
+        android:id="@+id/nav_sample_cover_letter"
+        android:name="com.example.resumemaker.views.fragments.choose.coverletter.CoverLetterSampleFragment"
+        tools:layout="@layout/fragment_cover_letter_sample" />
+
+
+
+
+    <fragment
         android:id="@+id/nav_add_detail"
         android:name="com.example.resumemaker.views.fragments.adddetail.AddDetailMainFragment"
         tools:layout="@layout/fragment_add_detail_main" />
