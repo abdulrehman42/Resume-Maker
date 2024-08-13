@@ -59,8 +59,7 @@
             android:id="@+id/edit_Edu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="6dp"
             android:src="@drawable/edit_edu"
             app:layout_constraintEnd_toStartOf="@+id/delete_edu"
             app:layout_constraintTop_toTopOf="@+id/universityname" />

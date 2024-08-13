@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".views.activities.BoardingScreen">
-
-       <ImageView
-        android:id="@+id/on_boarding_image"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_300sdp"
-        android:foregroundGravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/on_boarding_imag"
         android:layout_width="match_parent"
@@ -25,9 +16,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+       <ImageView
+        android:id="@+id/on_boarding_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_290sdp"
+        android:layout_marginTop="@dimen/_65sdp"
+        android:foregroundGravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
     <TextView
             android:id="@+id/on_boarding_text_title"
-            style="@style/subheading"
+            style="@style/heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -39,10 +41,9 @@
     <TextView
         android:id="@+id/on_boarding_text_msg"
         style="@style/regular"
-        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:gravity="center"
         android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

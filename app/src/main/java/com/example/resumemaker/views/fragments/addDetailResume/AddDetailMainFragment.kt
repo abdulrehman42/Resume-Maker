@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.viewpager.widget.ViewPager
@@ -68,6 +69,21 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.let {
+                    val currentFragment = vadapter.getFragment(viewPager.currentItem)
+                    if (currentFragment is InformationFragment) {
+                        if (currentFragment.isConditionMet()) {
+                            viewPager.currentItem = tab.position  // Allow tab switch
+                        } else {
+                            tabLayout.getTabAt(viewPager.currentItem)?.select()
+                        }
+                    }
+                    if (currentFragment is ObjectiveFragment) {
+                        if (currentFragment.isConditionMet()) {
+                            viewPager.currentItem = tab.position  // Allow tab switch
+                        } else {
+                            tabLayout.getTabAt(viewPager.currentItem)?.select()
+                        }
+                    }
 
                     if (it.position >= 3) {
                         // Open a dialog or a new activity to display additional tabs
@@ -105,14 +121,14 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         vadapter.addFragment(InformationFragment(), "\nInfo")
         vadapter.addFragment(ObjectiveFragment(), "\nObjectives")
         vadapter.addFragment(EducationFragment(), "\nEducation")
-        vadapter.addFragment(SkillFragment(), "\nSkill")
+        vadapter.addFragment(SkillFragment(), "\nSkills")
         vadapter.addFragment(ExperienceFragment(), "\nExperience")
         vadapter.addFragment(ReferrenceFragment(), "\nReference")
-        vadapter.addFragment(InterestFragment(), "\nInterest")
+       /* vadapter.addFragment(InterestFragment(), "\nInterest")
         vadapter.addFragment(LanguageFragment(), "\nLanguage")
         vadapter.addFragment(ProjectFragment(), "\nProjects")
         vadapter.addFragment(AchievementFragment(), "\nAchievements")
-
+*/
 
         list?.let {
             for (i in list)
@@ -142,32 +158,54 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         val binding1=AddmorealertdialogueBinding.inflate(layoutInflater)
         val dialogBuilder = Dialog(currentActivity(),R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding1.root)
-       binding1.switchid.setOnClickListener {
-          /* if (binding1.switchid.isChecked) {
-               itemArraylist.add(TablayoutModel(InterestFragment(),"\nInterest",R.drawable.interest))
-               addItems(itemArraylist)
 
-           }*/
+        if (vadapter.checkFragments().contains("\nInterests"))
+        {
+            binding1.switchid.isChecked=true
+        }
+        if (vadapter.checkFragments().contains("\nLanguage"))
+        {
+            binding1.switchid1.isChecked=true
+
+        }
+        if (vadapter.checkFragments().contains("\nProjects"))
+        {
+            binding1.switchid2.isChecked=true
+
+        }
+        if (vadapter.checkFragments().contains("\nAchievements"))
+        {
+            binding1.switchid3.isChecked=true
+
+        }
+       binding1.switchid.setOnClickListener {
+           if (binding1.switchid.isChecked) {
+               vadapter.addFragment(InterestFragment(),"\nInterest")
+               vadapter.notifyDataSetChanged()
+               //tabLayout.addTab(tabLayout.newTab().setText("Interest"))
+           }
        }
         binding1.switchid1.setOnClickListener {
-           /* if (binding1.switchid1.isChecked) {
-                itemArraylist.add(TablayoutModel(LanguageFragment(),"\nLanguage",R.drawable.language))
-                addItems(itemArraylist)
-
-            }*/
+             if (binding1.switchid1.isChecked) {
+                 vadapter.addFragment(LanguageFragment(),"\nLanguage")
+                 vadapter.notifyDataSetChanged()
+            //     tabLayout.addTab(tabLayout.newTab().setText("Language"))
+             }
         }
         binding1.switchid2.setOnClickListener {
-            /*if (binding1.switchid2.isChecked) {
-                itemArraylist.add(TablayoutModel(ProjectFragment(),"\nProject",R.drawable.project))
-                addItems(itemArraylist)
+            if (binding1.switchid2.isChecked) {
+              vadapter.addFragment(ProjectFragment(),"\nProject")
+                 vadapter.notifyDataSetChanged()
+            //     tabLayout.addTab(tabLayout.newTab().setText("Project"))
 
-            }*/
+            }
         }
         binding1.switchid3.setOnClickListener {
-           /* if (binding1.switchid3.isChecked) {
-                itemArraylist.add(TablayoutModel(AchievementFragment(),"\nAchievement",R.drawable.achievment))
-                addItems(itemArraylist)
-            }*/
+            if (binding1.switchid3.isChecked) {
+                vadapter.addFragment(AchievementFragment(),"\nAchievement")
+                vadapter.notifyDataSetChanged()
+            //    tabLayout.addTab(tabLayout.newTab().setText("Achievement"))
+            }
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
         dialogBuilder.setCancelable(true)

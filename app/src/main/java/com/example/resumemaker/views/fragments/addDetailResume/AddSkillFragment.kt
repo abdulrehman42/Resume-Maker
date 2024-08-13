@@ -2,12 +2,16 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddSkillBinding
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.adapter.SuggestionAdapter
+import com.google.android.material.textfield.TextInputLayout
 
 class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     lateinit var suggestionAdapter: SuggestionAdapter
@@ -21,6 +25,28 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Skill"
+        binding.skillEdittext.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No action needed here
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Check if the text length is greater than 3
+                if (binding.skillEdittext.text!!.length > 3) {
+                    binding.skillTextInputLayout.setEndIconMode(TextInputLayout.END_ICON_CUSTOM)
+                    binding.skillTextInputLayout.setEndIconDrawable(R.drawable.tick_green)
+
+                } else {
+                    binding.skillTextInputLayout.setEndIconMode(TextInputLayout.END_ICON_NONE)
+
+                }
+
+            }
+            override fun afterTextChanged(s: Editable?) {
+                // No action needed here
+            }
+        })
+
 
         onclick()
         onAdapter()

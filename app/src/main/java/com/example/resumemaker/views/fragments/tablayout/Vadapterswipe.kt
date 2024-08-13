@@ -27,4 +27,10 @@ class Vadapterswipe(getFragmentManager: FragmentManager): FragmentPagerAdapter(g
     override fun getPageTitle(position: Int): CharSequence? {
         return fragmenttitle[position]
     }
+    fun getFragment(position: Int): Fragment {
+        return fragmentArrayList[position]
+    }
+    fun checkFragments(): List<String> {
+        return fragmenttitle
+    }
 }

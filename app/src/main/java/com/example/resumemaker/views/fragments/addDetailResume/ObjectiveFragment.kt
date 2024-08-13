@@ -63,4 +63,11 @@ class ObjectiveFragment : BaseFragment<FragmentObjectiveBinding>() {
         }
         binding.sampleRecyclerview.adapter=objSampleAdapter
     }
+    fun isConditionMet(): Boolean {
+        if (binding.objectiveTextInput.text.isNullOrEmpty())
+        {
+            return false
+        }
+        return true
+    }
 }

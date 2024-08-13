@@ -47,7 +47,15 @@ class InformationFragment : BaseFragment<FragmentInformationBinding>(){
         }
         binding.nextbtn.setOnClickListener {
             val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
-            tabhost.getTabAt(1)!!.select()        }
+            tabhost.getTabAt(1)!!.select()
+        }
+    }
+    fun isConditionMet(): Boolean {
+       if (binding.nameedittext.text.isNullOrEmpty() && binding.emailtext.text.isNullOrEmpty()&&binding.jobedittext.text.isNullOrEmpty()&&binding.phoneedittext.text.isNullOrEmpty())
+       {
+           return false
+       }
+        return true
     }
 
 }

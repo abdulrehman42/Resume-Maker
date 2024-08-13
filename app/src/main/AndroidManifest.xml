@@ -23,6 +23,9 @@
             android:name=".views.activities.ChoiceTemplate"
             android:exported="false" />
         <activity
+            android:name=".views.activities.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.activities.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main_activty"

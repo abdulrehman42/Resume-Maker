@@ -19,10 +19,10 @@
 
         <LinearLayout
             android:id="@+id/linearLayout1"
-            android:layout_width="@dimen/_70sdp"
+            android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_140sdp"
             android:layout_weight="1"
-            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:background="@drawable/purpleroundbg"
             android:backgroundTint="#1A6200EE"
             android:orientation="vertical"
@@ -32,7 +32,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/_45sdp"
+                android:layout_width="@dimen/_55sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/cv" />
@@ -49,7 +49,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="@dimen/_70sdp"
+            android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_140sdp"
             android:layout_weight="1"
             android:background="@drawable/greenroundbg"
@@ -62,9 +62,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/_45sdp"
+                android:layout_width="@dimen/_55sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
+                android:scaleType="centerCrop"
                 android:src="@drawable/coverletter" />
 
             <TextView
@@ -74,7 +75,7 @@
                 android:textSize="@dimen/_10ssp"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:text="CoverLetter" />
+                android:text="@string/cover_letter" />
         </LinearLayout>
 
     </LinearLayout>
@@ -91,12 +92,11 @@
 
         <LinearLayout
             android:id="@+id/linearLayout3"
-            android:layout_width="@dimen/_70sdp"
+            android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_140sdp"
-            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:layout_weight="1"
             android:gravity="center"
-
             android:background="@drawable/yellowbg"
             android:backgroundTint="#19FBC02D"
 
@@ -106,9 +106,10 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
 
             <ImageView
-                android:layout_width="@dimen/_45sdp"
+                android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
+                android:scaleType="centerCrop"
                 android:src="@drawable/download" />
 
             <TextView
@@ -118,12 +119,12 @@
                 android:textSize="@dimen/_10ssp"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:text="Download" />
+                android:text="@string/downloads" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout4"
-            android:layout_width="@dimen/_70sdp"
+            android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_140sdp"
             android:layout_weight="1"
             android:gravity="center"
@@ -136,8 +137,9 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <ImageView
-                android:layout_width="@dimen/_45sdp"
+                android:layout_width="@dimen/_55sdp"
                 android:layout_height="@dimen/_50sdp"
+                android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:src="@drawable/profilebg" />
 
@@ -171,6 +173,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:padding="@dimen/_10sdp"
             android:text="@string/pro_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

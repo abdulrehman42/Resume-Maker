@@ -23,16 +23,16 @@
     <string name="menu_privacy">Privacy Policy</string>
     <string name="menu_restore">Restore Purchases</string>
     <string name="menu_share">Share App</string>
-    <string name="menu_term">Term of Use</string>
+    <string name="menu_term">Terms of Use</string>
     <string name="menu_delete">Delete Account</string>
     <string name="pro_text"><![CDATA["You'll get a smooth ad-free experience, our devs will get their morning coffee it's a win-win deal! 🤝 "]]></string>
     <string name="delete">Delete</string>
     <string name="logout">Logout</string>
-    <string name="version_2_7">version:2.7</string>
+    <string name="version_2_7">Version 2.07</string>
     <string name="add_more_sections">Add More Sections</string>
     <string name="interest">Interest</string>
     <string name="language">Language</string>
-    <string name="project">Project</string>
+    <string name="project">Projects</string>
     <string name="achievment">Achievements</string>
     <string name="view_all">View All</string>
     <string name="samples">Samples</string>
@@ -41,7 +41,7 @@
     <string name="add_education">Add Education</string>
     <string name="institue_name">Institue Name</string>
     <string name="degree">Degree</string>
-    <string name="start_date">start Date</string>
+    <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
     <string name="currently_enrolled">Currently Enrolled</string>
     <string name="save">Save</string>
@@ -77,4 +77,6 @@
     <string name="download_as_pdf">Download as PDF</string>
     <string name="delete_profile">Delete Profile</string>
     <string name="enter_the_link_to_your_linkedin_profile_resume_maker_will_import_it_and_turn_it_into_a_resume">Enter the link to your LinkedIn profile. Resume Maker will import it and turn it into a resume.</string>
+    <string name="downloads">Downloads</string>
+    <string name="interests">Interests</string>
 </resources>

@@ -9,12 +9,13 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.resumemaker.R
+import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityBoardingScreenBinding
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.adapter.ImagePagerAdapter
 
 
-class BoardingScreen : AppCompatActivity() {
+class BoardingScreen : BaseActivity() {
     private var onBoardingPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             Helper.updateCircleMarker(binding, position)
@@ -30,9 +31,19 @@ class BoardingScreen : AppCompatActivity() {
         onclick()
     }
 
+    override fun attachViewMode() {
+        TODO("Not yet implemented")
+    }
+
     private fun onclick() {
         binding.nextbtn.setOnClickListener {
-            binding.viewPager.setCurrentItem(getItem(+1), true)
+            if (binding.viewPager.currentItem==3)
+            {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }else{
+                binding.viewPager.setCurrentItem(getItem(+1), true)
+            }
         }
         binding.skipbtn.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))

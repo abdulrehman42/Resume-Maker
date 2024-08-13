@@ -28,6 +28,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/achieveedittext"
             android:hint="Achieveemnt"
             tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -47,6 +48,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/issueDateeedittext"
             android:hint="Issue Date"
             tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -67,6 +69,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="@dimen/_65sdp"
+            android:id="@+id/descriptionedittext"
             android:gravity="top"
             android:hint="@string/description" />
     </com.google.android.material.textfield.TextInputLayout>

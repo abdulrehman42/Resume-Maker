@@ -40,10 +40,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
+        bottomNavigationColor()
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
+
         setdrawer()
         onclick()
 

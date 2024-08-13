@@ -18,6 +18,7 @@ class DownloadActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityDownloadBinding.inflate(layoutInflater)
+        bottomNavigationColor()
         enableEdgeToEdge()
         setContentView(binding.root)
 

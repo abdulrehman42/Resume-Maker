@@ -44,6 +44,8 @@ class ResumeFragment : BaseFragment<FragmentResumeBinding>(){
         viewPager.adapter = vadapter
         tabLayout.setupWithViewPager(viewPager)
 
+
+
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.view.setBackground(ContextCompat.getDrawable(currentActivity(), R.drawable.whitbground));

@@ -19,6 +19,7 @@ class ChoiceTemplate : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        bottomNavigationColor()
         binding=ActivityChoiceTemplateBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

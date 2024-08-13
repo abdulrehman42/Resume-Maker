@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.example.resumemaker.views.activities.LoginActivity
 import com.example.resumemaker.utils.SharePref
+import com.example.resumemaker.views.activities.BoardingScreen
 import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.activities.DownloadActivity
 import com.example.resumemaker.views.activities.MainActivity
@@ -50,6 +52,8 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
         mActivity = when (context) {
            // is AuthActivity -> context
             is MainActivity->context
+            is LoginActivity ->context
+            is BoardingScreen->context
             is ChoiceTemplate->context
             is DownloadActivity->context
             is ProfileActivity->context

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.example.resumemaker.R
@@ -96,6 +97,11 @@ abstract class BaseActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
                 .show()
         }
+
+    }
+    fun bottomNavigationColor()
+    {
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.navy_blue))
 
     }
 

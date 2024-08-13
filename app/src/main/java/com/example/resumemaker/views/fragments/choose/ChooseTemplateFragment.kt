@@ -28,7 +28,7 @@ class ChooseTemplateFragment : BaseFragment<FragmentChooseTemplateBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.setText("Choice Template")
+        binding.includeTool.textView.setText("Choose Template")
         binding.includeTool.backbtn.setOnClickListener { currentActivity().finish() }
         setUpTablayout()
     }
