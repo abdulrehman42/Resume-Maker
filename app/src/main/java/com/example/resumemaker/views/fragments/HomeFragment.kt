@@ -6,6 +6,7 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentHomeBinding
 import com.example.resumemaker.utils.Constants
+import com.example.resumemaker.utils.DialogueBoxes.alertboxPurchase
 import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.activities.DownloadActivity
 import com.example.resumemaker.views.activities.ProfileActivity
@@ -37,6 +38,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
         binding.linearLayout4.setOnClickListener {
             requireActivity().startActivity(Intent(currentActivity(),ProfileActivity::class.java))
+        }
+        binding.removeAddbtn.setOnClickListener {
+            alertboxPurchase(currentActivity())
         }
 
 

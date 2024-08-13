@@ -26,7 +26,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun setadapter() {
-        val profileAdapter=ProfileAdapter(requireActivity(),Helper.getProfileList1())
+        val profileAdapter=ProfileAdapter(currentActivity(),Helper.getProfileList1())
         {
             sharePref.writeData(it)
             currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)

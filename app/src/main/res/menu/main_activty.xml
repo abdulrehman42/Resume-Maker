@@ -4,6 +4,6 @@
     <item android:id="@+id/action_settings"
         android:icon="@drawable/purshase_pro"
         android:orderInCategory="100"
-        android:title="purchase"
+        android:title="@string/purchase"
         app:showAsAction="ifRoom" />
 </menu>

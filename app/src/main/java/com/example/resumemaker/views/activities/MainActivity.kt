@@ -4,12 +4,9 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.Display
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -23,6 +20,10 @@ import androidx.navigation.ui.navigateUp
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityMainActivtyBinding
+import com.example.resumemaker.utils.DialogueBoxes.alertboxLogout
+import com.example.resumemaker.utils.DialogueBoxes.alertboxPurchase
+import com.example.resumemaker.utils.DialogueBoxes.alertboxRate
+import com.example.resumemaker.utils.DialogueBoxes.shareAppMethod
 import com.example.resumemaker.views.fragments.HomeFragment
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
@@ -43,6 +44,24 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
         enableEdgeToEdge()
+        setdrawer()
+        onclick()
+
+        if (savedInstanceState == null) {
+            replaceFragment(HomeFragment())
+        }
+
+    }
+
+    private fun onclick() {
+        binding.logoutBtn.setOnClickListener{
+            drawerLayout.closeDrawers()
+            alertboxLogout(this)
+        }
+
+    }
+
+    private fun setdrawer() {
         binding.appBarMainActivty.toolbar.title = getString(R.string.app_name)
         setSupportActionBar(binding.appBarMainActivty.toolbar)
         drawerLayout = binding.drawerLayout
@@ -59,9 +78,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        if (savedInstanceState == null) {
-            replaceFragment(HomeFragment())
-        }
         val mainContent = findViewById<CardView>(R.id.cardviewContent)
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
@@ -73,6 +89,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 mainContent.radius = 30f
             }
 
+            @SuppressLint("RestrictedApi")
             override fun onDrawerOpened(drawerView: View) {
                 toggle.onDrawerOpened(drawerView)
                 getActivity(this@MainActivity)!!.windowManager.defaultDisplay
@@ -97,8 +114,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_rate -> Toast.makeText(this, "rate us", Toast.LENGTH_SHORT).show()
+            R.id.nav_rate -> alertboxRate(this)
+            R.id.nav_share-> shareAppMethod(this)
         }
+
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -125,6 +144,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main_activty)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId)
+        {
+            R.id.setting_menu-> {alertboxPurchase(this)}
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 

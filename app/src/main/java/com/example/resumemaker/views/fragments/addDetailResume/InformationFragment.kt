@@ -8,6 +8,7 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInformationBinding
+import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseImage
 import com.google.android.material.tabs.TabLayout
 
 
@@ -33,6 +34,9 @@ class InformationFragment : BaseFragment<FragmentInformationBinding>(){
             binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
             binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
 
+        }
+        binding.editprofile.setOnClickListener {
+            alertboxChooseImage(currentActivity())
         }
         binding.woman.setOnClickListener {
             binding.man.setBackgroundResource(R.drawable.greybgradius)

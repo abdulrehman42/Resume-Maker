@@ -177,6 +177,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/remove_addbtn"
             style="@style/button_style_round"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

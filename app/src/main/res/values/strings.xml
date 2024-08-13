@@ -67,4 +67,14 @@
     <string name="short_text">Short</string>
     <string name="long_text">Long</string>
     <string name="medium_text">Medium</string>
+    <string name="logout_msg">Are you sure you want to logout of your account?</string>
+    <string name="sharing_your_experience_helps_us_grow">Sharing your experience helps us grow.</string>
+    <string name="are_you_enjoying_our_app">Are You Enjoying Our App?</string>
+    <string name="upgrade_now_for_uninterrupted_smoother_and_a_cleaner_app_experience">Upgrade now for uninterrupted, smoother and a cleaner app experience.</string>
+    <string name="remove_ads_now">Remove Ads Now</string>
+    <string name="purchase">purchase</string>
+    <string name="download_as_jpg">Download as JPG</string>
+    <string name="download_as_pdf">Download as PDF</string>
+    <string name="delete_profile">Delete Profile</string>
+    <string name="enter_the_link_to_your_linkedin_profile_resume_maker_will_import_it_and_turn_it_into_a_resume">Enter the link to your LinkedIn profile. Resume Maker will import it and turn it into a resume.</string>
 </resources>

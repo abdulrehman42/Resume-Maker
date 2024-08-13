@@ -1,14 +1,16 @@
 package com.example.resumemaker.views.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.CustomprofileitemBinding
 import com.example.resumemaker.models.ProfileModelData
+import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseProfile
 
-class ProfileAdapter(val context: Context, val list: List<ProfileModelData>,val onclick:(ProfileModelData)->Unit): RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
+class ProfileAdapter(val context: Activity, val list: List<ProfileModelData>,val onclick:(ProfileModelData)->Unit): RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: CustomprofileitemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
@@ -17,6 +19,9 @@ class ProfileAdapter(val context: Context, val list: List<ProfileModelData>,val 
             binding.profession.text=model.profession
             binding.textView4.setOnClickListener {
                 onclick(model)
+            }
+            binding.settingMenu.setOnClickListener {
+                alertboxChooseProfile(context)
             }
 
         }
