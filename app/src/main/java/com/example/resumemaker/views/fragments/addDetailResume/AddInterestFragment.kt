@@ -19,7 +19,11 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Interest"
-
+        val data=sharePref.readDataSkill()
+        if (data!=null)
+        {
+            binding.interestEdittext.setText(data.skillName)
+        }
         onclick()
         //onAdapter()
 

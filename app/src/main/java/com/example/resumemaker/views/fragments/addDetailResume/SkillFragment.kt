@@ -26,6 +26,10 @@ class SkillFragment : BaseFragment<FragmentSkillBinding>() {
 
     private fun setadapter() {
         skillAdapter= SkillAdapter(currentActivity(), Helper.getSuggestions())
+        {
+            sharePref.writeDataSkill(it)
+            currentActivity().replaceChoiceFragment(R.id.nav_add_skill)
+        }
 
         binding.recyclerviewSkill.apply {
             adapter=skillAdapter

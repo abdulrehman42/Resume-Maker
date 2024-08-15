@@ -22,9 +22,9 @@ class PdfFragment : BaseFragment<FragmentPdfBinding>(){
     }
     private fun setAdapter() {
 
-        val templateAdapter= TemplateAdapter(requireActivity(), Helper.getTemplateImages()){
+        val templateAdapter= TemplateAdapter(requireActivity(), Helper.getTemplateImages(),{},{
 
-        }
+        })
         binding.recyclerviewTemplete.apply {
             layoutManager= GridLayoutManager(requireActivity(),2)
             adapter = templateAdapter

@@ -51,11 +51,10 @@ class InformationFragment : BaseFragment<FragmentInformationBinding>(){
         }
     }
     fun isConditionMet(): Boolean {
-       if (binding.nameedittext.text.isNullOrEmpty() && binding.emailtext.text.isNullOrEmpty()&&binding.jobedittext.text.isNullOrEmpty()&&binding.phoneedittext.text.isNullOrEmpty())
-       {
-           return false
-       }
-        return true
+        return binding.nameedittext.text.toString().isNotBlank() &&
+                binding.emailtext.text.toString().isNotEmpty() &&
+                binding.jobedittext.text.toString().isNotEmpty() &&
+                binding.phoneedittext.text.toString().isNotEmpty()
     }
 
 }

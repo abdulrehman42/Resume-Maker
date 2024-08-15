@@ -40,7 +40,7 @@
                 android:id="@+id/edit_skill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="6dp"
                 android:src="@drawable/edit_edu"
                 app:layout_constraintBottom_toBottomOf="@+id/skillname"
                 app:layout_constraintEnd_toStartOf="@+id/delete_skill"

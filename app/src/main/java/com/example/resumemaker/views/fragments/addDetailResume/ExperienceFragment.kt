@@ -25,6 +25,11 @@ class ExperienceFragment : BaseFragment<FragmentExperienceBinding>() {
 
     private fun setadapter() {
         educationAdapter= EducationAdapter(currentActivity(), Helper.getExperienceList(),false)
+        {
+            sharePref.writeDataEdu(it)
+            currentActivity().replaceChoiceFragment(R.id.nav_add_experience)
+
+        }
         binding.recyclerviewExperience.adapter=educationAdapter
     }
 

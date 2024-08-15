@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.example.resumemaker.models.EducationModel
+import com.example.resumemaker.models.ExperienceModel
 import com.example.resumemaker.models.ProfileModelData
+import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.utils.Constants.PREFS_TOKEN_FILE
 import com.google.gson.Gson
 
@@ -92,5 +95,49 @@ class SharePref constructor(ctx: Context){
             Log.e("TAGException", e.message.toString())
         }
 
+    }
+    fun readDataEducation(): EducationModel {
+        val json = prefs!!.getString(Constants.DATA, null)
+        val gson = Gson()
+        return gson.fromJson(json, EducationModel::class.java)
+    }
+    fun writeDataEdu(user: EducationModel) {
+        try {
+            val data=gson.toJson(user)
+            prefs!!.edit().putString(Constants.DATA, data).apply()
+        }catch (e:Exception)
+        {
+            Log.e("TAGException", e.message.toString())
+        }
+
+    }
+    fun readDataSkill(): SuggestionModel {
+        val json = prefs!!.getString(Constants.DATA, null)
+        val gson = Gson()
+        return gson.fromJson(json, SuggestionModel::class.java)
+    }
+    fun writeDataSkill(user: SuggestionModel) {
+        try {
+            val data=gson.toJson(user)
+            prefs!!.edit().putString(Constants.DATA, data).apply()
+        }catch (e:Exception)
+        {
+            Log.e("TAGException", e.message.toString())
+        }
+        fun readDataExperience(): ExperienceModel {
+            val json = prefs!!.getString(Constants.DATA, null)
+            val gson = Gson()
+            return gson.fromJson(json, ExperienceModel::class.java)
+        }
+        fun writeDataExp(user: ExperienceModel) {
+            try {
+                val data=gson.toJson(user)
+                prefs!!.edit().putString(Constants.DATA, data).apply()
+            }catch (e:Exception)
+            {
+                Log.e("TAGException", e.message.toString())
+            }
+
+        }
     }
 }

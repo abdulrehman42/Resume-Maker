@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_tab"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/_5sdp"
     android:gravity="center">
 
     <ImageView
-        android:id="@+id/tab_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-  />
+        android:layout_height="@dimen/_20sdp"
+        android:scaleType="centerInside"
+        android:id="@+id/nav_icon"
+        android:layout_marginBottom="@dimen/_5sdp"
+        app:tint="@color/selectortablayout" />
 
     <TextView
-        android:id="@+id/tab_title"
-        style="@style/regular"
-        android:singleLine="true"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:id="@+id/nav_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:text="title" />
+        style="@style/regular"
+        android:layout_margin="@dimen/_2sdp"
+        android:textColor="@color/selectortablayout"
+        tools:text="Info" />
 
 </LinearLayout>

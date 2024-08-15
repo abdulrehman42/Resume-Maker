@@ -37,7 +37,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             requireActivity().startActivity(Intent(requireActivity(),DownloadActivity::class.java))
         }
         binding.linearLayout4.setOnClickListener {
-            requireActivity().startActivity(Intent(currentActivity(),ProfileActivity::class.java))
+            val intent=Intent(currentActivity(),ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME,Constants.PROFILE)
+            requireActivity().startActivity(intent)
         }
         binding.removeAddbtn.setOnClickListener {
             alertboxPurchase(currentActivity())

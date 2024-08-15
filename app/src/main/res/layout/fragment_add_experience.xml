@@ -26,6 +26,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/job_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/job_title" />
@@ -44,6 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/jobtitle_textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/company_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/company_name" />
@@ -53,7 +55,6 @@
         android:id="@+id/description_textInputLayout2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_75sdp"
-        app:endIconDrawable="@drawable/ai"
         app:endIconMode="custom"
         app:endIconTint="@null"
         app:boxStrokeColor="@color/green_light"
@@ -64,6 +65,7 @@
         app:layout_constraintTop_toBottomOf="@+id/companyName_textInputLayout2">
 
         <com.google.android.material.textfield.TextInputEditText
+           android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_65sdp"
             android:gravity="top"

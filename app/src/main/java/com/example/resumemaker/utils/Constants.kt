@@ -10,6 +10,8 @@ object Constants {
     const val CV="cv"
     const val COVERLETTER="coverletter"
     const val DOWNLOAD="download"
+    const val PROFILE="profile"
+    const val RETURN_FROM_PROFILE="RETURN_FROM_PROFILE"
 
 
 }

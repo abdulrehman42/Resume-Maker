@@ -7,16 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentResumeBinding
-import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.utils.DialogueBoxes
-import com.example.resumemaker.utils.Helper
-import com.example.resumemaker.views.adapter.TemplateAdapter
 import com.example.resumemaker.views.fragments.tablayout.Vadapterswipe
 import com.google.android.material.tabs.TabLayout
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import androidx.viewpager2.widget.ViewPager2
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
@@ -19,6 +20,7 @@ class BoardingScreen : BaseActivity() {
     private var onBoardingPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             Helper.updateCircleMarker(binding, position)
+
         }
     }
     lateinit var binding: ActivityBoardingScreenBinding
@@ -29,6 +31,8 @@ class BoardingScreen : BaseActivity() {
         setContentView(binding.root)
         initview()
         onclick()
+
+
     }
 
     override fun attachViewMode() {
@@ -61,6 +65,7 @@ class BoardingScreen : BaseActivity() {
         val onBoardingAdapter = ImagePagerAdapter(this, numberOfScreens)
         binding.viewPager.adapter = onBoardingAdapter
         binding.viewPager.registerOnPageChangeCallback(onBoardingPageChangeCallback)
+
     }
 
     override fun onDestroy() {
@@ -102,6 +107,7 @@ class BoardingScreen : BaseActivity() {
         }
         window.decorView.systemUiVisibility = flags
     }
+
 
 
 }

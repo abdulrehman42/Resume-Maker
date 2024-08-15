@@ -150,7 +150,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId)
         {
-            R.id.setting_menu-> {alertboxPurchase(this)}
+            R.id.action_settings-> {alertboxPurchase(this)}
         }
         return super.onOptionsItemSelected(item)
     }

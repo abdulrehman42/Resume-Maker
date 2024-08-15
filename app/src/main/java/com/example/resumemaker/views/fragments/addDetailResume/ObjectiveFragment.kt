@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.isGone
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
@@ -18,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout
 
 class ObjectiveFragment : BaseFragment<FragmentObjectiveBinding>() {
     lateinit var objSampleAdapter: ObjSampleAdapter
+    var num=2
     override val inflate: Inflate<FragmentObjectiveBinding>
         get() = FragmentObjectiveBinding::inflate
 
@@ -54,20 +56,33 @@ class ObjectiveFragment : BaseFragment<FragmentObjectiveBinding>() {
         binding.nextbtn.setOnClickListener {
             tabhost.getTabAt(2)!!.select()
         }
+        binding.viewall.setOnClickListener {
+            num += 2
+                setAdapter()
+        }
+        binding.viewless.setOnClickListener {
+            num -= 2
+            setAdapter()
+        }
     }
 
     private fun setAdapter() {
 
-        objSampleAdapter=ObjSampleAdapter(currentActivity(),Helper.getSampleList()){
+        objSampleAdapter=ObjSampleAdapter(currentActivity(),Helper.getSampleList(),{
             binding.objectiveTextInput.setText(it)
-        }
+        },{
+            if (it) {
+                binding.viewall.isGone=true
+                binding.viewless.isGone=false
+            }else{
+                binding.viewall.isGone=false
+                binding.viewless.isGone=true
+            }
+        })
+        objSampleAdapter.updateMaxItemCount(num)
         binding.sampleRecyclerview.adapter=objSampleAdapter
     }
     fun isConditionMet(): Boolean {
-        if (binding.objectiveTextInput.text.isNullOrEmpty())
-        {
-            return false
-        }
-        return true
+        return !binding.objectiveTextInput.text.toString().isNullOrEmpty()
     }
 }

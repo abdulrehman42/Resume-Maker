@@ -26,6 +26,11 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>() {
 
     private fun setadapter() {
         languageAdapter= SkillAdapter(currentActivity(), Helper.getLanuages())
+        {
+            sharePref.writeDataSkill(it)
+            currentActivity().replaceChoiceFragment(R.id.nav_add_language)
+
+        }
 
         binding.recyclerviewLanguage.apply {
             adapter=languageAdapter

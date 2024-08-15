@@ -9,7 +9,7 @@ import com.example.resumemaker.databinding.ProfileskillitemsBinding
 import com.example.resumemaker.databinding.SkillitemsBinding
 import com.example.resumemaker.models.SuggestionModel
 
-class SkillProfAdapter(val context: Context, val list:List<SuggestionModel>): RecyclerView.Adapter<SkillProfAdapter.ViewHolder>() {
+class SkillProfAdapter(val context: Context, val list:List<SuggestionModel>,val onclick:(SuggestionModel)->Unit): RecyclerView.Adapter<SkillProfAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ProfileskillitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

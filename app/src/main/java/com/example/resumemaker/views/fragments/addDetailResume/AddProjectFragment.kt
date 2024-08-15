@@ -22,6 +22,12 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Project"
+        val data=sharePref.readDataEducation()
+        if (data!=null)
+        {
+            binding.projectedittext.setText(data.universityName)
+            binding.descriptionedittext.setText(data.degree)
+        }
         binding.projecttitleTextInputLayout.apply {
             // Adjust the layout parameters of the end icon
             endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set

@@ -17,6 +17,14 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>()
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Reference"
+        val data=sharePref.readDataEducation()
+        if (data!=null)
+        {
+            binding.referrencenameedit.setText(data.degree)
+            binding.companyName.setText(data.universityName)
+            binding.emailedit.setText(data.startDate)
+            binding.phone.setText(data.endDate)
+        }
         onclick()
     }
 

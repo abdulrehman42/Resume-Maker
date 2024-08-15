@@ -48,6 +48,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/referrencenameedit"
                     android:hint="@string/reference_name" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,6 +67,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/jobedittext"
                     android:hint="Job Title" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,6 +86,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/emailedit"
                     android:hint="Email" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
@@ -91,7 +94,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
-
                 app:boxStrokeColor="@color/green_light"
                 app:hintTextColor="@color/green_light"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +103,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email" />
+                    android:id="@+id/company_name"
+                    android:hint="Company Name" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -121,6 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Phone"
+                    android:id="@+id/phone"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
             <TextView

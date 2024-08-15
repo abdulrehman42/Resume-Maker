@@ -26,6 +26,11 @@ class InterestFragment : BaseFragment<FragmentInterestBinding>() {
 
     private fun setadapter() {
         educationAdapter= SkillAdapter(currentActivity(), Helper.getInterests())
+        {
+            sharePref.writeDataSkill(it)
+            currentActivity().replaceChoiceFragment(R.id.nav_add_language)
+
+        }
         binding.recyclerviewInterest.adapter=educationAdapter
     }
 

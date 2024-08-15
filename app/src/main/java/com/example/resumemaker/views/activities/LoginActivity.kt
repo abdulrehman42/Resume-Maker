@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.FragmentLoginBinding
+import com.example.resumemaker.utils.Constants
 import com.google.android.material.elevation.SurfaceColors
 
 
@@ -20,7 +21,8 @@ class LoginActivity : BaseActivity() {
         binding= FragmentLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.loginbtnlinearbtn.setOnClickListener{
-            startActivity(Intent(this, BoardingScreen::class.java))
+            val intent=Intent(this,ProfileActivity::class.java)
+            startActivity(intent)
             finish()
         }
 

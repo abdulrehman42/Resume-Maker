@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.choose
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.example.resumemaker.databinding.FragmentStandardBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.LoginActivity
 import com.example.resumemaker.views.adapter.TemplateAdapter
 
 
@@ -31,7 +33,13 @@ class StandardFragment : BaseFragment<FragmentStandardBinding>() {
     private fun setAdapter() {
         val fromCalled=sharePref.readString(Constants.FRAGMENT_NAME)
 
-        val templateAdapter= TemplateAdapter(requireActivity(), Helper.getTemplateImages()){
+        val templateAdapter= TemplateAdapter(requireActivity(), Helper.getTemplateImages(),{
+            if (fromCalled==Constants.CV)
+            {
+                startActivity(Intent(currentActivity(), LoginActivity::class.java))
+                // currentActivity().replaceChoiceFragment(R.id.nav_profileFragment)
+            }
+        },{
             DialogueBoxes.alertbox(it.image, currentActivity(), object : DialogueBoxes.DialogCallback {
                 override fun onButtonClick(isConfirmed: Boolean) {
                     // Handle the result here
@@ -46,7 +54,7 @@ class StandardFragment : BaseFragment<FragmentStandardBinding>() {
                     }
                 }
             })
-        }
+        })
         binding.recyclerviewTemplete.apply {
             layoutManager= GridLayoutManager(requireActivity(),2)
             adapter = templateAdapter

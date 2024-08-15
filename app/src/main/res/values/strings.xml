@@ -34,7 +34,7 @@
     <string name="language">Language</string>
     <string name="project">Projects</string>
     <string name="achievment">Achievements</string>
-    <string name="view_all">View All</string>
+    <string name="view_all">View More</string>
     <string name="samples">Samples</string>
     <string name="back">Back</string>
     <string name="objectives">Objectives</string>
@@ -79,4 +79,5 @@
     <string name="enter_the_link_to_your_linkedin_profile_resume_maker_will_import_it_and_turn_it_into_a_resume">Enter the link to your LinkedIn profile. Resume Maker will import it and turn it into a resume.</string>
     <string name="downloads">Downloads</string>
     <string name="interests">Interests</string>
+    <string name="view_less">View Less</string>
 </resources>

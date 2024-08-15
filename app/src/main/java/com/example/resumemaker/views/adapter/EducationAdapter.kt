@@ -12,7 +12,7 @@ import com.example.resumemaker.databinding.SampleitemsBinding
 import com.example.resumemaker.models.EducationModel
 import com.example.resumemaker.models.SampleModel
 
-class EducationAdapter(val context: Context, val list:List<EducationModel>,val check:Boolean): RecyclerView.Adapter<EducationAdapter.ViewHolder>() {
+class EducationAdapter(val context: Context, val list:List<EducationModel>,val check:Boolean,val onclick:(EducationModel)->Unit): RecyclerView.Adapter<EducationAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: EducationitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

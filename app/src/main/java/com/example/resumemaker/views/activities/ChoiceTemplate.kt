@@ -1,15 +1,18 @@
 package com.example.resumemaker.views.activities
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityChoiceTemplateBinding
+import com.example.resumemaker.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -22,6 +25,16 @@ class ChoiceTemplate : BaseActivity() {
         bottomNavigationColor()
         binding=ActivityChoiceTemplateBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val navController = findNavController(R.id.choiceHostFragment)
+        if (intent.getStringExtra(Constants.FRAGMENT_NAME).toString()==Constants.RETURN_FROM_PROFILE)
+        {
+            navController.navigate(R.id.nav_add_detail)
+        }
+        if (intent.getStringExtra(Constants.FRAGMENT_NAME).toString()==Constants.PROFILE)
+        {
+            navController.navigate(R.id.nav_profileFragment)
+        }
+
 
     }
 

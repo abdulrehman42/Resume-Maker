@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,13 +16,24 @@
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toStartOf="parent"
        />
-   <androidx.recyclerview.widget.RecyclerView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       tools:itemCount="2"
-       android:background="@color/white"
-       android:layout_gravity="center"
-       tools:listitem="@layout/customprofileitem"
-       android:id="@+id/recyclerview"/>
 
-</LinearLayout>
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/recyclerview"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center"
+       android:background="@color/white"
+       app:layout_constraintTop_toBottomOf="@id/include_tool"
+       app:layout_constraintBottom_toBottomOf="parent"
+       tools:itemCount="2"
+       tools:listitem="@layout/customprofileitem" />
+   <ImageView
+       android:id="@+id/add_tabs"
+       android:layout_width="@dimen/_40sdp"
+       android:layout_height="@dimen/_45sdp"
+       android:layout_marginEnd="@dimen/_25sdp"
+       android:layout_marginBottom="@dimen/_45sdp"
+       android:src="@drawable/add_tab"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

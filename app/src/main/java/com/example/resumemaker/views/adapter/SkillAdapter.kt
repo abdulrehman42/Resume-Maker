@@ -9,13 +9,16 @@ import com.example.resumemaker.databinding.SkillitemsBinding
 import com.example.resumemaker.databinding.SuggestionitemBinding
 import com.example.resumemaker.models.SuggestionModel
 
-class SkillAdapter(val context: Context, val list:List<SuggestionModel>): RecyclerView.Adapter<SkillAdapter.ViewHolder>() {
+class SkillAdapter(val context: Context, val list:List<SuggestionModel>,val onclick:(SuggestionModel)->Unit): RecyclerView.Adapter<SkillAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: SkillitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
         fun setData(model: SuggestionModel) {
             binding.skillname.text=model.skillName
+            binding.editSkill.setOnClickListener{
+                onclick(model)
+            }
         }
     }
 

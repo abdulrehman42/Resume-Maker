@@ -41,6 +41,10 @@ class AchievementFragment : BaseFragment<FragmentAchievementBinding>() {
     }
     private fun setAdapter() {
         educationAdapter= EducationAdapter(currentActivity(), Helper.achievementList(),false)
+        {
+            sharePref.writeDataEdu(it)
+            currentActivity().replaceChoiceFragment(R.id.nav_add_achievement)
+        }
         binding.recyclerviewAchievements.adapter=educationAdapter
     }
 

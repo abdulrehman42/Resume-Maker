@@ -10,7 +10,7 @@ import com.example.resumemaker.databinding.ProfileexperienceitemBinding
 import com.example.resumemaker.models.EducationModel
 import com.example.resumemaker.models.ExperienceModel
 
-class ExperienceProfAdapter (val context: Context, val list:List<ExperienceModel>): RecyclerView.Adapter<ExperienceProfAdapter.ViewHolder>() {
+class ExperienceProfAdapter (val context: Context, val list:List<ExperienceModel>,val onclick:(ExperienceModel)->Unit): RecyclerView.Adapter<ExperienceProfAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ProfileexperienceitemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

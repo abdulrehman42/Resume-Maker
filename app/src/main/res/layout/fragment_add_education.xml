@@ -26,6 +26,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+           android:id="@+id/instituenameedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/institue_name" />
@@ -44,6 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/instituate_textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/degree_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/degree" />

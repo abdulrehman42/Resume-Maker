@@ -28,17 +28,37 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>()
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="User Profile"
+        binding.includeTool.share.setImageResource(R.drawable.baseline_edit_24)
         setValues()
+        onclick()
 
+    }
+
+    private fun onclick() {
+        binding.includeTool.backbtn.setOnClickListener {
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun setValues() {
         val data=sharePref.readDataProfile()
         val skillAdapter=SkillProfAdapter(currentActivity(),data.detail.skill)
-         val experienceAdapter=ExperienceProfAdapter(currentActivity(),data.detail.exp)
-        val eduAdapter=EducationAdapter(currentActivity(),data.detail.edu,true)
-        val certificate=EducationAdapter(currentActivity(),data.detail.certi,true)
+        {
 
+        }
+         val experienceAdapter=ExperienceProfAdapter(currentActivity(),data.detail.exp)
+         {
+
+         }
+        val eduAdapter=EducationAdapter(currentActivity(),data.detail.edu,true)
+        {
+
+        }
+        val certificate=EducationAdapter(currentActivity(),data.detail.certi,true)
+        {
+
+        }
+        binding.scrollview.isSmoothScrollingEnabled=true
         binding.apply {
             userName.text=data.userName
             userIntro.text=data.detail.intro

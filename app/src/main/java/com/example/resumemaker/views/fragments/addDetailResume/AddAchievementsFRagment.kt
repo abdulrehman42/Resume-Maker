@@ -18,7 +18,14 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Achievement"
+        val data=sharePref.readDataEducation()
+        if (data!=null)
+        {
+            binding.achieveedittext.setText(data.universityName)
+            binding.descriptionedittext.setText(data.degree)
+            binding.issueDateeedittext.setText(data.startDate+data.endDate)
 
+        }
         onclick()
 
     }

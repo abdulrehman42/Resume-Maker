@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,103 +7,118 @@
     android:scrollbars="none"
     tools:context=".views.fragments.addDetailResume.ObjectiveFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/nextbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/objective_textInputLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_200sdp"
-            android:layout_margin="@dimen/_10sdp"
-            app:counterMaxLength="500"
-            app:counterEnabled="true"
-            app:endIconDrawable="@drawable/ai"
-            app:endIconTint="@null"
-            app:boxStrokeColor="@color/green_light"
-            app:hintTextColor="@color/green_light"
-            app:endIconMode="custom"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/objective_textInput"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/objective_textInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_180sdp"
-                android:gravity="start"
-                android:hint="@string/objectives" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="@dimen/_200sdp"
+                android:layout_margin="@dimen/_10sdp"
+                app:boxStrokeColor="@color/green_light"
+                app:counterEnabled="true"
+                app:counterMaxLength="500"
+                app:endIconMode="custom"
+                app:endIconTint="@null"
+                app:hintTextColor="@color/green_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/samplehearder"
-            style="@style/subheading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/samples"
-            android:layout_marginTop="@dimen/_15sdp"
-            app:layout_constraintStart_toStartOf="@+id/objective_textInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/objective_textInputLayout" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/objective_textInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_180sdp"
+                    android:gravity="start"
+                    android:hint="@string/objectives" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            style="@style/regular"
-            android:id="@+id/viewall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/view_all"
-            app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
-            app:layout_constraintTop_toTopOf="@id/samplehearder" />
+            <TextView
+                android:id="@+id/samplehearder"
+                style="@style/subheading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="@string/samples"
+                app:layout_constraintStart_toStartOf="@+id/objective_textInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/objective_textInputLayout" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sample_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_5sdp"
-            tools:listitem="@layout/sampleitems"
-            tools:itemCount="2"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/samplehearder" />
+            <TextView
+                android:id="@+id/viewall"
+                style="@style/regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_all"
+                app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
+                app:layout_constraintTop_toTopOf="@id/samplehearder" />
+            <TextView
+                android:id="@+id/viewless"
+                style="@style/regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_less"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
+                app:layout_constraintTop_toTopOf="@id/samplehearder" />
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/nextbtn"
-            style="@style/subheading"
-            android:layout_width="@dimen/_185sdp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10sdp"
-            android:backgroundTint="@color/green_light"
-            android:drawableEnd="@drawable/next"
-            android:gravity="start|center"
-            android:text="@string/next"
-            android:textColor="@color/white"
-            app:circularflow_defaultRadius="@dimen/_20sdp"
-            app:cornerRadius="@dimen/_55sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sample_recyclerview"
-            app:shapeAppearance="@style/CircularFloating" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/sample_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/samplehearder"
+                tools:itemCount="2"
+                tools:listitem="@layout/sampleitems" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+    <TextView
+        style="@style/regular"
+        android:id="@+id/backbtn"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/circularbg"
+        android:backgroundTint="@color/grey_dim"
+        android:text="@string/back"
+        android:textSize="@dimen/_12ssp"
+        android:layout_margin="@dimen/_15sdp"
+        android:padding="@dimen/_5sdp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+/>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/nextbtn"
+        style="@style/subheading"
+        android:layout_width="@dimen/_185sdp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_15sdp"
+        android:backgroundTint="@color/green_light"
+        android:drawableEnd="@drawable/next"
+        android:gravity="start|center"
+        android:text="@string/next"
+        android:textColor="@color/white"
+        app:circularflow_defaultRadius="@dimen/_20sdp"
+        app:cornerRadius="@dimen/_55sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearance="@style/CircularFloating" />
 
-        <TextView
-            style="@style/regular"
-            android:id="@+id/backbtn"
-            android:layout_width="@dimen/_90sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/circularbg"
-            android:backgroundTint="@color/grey_dim"
-            android:text="@string/back"
-            android:textSize="@dimen/_12ssp"
-            android:layout_margin="@dimen/_10sdp"
-            android:padding="@dimen/_5sdp"
-            android:gravity="center"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/sample_recyclerview"
-            app:layout_constraintTop_toBottomOf="@id/sample_recyclerview" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,12 +9,16 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddSkillBinding
+import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.adapter.SuggestionAdapter
 import com.google.android.material.textfield.TextInputLayout
 
 class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     lateinit var suggestionAdapter: SuggestionAdapter
+    lateinit var suggestionAdapter1: SuggestionAdapter
+
+    val list=ArrayList<SuggestionModel>()
     override val inflate: Inflate<FragmentAddSkillBinding>
         get() = FragmentAddSkillBinding::inflate
 
@@ -25,6 +29,11 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Skill"
+        val data=sharePref.readDataSkill()
+        if (data!=null)
+        {
+            binding.skillEdittext.setText(data.skillName)
+        }
         binding.skillEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // No action needed here
@@ -58,15 +67,36 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         {
             binding.skillEdittext.setText(it)
         }
+        suggestionAdapter1= SuggestionAdapter(currentActivity(),list)
+        {
+            binding.skillEdittext.setText(it)
+        }
+
         binding.recyclerviewSuggestions.apply {
             layoutManager=GridLayoutManager(currentActivity(),3)
             adapter=suggestionAdapter
+        }
+        binding.recyclerviewSkill.apply {
+            layoutManager=GridLayoutManager(currentActivity(),3)
+            adapter=suggestionAdapter1
         }
 
 
     }
 
     private fun onclick() {
+        binding.skillTextInputLayout.setEndIconOnClickListener {
+            binding.skillEdittext.setText("")
+            list.add(SuggestionModel(binding.skillEdittext.text.toString()))
+            suggestionAdapter1= SuggestionAdapter(currentActivity(),list)
+            {
+                binding.skillEdittext.setText(it)
+            }
+            binding.recyclerviewSkill.apply {
+                layoutManager=GridLayoutManager(currentActivity(),3)
+                adapter=suggestionAdapter1
+            }
+        }
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }

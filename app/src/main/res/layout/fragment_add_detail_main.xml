@@ -23,7 +23,7 @@
         android:layout_height="@dimen/_45sdp"
         android:background="@color/navy_blue"
         android:screenOrientation="portrait"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+        app:layout_constraintEnd_toStartOf="@+id/add_tabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include_tool"
         app:tabGravity="fill"
@@ -35,16 +35,13 @@
         app:tabTextAppearance="@style/MyTabTextCustom"
         app:tabTextColor="@color/off_white" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/add_tabs"
         android:visibility="gone"
-        android:focusable="true"
-        android:padding="@dimen/_20sdp"
-        android:backgroundTint="@color/green_light"
-        android:src="@android:drawable/ic_input_add"
-        android:tint="@color/white"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:src="@drawable/add_tab"
+        app:layout_constraintBottom_toTopOf="@+id/viewPager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include_tool" />
 

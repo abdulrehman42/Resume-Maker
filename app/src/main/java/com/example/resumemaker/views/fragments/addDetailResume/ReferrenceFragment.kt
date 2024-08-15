@@ -27,6 +27,10 @@ class ReferrenceFragment : BaseFragment<FragmentReferrenceBinding>() {
 
     private fun setadapter() {
         educationAdapter= EducationAdapter(currentActivity(), Helper.getreferrenceList(),false)
+        {
+            sharePref.writeDataEdu(it)
+            currentActivity().replaceChoiceFragment(R.id.nav_add_referrence)
+        }
         binding.recyclerviewReference.adapter=educationAdapter
     }
 

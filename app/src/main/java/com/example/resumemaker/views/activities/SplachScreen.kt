@@ -24,7 +24,7 @@ class SplachScreen : BaseActivity() {
         setContentView(binding.root)
         MainScope().launch {
             delay(2000)
-            startActivity(Intent(this@SplachScreen, LoginActivity::class.java))
+            startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
             finish()
         }
     }

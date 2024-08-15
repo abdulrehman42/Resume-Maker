@@ -12,6 +12,7 @@ import com.example.resumemaker.models.TemplateModel
 class TemplateAdapter(
     val context: Context,
     val list: List<TemplateModel>,
+    val onclickImage:(TemplateModel)->Unit,
     val onclick: (TemplateModel) -> Unit
 ) : RecyclerView.Adapter<TemplateAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: TemplatelayoutitemsBinding) :
@@ -21,6 +22,9 @@ class TemplateAdapter(
             Glide.with(context).load(model.image).into(binding.templateimage)
             binding.eyeIconId.setOnClickListener {
                 onclick(model)
+            }
+            binding.templateimage.setOnClickListener{
+                onclickImage(model)
             }
 
         }

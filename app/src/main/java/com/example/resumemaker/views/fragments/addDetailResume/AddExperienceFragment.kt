@@ -19,6 +19,17 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
 
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text="Add Experience"
+        val data=sharePref.readDataEducation()
+        if (data!=null)
+        {
+            binding.jobName.setText(data.universityName)
+            binding.description.setText(data.degree)
+            binding.companyName.setText(data.universityName)
+            binding.startdateedittext.setText(data.startDate)
+            binding.enddateedittext.setText(data.endDate)
+        }
+
+
         binding.descriptionTextInputLayout2.apply {
             // Adjust the layout parameters of the end icon
             endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set

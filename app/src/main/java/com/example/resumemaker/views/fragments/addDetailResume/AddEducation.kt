@@ -15,9 +15,16 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-       onclick()
         binding.includeTool.textView.text= "Add Education"
-
+        val data=sharePref.readDataEducation()
+        if (data!=null)
+        {
+            binding.instituenameedittext.setText(data.universityName)
+            binding.degreeName.setText(data.degree)
+            binding.startdateedittext.setText(data.startDate)
+            binding.enddateedittext.setText(data.endDate)
+        }
+        onclick()
 
     }
 
