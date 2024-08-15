@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentProjectBinding
@@ -11,12 +12,16 @@ import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
 
-class ProjectFragment : BaseFragment<FragmentProjectBinding>(){
+class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>(){
     lateinit var educationAdapter: EducationAdapter
     override val inflate: Inflate<FragmentProjectBinding>
         get() = FragmentProjectBinding::inflate
 
     override fun observeLiveData() {
+    }
+
+    override fun csnMoveForward(): Boolean {
+        return true
     }
 
     override fun init(savedInstanceState: Bundle?) {

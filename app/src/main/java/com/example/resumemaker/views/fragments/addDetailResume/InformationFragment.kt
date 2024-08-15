@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.example.resumemaker.R
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInformationBinding
@@ -12,9 +13,15 @@ import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseImage
 import com.google.android.material.tabs.TabLayout
 
 
-class InformationFragment : BaseFragment<FragmentInformationBinding>(){
+class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>(){
+    override fun csnMoveForward(): Boolean {
+        return isConditionMet()
+    }
+
     override val inflate: Inflate<FragmentInformationBinding>
         get() = FragmentInformationBinding::inflate
+
+
 
     override fun observeLiveData() {
     }
@@ -51,10 +58,11 @@ class InformationFragment : BaseFragment<FragmentInformationBinding>(){
         }
     }
     fun isConditionMet(): Boolean {
-        return binding.nameedittext.text.toString().isNotBlank() &&
-                binding.emailtext.text.toString().isNotEmpty() &&
-                binding.jobedittext.text.toString().isNotEmpty() &&
-                binding.phoneedittext.text.toString().isNotEmpty()
+        return binding.nameedittext.text.toString().isEmpty() &&
+                binding.emailtext.text.toString().isEmpty() &&
+                binding.jobedittext.text.toString().isEmpty() &&
+                binding.phoneedittext.text.toString().isEmpty()
     }
+
 
 }

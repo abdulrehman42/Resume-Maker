@@ -9,6 +9,7 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentProfileBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.AddDetailResume
 import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.ProfileAdapter
 
@@ -41,8 +42,22 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun setadapter() {
         val profileAdapter=ProfileAdapter(currentActivity(),Helper.getProfileList1())
         {
-            sharePref.writeData(it)
-            currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
+            val fromCalled=sharePref.readString(Constants.FRAGMENT_NAME)
+
+            if (fromCalled==Constants.PROFILE){
+                val intent= Intent(currentActivity(),AddDetailResume::class.java)
+                intent.putExtra(Constants.FRAGMENT_NAME,Constants.RETURN_FROM_PROFILE)
+                startActivity(intent)
+                /*sharePref.writeData(it)
+                currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)*/
+            }else{
+                /*sharePref.writeData(it)
+                val intent= Intent(currentActivity(),AddDetailResume::class.java)
+                intent.putExtra(Constants.FRAGMENT_NAME,Constants.RETURN_FROM_PROFILE)
+                startActivity(intent)*/
+
+            }
+
         }
         binding.recyclerview.apply {
             layoutManager = GridLayoutManager(requireActivity(), 2)

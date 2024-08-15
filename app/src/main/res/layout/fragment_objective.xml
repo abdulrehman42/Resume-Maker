@@ -67,6 +67,17 @@
                 app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
                 app:layout_constraintTop_toTopOf="@id/samplehearder" />
             <TextView
+                android:id="@+id/viewLess"
+                style="@style/regular"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Less"
+                app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
+                app:layout_constraintTop_toTopOf="@id/samplehearder" />
+
+
+            <TextView
                 android:id="@+id/viewless"
                 style="@style/regular"
                 android:layout_width="wrap_content"

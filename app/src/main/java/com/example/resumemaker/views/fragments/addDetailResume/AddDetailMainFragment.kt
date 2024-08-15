@@ -67,7 +67,7 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         tabLayout = binding.tabLayoutAdddetail
         vadapter =
             VadapterSwipewithIcon(childFragmentManager) // Use childFragmentManager for fragments within a fragment
-        addItems(itemArraylist)
+        addItems()
         tabView = LayoutInflater.from(requireActivity()).inflate(R.layout.customtablayout, null)
         tabIcon = tabView.findViewById(R.id.nav_icon)
         tabText = tabView.findViewById(R.id.nav_label)
@@ -106,7 +106,7 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
                     if ((currentFragment as InformationFragment).isConditionMet()) {
                         viewPager.currentItem = tab.position  // Allow tab switch
                     } else {
-                        tabhost.getTabAt(0)!!.select()
+                        tabhost.getTabAt(viewPager.currentItem)!!.select()
 
                     }
                 }
@@ -114,7 +114,7 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
                     if ((currentFragment as ObjectiveFragment).isConditionMet()) {
                         viewPager.currentItem = tab.position  // Allow tab switch
                     } else {
-                        tabhost.getTabAt(1)!!.select()
+                        tabhost.getTabAt(viewPager.currentItem)!!.select()
 
                     }
                 }
@@ -156,7 +156,7 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         tabLayout.addOnTabSelectedListener(tabSelectedListener)
     }
 
-    fun addItems(list: List<TablayoutModel>) {
+    fun addItems() {
 
         vadapter.addFragment(InformationFragment(), "Info", R.drawable.info)
         vadapter.addFragment(ObjectiveFragment(), "Objectives", R.drawable.objectives)
@@ -165,11 +165,6 @@ class AddDetailMainFragment : BaseFragment<FragmentAddDetailMainBinding>() {
         vadapter.addFragment(ExperienceFragment(), "Experience", R.drawable.experience)
         vadapter.addFragment(ReferrenceFragment(), "Reference", R.drawable.referrence)
 
-        /* vadapter.addFragment(InterestFragment(), "\nInterest")
-         vadapter.addFragment(LanguageFragment(), "\nLanguage")
-         vadapter.addFragment(ProjectFragment(), "\nProjects")
-         vadapter.addFragment(AchievementFragment(), "\nAchievements")
- */
 
         viewPager.adapter = vadapter
         tabLayout.setupWithViewPager(viewPager)

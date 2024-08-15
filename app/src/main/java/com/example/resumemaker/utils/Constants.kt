@@ -12,6 +12,7 @@ object Constants {
     const val DOWNLOAD="download"
     const val PROFILE="profile"
     const val RETURN_FROM_PROFILE="RETURN_FROM_PROFILE"
+    const val CHOSE_TEMPLATE="CHOSE_TEMPLATE"
 
 
 }

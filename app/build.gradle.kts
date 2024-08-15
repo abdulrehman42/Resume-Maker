@@ -72,6 +72,8 @@ dependencies {
 
     //Okhttp logging intercepter
     implementation (libs.logging.interceptor)
+    implementation ("com.github.ozcanalasalvar.picker:datepicker:2.0.7")
+    implementation ("com.github.ozcanalasalvar.picker:wheelview:2.0.7")
 
     //LifeCycle
     implementation (libs.androidx.lifecycle.viewmodel.ktx)

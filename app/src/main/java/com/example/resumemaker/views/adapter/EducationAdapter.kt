@@ -21,6 +21,9 @@ class EducationAdapter(val context: Context, val list:List<EducationModel>,val c
             binding.universityname.text=model.universityName
             binding.degreeName.text=model.degree
             binding.degreeYears.text=model.startDate+"-"+model.endDate
+            binding.editEdu.setOnClickListener {
+                onclick(model)
+            }
             if (check)
             {
                 binding.editEdu.isGone=true

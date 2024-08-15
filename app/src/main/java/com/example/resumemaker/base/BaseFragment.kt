@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.example.resumemaker.views.activities.LoginActivity
 import com.example.resumemaker.utils.SharePref
+import com.example.resumemaker.views.activities.AddDetailResume
 import com.example.resumemaker.views.activities.BoardingScreen
 import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.activities.DownloadActivity
@@ -57,18 +58,11 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
             is ChoiceTemplate->context
             is DownloadActivity->context
             is ProfileActivity->context
+            is AddDetailResume->context
             else -> context as BaseActivity
         }
     }
 
-    /*open fun hideLoadingBar() {
-        mActivity.hideLoadingBar()
-    }
-
-    open fun showLoadingBar() {
-        mActivity.showLoadingBar()
-    }
-*/
     open fun showToast(message: String?) {
         currentActivity().showToast(message)
     }
@@ -78,12 +72,7 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
     abstract fun observeLiveData()
     abstract fun init(savedInstanceState: Bundle?)
 
-/*
-    fun getStringArgument(key: String) = arguments?.getString(key)
-    fun getIntArgument(key: String) = arguments?.getInt(key, -1)
-    fun getBooleanArgument(key: String) = arguments?.getBoolean(key)
-    fun <T> getParcelableArgument(key: String) = arguments?.getParcelable<Parcelable>(key) as T
-*/
+
 
     override fun onDestroy() {
         super.onDestroy()

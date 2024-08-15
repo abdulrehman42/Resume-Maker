@@ -23,6 +23,7 @@ import com.example.resumemaker.databinding.ActivityMainActivtyBinding
 import com.example.resumemaker.utils.DialogueBoxes.alertboxLogout
 import com.example.resumemaker.utils.DialogueBoxes.alertboxPurchase
 import com.example.resumemaker.utils.DialogueBoxes.alertboxRate
+import com.example.resumemaker.utils.DialogueBoxes.link
 import com.example.resumemaker.utils.DialogueBoxes.shareAppMethod
 import com.example.resumemaker.views.fragments.HomeFragment
 import com.google.android.material.internal.ContextUtils.getActivity
@@ -117,6 +118,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         when (item.itemId) {
             R.id.nav_rate -> alertboxRate(this)
             R.id.nav_share-> shareAppMethod(this)
+            R.id.nav_privacy->link("https://www.pentabitapps.com/privacy-policy",this)
+            R.id.nav_term->link("https://www.pentabitapps.com/terms-of-use",this)
+            R.id.nav_more-> link("https://play.google.com/store/apps/developer?id=Pentabit Apps",this)
+
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)

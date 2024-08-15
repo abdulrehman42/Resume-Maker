@@ -12,4 +12,37 @@
         <item>The job advertisement you are replying\n to tells you exactly what the employer\n is looking for in a candidate.</item>
     <item>"Unless you're a high level executive or\n scholar, your resume should be one\n page long"</item>
     </string-array>
+
+
+    <string-array name="add_details_tab">
+        <item>Info</item>
+        <item>Objective</item>
+        <item>Education</item>
+        <item>Skills</item>
+        <item>Experience</item>
+        <item>Reference</item>
+    </string-array>
+
+    <array name="add_details_tab_icons">
+        <item>@drawable/info</item>
+        <item>@drawable/objectives</item>
+        <item>@drawable/education</item>
+        <item>@drawable/skill</item>
+        <item>@drawable/experience</item>
+        <item>@drawable/referrence</item>
+    </array>
+
+    <string-array name="extra_details_tabs">
+        <item>Interests</item>
+        <item>Language</item>
+        <item>Projects</item>
+        <item>Achievements</item>
+    </string-array>
+
+    <array name="extra_details_tab_icons">
+        <item>@drawable/interest</item>
+        <item>@drawable/language</item>
+        <item>@drawable/project</item>
+        <item>@drawable/achievment</item>
+    </array>
 </resources>

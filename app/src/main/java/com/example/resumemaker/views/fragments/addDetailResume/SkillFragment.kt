@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentSkillBinding
@@ -10,13 +11,17 @@ import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.adapter.SkillAdapter
 import com.google.android.material.tabs.TabLayout
 
-class SkillFragment : BaseFragment<FragmentSkillBinding>() {
+class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     lateinit var skillAdapter: SkillAdapter
     override val inflate: Inflate<FragmentSkillBinding>
         get() = FragmentSkillBinding::inflate
 
     override fun observeLiveData() {
 
+    }
+
+    override fun csnMoveForward(): Boolean {
+        return true
     }
 
     override fun init(savedInstanceState: Bundle?) {

@@ -37,7 +37,7 @@ class BasicFragment : BaseFragment<FragmentBasicBinding>() {
         val templateAdapter= TemplateAdapter(requireActivity(), Helper.getTemplateImages(),{
             if (fromCalled==Constants.CV)
             {
-
+                sharePref.writeString(Constants.FRAGMENT_NAME,Constants.CHOSE_TEMPLATE)
                 startActivity(Intent(currentActivity(), LoginActivity::class.java))
                 //currentActivity().replaceChoiceFragment(R.id.nav_profileFragment)
             }

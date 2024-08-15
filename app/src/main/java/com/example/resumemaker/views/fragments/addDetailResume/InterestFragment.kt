@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInterestBinding
@@ -10,7 +11,7 @@ import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.adapter.SkillAdapter
 import com.google.android.material.tabs.TabLayout
 
-class InterestFragment : BaseFragment<FragmentInterestBinding>() {
+class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     lateinit var educationAdapter: SkillAdapter
 
     override val inflate: Inflate<FragmentInterestBinding>
@@ -18,6 +19,10 @@ class InterestFragment : BaseFragment<FragmentInterestBinding>() {
 
     override fun observeLiveData() {
      }
+
+    override fun csnMoveForward(): Boolean {
+        return true
+    }
 
     override fun init(savedInstanceState: Bundle?) {
         onclick()

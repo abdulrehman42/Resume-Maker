@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAchievementBinding
@@ -10,8 +11,12 @@ import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
-class AchievementFragment : BaseFragment<FragmentAchievementBinding>() {
+class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
     lateinit var educationAdapter: EducationAdapter
+
+    override fun csnMoveForward(): Boolean {
+       return true
+    }
 
     override val inflate: Inflate<FragmentAchievementBinding>
         get() = FragmentAchievementBinding::inflate
