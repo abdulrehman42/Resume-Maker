@@ -23,7 +23,6 @@ class TempResListAdpter: ListAdapter<TemplateResponseModel.Data,TempResListAdpte
             binding.templateimage.setOnClickListener{
                 itemClickCallback?.invoke(model)
             }
-
         }
     }
 
@@ -59,8 +58,5 @@ class TempResListAdpter: ListAdapter<TemplateResponseModel.Data,TempResListAdpte
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.setData(getItem(position))
-
     }
-
-
 }

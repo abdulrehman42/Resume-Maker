@@ -3,12 +3,13 @@ package com.example.resumemaker.views.fragments.choose
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.resumemaker.R
-import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentBasicBinding
 import com.example.resumemaker.api.http.NetworkResult
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.models.response.TemplateResponseModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
@@ -18,58 +19,53 @@ import com.example.resumemaker.views.adapter.TempResListAdpter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class BasicFragment : BaseFragment<FragmentBasicBinding>() {
-    val templateViewModel by viewModels<TemplateViewModel>()
-    lateinit var fromCalled:String
-    var iscalled=false
-   // lateinit var kProgressHUD: KProgressHUD
+class BasicFragment : AddDetailsBaseFragment<FragmentBasicBinding>() {
+    lateinit var templateViewModel:TemplateViewModel // by viewModels<TemplateViewModel>()
+
     override val inflate: Inflate<FragmentBasicBinding>
         get() = FragmentBasicBinding::inflate
 
-
+    override fun init(savedInstanceState: Bundle?) {
+        // Observe LiveData here
+        templateViewModel =  ViewModelProvider(requireActivity())[TemplateViewModel::class]
+        observeLiveData()
+        // Trigger API call directly when the fragment is created
+        callApi(templateViewModel.name.value ?: Constants.BASIC)
+    }
 
     override fun observeLiveData() {
-        templateViewModel.templateResponse.observe(viewLifecycleOwner) {
-          //  kProgressHUD.dismiss()
+        templateViewModel.templateResponse.observe(requireActivity()) {
             when (it) {
-                is NetworkResult.Success<*> -> {
+                is NetworkResult.Success -> {
                     it.data?.let { data ->
-                            data.data.let { temp ->
-                                try {
-                                   setAdapter(temp)
-                                    iscalled=true
-                                } catch (e: NullPointerException) {
-                                    print(e)
-                                }
+                        data.data?.let { temp ->
+                            try {
+                                templateViewModel.dataMap.put(templateViewModel.name.value!!,it.data)
+                                setAdapter(temp)
+                            } catch (e: NullPointerException) {
+                                e.printStackTrace()
                             }
+                        }
                     }
-                    templateViewModel.templateResponse.value = null
                 }
 
-                is NetworkResult.Loading<*> -> {
-                   // kProgressHUD.show()
+                is NetworkResult.Loading -> {
+                    // Handle loading state
                 }
 
-                is NetworkResult.Error<*> -> {
+                is NetworkResult.Error -> {
                     currentActivity().showToast(it.message)
-                    templateViewModel.templateResponse.value = null
                 }
 
                 else -> {
+                    // Handle any other cases
                 }
             }
         }
     }
 
-    override fun init(savedInstanceState: Bundle?) {
-        fromCalled= sharePref.readString(Constants.FRAGMENT_NAME).toString()
-        if (!iscalled){
-            callApi()
-        }
-    }
-
-    private fun callApi() {
-        templateViewModel.fetchTemplates("resume","basic",10,1)
+    private fun callApi(name: String) {
+        templateViewModel.fetchTemplates("resume", name, 10, 1)
     }
 
     private fun setAdapter(temp: List<TemplateResponseModel.Data>) {
@@ -89,23 +85,28 @@ class BasicFragment : BaseFragment<FragmentBasicBinding>() {
                             } else {
                                 currentActivity().replaceChoiceFragment(R.id.nav_add_detail_coverletter)
                             }
-
                         }
                     }
-                })
+                }
+            )
         }
+
         templateAdapter.setOnItemClickCallback {
             if (fromCalled == Constants.CV) {
                 sharePref.writeString(Constants.FRAGMENT_NAME, Constants.CHOSE_TEMPLATE)
                 startActivity(Intent(currentActivity(), LoginActivity::class.java))
-            }
-            if (fromCalled == Constants.PROFILE) {
+            } else if (fromCalled == Constants.PROFILE) {
                 currentActivity().replaceChoiceFragment(R.id.nav_profileFragment)
             }
         }
+
         binding.recyclerviewTemplete.apply {
             layoutManager = GridLayoutManager(requireActivity(), 2)
             adapter = templateAdapter
         }
+    }
+
+    override fun csnMoveForward(): Boolean {
+        return false
     }
 }

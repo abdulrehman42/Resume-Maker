@@ -20,10 +20,6 @@ class ChooseTemplateFragment : BaseFragment<FragmentChooseTemplateBinding>() {
     private lateinit var viewPager: ViewPager
     override val inflate: Inflate<FragmentChooseTemplateBinding>
         get() = FragmentChooseTemplateBinding::inflate
-
-
-
-
     override fun observeLiveData() {
     }
 
@@ -37,7 +33,12 @@ class ChooseTemplateFragment : BaseFragment<FragmentChooseTemplateBinding>() {
         tabLayout = binding.TabLayout
         val vadapter =
             Vadapterswipe(childFragmentManager) // Use childFragmentManager for fragments within a fragment
-        vadapter.addFragment(BasicFragment(), "Basic ")
+        val templatesTtles=resources.getStringArray(R.array.template_titles)
+        for (i in 0 until templatesTtles.size)
+        {
+            vadapter.addFragment(BasicFragment(), templatesTtles[i])
+        }
+
         vadapter.addFragment(StandardFragment(), "Standard")
         vadapter.addFragment(PremiumFragment(), "Premuim")
         viewPager.adapter = vadapter

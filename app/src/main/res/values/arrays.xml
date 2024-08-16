@@ -45,4 +45,12 @@
         <item>@drawable/project</item>
         <item>@drawable/achievment</item>
     </array>
+
+
+    <string-array name="template_titles">
+        <item>basic</item>
+        <item>standard</item>
+        <item>premium</item>
+    </string-array>
+
 </resources>

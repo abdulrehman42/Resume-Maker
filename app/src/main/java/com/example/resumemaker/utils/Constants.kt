@@ -1,5 +1,7 @@
 package com.example.resumemaker.utils
 
+import com.example.resumemaker.views.fragments.choose.PremiumFragment
+
 object Constants {
     const val BASE_MEDIA_URL="https://n0ngl4zx.tinifycdn.com/"
     const val BASE_URL= "http://35.164.228.120:9000/v1/"
@@ -8,8 +10,9 @@ object Constants {
     const val TEMPLATE_API="templates"
 
 
-
-
+    const val BASIC="Basic"
+    const val STANDARD="Standard"
+    const val PREMIUM="Premuim"
     const val PREFS_TOKEN_FILE = "PlayDateApp"
     const val TOKEN="abd"
     const val DATA="data"
