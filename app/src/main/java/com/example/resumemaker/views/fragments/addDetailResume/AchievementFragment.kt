@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
@@ -7,7 +8,9 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAchievementBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -36,20 +39,24 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
         }
         binding.nextbtn.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_add_preview_resume)
+            val intent=Intent(currentActivity(),ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME,Constants.PREVIEW_RESUME)
+            startActivity(intent)
 
-            // tabhost.getTabAt(9)!!.select()
         }
         binding.addachievementbtn.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_add_achievement)
+            val intent=Intent(currentActivity(),ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME,Constants.ACHIEVEMNT)
+            startActivity(intent)
         }
     }
     private fun setAdapter() {
         educationAdapter= EducationAdapter(currentActivity(), Helper.achievementList(),false)
         {
             sharePref.writeDataEdu(it)
-            currentActivity().replaceChoiceFragment(R.id.nav_add_achievement)
-        }
+            val intent=Intent(currentActivity(),ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME,Constants.ACHIEVEMNT)
+            startActivity(intent)        }
         binding.recyclerviewAchievements.adapter=educationAdapter
     }
 

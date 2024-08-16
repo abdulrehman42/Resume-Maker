@@ -72,8 +72,6 @@ dependencies {
 
     //Okhttp logging intercepter
     implementation (libs.logging.interceptor)
-    implementation ("com.github.ozcanalasalvar.picker:datepicker:2.0.7")
-    implementation ("com.github.ozcanalasalvar.picker:wheelview:2.0.7")
 
     //LifeCycle
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
@@ -84,7 +82,11 @@ dependencies {
     implementation (libs.material.v190)
     implementation ("com.google.android.material:material:1.3.0-alpha02")
 
+   /* //KProgressHud
+    implementation ("com.kaopiz:kprogresshud:1.2.0")
 
+    //paper db
+    implementation ("io.paperdb:paperdb:2.7.1")*/
     //hilt
     implementation (libs.hilt.android)
     kapt (libs.hilt.compiler)

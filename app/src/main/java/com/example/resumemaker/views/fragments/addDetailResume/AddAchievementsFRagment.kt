@@ -36,10 +36,13 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+
+            //currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         binding.savebtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+            //currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         binding.issueDateeedittext.onFocusChangeListener =
             OnFocusChangeListener { v, hasFocus ->

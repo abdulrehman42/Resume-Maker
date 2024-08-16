@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
@@ -7,7 +8,9 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentExperienceBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -30,8 +33,9 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
         educationAdapter= EducationAdapter(currentActivity(), Helper.getExperienceList(),false)
         {
             sharePref.writeDataEdu(it)
-            currentActivity().replaceChoiceFragment(R.id.nav_add_experience)
-
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.EXPERIENCE)
+            startActivity(intent)
         }
         binding.recyclerviewExperience.adapter=educationAdapter
     }
@@ -46,7 +50,10 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
             tabhost.getTabAt(5)!!.select()
         }
         binding.addexperiencebtn.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_add_experience)
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.EXPERIENCE)
+            startActivity(intent)
+          //  currentActivity().replaceChoiceFragment(R.id.nav_add_experience)
         }
     }
 

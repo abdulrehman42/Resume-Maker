@@ -13,8 +13,6 @@ import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.Helper.dpToPx
 import com.google.android.material.textfield.TextInputLayout
-import com.ozcanalasalvar.datepicker.utils.DateUtils.getCurrentTime
-import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 
 class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
     override val inflate: Inflate<FragmentAddExperienceBinding>
@@ -90,12 +88,25 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             }
         }
         binding.savebtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            if (isConditionMet())
+            {
+                currentActivity().finish()
+            }
+
+//            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+
+//            currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
     }
-
+    fun isConditionMet(): Boolean {
+        return !binding.companyName.text.toString().isNullOrEmpty()&&
+                !binding.jobName.text.toString().isNullOrEmpty()&&
+                !binding.description.text.toString().trim().isNullOrEmpty()&&
+                !binding.startdateedittext.text.toString().isNullOrEmpty()&&
+                !binding.enddateedittext.text.toString().isNullOrEmpty()
+    }
 }

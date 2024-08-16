@@ -84,19 +84,26 @@ class AddDetailResume : BaseActivity() {
 
     private fun setUpTablayout() {
         binding.viewPager.isUserInputEnabled = false
-        binding.tabLayoutAdddetail
         addItems()
+        for (i in 0 until allTabs.size)
+        {
+            binding.tabLayoutAdddetail.getTabAt(i)?.view?.isClickable=false
+
+        }
+
         binding.tabLayoutAdddetail.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             @SuppressLint("ResourceAsColor")
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
-                if (currentFragment.csnMoveForward())
+                if (currentFragment.csnMoveForward()) {
                     binding.viewPager.currentItem = binding.tabLayoutAdddetail.selectedTabPosition
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.grey))
+
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -144,6 +151,10 @@ class AddDetailResume : BaseActivity() {
         tab.text = tabModel.name
         tab.icon = tabModel.icon
         binding.tabLayoutAdddetail.addTab(tab)
+        for (i in 0 until  allTabs.size)
+        {
+            binding.tabLayoutAdddetail.getTabAt(binding.viewPager.currentItem)?.view?.isClickable=false
+        }
     }
 
 

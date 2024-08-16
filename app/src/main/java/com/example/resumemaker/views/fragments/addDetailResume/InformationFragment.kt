@@ -13,14 +13,13 @@ import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseImage
 import com.google.android.material.tabs.TabLayout
 
 
-class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>(){
+class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>() {
     override fun csnMoveForward(): Boolean {
         return isConditionMet()
     }
 
     override val inflate: Inflate<FragmentInformationBinding>
         get() = FragmentInformationBinding::inflate
-
 
 
     override fun observeLiveData() {
@@ -38,8 +37,13 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             binding.man.setBackgroundResource(R.drawable.bluebgradius)
             binding.woman.setBackgroundResource(R.drawable.greybgradius)
 
-            binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
-            binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
+            binding.woman.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.light_black
+                )
+            )
+            binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
 
         }
         binding.editprofile.setOnClickListener {
@@ -49,19 +53,26 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             binding.man.setBackgroundResource(R.drawable.greybgradius)
             binding.woman.setBackgroundResource(R.drawable.bluebgradius)
 
-            binding.woman.setTextColor(ContextCompat.getColor(requireContext(),R.color.white))
-            binding.man.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_black))
+            binding.woman.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_black))
         }
         binding.nextbtn.setOnClickListener {
-            val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
-            tabhost.getTabAt(1)!!.select()
+
+            val tabhost =
+                currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
+            if (isConditionMet())
+            {
+                tabhost.getTabAt(1)!!.select()
+
+            }
         }
     }
+
     fun isConditionMet(): Boolean {
-        return binding.nameedittext.text.toString().isEmpty() &&
-                binding.emailtext.text.toString().isEmpty() &&
-                binding.jobedittext.text.toString().isEmpty() &&
-                binding.phoneedittext.text.toString().isEmpty()
+        return !binding.nameedittext.text.toString().trim().isNullOrEmpty() &&
+                !binding.emailtext.text.toString().trim().isNullOrEmpty() &&
+                !binding.jobedittext.text.toString().trim().isNullOrEmpty() &&
+                !binding.phoneedittext.text.toString().trim().isNullOrEmpty()
     }
 
 

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.SampleitemsBinding
 import com.example.resumemaker.models.SampleModel
 
-class ObjSampleAdapter(val context: Context,val list:List<SampleModel>,val onclick:(String)->Unit): RecyclerView.Adapter<ObjSampleAdapter.ViewHolder>() {
+class ObjSampleAdapter(val context: Context,val list:List<SampleModel>,val onclick:(String)->Unit,val onselect:(Boolean)->Unit): RecyclerView.Adapter<ObjSampleAdapter.ViewHolder>() {
     var maxItemCount =2
     inner class ViewHolder(private val binding: SampleitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -30,10 +30,23 @@ class ObjSampleAdapter(val context: Context,val list:List<SampleModel>,val oncli
         )
         return ViewHolder(binding)
     }
-
+    @SuppressLint("NotifyDataSetChanged")
     override fun getItemCount(): Int {
+
+        if (minOf(list.size,maxItemCount)==list.size)
+        {
+            onselect(true)
+        }
+        if (minOf(list.size,maxItemCount)==2||minOf(list.size,maxItemCount)==0)
+        {
+            onselect(false)
+        }
+
         return  minOf(list.size,maxItemCount)
     }
+    /*override fun getItemCount(): Int {
+        return  minOf(list.size,maxItemCount)
+    }*/
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.setData(list[position])

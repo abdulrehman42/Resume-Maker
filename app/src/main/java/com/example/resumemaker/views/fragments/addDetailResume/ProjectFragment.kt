@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
@@ -7,7 +8,9 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentProjectBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -36,17 +39,22 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>(){
 
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(9)!!.select()
-        }
+            if (tabhost.tabCount>=9)
+            {
+                tabhost.getTabAt(9)!!.select()
+            }        }
         binding.addprojectbtn.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_add_projects)
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.PROJECT)
+            startActivity(intent)
         }
     }
     private fun setAdapter() {
         educationAdapter= EducationAdapter(currentActivity(), Helper.projectsList(),false){
             sharePref.writeDataEdu(it)
-            currentActivity().replaceChoiceFragment(R.id.nav_add_projects)
-        }
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.EXPERIENCE)
+            startActivity(intent)        }
         binding.recyclerviewProjects.adapter=educationAdapter
     }
 

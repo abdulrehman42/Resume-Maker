@@ -42,7 +42,6 @@
         android:layout_margin="@dimen/_10sdp"
         app:counterEnabled="true"
         app:endIconTint="@null"
-        app:endIconDrawable="@drawable/ai"
         app:endIconMode="custom"
         app:counterMaxLength="300"
         app:layout_constraintEnd_toEndOf="parent"

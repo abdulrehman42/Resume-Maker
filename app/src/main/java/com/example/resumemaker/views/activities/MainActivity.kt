@@ -20,6 +20,7 @@ import androidx.navigation.ui.navigateUp
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityMainActivtyBinding
+import com.example.resumemaker.utils.DialogueBoxes.alertboxDelete
 import com.example.resumemaker.utils.DialogueBoxes.alertboxLogout
 import com.example.resumemaker.utils.DialogueBoxes.alertboxPurchase
 import com.example.resumemaker.utils.DialogueBoxes.alertboxRate
@@ -118,6 +119,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         when (item.itemId) {
             R.id.nav_rate -> alertboxRate(this)
             R.id.nav_share-> shareAppMethod(this)
+            R.id.nav_delete-> alertboxDelete(this)
             R.id.nav_privacy->link("https://www.pentabitapps.com/privacy-policy",this)
             R.id.nav_term->link("https://www.pentabitapps.com/terms-of-use",this)
             R.id.nav_more-> link("https://play.google.com/store/apps/developer?id=Pentabit Apps",this)

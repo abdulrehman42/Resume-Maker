@@ -2,7 +2,8 @@ package com.example.resumemaker.di
 
 
 
-import com.example.resumemaker.http.AppIntercepter
+import com.example.resumemaker.api.http.AppIntercepter
+import com.example.resumemaker.api.http.ChooseTemplateService
 import com.example.resumemaker.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -32,6 +33,15 @@ class NetworkModule {
         return OkHttpClient.Builder().addInterceptor(interceptor).readTimeout(4, TimeUnit.MINUTES)
             .connectTimeout(4, TimeUnit.MINUTES).build()
     }
+
+    @Singleton
+    @Provides
+    fun chooseTemplate(retrofitBuilder: Retrofit.Builder): ChooseTemplateService
+    {
+        return retrofitBuilder.build().create(ChooseTemplateService::class.java)
+    }
+
+
 
 
 }

@@ -98,7 +98,9 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+
+        //            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         binding.skillEdittext.setOnFocusChangeListener { view, b ->
             if(binding.skillEdittext.textSize>=3)
@@ -109,7 +111,9 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
             }
         }
         binding.savebtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+
+//            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
 
     }

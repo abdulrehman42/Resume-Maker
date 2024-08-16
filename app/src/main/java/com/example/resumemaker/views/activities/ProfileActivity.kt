@@ -28,14 +28,6 @@ class ProfileActivity : BaseActivity() {
     override fun attachViewMode() {
 
     }
-  /*  @SuppressLint("ResourceAsColor")
-    override fun onStart() {
-        super.onStart()
-        val window = window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
-        window.statusBarColor=getResources().getColor(R.color.navy_blue)
-    }*/
     private fun enableEdgeToEdge() {
         // Set the decor view to enable full-screen layout
         val window = window

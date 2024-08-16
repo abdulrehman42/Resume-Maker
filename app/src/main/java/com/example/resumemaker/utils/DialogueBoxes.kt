@@ -16,7 +16,10 @@ import com.example.resumemaker.R
 import com.example.resumemaker.databinding.AddRemoveBinding
 import com.example.resumemaker.databinding.ChooseEditProfileBinding
 import com.example.resumemaker.databinding.ChooseImageLayoutBinding
+import com.example.resumemaker.databinding.ChoosecreateprofileBinding
 import com.example.resumemaker.databinding.ChoosedownloadLayoutBinding
+import com.example.resumemaker.databinding.DeleteAccountBinding
+import com.example.resumemaker.databinding.ImportProfileBinding
 import com.example.resumemaker.databinding.LogoutBinding
 import com.example.resumemaker.databinding.RatingLayoutBinding
 import com.example.resumemaker.databinding.TemplateSelectLayoutBinding
@@ -30,11 +33,14 @@ object DialogueBoxes {
     interface StringDialogCallback {
         fun onButtonClick(date: String)
     }
-    fun alertbox(template: Int, currentActivity: Activity, param: DialogCallback) {
+    interface StringValueDialogCallback {
+        fun onButtonClick(value: String)
+    }
+    fun alertbox(template: Any, currentActivity: Activity, param: DialogCallback) {
         val binding= TemplateSelectLayoutBinding.inflate(currentActivity.layoutInflater)
         val dialogBuilder = Dialog(currentActivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
-        Glide.with(currentActivity).load(template).into(binding.templateimage)
+        Glide.with(currentActivity).load(Constants.BASE_MEDIA_URL+template).into(binding.templateimage)
         binding.linearbtn.setOnClickListener {
             param.onButtonClick(true)
             dialogBuilder.dismiss()
@@ -72,6 +78,22 @@ object DialogueBoxes {
     }
     fun alertboxLogout(curentactivity: Activity) {
         val binding= LogoutBinding.inflate(curentactivity.layoutInflater)
+        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.yesBtn.setOnClickListener {
+
+            dialogBuilder.dismiss()
+        }
+        binding.noBtn.setOnClickListener {
+
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+        dialogBuilder.setCancelable(true)
+        dialogBuilder.show()
+    }
+    fun alertboxDelete(curentactivity: Activity) {
+        val binding= DeleteAccountBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.yesBtn.setOnClickListener {
@@ -143,6 +165,23 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
+    fun alertboxChooseCreate(curentactivity: Activity,param: StringValueDialogCallback) {
+        val binding= ChoosecreateprofileBinding.inflate(curentactivity.layoutInflater)
+        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.createProfile.setOnClickListener {
+            param.onButtonClick(Constants.CREATE)
+            dialogBuilder.dismiss()
+        }
+        binding.importProfile.setOnClickListener {
+            param.onButtonClick(Constants.IMPORT)
+            dialogBuilder.dismiss()
+        }
+
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+        dialogBuilder.setCancelable(true)
+        dialogBuilder.show()
+    }
     fun showWheelDatePickerDialog(context: Activity,param: StringDialogCallback) {
         // Inflate the custom layout
         val inflater = LayoutInflater.from(context)
@@ -165,6 +204,21 @@ object DialogueBoxes {
         val dialog: AlertDialog = builder.create()
         dialog.show()
 
+    }
+    fun alertboxImport(curentactivity:Activity) {
+        val binding= ImportProfileBinding.inflate(curentactivity.layoutInflater)
+        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.cancelBtn.setOnClickListener {
+
+            dialogBuilder.dismiss()
+        }
+        binding.importbtn.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+        dialogBuilder.setCancelable(true)
+        dialogBuilder.show()
     }
 
 

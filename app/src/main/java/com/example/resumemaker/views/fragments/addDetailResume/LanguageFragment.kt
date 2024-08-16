@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
@@ -7,7 +8,9 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentLanguageBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.SkillAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -31,8 +34,9 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         languageAdapter= SkillAdapter(currentActivity(), Helper.getLanuages())
         {
             sharePref.writeDataSkill(it)
-            currentActivity().replaceChoiceFragment(R.id.nav_add_language)
-
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.EXPERIENCE)
+            startActivity(intent)
         }
 
         binding.recyclerviewLanguage.apply {
@@ -47,11 +51,17 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(8)!!.select()
+            if (tabhost.tabCount>=8)
+            {
+                tabhost.getTabAt(8)!!.select()
+            }
 
         }
         binding.addlanguage.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_add_language)
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.LANGUAGE)
+            startActivity(intent)
+           // currentActivity().replaceChoiceFragment(R.id.nav_add_language)
         }
     }
 }

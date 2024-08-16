@@ -67,13 +67,23 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+
+            // currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         binding.savebtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            if (isConditionMet())
+            {
+                currentActivity().finish()
+            }
+
+            //currentActivity().onBackPressedDispatcher.onBackPressed()
         }
 
     }
+    fun isConditionMet(): Boolean {
+        return !binding.languageEdittext.text.toString().isNullOrEmpty()
 
+    }
 
 }

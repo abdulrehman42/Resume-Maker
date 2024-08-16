@@ -45,11 +45,22 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().finish()
+
+        //            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         binding.savebtn.setOnClickListener {
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            if (isConditionMet())
+            {
+                currentActivity().finish()
+            }
+
+//            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
+
+    }
+    fun isConditionMet(): Boolean {
+        return !binding.interestEdittext.text.toString().isNullOrEmpty()
 
     }
 

@@ -3,12 +3,15 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddEducationBinding
 import com.example.resumemaker.utils.DialogueBoxes
 
 class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
+
+
     override val inflate: Inflate<FragmentAddEducationBinding>
         get() = FragmentAddEducationBinding::inflate
 
@@ -50,6 +53,7 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
                             }
                         })
                 }
+            }
                 binding.enddateedittext.onFocusChangeListener =
                     View.OnFocusChangeListener { v, hasFocus ->
                         if (hasFocus) {
@@ -64,14 +68,27 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
                                 })
                         }
                     }
-                binding.savebtn.setOnClickListener {
-                    currentActivity().onBackPressedDispatcher.onBackPressed()
-                }
-                binding.includeTool.backbtn.setOnClickListener {
-                    currentActivity().onBackPressedDispatcher.onBackPressed()
 
-                }
+
+        binding.savebtn.setOnClickListener {
+            if (isConditionMet()) {
+                requireActivity().finish()
             }
 
+            //currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        binding.includeTool.backbtn.setOnClickListener {
+            requireActivity().finish()
+
+            // currentActivity().onBackPressedDispatcher.onBackPressed()
+
+        }
+
+    }
+    fun isConditionMet(): Boolean {
+        return !binding.instituenameedittext.text.toString().isNullOrEmpty()&&
+                !binding.degreeName.text.toString().isNullOrEmpty()&&
+                !binding.startdateedittext.text.toString().isNullOrEmpty()&&
+                !binding.enddateedittext.text.toString().isNullOrEmpty()
     }
 }

@@ -37,8 +37,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             requireActivity().startActivity(Intent(requireActivity(),DownloadActivity::class.java))
         }
         binding.linearLayout4.setOnClickListener {
-            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.PROFILE)
-            val intent=Intent(currentActivity(),ChoiceTemplate::class.java)
+            val intent=Intent(currentActivity(),ProfileActivity::class.java)
             intent.putExtra(Constants.FRAGMENT_NAME,Constants.PROFILE)
             requireActivity().startActivity(intent)
         }

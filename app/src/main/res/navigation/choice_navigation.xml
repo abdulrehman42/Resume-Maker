@@ -69,7 +69,6 @@
         android:name="com.example.resumemaker.views.fragments.addDetailResume.AddReferenceFragment"
         tools:layout="@layout/fragment_add_reference" />
 
-
     <fragment
         android:id="@+id/nav_Add_interest"
         android:name="com.example.resumemaker.views.fragments.addDetailResume.AddInterestFragment"

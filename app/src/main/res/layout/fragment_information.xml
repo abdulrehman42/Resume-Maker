@@ -71,6 +71,7 @@
                     android:id="@+id/nameedittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
                     android:hint="Name" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,6 +91,8 @@
                     android:id="@+id/jobedittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+
                     android:hint="Job Title" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,6 +112,8 @@
                     android:id="@+id/emailtext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+
                     android:hint="Email" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -128,6 +133,8 @@
                     android:id="@+id/phoneedittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+
                     android:hint="Phone"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -147,6 +154,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+
                     android:hint="Address (Optional)" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,6 +174,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+
                     android:hint="Date of Birth(Optional)" />
             </com.google.android.material.textfield.TextInputLayout>
 

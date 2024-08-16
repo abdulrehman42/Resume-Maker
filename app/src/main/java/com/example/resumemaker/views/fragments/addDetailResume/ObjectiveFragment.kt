@@ -22,6 +22,8 @@ import kotlinx.coroutines.launch
 
 class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     lateinit var objSampleAdapter: ObjSampleAdapter
+    var num=0
+
     override val inflate: Inflate<FragmentObjectiveBinding>
         get() = FragmentObjectiveBinding::inflate
 
@@ -30,7 +32,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return isConditionMet()
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -56,18 +58,21 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
         binding.viewall.setOnClickListener {
             objSampleAdapter.updateMaxItemCount(Helper.getSampleList().size)
 
-            MainScope().launch {
+            /*MainScope().launch {
                 binding.viewall.isGone=true
                 binding.viewLess.isGone=false
-            }
+            }*/
         }
         binding.viewless.setOnClickListener {
             objSampleAdapter.updateMaxItemCount(2)
-            MainScope().launch {
-                binding.viewall.isGone=false
-                binding.viewless.isGone=true
+            binding.viewall.setOnClickListener {
+                num += 2
+                setAdapter()
             }
-
+            binding.viewless.setOnClickListener {
+                num -= 2
+                setAdapter()
+            }
 
 
         }
@@ -75,15 +80,26 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
             tabhost.getTabAt(0)!!.select()
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(2)!!.select()
+            if (isConditionMet())
+            {
+                tabhost.getTabAt(2)!!.select()
+            }
         }
     }
 
     private fun setAdapter() {
 
-        objSampleAdapter=ObjSampleAdapter(currentActivity(),Helper.getSampleList()){
+        objSampleAdapter=ObjSampleAdapter(currentActivity(),Helper.getSampleList(),{
             binding.objectiveTextInput.setText(it)
-        }
+        },{
+            if (it) {
+                binding.viewall.isGone=true
+                binding.viewless.isGone=false
+            }else{
+                binding.viewall.isGone=false
+                binding.viewless.isGone=true
+            }
+        })
         binding.sampleRecyclerview.adapter=objSampleAdapter
     }
     fun isConditionMet(): Boolean {

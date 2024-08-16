@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
@@ -9,6 +10,7 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentEducationBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -39,7 +41,10 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
             tabhost.getTabAt(3)!!.select()
         }
         binding.addeducationbtn.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_add_education)
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME,Constants.EDUCATION)
+            startActivity(intent)
+            //currentActivity().replaceChoiceFragment(R.id.nav_add_education)
         }
 
     }
@@ -47,7 +52,9 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     private fun setAdapter() {
         educationAdapter= EducationAdapter(currentActivity(),Helper.getDegreeList(),false){
             sharePref.writeDataEdu(it)
-            currentActivity().replaceChoiceFragment(R.id.nav_add_education)
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME,Constants.EDUCATION)
+            startActivity(intent)
 
         }
         binding.recyclerviewEducation.adapter=educationAdapter

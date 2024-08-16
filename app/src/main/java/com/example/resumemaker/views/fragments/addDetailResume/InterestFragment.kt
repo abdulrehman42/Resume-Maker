@@ -1,5 +1,6 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.resumemaker.R
@@ -7,7 +8,9 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInterestBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.SkillAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -33,8 +36,9 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
         educationAdapter= SkillAdapter(currentActivity(), Helper.getInterests())
         {
             sharePref.writeDataSkill(it)
-            currentActivity().replaceChoiceFragment(R.id.nav_add_language)
-
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.EXPERIENCE)
+            startActivity(intent)
         }
         binding.recyclerviewInterest.adapter=educationAdapter
     }
@@ -46,10 +50,16 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(7)!!.select()
+            if (tabhost.tabCount>=7)
+            {
+                tabhost.getTabAt(7)!!.select()
+            }
         }
         binding.addinterestbtn.setOnClickListener {
-            currentActivity().replaceChoiceFragment(R.id.nav_Add_interest)
+            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.FRAGMENT_NAME, Constants.INTEREST)
+            startActivity(intent)
+        //    currentActivity().replaceChoiceFragment(R.id.nav_Add_interest)
         }
     }
 
