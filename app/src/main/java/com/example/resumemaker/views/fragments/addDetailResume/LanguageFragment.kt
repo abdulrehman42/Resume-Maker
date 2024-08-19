@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
@@ -10,12 +11,14 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentLanguageBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.SkillAdapter
 import com.google.android.material.tabs.TabLayout
 
 class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     lateinit var languageAdapter: SkillAdapter
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentLanguageBinding>
         get() = FragmentLanguageBinding::inflate
 
@@ -26,6 +29,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         return true
     }
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         onclick()
         setadapter()
     }
@@ -34,9 +38,8 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         languageAdapter= SkillAdapter(currentActivity(), Helper.getLanuages())
         {
             sharePref.writeDataSkill(it)
-            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
-            intent.putExtra(Constants.FRAGMENT_NAME, Constants.EXPERIENCE)
-            startActivity(intent)
+            addDetailResumeVM.isHide.value=false
+            addDetailResumeVM.fragment.value=AddLanguageFragment()
         }
 
         binding.recyclerviewLanguage.apply {
@@ -58,10 +61,8 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
         }
         binding.addlanguage.setOnClickListener {
-            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
-            intent.putExtra(Constants.FRAGMENT_NAME, Constants.LANGUAGE)
-            startActivity(intent)
-           // currentActivity().replaceChoiceFragment(R.id.nav_add_language)
+            addDetailResumeVM.isHide.value=false
+            addDetailResumeVM.fragment.value=AddEducation()
         }
     }
 }

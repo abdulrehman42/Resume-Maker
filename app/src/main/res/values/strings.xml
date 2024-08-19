@@ -15,6 +15,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+
+    <string name="testId">ca-app-pub-3940256099942544~6300978111</string>
+
+
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
@@ -122,4 +126,9 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="delete_account">Are you sure you want to delete of your account?</string>
+    <string name="field_missing_error">please complete all missing fields</string>
+    <string name="single_field_missing_error">please complete the field</string>
+
+    <string name="add_interest">Add Interest</string>
+    <string name="add_detail">Add Detail</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.resumemaker.views.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
@@ -11,21 +12,26 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.callbacks.OnTemplateSelected
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityChoiceTemplateBinding
+import com.example.resumemaker.models.api.TemplateModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.example.resumemaker.views.fragments.choose.BasicFragment
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.HashMap
 
 
 @AndroidEntryPoint
-class ChoiceTemplate : BaseActivity() {
-    lateinit var templatesTitles: List<String>
+class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     lateinit var templateViewModel: TemplateViewModel// by viewModels<TemplateViewModel>()
     lateinit var binding: ActivityChoiceTemplateBinding
-    private val allTabs = ArrayList<TabModel>()
+    private val templatesTitle= ArrayList<String>()
+    private var dataMap:  Map<String,List<TemplateModel>> = HashMap<String,List<TemplateModel>>()
+    private var isResume = false
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,18 +41,26 @@ class ChoiceTemplate : BaseActivity() {
         binding.includeTool.textView.text = "Choose Template"
         setContentView(binding.root)
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class]
-        setUpTablayout()
+        isResume = intent.getBooleanExtra(Constants.IS_RESUME, false)
+        handleLiveData()
+        makeApiCall()
         onclick()
+    }
+
+    private fun handleLiveData() {
+        templateViewModel.dataMap.observe(this) {
+            dataMap= it
+            setUpTablayout(it)
+        }
+    }
+
+    fun makeApiCall() {
+        templateViewModel.fetchTemplates(if (isResume) Constants.RESUME else Constants.COVER_LETTER)
     }
 
     override fun attachViewMode() {
 
     }
-
-    data class TabModel(
-        val id: Int,
-        val name: String,
-    )
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
@@ -54,27 +68,25 @@ class ChoiceTemplate : BaseActivity() {
         }
     }
 
-    private fun setUpTablayout() {
-        templatesTitles = resources.getStringArray(R.array.template_titles).toList()
-        for (i in templatesTitles.indices) {
-            addOrRemoveTab(TabModel(i, templatesTitles[i]))
+    private fun setUpTablayout(map: Map<String, List<TemplateModel>>) {
+        for (i in map.keys) {
+            val tab = binding.TabLayout.newTab()
+            tab.text = i.replaceFirstChar { it.uppercase() }
+            binding.TabLayout.addTab(tab)
+            templatesTitle.add(i)
         }
 
         binding.viewPager.adapter = MyViewPagerAdapter()
-        templateViewModel.name.value = "basic"
 
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val icon = tab.icon
-                icon?.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN)
+//                val icon = tab.icon
+//                icon?.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN)
                 binding.viewPager.currentItem = binding.TabLayout.selectedTabPosition
-                val selectedTabPosition = binding.TabLayout.selectedTabPosition
-                val selectedTabName = templatesTitles[selectedTabPosition]
-                templateViewModel.name.value = selectedTabName
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                tab.icon?.setTint(getColor(R.color.grey))
+//                tab.icon?.setTint(getColor(R.color.grey))
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -89,23 +101,11 @@ class ChoiceTemplate : BaseActivity() {
         })
     }
 
-    fun addOrRemoveTab(tabModel: TabModel) {
-        if (allTabs.contains(tabModel)) {
-            binding.TabLayout.removeTabAt(allTabs.indexOf(tabModel))
-            allTabs.remove(tabModel)
-            return
-        }
-        allTabs.add(tabModel)
-        val tab = binding.TabLayout.newTab()
-        tab.text = tabModel.name
-        binding.TabLayout.addTab(tab)
-    }
-
     inner class MyViewPagerAdapter : FragmentStateAdapter(supportFragmentManager, lifecycle) {
-        override fun getItemCount(): Int = allTabs.size
+        override fun getItemCount(): Int = templatesTitle.size
 
         override fun createFragment(position: Int): Fragment {
-            return BasicFragment()
+            return BasicFragment( dataMap.get(templatesTitle[position]))
         }
     }
 
@@ -126,6 +126,14 @@ class ChoiceTemplate : BaseActivity() {
                 flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
         }
         window.decorView.systemUiVisibility = flags
+    }
+
+    override fun onTemplateSelected(model: TemplateModel) {
+        startActivity(
+            Intent(this,
+                AddDetailResume::class.java
+            )
+        )
     }
 
 }

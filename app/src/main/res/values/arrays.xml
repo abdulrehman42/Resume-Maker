@@ -47,10 +47,4 @@
     </array>
 
 
-    <string-array name="template_titles">
-        <item>basic</item>
-        <item>standard</item>
-        <item>premium</item>
-    </string-array>
-
 </resources>

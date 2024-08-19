@@ -15,8 +15,7 @@ class LoginActivity : BaseActivity() {
     lateinit var binding:FragmentLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.navy_blue))
+        window.navigationBarColor = ContextCompat.getColor(this,R.color.navy_blue)
         binding= FragmentLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.loginbtnlinearbtn.setOnClickListener{

@@ -63,6 +63,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             if (isConditionMet())
             {
                 tabhost.getTabAt(1)!!.select()
+            }else
+            {
+                currentActivity().showToast(getString(R.string.field_missing_error))
 
             }
         }

@@ -6,17 +6,22 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddLanguageBinding
 import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.SuggestionAdapter
 
 
 class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
 {
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     lateinit var suggestionAdapter: SuggestionAdapter
     val list=ArrayList<SuggestionModel>()
     override val inflate: Inflate<FragmentAddLanguageBinding>
@@ -28,7 +33,9 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text="Add Language"
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+
+        binding.includeTool.textView.text=getString(R.string.add_language)
         val data=sharePref.readDataSkill()
         if (data!=null)
         {
@@ -66,18 +73,21 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
                 false
             }
         }
-        binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().finish()
-
-            // currentActivity().onBackPressedDispatcher.onBackPressed()
-        }
         binding.savebtn.setOnClickListener {
-            if (isConditionMet())
-            {
-                currentActivity().finish()
+            if (isConditionMet()) {
+                addDetailResumeVM.isHide.value=true
+                currentActivity().onBackPressedDispatcher.onBackPressed()
+            }else{
+                currentActivity().showToast(getString(R.string.single_field_missing_error))
             }
+        }
+        binding.includeTool.backbtn.setOnClickListener {
+            addDetailResumeVM.isHide.value=true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
 
-            //currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            addDetailResumeVM.isHide.value=true
         }
 
     }

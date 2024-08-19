@@ -1,15 +1,18 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import com.example.resumemaker.base.AddDetailsBaseFragment
+import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
+import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddEducationBinding
 import com.example.resumemaker.utils.DialogueBoxes
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 
 class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
+    lateinit var addDetailResumeVM: AddDetailResumeVM
 
 
     override val inflate: Inflate<FragmentAddEducationBinding>
@@ -18,11 +21,11 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
     override fun observeLiveData() {
     }
 
-    @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text = "Add Education"
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        binding.includeTool.textView.text = getString(R.string.add_education)
         val data = sharePref.readDataEducation()
-        if (data != null) {
+        if (data.degree.isNotEmpty()) {
             binding.instituenameedittext.setText(data.universityName)
             binding.degreeName.setText(data.degree)
             binding.startdateedittext.setText(data.startDate)
@@ -72,19 +75,24 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
 
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                requireActivity().finish()
-            }
+                addDetailResumeVM.isHide.value=true
+                currentActivity().onBackPressedDispatcher.onBackPressed()
+            }else{
+                currentActivity().showToast(getString(R.string.field_missing_error))
 
-            //currentActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            requireActivity().finish()
-
-            // currentActivity().onBackPressedDispatcher.onBackPressed()
+            addDetailResumeVM.isHide.value=true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            addDetailResumeVM.isHide.value=true
+        }
     }
+
+
     fun isConditionMet(): Boolean {
         return !binding.instituenameedittext.text.toString().isNullOrEmpty()&&
                 !binding.degreeName.text.toString().isNullOrEmpty()&&

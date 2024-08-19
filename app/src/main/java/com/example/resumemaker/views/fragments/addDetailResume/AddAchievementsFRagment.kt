@@ -1,28 +1,32 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View.OnFocusChangeListener
-import android.widget.Toast
+import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
+import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddAchievementsFRagmentBinding
 import com.example.resumemaker.utils.DialogueBoxes
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 
 
 class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBinding>()
 {
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentAddAchievementsFRagmentBinding>
         get() = FragmentAddAchievementsFRagmentBinding::inflate
 
     override fun observeLiveData() {
     }
 
-    @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text="Add Achievement"
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+
+        binding.includeTool.textView.text=getString(R.string.add_achievement)
         val data=sharePref.readDataEducation()
-        if (data!=null)
+        if (data.degree.isNotEmpty())
         {
             binding.achieveedittext.setText(data.universityName)
             binding.descriptionedittext.setText(data.degree)
@@ -35,17 +39,20 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
 
 
     private fun onclick() {
-        binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().finish()
-
-            //currentActivity().onBackPressedDispatcher.onBackPressed()
-        }
         binding.savebtn.setOnClickListener {
-            currentActivity().finish()
-            //currentActivity().onBackPressedDispatcher.onBackPressed()
+                addDetailResumeVM.isHide.value=true
+                currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        binding.includeTool.backbtn.setOnClickListener {
+            addDetailResumeVM.isHide.value=true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            addDetailResumeVM.isHide.value=true
         }
         binding.issueDateeedittext.onFocusChangeListener =
-            OnFocusChangeListener { v, hasFocus ->
+            OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     // The EditText gained focus
                     DialogueBoxes.showWheelDatePickerDialog(currentActivity(), object : DialogueBoxes.StringDialogCallback {

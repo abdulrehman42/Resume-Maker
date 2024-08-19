@@ -4,21 +4,29 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.resumemaker.R
+import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddSkillBinding
 import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.SuggestionAdapter
 import com.google.android.material.textfield.TextInputLayout
 
 class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     lateinit var suggestionAdapter: SuggestionAdapter
     lateinit var suggestionAdapter1: SuggestionAdapter
+    lateinit var addDetailResumeVM: AddDetailResumeVM
+
 
     val list=ArrayList<SuggestionModel>()
+
+
     override val inflate: Inflate<FragmentAddSkillBinding>
         get() = FragmentAddSkillBinding::inflate
 
@@ -26,9 +34,9 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
 
     }
 
-    @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text="Add Skill"
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        binding.includeTool.textView.text=getString(R.string.add_skill)
         val data=sharePref.readDataSkill()
         if (data!=null)
         {
@@ -97,10 +105,24 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
                 adapter=suggestionAdapter1
             }
         }
-        binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().finish()
+        binding.savebtn.setOnClickListener {
+            if (binding.skillEdittext.text.toString().length>3)
+            {
+                addDetailResumeVM.isHide.value=true
+                currentActivity().onBackPressedDispatcher.onBackPressed()
+            }else{
+                currentActivity().showToast(getString(R.string.single_field_missing_error))
 
-        //            currentActivity().onBackPressedDispatcher.onBackPressed()
+            }
+
+        }
+        binding.includeTool.backbtn.setOnClickListener {
+            addDetailResumeVM.isHide.value=true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            addDetailResumeVM.isHide.value=true
         }
         binding.skillEdittext.setOnFocusChangeListener { view, b ->
             if(binding.skillEdittext.textSize>=3)
@@ -109,11 +131,6 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
             }else{
                 binding.skillTextInputLayout.isEndIconVisible=false
             }
-        }
-        binding.savebtn.setOnClickListener {
-            currentActivity().finish()
-
-//            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
 
     }

@@ -1,28 +1,55 @@
 package com.example.resumemaker.api.repository
 
 import androidx.lifecycle.MutableLiveData
+import com.example.resumemaker.api.SinglePointOfResponse
 import com.example.resumemaker.api.http.ChooseTemplateService
 import com.example.resumemaker.api.http.NetworkResult
-import com.example.resumemaker.models.response.TemplateResponseModel
-import org.json.JSONObject
+import com.example.resumemaker.api.http.ResponseCallback
+import com.example.resumemaker.json.JSONKeys
+import com.example.resumemaker.json.JSONManager
+import com.example.resumemaker.models.api.TemplateModel
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TemplatesRepository@Inject constructor(private val chooseTemplateService: ChooseTemplateService) {
+class TemplatesRepository @Inject constructor(private val chooseTemplateService: ChooseTemplateService) {
 
-    private val _templateResponse = MutableLiveData<NetworkResult<TemplateResponseModel>>()
-    val templateResponse: MutableLiveData<NetworkResult<TemplateResponseModel>>
-        get() = _templateResponse
+    private val _templateResponse = MutableLiveData<NetworkResult<JsonElement>>()
 
-    suspend fun getTemplates(type: String,category: String,pageSize: Int,pageNumber: Int) {
+
+     fun getTemplates(
+        type: String,
+        callback: ResponseCallback
+    ) {
         _templateResponse.postValue(NetworkResult.Loading())
-        val response = chooseTemplateService.getHomeCategory(type, category, pageSize, pageNumber)
-        if (response.isSuccessful) {
-            _templateResponse.postValue(NetworkResult.Success(response.body()!!))
-        } else {
-            val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _templateResponse.postValue(NetworkResult.Error(errorObj.getString("message")))
-        }
+        chooseTemplateService.getHomeCategory(type).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<Map<String, List<TemplateModel>>>() {}.type
+                        ) as Map<String, List<TemplateModel>>
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure("")
+                }
+
+            })
+        )
+
     }
 }

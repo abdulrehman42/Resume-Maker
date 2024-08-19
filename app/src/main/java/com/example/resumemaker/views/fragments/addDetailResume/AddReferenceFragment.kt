@@ -2,11 +2,17 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
+import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddReferenceBinding
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 
 class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
+    lateinit var addDetailResumeVM: AddDetailResumeVM
+
     override val inflate: Inflate<FragmentAddReferenceBinding>
         get() = FragmentAddReferenceBinding::inflate
 
@@ -15,7 +21,8 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text = "Add Reference"
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        binding.includeTool.textView.text = getString(R.string.add_referrence)
         val data = sharePref.readDataEducation()
         if (data != null) {
             binding.referrencenameedit.setText(data.degree)
@@ -27,19 +34,22 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     }
 
     private fun onclick() {
-        binding.includeTool.backbtn.setOnClickListener {
-            requireActivity().finish()
-
-//            currentActivity().onBackPressedDispatcher.onBackPressed()
-        }
         binding.savebtn.setOnClickListener {
-            if (isConditionMet())
-            {
-                requireActivity().finish()
+            if (isConditionMet()) {
+                addDetailResumeVM.isHide.value=true
+                currentActivity().onBackPressedDispatcher.onBackPressed()
+            }else{
+                currentActivity().showToast(getString(R.string.field_missing_error))
 
             }
+        }
+        binding.includeTool.backbtn.setOnClickListener {
+            addDetailResumeVM.isHide.value=true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
 
-//            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            addDetailResumeVM.isHide.value=true
         }
     }
 

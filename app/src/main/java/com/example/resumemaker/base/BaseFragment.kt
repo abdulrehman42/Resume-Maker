@@ -18,7 +18,7 @@ import com.example.resumemaker.views.activities.ProfileActivity
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
+abstract class BaseFragment<VB : ViewBinding>() : Fragment() {
 
     abstract val inflate: Inflate<VB>
     private var _binding: VB? = null
@@ -51,14 +51,14 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mActivity = when (context) {
-           // is AuthActivity -> context
-            is MainActivity->context
-            is LoginActivity ->context
-            is BoardingScreen->context
-            is ChoiceTemplate->context
-            is DownloadActivity->context
-            is ProfileActivity->context
-            is AddDetailResume->context
+            // is AuthActivity -> context
+            is MainActivity -> context
+            is LoginActivity -> context
+            is BoardingScreen -> context
+            is ChoiceTemplate -> context
+            is DownloadActivity -> context
+            is ProfileActivity -> context
+            is AddDetailResume -> context
             else -> context as BaseActivity
         }
     }
@@ -70,8 +70,8 @@ abstract class BaseFragment<VB: ViewBinding>() : Fragment() {
     open fun currentActivity() = mActivity
 
     abstract fun observeLiveData()
-    abstract fun init(savedInstanceState: Bundle?)
 
+    abstract fun init(savedInstanceState: Bundle?)
 
 
     override fun onDestroy() {

@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "426343981575",
+    "project_id": "resume-maker-548a5",
+    "storage_bucket": "resume-maker-548a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426343981575:android:46588657127b58b6cdc0a2",
+        "android_client_info": {
+          "package_name": "com.pentabit.cvmaker.resumebuilder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "426343981575-83p5fcoqn0r4ivs5qn04a4ttkd2dn4i3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pentabit.cvmaker.resumebuilder",
+            "certificate_hash": "590753b96211ff8839dc23d0b90af68805d58f1b"
+          }
+        },
+        {
+          "client_id": "426343981575-ek0f99bqhqf9978pj64v3bj5dhuv0ki6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pentabit.cvmaker.resumebuilder",
+            "certificate_hash": "ef773350e88e482f309ab767167df393ca14dfc4"
+          }
+        },
+        {
+          "client_id": "426343981575-njl3hq05jhrg8q04oimrelgsmcelkgb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pentabit.cvmaker.resumebuilder",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "426343981575-u5iitosd12jq726m8iieu5d67t4nvji2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-LtvCQSjeEOZRJfJPKK4D5alpCFMgsCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "426343981575-u5iitosd12jq726m8iieu5d67t4nvji2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "426343981575-ec6tr9vrm9igs353pc7jf2etv4tb8u1d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pentabit.cvmaker.resumebuilder",
+                "app_store_id": "6479244154"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

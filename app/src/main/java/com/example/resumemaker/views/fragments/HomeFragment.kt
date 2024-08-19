@@ -24,22 +24,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun onclick() {
         binding.linearLayout1.setOnClickListener {
-            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.CV)
-            requireActivity().startActivity(Intent(requireActivity(),ChoiceTemplate::class.java))
+            startActivity(Intent(currentActivity(),ChoiceTemplate::class.java).putExtra(Constants.IS_RESUME, true))
         }
+
         binding.linearLayout2.setOnClickListener {
-            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.COVERLETTER)
-            requireActivity().startActivity(Intent(requireActivity(),ChoiceTemplate::class.java))
+            startActivity(Intent(currentActivity(),ChoiceTemplate::class.java).putExtra(Constants.IS_RESUME, false))
 
         }
         binding.linearLayout3.setOnClickListener {
-            sharePref.writeString(Constants.FRAGMENT_NAME,Constants.DOWNLOAD)
-            requireActivity().startActivity(Intent(requireActivity(),DownloadActivity::class.java))
+            sharePref.writeString(Constants.IS_RESUME,Constants.DOWNLOAD)
+            startActivity(Intent(requireActivity(),DownloadActivity::class.java))
         }
         binding.linearLayout4.setOnClickListener {
             val intent=Intent(currentActivity(),ProfileActivity::class.java)
-            intent.putExtra(Constants.FRAGMENT_NAME,Constants.PROFILE)
-            requireActivity().startActivity(intent)
+            intent.putExtra(Constants.IS_RESUME,Constants.PROFILE)
+            startActivity(intent)
         }
         binding.removeAddbtn.setOnClickListener {
             alertboxPurchase(currentActivity())

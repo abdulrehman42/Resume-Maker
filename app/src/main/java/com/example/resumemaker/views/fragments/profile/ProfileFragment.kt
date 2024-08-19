@@ -11,8 +11,8 @@ import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.views.activities.AddDetailResume
-import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.ProfileAdapter
+import com.example.resumemaker.views.fragments.addDetailResume.ResumePreviewFragment
 
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
@@ -52,16 +52,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun setadapter() {
         val profileAdapter=ProfileAdapter(currentActivity(),Helper.getProfileList1())
         {
-            val fromCalled=currentActivity().intent.getStringExtra(Constants.FRAGMENT_NAME)
+            val fromCalled=currentActivity().intent.getStringExtra(Constants.IS_RESUME)
 
             if (fromCalled==Constants.PROFILE){
                 sharePref.writeData(it)
                 currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
             }else{
-                val intent= Intent(currentActivity(),ChoiceTemplate::class.java)
-                intent.putExtra(Constants.FRAGMENT_NAME,Constants.PROFILE)
-                startActivity(intent)
-                currentActivity().finish()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.profileHostFragment, ResumePreviewFragment())
+                    .addToBackStack(null)
+                    .commit()
 
 
             }

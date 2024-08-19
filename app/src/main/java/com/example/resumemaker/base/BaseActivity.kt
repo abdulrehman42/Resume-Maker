@@ -1,5 +1,7 @@
 package com.example.resumemaker.base
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
@@ -15,13 +17,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
    // var progressBar: KProgressHUD? = null
 
-    private lateinit var options: NavOptions
+     lateinit var options: NavOptions
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bottomNavigationColor()
-
+        enableEdgeToEdge()
         options = NavOptions.Builder()
             .setLaunchSingleTop(true)
             .setEnterAnim(R.anim.fade_in)
@@ -55,9 +57,9 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
     }
-  private fun bottomNavigationColor()
+  fun bottomNavigationColor()
     {
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.navy_blue))
+        window.navigationBarColor = ContextCompat.getColor(this,R.color.navy_blue)
     }
 
     fun showSnackbar(view: View, message: String?) {
@@ -68,6 +70,27 @@ abstract class BaseActivity : AppCompatActivity() {
                 .show()
         }
 
+    }
+    private fun enableEdgeToEdge() {
+        val window = window
+
+        // Make sure that the content extends into the system bars (status bar and navigation bar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
+
+        // Set system bars to be transparent
+        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
+        window.navigationBarColor = Color.TRANSPARENT
+
+        // Optionally, handle light or dark mode for the status bar icons
+        var flags = window.decorView.systemUiVisibility
+        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // Light status bar (dark icons)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            flags =
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
+        }
+        window.decorView.systemUiVisibility = flags
     }
 
 

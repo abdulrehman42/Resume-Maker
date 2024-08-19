@@ -30,10 +30,6 @@
 
     <!--cv-->
 
-    <!--<fragment
-        android:id="@+id/nav_add_detail"
-        android:name="com.example.resumemaker.views.fragments.addDetailResume.AddDetailMainFragment"
-        tools:layout="@layout/fragment_add_detail_main" />-->
     <fragment
         android:id="@+id/nav_objective"
         android:name="com.example.resumemaker.views.fragments.addDetailResume.ObjectiveFragment"
@@ -84,19 +80,5 @@
         android:id="@+id/nav_profileDetailFragment"
         android:name="com.example.resumemaker.views.fragments.profile.ProfileDetailFragment"
         tools:layout="@layout/fragment_profile_detail" />
-   <!-- &lt;!&ndash;download&ndash;&gt;
-    <fragment
-        android:id="@+id/nav_resume_fragment"
-        android:name="com.example.resumemaker.views.fragments.download.ResumeFragment"
-        tools:layout="@layout/fragment_resume" />
-    <fragment
-        android:id="@+id/nav_cover_letter_fragment"
-        android:name="com.example.resumemaker.views.fragments.download.CoverLetterFragment"
-        tools:layout="@layout/fragment_cover_letter" />
-    <fragment
-        android:id="@+id/nav_download"
-        android:name="com.example.resumemaker.views.fragments.download.DownloadFragment"
-        tools:layout="@layout/fragment_download" />
--->
 
 </navigation>

@@ -5,6 +5,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
@@ -12,9 +14,11 @@ import com.example.resumemaker.databinding.FragmentAddExperienceBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.Helper.dpToPx
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.google.android.material.textfield.TextInputLayout
 
 class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentAddExperienceBinding>
         get() = FragmentAddExperienceBinding::inflate
 
@@ -22,7 +26,9 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        binding.includeTool.textView.text="Add Experience"
+        binding.includeTool.textView.text=getString(R.string.add_experience)
+        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+
         val data=sharePref.readDataEducation()
         if (data!=null)
         {
@@ -88,18 +94,21 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             }
         }
         binding.savebtn.setOnClickListener {
-            if (isConditionMet())
-            {
-                currentActivity().finish()
-            }
+            if (isConditionMet()) {
+                addDetailResumeVM.isHide.value=true
+                currentActivity().onBackPressedDispatcher.onBackPressed()
+            }else{
+                currentActivity().showToast(getString(R.string.field_missing_error))
 
-//            currentActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().finish()
+            addDetailResumeVM.isHide.value=true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
 
-//            currentActivity().onBackPressedDispatcher.onBackPressed()
-
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            addDetailResumeVM.isHide.value=true
         }
     }
     fun isConditionMet(): Boolean {

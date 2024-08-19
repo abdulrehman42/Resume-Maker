@@ -3,19 +3,21 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
-import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentEducationBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.EducationAdapter
 import com.google.android.material.tabs.TabLayout
 
 class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     lateinit var educationAdapter: EducationAdapter
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentEducationBinding>
         get() = FragmentEducationBinding::inflate
 
@@ -27,6 +29,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM=ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         onclick()
         setAdapter()
     }
@@ -41,15 +44,8 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
             tabhost.getTabAt(3)!!.select()
         }
         binding.addeducationbtn.setOnClickListener {
-
-           /*currentActivity(). supportFragmentManager.beginTransaction()
-                .replace(R.id.add_detail_container, AddEducation()) // Replace the current fragment
-                .addToBackStack(null) // Optionally add the transaction to the back stack
-                .commit()*/
-            /*val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
-            intent.putExtra(Constants.FRAGMENT_NAME,Constants.EDUCATION)
-            startActivity(intent)*/
-            currentActivity().replaceAddDetailFragment(R.id.nav_add_education)
+            addDetailResumeVM.isHide.value=false
+            addDetailResumeVM.fragment.value=AddEducation()
         }
 
     }
@@ -57,11 +53,8 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     private fun setAdapter() {
         educationAdapter= EducationAdapter(currentActivity(),Helper.getDegreeList(),false){
             sharePref.writeDataEdu(it)
-            //currentActivity().replaceChoiceFragment(R.id.nav_add_education)
-
-            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
-            intent.putExtra(Constants.FRAGMENT_NAME,Constants.EDUCATION)
-            startActivity(intent)
+            addDetailResumeVM.isHide.value=false
+            addDetailResumeVM.fragment.value=AddEducation()
 
         }
         binding.recyclerviewEducation.adapter=educationAdapter

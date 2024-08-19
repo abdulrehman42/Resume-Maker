@@ -2,39 +2,28 @@ package com.example.resumemaker.views.activities
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityAddDetailResumeBinding
 import com.example.resumemaker.databinding.AddmorealertdialogueBinding
-import com.example.resumemaker.databinding.CustomtablayoutBinding
-import com.example.resumemaker.models.TablayoutModel
+import com.example.resumemaker.utils.Constants
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.fragments.addDetailResume.AchievementFragment
 import com.example.resumemaker.views.fragments.addDetailResume.EducationFragment
 import com.example.resumemaker.views.fragments.addDetailResume.ExperienceFragment
@@ -45,14 +34,16 @@ import com.example.resumemaker.views.fragments.addDetailResume.ObjectiveFragment
 import com.example.resumemaker.views.fragments.addDetailResume.ProjectFragment
 import com.example.resumemaker.views.fragments.addDetailResume.ReferrenceFragment
 import com.example.resumemaker.views.fragments.addDetailResume.SkillFragment
-import com.example.resumemaker.views.fragments.tablayout.VadapterSwipewithIcon
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddDetailResume : BaseActivity() {
     lateinit var currentFragment: AddDetailsBaseFragment<ViewBinding>
     private lateinit var binding: ActivityAddDetailResumeBinding
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
+    lateinit var addDetailResumeVM: AddDetailResumeVM
 
     data class TabModel(
         val id: Int,
@@ -62,16 +53,41 @@ class AddDetailResume : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityAddDetailResumeBinding.inflate(layoutInflater)
+        bottomNavigationColor()
         setContentView(binding.root)
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         setUpTablayout()
         onclick()
+        observeLiveData()
+
+
+    }
+
+    private fun observeLiveData() {
+        addDetailResumeVM.isHide.observe(this) {
+            if (it) {
+                binding.addDetailContainer.isGone = true
+            } else {
+                binding.addDetailContainer.isGone = false
+            }
+        }
+        addDetailResumeVM.fragment.observe(this) {
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            )
+                .replace(R.id.add_detail_container, it)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            finish()
         }
         binding.addTabs.setOnClickListener { alertbox() }
     }
@@ -79,15 +95,14 @@ class AddDetailResume : BaseActivity() {
     @SuppressLint("SetTextI18n")
     override fun onStart() {
         super.onStart()
-        binding.includeTool.textView.text = "Add Detail"
+        binding.includeTool.textView.text = getString(R.string.add_detail)
     }
 
     private fun setUpTablayout() {
         binding.viewPagerContainer.isUserInputEnabled = false
         addItems()
-        for (i in 0 until allTabs.size)
-        {
-            binding.tabLayoutAdddetail.getTabAt(i)?.view?.isClickable=false
+        for (i in 0 until allTabs.size) {
+            binding.tabLayoutAdddetail.getTabAt(i)?.view?.isClickable = false
 
         }
 
@@ -97,7 +112,10 @@ class AddDetailResume : BaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
                 if (currentFragment.csnMoveForward()) {
-                    binding.viewPagerContainer.currentItem = binding.tabLayoutAdddetail.selectedTabPosition
+                    binding.viewPagerContainer.currentItem =
+                        binding.tabLayoutAdddetail.selectedTabPosition
+                } else {
+                    showToast(getString(R.string.field_missing_error))
                 }
             }
 
@@ -151,9 +169,9 @@ class AddDetailResume : BaseActivity() {
         tab.text = tabModel.name
         tab.icon = tabModel.icon
         binding.tabLayoutAdddetail.addTab(tab)
-        for (i in 0 until  allTabs.size)
-        {
-            binding.tabLayoutAdddetail.getTabAt(binding.viewPagerContainer.currentItem)?.view?.isClickable=false
+        for (i in 0 until allTabs.size) {
+            binding.tabLayoutAdddetail.getTabAt(binding.viewPagerContainer.currentItem)?.view?.isClickable =
+                false
         }
     }
 
@@ -185,28 +203,6 @@ class AddDetailResume : BaseActivity() {
         }
     }
 
-    private fun enableEdgeToEdge() {
-        // Set the decor view to enable full-screen layout
-        val window = window
-
-        // Make sure that the content extends into the system bars (status bar and navigation bar)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
-        }
-
-        // Set system bars to be transparent
-        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
-        window.navigationBarColor = Color.TRANSPARENT
-
-        // Optionally, handle light or dark mode for the status bar icons
-        var flags = window.decorView.systemUiVisibility
-        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // Light status bar (dark icons)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            flags =
-                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
-        }
-        window.decorView.systemUiVisibility = flags
-    }
 
     inner class MyViewPagerAdapter : FragmentStateAdapter(supportFragmentManager, lifecycle) {
         override fun getItemCount(): Int {

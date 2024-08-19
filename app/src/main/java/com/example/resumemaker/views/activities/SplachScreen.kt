@@ -19,6 +19,7 @@ class SplachScreen : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        bottomNavigationColor()
         binding=ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         MainScope().launch {
@@ -26,12 +27,6 @@ class SplachScreen : BaseActivity() {
             startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
             finish()
         }
-    }
-
-    private fun initview() {
-        val window = window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = Color.BLUE
     }
 
 

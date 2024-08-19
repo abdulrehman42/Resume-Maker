@@ -83,6 +83,8 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
             if (isConditionMet())
             {
                 tabhost.getTabAt(2)!!.select()
+            }else{
+                currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
     }
