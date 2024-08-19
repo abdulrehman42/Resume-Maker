@@ -19,7 +19,6 @@ class SplachScreen : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        bottomNavigationColor()
         binding=ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         MainScope().launch {

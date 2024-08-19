@@ -2,6 +2,7 @@ package com.example.resumemaker.base
 
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,13 +20,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /*progressBar = KProgressHUD.create(this)
-            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-            .setCancellable(true)
-            .setBackgroundColor(Color.TRANSPARENT)
-            .setAnimationSpeed(1)
-            .setDimAmount(0.5f)*/
+        bottomNavigationColor()
 
         options = NavOptions.Builder()
             .setLaunchSingleTop(true)
@@ -37,19 +32,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-
-    /*fun showLoadingBar() {
-        if (progressBar != null && !progressBar!!.isShowing)
-            progressBar?.show()
-    }
-
-    fun hideLoadingBar() {
-        if (progressBar != null && progressBar!!.isShowing)
-            progressBar?.dismiss()
-    }*/
-
     abstract fun attachViewMode()
-
+    fun replaceAddDetailFragment(action: Int) {
+        Navigation.findNavController(this, R.id.viewPager_container).navigate(action, null, options)
+    }
     fun replaceChoiceFragment(action: Int) {
         Navigation.findNavController(this, R.id.choiceHostFragment).navigate(action, null, options)
     }
@@ -59,36 +45,6 @@ abstract class BaseActivity : AppCompatActivity() {
     fun replaceProfileFragment(action: Int) {
         Navigation.findNavController(this, R.id.profileHostFragment).navigate(action, null, options)
     }
-    /*fun replaceMainFragment(action: Int) {
-        Navigation.findNavController(this, R.id.fragmentMain).navigate(action, null, options)
-    }
-
-    fun replaceMainFragment(action: Int, bundle: Bundle) {
-        Navigation.findNavController(this, R.id.fragmentMain)
-            .navigate(action, bundle, options)
-    }
-
-    fun replaceAndRemoveMainFragment(action1: Int, action2: Int, bundle: Bundle? = null) {
-        Navigation.findNavController(this, R.id.fragmentMain).popBackStack(action1, true)
-        Navigation.findNavController(this, R.id.fragmentMain)
-            .navigate(action2, bundle, options)
-
-    }
-
-    fun replaceFragmentInAuth(action: Int) {          // fragment id not nav grpah
-        Navigation.findNavController(this, R.id.authHostFragment).navigate(action, null, options)
-    }
-
-    fun replaceFragmentInAuth(action: Int, bundle: Bundle) {
-        Navigation.findNavController(this, R.id.authHostFragment).navigate(action, bundle, options)
-    }
-
-    fun replaceAndRemoveFragmentInAuth(action1: Int, action2: Int, bundle: Bundle? = null) {
-        Navigation.findNavController(this, R.id.authHostFragment).popBackStack(action1, true)
-        Navigation.findNavController(this, R.id.authHostFragment).navigate(action2, bundle, options)
-
-    }
-*/
 
     fun showToast(message: String?) {
         message?.let {
@@ -99,10 +55,9 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
     }
-    fun bottomNavigationColor()
+  private fun bottomNavigationColor()
     {
         getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.navy_blue))
-
     }
 
     fun showSnackbar(view: View, message: String?) {

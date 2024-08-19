@@ -43,7 +43,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        bottomNavigationColor()
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

@@ -20,7 +20,6 @@ class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        bottomNavigationColor()
         setContentView(R.layout.activity_profile)
 
     }

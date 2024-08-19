@@ -61,6 +61,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 val intent= Intent(currentActivity(),ChoiceTemplate::class.java)
                 intent.putExtra(Constants.FRAGMENT_NAME,Constants.PROFILE)
                 startActivity(intent)
+                currentActivity().finish()
 
 
             }

@@ -14,24 +14,21 @@ import com.example.resumemaker.models.response.TemplateResponseModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.viewmodels.TemplateViewModel
+import com.example.resumemaker.views.activities.AddDetailResume
 import com.example.resumemaker.views.activities.LoginActivity
 import com.example.resumemaker.views.adapter.TempResListAdpter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BasicFragment : AddDetailsBaseFragment<FragmentBasicBinding>() {
-    lateinit var templateViewModel:TemplateViewModel // by viewModels<TemplateViewModel>()
-
+    lateinit var templateViewModel: TemplateViewModel // by viewModels<TemplateViewModel>()
     override val inflate: Inflate<FragmentBasicBinding>
         get() = FragmentBasicBinding::inflate
 
     override fun init(savedInstanceState: Bundle?) {
-        // Observe LiveData here
-        templateViewModel =  ViewModelProvider(requireActivity())[TemplateViewModel::class]
-        observeLiveData()
-        // Trigger API call directly when the fragment is created
-        callApi(templateViewModel.name.value ?: Constants.BASIC)
+        templateViewModel = ViewModelProvider(requireActivity())[TemplateViewModel::class]
     }
+
 
     override fun observeLiveData() {
         templateViewModel.templateResponse.observe(requireActivity()) {
@@ -40,7 +37,8 @@ class BasicFragment : AddDetailsBaseFragment<FragmentBasicBinding>() {
                     it.data?.let { data ->
                         data.data?.let { temp ->
                             try {
-                                templateViewModel.dataMap.put(templateViewModel.name.value!!,it.data)
+                                templateViewModel.dataMap[templateViewModel.name.value.toString()] =
+                                    it.data
                                 setAdapter(temp)
                             } catch (e: NullPointerException) {
                                 e.printStackTrace()
@@ -50,7 +48,6 @@ class BasicFragment : AddDetailsBaseFragment<FragmentBasicBinding>() {
                 }
 
                 is NetworkResult.Loading -> {
-                    // Handle loading state
                 }
 
                 is NetworkResult.Error -> {
@@ -58,14 +55,21 @@ class BasicFragment : AddDetailsBaseFragment<FragmentBasicBinding>() {
                 }
 
                 else -> {
-                    // Handle any other cases
                 }
             }
+        }
+        templateViewModel.name.observe(viewLifecycleOwner) {
+            callApi(templateViewModel.name.value.toString())
         }
     }
 
     private fun callApi(name: String) {
-        templateViewModel.fetchTemplates("resume", name, 10, 1)
+        if (templateViewModel.dataMap.containsKey(name)) {
+            val storedValue = templateViewModel.dataMap[name]
+            setAdapter(storedValue!!.data)
+        } else {
+            templateViewModel.fetchTemplates("resume", name, 10, 1)
+        }
     }
 
     private fun setAdapter(temp: List<TemplateResponseModel.Data>) {
@@ -81,7 +85,12 @@ class BasicFragment : AddDetailsBaseFragment<FragmentBasicBinding>() {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {
                             if (fromCalled == Constants.CV) {
-                                currentActivity().replaceChoiceFragment(R.id.nav_add_detail)
+                                currentActivity().startActivity(
+                                    Intent(
+                                        currentActivity(),
+                                        AddDetailResume::class.java
+                                    )
+                                )
                             } else {
                                 currentActivity().replaceChoiceFragment(R.id.nav_add_detail_coverletter)
                             }

@@ -41,10 +41,15 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
             tabhost.getTabAt(3)!!.select()
         }
         binding.addeducationbtn.setOnClickListener {
-            val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
+
+           /*currentActivity(). supportFragmentManager.beginTransaction()
+                .replace(R.id.add_detail_container, AddEducation()) // Replace the current fragment
+                .addToBackStack(null) // Optionally add the transaction to the back stack
+                .commit()*/
+            /*val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
             intent.putExtra(Constants.FRAGMENT_NAME,Constants.EDUCATION)
-            startActivity(intent)
-            //currentActivity().replaceChoiceFragment(R.id.nav_add_education)
+            startActivity(intent)*/
+            currentActivity().replaceAddDetailFragment(R.id.nav_add_education)
         }
 
     }
@@ -52,6 +57,8 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     private fun setAdapter() {
         educationAdapter= EducationAdapter(currentActivity(),Helper.getDegreeList(),false){
             sharePref.writeDataEdu(it)
+            //currentActivity().replaceChoiceFragment(R.id.nav_add_education)
+
             val intent= Intent(currentActivity(), ChoiceTemplate::class.java)
             intent.putExtra(Constants.FRAGMENT_NAME,Constants.EDUCATION)
             startActivity(intent)

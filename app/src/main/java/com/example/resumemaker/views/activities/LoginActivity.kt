@@ -16,7 +16,6 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        bottomNavigationColor()
         getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.navy_blue))
         binding= FragmentLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)

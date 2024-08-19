@@ -83,7 +83,7 @@ class AddDetailResume : BaseActivity() {
     }
 
     private fun setUpTablayout() {
-        binding.viewPager.isUserInputEnabled = false
+        binding.viewPagerContainer.isUserInputEnabled = false
         addItems()
         for (i in 0 until allTabs.size)
         {
@@ -97,7 +97,7 @@ class AddDetailResume : BaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
                 if (currentFragment.csnMoveForward()) {
-                    binding.viewPager.currentItem = binding.tabLayoutAdddetail.selectedTabPosition
+                    binding.viewPagerContainer.currentItem = binding.tabLayoutAdddetail.selectedTabPosition
                 }
             }
 
@@ -118,7 +118,7 @@ class AddDetailResume : BaseActivity() {
     }
 
     fun addItems() {
-        binding.viewPager.adapter = MyViewPagerAdapter()
+        binding.viewPagerContainer.adapter = MyViewPagerAdapter()
         val tabTitle = resources.getStringArray(R.array.add_details_tab)
         val tabIcons = resources.obtainTypedArray(R.array.add_details_tab_icons)
 
@@ -153,7 +153,7 @@ class AddDetailResume : BaseActivity() {
         binding.tabLayoutAdddetail.addTab(tab)
         for (i in 0 until  allTabs.size)
         {
-            binding.tabLayoutAdddetail.getTabAt(binding.viewPager.currentItem)?.view?.isClickable=false
+            binding.tabLayoutAdddetail.getTabAt(binding.viewPagerContainer.currentItem)?.view?.isClickable=false
         }
     }
 
@@ -162,9 +162,6 @@ class AddDetailResume : BaseActivity() {
         val binding1 = AddmorealertdialogueBinding.inflate(layoutInflater)
         val dialogBuilder = Dialog(this, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding1.root)
-
-
-        // Check existing fragments and update switches accordingly
 
         binding1.switchid.isChecked = allTabs.contains(extraTabs[0])
         binding1.switchid1.isChecked = allTabs.contains(extraTabs[1])

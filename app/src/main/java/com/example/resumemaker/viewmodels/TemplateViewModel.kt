@@ -12,17 +12,14 @@ import java.util.HashMap
 import javax.inject.Inject
 
 @HiltViewModel
-class TemplateViewModel@Inject constructor(private val templatesRepository: TemplatesRepository): ViewModel() {
+class TemplateViewModel @Inject constructor(private val templatesRepository: TemplatesRepository) :
+    ViewModel() {
     val name = MutableLiveData<String>()
-    val dataMap= HashMap<String,TemplateResponseModel>()
-
+    val dataMap = HashMap<String, TemplateResponseModel>()
     val templateResponse: MutableLiveData<NetworkResult<TemplateResponseModel>>
         get() = templatesRepository.templateResponse
-    fun fetchTemplates(type: String,category: String,pageSize: Int,pageNumber: Int) {
-        if (dataMap.get(category)!=null) {
-            templateResponse.postValue(NetworkResult.Success(dataMap[category]!!))
-            return
-        }
+
+    fun fetchTemplates(type: String, category: String, pageSize: Int, pageNumber: Int) {
         viewModelScope.launch {
             try {
                 templatesRepository.getTemplates(type, category, pageSize, pageNumber)
@@ -31,6 +28,5 @@ class TemplateViewModel@Inject constructor(private val templatesRepository: Temp
             }
         }
     }
-
 
 }
