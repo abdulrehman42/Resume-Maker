@@ -20,6 +20,7 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
 
     fun fetchTemplates(type: String) {
         viewModelScope.launch {
+
             try {
                 templatesRepository.getTemplates(
                     type,
