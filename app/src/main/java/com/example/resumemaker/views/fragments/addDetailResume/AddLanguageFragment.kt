@@ -14,11 +14,13 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddLanguageBinding
 import com.example.resumemaker.models.SuggestionModel
+import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.SuggestionAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
 {
     lateinit var addDetailResumeVM: AddDetailResumeVM
@@ -28,7 +30,10 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
         get() = FragmentAddLanguageBinding::inflate
 
     override fun observeLiveData() {
-
+        addDetailResumeVM.dataResponse.observe(this) {
+            addDetailResumeVM.isHide.value = true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -75,8 +80,7 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
         }
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                addDetailResumeVM.isHide.value=true
-                currentActivity().onBackPressedDispatcher.onBackPressed()
+                apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.single_field_missing_error))
             }
@@ -93,7 +97,12 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
     }
     fun isConditionMet(): Boolean {
         return !binding.languageEdittext.text.toString().isNullOrEmpty()
-
+    }
+    private fun apiCall() {
+        addDetailResumeVM.editInterest(
+            "7422",
+            SingleItemRequestModel(binding.languageEdittext.text.toString())
+        )
     }
 
 }

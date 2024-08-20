@@ -11,11 +11,13 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddProjectBinding
+import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
 import com.example.resumemaker.utils.Helper.dpToPx
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
@@ -23,6 +25,10 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
         get() = FragmentAddProjectBinding::inflate
 
     override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(this) {
+            addDetailResumeVM.isHide.value = true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -31,7 +37,7 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
         val data=sharePref.readDataEducation()
-        if (data.degree.isNotEmpty())
+        if (data.degree!=null)
         {
             binding.projectedittext.setText(data.universityName)
             binding.descriptionedittext.setText(data.degree)
@@ -56,8 +62,7 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                addDetailResumeVM.isHide.value=true
-                currentActivity().onBackPressedDispatcher.onBackPressed()
+                apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -77,5 +82,9 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
         return !binding.projectedittext.text.toString().isNullOrEmpty()&&
                 !binding.descriptionedittext.text.toString().isNullOrEmpty()
     }
-
+    private fun apiCall() {
+        addDetailResumeVM.editProjects(
+            "7422",ProjectRequestModel(binding.descriptionedittext.text.toString(),binding.projectedittext.text.toString())
+        )
+    }
 }

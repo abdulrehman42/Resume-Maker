@@ -8,11 +8,12 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddEducationBinding
-import com.example.resumemaker.models.request.ObjectiveModelRequest
-import com.example.resumemaker.models.request.QualificationRequestModel
+import com.example.resumemaker.models.request.addDetailResume.QualificationRequestModel
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
@@ -22,7 +23,7 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner){
-
+            addDetailResumeVM.isHide.value=true
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
@@ -82,9 +83,7 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
 
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                addDetailResumeVM.isHide.value=true
                 CallApi()
-                currentActivity().onBackPressedDispatcher.onBackPressed()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 

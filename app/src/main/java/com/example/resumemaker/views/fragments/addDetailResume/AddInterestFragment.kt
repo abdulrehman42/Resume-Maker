@@ -7,8 +7,12 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddInterestBinding
+import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
 {
     lateinit var addDetailResumeVM: AddDetailResumeVM
@@ -16,7 +20,10 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
         get() = FragmentAddInterestBinding::inflate
 
     override fun observeLiveData() {
-
+        addDetailResumeVM.dataResponse.observe(this) {
+            addDetailResumeVM.isHide.value = true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -50,8 +57,7 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                addDetailResumeVM.isHide.value=true
-                currentActivity().onBackPressedDispatcher.onBackPressed()
+                apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -69,7 +75,13 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     }
     fun isConditionMet(): Boolean {
         return !binding.interestEdittext.text.toString().isNullOrEmpty()
+    }
 
+    private fun apiCall() {
+        addDetailResumeVM.editInterest(
+            "7422",
+            SingleItemRequestModel(binding.interestEdittext.text.toString())
+        )
     }
 
 

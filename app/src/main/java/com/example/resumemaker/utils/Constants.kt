@@ -10,6 +10,13 @@ object Constants {
     const val CREATE_PROFILE_API="profiles"
     const val EDIT_OBJECTIVE="profiles/{profileId}/objective"
     const val EDIT_EDUCATION="profiles/{profileId}/qualifications"
+    const val EDIT_SKILL="profiles/{profileId}/skills"
+    const val EDIT_EXPERIENCE="profiles/{profileId}/experiences"
+    const val EDIT_INTERESTS="profiles/{profileId}/interests"
+    const val EDIT_LANGUAGE="profiles/{profileId}/languages"
+    const val EDIT_REFERENCE="profiles/{profileId}/references"
+    const val EDIT_ACHIEVEMENTS="profiles/{profileId}/achievements"
+    const val EDIT_PROJECTS="profiles/{profileId}/projects"
 
     const val SAMPLES_API="samples"
 

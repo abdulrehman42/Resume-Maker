@@ -8,8 +8,12 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddReferenceBinding
+import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
@@ -17,6 +21,10 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
         get() = FragmentAddReferenceBinding::inflate
 
     override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(this) {
+            addDetailResumeVM.isHide.value = true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -59,5 +67,12 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
                 !binding.emailedit.text.toString().isNullOrEmpty() &&
                 !binding.phone.text.toString().isNullOrEmpty() &&
                 !binding.companyName.text.toString().isNullOrEmpty()
+    }
+
+    private fun apiCall() {
+        addDetailResumeVM.editReference(
+            "7422", ReferenceRequestModel(binding.companyName.text.toString(),binding.emailedit.text.toString()
+            ,binding.referrencenameedit.text.toString(),binding.phone.text.toString(),binding.jobedittext.text.toString())
+        )
     }
 }

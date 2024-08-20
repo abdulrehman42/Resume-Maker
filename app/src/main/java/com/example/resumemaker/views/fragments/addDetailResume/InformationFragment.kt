@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +16,7 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInformationBinding
-import com.example.resumemaker.models.request.CreateProfileModel
+import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Constants.IMAGE_CODE
 import com.example.resumemaker.utils.DialogueBoxes
@@ -25,7 +24,6 @@ import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseImage
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 @AndroidEntryPoint
@@ -117,10 +115,12 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     }
 
     private fun callApi() {
-        addDetailResumeVM.createProfile(CreateProfileModel(
+        addDetailResumeVM.createProfile(
+            CreateProfileRequestModel(
             binding.nameedittext.text.toString(),binding.emailtext.text.toString(),
             binding.phoneedittext.text.toString(),image,gender,binding.jobedittext.text.toString(),
-            binding.dobEdit.text.toString(),binding.address.text.toString()))
+            binding.dobEdit.text.toString(),binding.address.text.toString())
+        )
     }
 
     fun isConditionMet(): Boolean {

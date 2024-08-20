@@ -11,18 +11,26 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddExperienceBinding
+import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.Helper.dpToPx
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentAddExperienceBinding>
         get() = FragmentAddExperienceBinding::inflate
 
     override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(this) {
+            addDetailResumeVM.isHide.value = true
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -95,8 +103,7 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         }
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                addDetailResumeVM.isHide.value=true
-                currentActivity().onBackPressedDispatcher.onBackPressed()
+                apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -118,4 +125,17 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
                 !binding.startdateedittext.text.toString().isNullOrEmpty()&&
                 !binding.enddateedittext.text.toString().isNullOrEmpty()
     }
+
+    private fun apiCall() {
+        addDetailResumeVM.editExperience(
+            "7422",
+            ExperienceRequestModel(
+                binding.companyName.text.toString(),
+                binding.description.text.toString(),
+                employmentType = "",binding.enddateedittext.text.toString(),binding.startdateedittext.text.toString(),
+                binding.jobName.text.toString()
+            )
+        )
+    }
+
 }

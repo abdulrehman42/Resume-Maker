@@ -10,9 +10,13 @@ import com.example.resumemaker.json.JSONManager
 import com.example.resumemaker.models.api.ProfileModel
 import com.example.resumemaker.models.api.SampleResponseModel
 import com.example.resumemaker.models.api.TemplateModel
-import com.example.resumemaker.models.request.CreateProfileModel
-import com.example.resumemaker.models.request.ObjectiveModelRequest
-import com.example.resumemaker.models.request.QualificationRequestModel
+import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
+import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
+import com.example.resumemaker.models.request.addDetailResume.QualificationRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import retrofit2.Call
@@ -26,7 +30,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
     private val _resumeResponse = MutableLiveData<NetworkResult<JsonElement>>()
 
     fun createProfile(
-        profileModel: CreateProfileModel,
+        profileModel: CreateProfileRequestModel,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -83,7 +87,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
     }
     fun editObjective(
         profileId:String,
-        objective: ObjectiveModelRequest,
+        objective: SingleItemRequestModel,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -118,6 +122,212 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
         chooseTemplateService.editEducation(profileId,qualification).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+
+    fun editSkill(
+        profileId:String,
+        skill: SingleItemRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editSkill(profileId,skill).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+    fun editInterest(
+        profileId:String,
+        interest: SingleItemRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editInterest(profileId,interest).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+    fun editLanguage(
+        profileId:String,
+        language: SingleItemRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editLanguage(profileId,language).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+    fun editReference(
+        profileId:String,
+        referenceRequestModel: ReferenceRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editReference(profileId,referenceRequestModel).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+        fun editAchievement(
+        profileId:String,
+        achievRequestModel: AchievRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editAchievment(profileId,achievRequestModel).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+
+    fun editExperience(
+        profileId:String,
+        experienceRequestModel: ExperienceRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editExperience(profileId,experienceRequestModel).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModel>() {}.type
+                        ) as ProfileModel
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+
+    fun editProjects(
+        profileId:String,
+        projectRequestModel: ProjectRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editProject(profileId,projectRequestModel).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(

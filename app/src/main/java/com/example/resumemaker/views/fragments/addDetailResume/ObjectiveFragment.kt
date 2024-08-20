@@ -8,7 +8,7 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentObjectiveBinding
 import com.example.resumemaker.models.api.SampleResponseModel
-import com.example.resumemaker.models.request.ObjectiveModelRequest
+import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.ObjSampleAdapter
@@ -85,7 +85,9 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     private fun callEditAPi() {
-        addDetailResumeVM.editObjective("7422",ObjectiveModelRequest(binding.objectiveTextInput.text.toString()))
+        addDetailResumeVM.editObjective("7422",
+            SingleItemRequestModel(binding.objectiveTextInput.text.toString())
+        )
 
     }
 

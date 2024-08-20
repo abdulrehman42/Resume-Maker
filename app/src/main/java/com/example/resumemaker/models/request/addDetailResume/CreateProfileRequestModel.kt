@@ -1,15 +1,13 @@
-package com.example.resumemaker.models.request
-
-import kotlinx.serialization.SerialName
+package com.example.resumemaker.models.request.addDetailResume
 
 
-data class CreateProfileModel(
+
+data class CreateProfileRequestModel(
     val name: String,
     val email: String,
     val phone: String,
     val image: String,
     val gender: String,
-    @SerialName("jobTitle")
     val jobTitle: String,
     val dob: String,
     val address: String

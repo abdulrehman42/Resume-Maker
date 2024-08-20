@@ -1,4 +1,4 @@
-package com.example.resumemaker.models.request
+package com.example.resumemaker.models.request.addDetailResume
 
 data class QualificationRequestModel(
     val degree: String,
