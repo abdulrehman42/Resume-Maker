@@ -3,14 +3,11 @@ package com.example.resumemaker.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.resumemaker.api.http.NetworkResult
 import com.example.resumemaker.api.http.ResponseCallback
 import com.example.resumemaker.api.repository.TemplatesRepository
 import com.example.resumemaker.models.api.TemplateModel
-import com.google.gson.JsonElement
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.HashMap
 import javax.inject.Inject
 
 @HiltViewModel

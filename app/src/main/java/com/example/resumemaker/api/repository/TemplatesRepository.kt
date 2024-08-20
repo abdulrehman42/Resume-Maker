@@ -21,7 +21,6 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
 
     private val _templateResponse = MutableLiveData<NetworkResult<JsonElement>>()
 
-
      fun getTemplates(
         type: String,
         callback: ResponseCallback
@@ -39,17 +38,16 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<Map<String, List<TemplateModel>>>() {}.type
+                            object : TypeToken<Map<String,List<TemplateModel>>>() {}.type
                         ) as Map<String, List<TemplateModel>>
                     )
                 }
 
                 override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure("")
+                    callback.onFailure(t.message)
                 }
 
             })
         )
-
     }
 }

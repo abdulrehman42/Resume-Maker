@@ -108,16 +108,16 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxChooseImage(curentactivity: Activity) {
+    fun alertboxChooseImage(curentactivity: Activity,onclick:(String)->Unit) {
         val binding= ChooseImageLayoutBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.camerbtn.setOnClickListener {
-
+            onclick(Constants.CAMERA)
             dialogBuilder.dismiss()
         }
         binding.gallerybtn.setOnClickListener {
-
+            onclick(Constants.GALLERY)
             dialogBuilder.dismiss()
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
@@ -196,7 +196,7 @@ object DialogueBoxes {
         builder.setTitle("Select Date")
 
         builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-            param.onButtonClick("${dayPicker.dayOfMonth}/${dayPicker.month}/${dayPicker.year}") // Set the date in your EditText
+            param.onButtonClick("${dayPicker.month}/${dayPicker.dayOfMonth}/${dayPicker.year}") // Set the date in your EditText
         })
 
         builder.setNegativeButton("Cancel", null)

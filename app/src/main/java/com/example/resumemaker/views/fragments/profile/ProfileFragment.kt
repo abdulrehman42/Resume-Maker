@@ -27,7 +27,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().finish()
         }
-        binding.includeTool.textView.setText("Profile")
+        binding.includeTool.textView.text = getString(R.string.profile)
         setadapter()
     }
 
@@ -53,7 +53,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         val profileAdapter=ProfileAdapter(currentActivity(),Helper.getProfileList1())
         {
             val fromCalled=currentActivity().intent.getStringExtra(Constants.IS_RESUME)
-
             if (fromCalled==Constants.PROFILE){
                 sharePref.writeData(it)
                 currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
@@ -62,8 +61,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     .replace(R.id.profileHostFragment, ResumePreviewFragment())
                     .addToBackStack(null)
                     .commit()
-
-
             }
 
         }

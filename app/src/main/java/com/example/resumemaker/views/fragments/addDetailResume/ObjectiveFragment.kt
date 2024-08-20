@@ -1,34 +1,37 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.core.view.isGone
+import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
-import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentObjectiveBinding
+import com.example.resumemaker.models.api.SampleResponseModel
+import com.example.resumemaker.models.request.ObjectiveModelRequest
 import com.example.resumemaker.utils.Helper
-import com.example.resumemaker.utils.Helper.dpToPx
+import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.ObjSampleAdapter
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
+    lateinit var addDetailResumeVM:AddDetailResumeVM
     lateinit var objSampleAdapter: ObjSampleAdapter
+    lateinit var tabhost:TabLayout
     var num=0
 
     override val inflate: Inflate<FragmentObjectiveBinding>
         get() = FragmentObjectiveBinding::inflate
 
     override fun observeLiveData() {
-
+        addDetailResumeVM.getSamples.observe(viewLifecycleOwner){
+            setAdapter(it)
+        }
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner){
+            tabhost.getTabAt(2)!!.select()
+        }
     }
 
     override fun csnMoveForward(): Boolean {
@@ -36,42 +39,34 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        binding.objectiveTextInputLayout.apply {
-            // Adjust the layout parameters of the end icon
-            endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set
-            val endIconView = findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
-
-            val params = endIconView.layoutParams as FrameLayout.LayoutParams
-            params.gravity = Gravity.BOTTOM or Gravity.END
-            params.marginEnd = 8.dpToPx(context) // Adjust margin to your needs
-            params.bottomMargin = 8.dpToPx(context)
-            endIconView.layoutParams = params
-        }
-        setAdapter()
+        addDetailResumeVM= ViewModelProvider(this)[AddDetailResumeVM::class.java]
+        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
+        callAPi()
         onclick()
 
     }
 
+    private fun callAPi() {
+        addDetailResumeVM.getSample("objective")
+    }
+
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
 
         binding.viewall.setOnClickListener {
             objSampleAdapter.updateMaxItemCount(Helper.getSampleList().size)
-
-            /*MainScope().launch {
-                binding.viewall.isGone=true
-                binding.viewLess.isGone=false
-            }*/
         }
         binding.viewless.setOnClickListener {
             objSampleAdapter.updateMaxItemCount(2)
             binding.viewall.setOnClickListener {
                 num += 2
-                setAdapter()
+                objSampleAdapter.updateMaxItemCount(num)
+
+                //setAdapter(it)
             }
             binding.viewless.setOnClickListener {
                 num -= 2
-                setAdapter()
+                objSampleAdapter.updateMaxItemCount(num)
+                // setAdapter(it)
             }
 
 
@@ -82,16 +77,21 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
         binding.nextbtn.setOnClickListener {
             if (isConditionMet())
             {
-                tabhost.getTabAt(2)!!.select()
+                callEditAPi()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
     }
 
-    private fun setAdapter() {
+    private fun callEditAPi() {
+        addDetailResumeVM.editObjective("7422",ObjectiveModelRequest(binding.objectiveTextInput.text.toString()))
 
-        objSampleAdapter=ObjSampleAdapter(currentActivity(),Helper.getSampleList(),{
+    }
+
+    private fun setAdapter(sampleResponseModels: List<SampleResponseModel>) {
+
+        objSampleAdapter=ObjSampleAdapter(currentActivity(),sampleResponseModels,{
             binding.objectiveTextInput.setText(it)
         },{
             if (it) {

@@ -5,10 +5,5 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_home">
 
-    <fragment
-        android:id="@+id/nav_home"
-        android:label="@string/app_name"
-        android:name="com.example.resumemaker.views.fragments.HomeFragment"
-        tools:layout="@layout/fragment_home" />
 
 </navigation>

@@ -2,6 +2,8 @@ package com.example.resumemaker.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -281,5 +283,24 @@ object Helper {
 
     fun Int.dpToPx(context: Context): Int {
         return (this * context.resources.displayMetrics.density).toInt()
+    }
+
+    /* val endIconView = findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
+               val params = endIconView.layoutParams as FrameLayout.LayoutParams
+               params.gravity = Gravity.BOTTOM or Gravity.END
+               params.marginEnd = 8.dpToPx(context) // Adjust margin to your needs
+               params.bottomMargin = 8.dpToPx(context)
+               endIconView.layoutParams = params*/
+
+    fun getFilePathFromUri(context: Context,uri: Uri): String? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            if (it.moveToFirst()) {
+                return it.getString(columnIndex)
+            }
+        }
+        return null
     }
 }

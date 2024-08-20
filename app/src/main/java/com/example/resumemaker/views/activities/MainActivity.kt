@@ -1,6 +1,7 @@
 package com.example.resumemaker.views.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -14,19 +15,21 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityMainActivtyBinding
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes.alertboxDelete
 import com.example.resumemaker.utils.DialogueBoxes.alertboxLogout
 import com.example.resumemaker.utils.DialogueBoxes.alertboxPurchase
 import com.example.resumemaker.utils.DialogueBoxes.alertboxRate
 import com.example.resumemaker.utils.DialogueBoxes.link
 import com.example.resumemaker.utils.DialogueBoxes.shareAppMethod
-import com.example.resumemaker.views.fragments.HomeFragment
+import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +37,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var drawerLayout: DrawerLayout
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainActivtyBinding
     private var flagDrawer = false
     private val scaleFactor = 6f
@@ -45,22 +47,32 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         enableEdgeToEdge()
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setdrawer()
         onclick()
-
-        if (savedInstanceState == null) {
-            replaceFragment(HomeFragment())
-        }
 
     }
 
     private fun onclick() {
-        binding.logoutBtn.setOnClickListener{
+        binding.logoutBtn.setOnClickListener {
             drawerLayout.closeDrawers()
             alertboxLogout(this)
         }
-
+        binding.appBarMainActivty.contentmain.cvResumeBtn.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra(Constants.IS_RESUME, true)
+            startActivity(intent)
+        }
+        binding.appBarMainActivty.contentmain.coverletterBtn.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra(Constants.IS_RESUME, false)
+            startActivity(intent)
+        }
+        binding.appBarMainActivty.contentmain.downloadBtn.setOnClickListener {
+            startActivity(Intent(this, DownloadActivity::class.java))
+        }
+        binding.appBarMainActivty.contentmain.profileBtn.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 
     private fun setdrawer() {
@@ -108,7 +120,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
 
             override fun onDrawerStateChanged(newState: Int) {
-                // Optionally handle the state changes
             }
         })
 
@@ -117,14 +128,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_rate -> alertboxRate(this)
-            R.id.nav_share-> shareAppMethod(this)
-            R.id.nav_delete-> alertboxDelete(this)
-            R.id.nav_privacy->link("https://www.pentabitapps.com/privacy-policy",this)
-            R.id.nav_term->link("https://www.pentabitapps.com/terms-of-use",this)
-            R.id.nav_more-> link("https://play.google.com/store/apps/developer?id=Pentabit Apps",this)
-
+            R.id.nav_share -> shareAppMethod(this)
+            R.id.nav_delete -> alertboxDelete(this)
+            R.id.nav_privacy -> link("https://www.pentabitapps.com/privacy-policy", this)
+            R.id.nav_term -> link("https://www.pentabitapps.com/terms-of-use", this)
+            R.id.nav_more -> link(
+                "https://play.google.com/store/apps/developer?id=Pentabit Apps",
+                this
+            )
         }
-
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -143,28 +155,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main_activty, menu)
         return true
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main_activty)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId)
-        {
-            R.id.action_settings-> {alertboxPurchase(this)}
+        when (item.itemId) {
+            R.id.action_settings -> {
+                alertboxPurchase(this)
+            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-
-    fun replaceFragment(fragment: Fragment) {
-        val beginTranstion: FragmentTransaction = supportFragmentManager.beginTransaction()
-        beginTranstion.replace(R.id.nav_host_fragment_content_main_activty, fragment).commit()
     }
 
     private fun enableEdgeToEdge() {

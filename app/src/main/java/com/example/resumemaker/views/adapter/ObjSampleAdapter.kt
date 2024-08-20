@@ -6,18 +6,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.SampleitemsBinding
-import com.example.resumemaker.models.SampleModel
+import com.example.resumemaker.models.api.SampleResponseModel
 
-class ObjSampleAdapter(val context: Context,val list:List<SampleModel>,val onclick:(String)->Unit,val onselect:(Boolean)->Unit): RecyclerView.Adapter<ObjSampleAdapter.ViewHolder>() {
+class ObjSampleAdapter(
+    val context: Context,
+    val list: List<SampleResponseModel>,
+    val onclick:(String)->Unit,
+    val onselect:(Boolean)->Unit): RecyclerView.Adapter<ObjSampleAdapter.ViewHolder>() {
     var maxItemCount =2
     inner class ViewHolder(private val binding: SampleitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun setData(model: SampleModel) {
-            binding.sampleText.text=model.objectiveText
+        fun setData(model: SampleResponseModel) {
+            binding.sampleText.text=model.body
             binding.sampleText.setOnClickListener {
-                onclick(model.objectiveText)
+                onclick(model.body)
             }
         }
     }

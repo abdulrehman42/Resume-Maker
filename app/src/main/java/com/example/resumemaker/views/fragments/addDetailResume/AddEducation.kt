@@ -8,6 +8,8 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddEducationBinding
+import com.example.resumemaker.models.request.ObjectiveModelRequest
+import com.example.resumemaker.models.request.QualificationRequestModel
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 
@@ -19,13 +21,18 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
         get() = FragmentAddEducationBinding::inflate
 
     override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner){
+
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_education)
         val data = sharePref.readDataEducation()
-        if (data.degree.isNotEmpty()) {
+        if (data.degree!=null) {
             binding.instituenameedittext.setText(data.universityName)
             binding.degreeName.setText(data.degree)
             binding.startdateedittext.setText(data.startDate)
@@ -76,6 +83,7 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
                 addDetailResumeVM.isHide.value=true
+                CallApi()
                 currentActivity().onBackPressedDispatcher.onBackPressed()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
@@ -90,6 +98,12 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value=true
         }
+    }
+
+    private fun CallApi() {
+        addDetailResumeVM.editQualification("7422",
+            QualificationRequestModel(binding.degreeName.text.toString(),binding.enddateedittext.text.toString(),binding.instituenameedittext.text.toString(),"",binding.startdateedittext.text.toString())
+        )
     }
 
 

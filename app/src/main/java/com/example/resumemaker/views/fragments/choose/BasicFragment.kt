@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.callbacks.OnTemplateSelected
+import com.example.resumemaker.callbacks.OnTemplateSelected
 import com.example.resumemaker.R
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentBasicBinding

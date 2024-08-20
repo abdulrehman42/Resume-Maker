@@ -131,4 +131,8 @@
 
     <string name="add_interest">Add Interest</string>
     <string name="add_detail">Add Detail</string>
+    <string name="choose_templates">Choose Template</string>
+    <string name="profile">Profile</string>
+    <string name="male">male</string>
+    <string name="female">female</string>
 </resources>

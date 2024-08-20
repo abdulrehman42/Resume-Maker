@@ -3,7 +3,6 @@ package com.example.resumemaker.views.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -12,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.callbacks.OnTemplateSelected
+import com.example.resumemaker.callbacks.OnTemplateSelected
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityChoiceTemplateBinding
@@ -38,7 +37,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityChoiceTemplateBinding.inflate(layoutInflater)
-        binding.includeTool.textView.text = "Choose Template"
+        binding.includeTool.textView.text = getString(R.string.choose_templates)
         setContentView(binding.root)
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class]
         isResume = intent.getBooleanExtra(Constants.IS_RESUME, false)
@@ -80,17 +79,13 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
 
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-//                val icon = tab.icon
-//                icon?.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN)
                 binding.viewPager.currentItem = binding.TabLayout.selectedTabPosition
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-//                tab.icon?.setTint(getColor(R.color.grey))
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-                // Handle tab reselection if needed
             }
         }
         binding.TabLayout.addOnTabSelectedListener(tabSelectedListener)

@@ -13,15 +13,27 @@ import com.google.android.material.elevation.SurfaceColors
 
 class LoginActivity : BaseActivity() {
     lateinit var binding:FragmentLoginBinding
+    var isResume=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.navigationBarColor = ContextCompat.getColor(this,R.color.navy_blue)
         binding= FragmentLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        isResume=intent.getBooleanExtra(Constants.IS_RESUME,false)
         binding.loginbtnlinearbtn.setOnClickListener{
-            val intent=Intent(this,ProfileActivity::class.java)
-            startActivity(intent)
-            finish()
+            if (isResume)
+            {
+                val intent =Intent(this,ProfileActivity::class.java)
+                intent.putExtra(Constants.IS_RESUME,Constants.PROFILE)
+                startActivity(intent)
+                finish()
+            }else{
+                val intent=Intent(Intent(this,ChoiceTemplate::class.java))
+                intent.putExtra(Constants.IS_RESUME,isResume)
+                startActivity(intent)
+                finish()
+            }
+
         }
 
     }

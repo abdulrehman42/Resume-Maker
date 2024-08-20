@@ -30,6 +30,7 @@
                 android:layout_height="@dimen/_55sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:src="@drawable/imgplaceholder"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -155,12 +156,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-
+                    android:id="@+id/address"
                     android:hint="Address (Optional)" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout6"
+                android:id="@+id/dob_inputlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -175,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-
+                    android:id="@+id/dob_edit"
                     android:hint="Date of Birth(Optional)" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -188,8 +189,8 @@
                 android:background="@drawable/greybgradius"
                 android:gravity="center"
                 android:text="Man"
-                app:layout_constraintStart_toStartOf="@+id/textInputLayout6"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+                app:layout_constraintStart_toStartOf="@+id/dob_inputlayout"
+                app:layout_constraintTop_toBottomOf="@+id/dob_inputlayout" />
 
             <TextView
                 android:id="@+id/woman"
@@ -202,10 +203,10 @@
                 android:gravity="center"
                 android:text="Women"
                 app:layout_constraintBottom_toBottomOf="@+id/man"
-                app:layout_constraintEnd_toEndOf="@+id/textInputLayout6"
+                app:layout_constraintEnd_toEndOf="@+id/dob_inputlayout"
                 app:layout_constraintHorizontal_bias="0.89"
                 app:layout_constraintStart_toEndOf="@+id/man"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+                app:layout_constraintTop_toBottomOf="@+id/dob_inputlayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
     <TextView

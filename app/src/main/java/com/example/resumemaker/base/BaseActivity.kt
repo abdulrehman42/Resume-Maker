@@ -11,12 +11,13 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.example.resumemaker.R
+import com.example.resumemaker.utils.SharePref
 import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseActivity : AppCompatActivity() {
 
    // var progressBar: KProgressHUD? = null
-
+   lateinit var sharePref: SharePref
      lateinit var options: NavOptions
 
 
@@ -24,6 +25,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bottomNavigationColor()
         enableEdgeToEdge()
+        sharePref = SharePref.mInstence!!
         options = NavOptions.Builder()
             .setLaunchSingleTop(true)
             .setEnterAnim(R.anim.fade_in)
