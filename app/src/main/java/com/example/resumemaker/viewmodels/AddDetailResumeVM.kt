@@ -11,10 +11,13 @@ import com.example.resumemaker.models.api.SampleResponseModel
 import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.InterestRequestModel
+import com.example.resumemaker.models.request.addDetailResume.LanguageRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.QualificationModelRequest
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
-import com.example.resumemaker.models.request.addDetailResume.QualificationRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +26,8 @@ import javax.inject.Inject
 class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDetailResumeRepository):ViewModel() {
     val loadingState = MutableLiveData<Boolean>()
 
-    var fragment=MutableLiveData<Fragment>()
-    var isHide=MutableLiveData<Boolean>()
+    var fragment=SingleLiveEvent<Fragment>()
+    var isHide=SingleLiveEvent<Boolean>()
     val dataResponse = MutableLiveData<ProfileModelAddDetailResponse>()
     val getSamples=MutableLiveData<List<SampleResponseModel>>()
 
@@ -92,7 +95,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
     }
-    fun editQualification(profileId:String, qualification: QualificationRequestModel) {
+    fun editQualification(profileId:String, qualification: QualificationModelRequest) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -134,7 +137,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
     }
-    fun editSkill(profileId:String, skill: SingleItemRequestModel) {
+    fun editSkill(profileId:String, skill: SkillRequestModel) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -155,7 +158,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
     }
-    fun editInterest(profileId:String, interest: SingleItemRequestModel) {
+    fun editInterest(profileId:String, interest: InterestRequestModel) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -176,7 +179,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
     }
-        fun editLanguage(profileId: String, language: SingleItemRequestModel) {
+        fun editLanguage(profileId: String, language: LanguageRequestModel) {
             viewModelScope.launch {
                 loadingState.postValue(true)
                 try {

@@ -2,6 +2,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
@@ -22,7 +23,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
         get() = FragmentEducationBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
             setAdapter(it.userQualifications)
         }
     }

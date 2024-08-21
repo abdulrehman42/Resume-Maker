@@ -8,16 +8,14 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentLanguageBinding
 import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.adapter.SkillAdapter
-import com.example.resumemaker.views.adapter.adddetailresume.LanguageAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.SingleStringAdapter
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
-    lateinit var languageAdapter: LanguageAdapter
+    lateinit var singleStringAdapter: SingleStringAdapter
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentLanguageBinding>
         get() = FragmentLanguageBinding::inflate
@@ -43,17 +41,17 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     }
 
     private fun setadapter(userLanguages: List<String>) {
-       languageAdapter.submitList(userLanguages)
-        languageAdapter.setOnEditItemClickCallback {
+       singleStringAdapter.submitList(userLanguages)
+        singleStringAdapter.setOnEditItemClickCallback {
             callDeleteApi()
         }
-        languageAdapter.setOnItemDeleteClickCallback {
+        singleStringAdapter.setOnItemDeleteClickCallback {
             sharePref.writeString(Constants.DATA,it)
             addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = AddLanguageFragment()
         }
         binding.recyclerviewLanguage.apply {
-            adapter = languageAdapter
+            adapter = singleStringAdapter
         }
     }
 
@@ -78,7 +76,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         }
         binding.addlanguage.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddEducation()
+            addDetailResumeVM.fragment.value = AddLanguageFragment()
         }
     }
 }

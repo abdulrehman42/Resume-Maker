@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
-    lateinit var projectAdapter: ProjectAdapter
+    val projectAdapter= ProjectAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentProjectBinding>
         get() = FragmentProjectBinding::inflate

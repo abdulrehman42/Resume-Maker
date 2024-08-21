@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.addCallback
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
@@ -21,13 +22,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     var endDate: String? =null
     override val inflate: Inflate<FragmentAddExperienceBinding>
         get() = FragmentAddExperienceBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -35,7 +36,6 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
 
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text=getString(R.string.add_experience)
-        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
         val data=sharePref.readProfileExperience()
         if (data!=null)

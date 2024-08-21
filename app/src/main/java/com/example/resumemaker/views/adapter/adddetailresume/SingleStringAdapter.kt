@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.SkillitemsBinding
 
-class LanguageAdapter : ListAdapter<String, LanguageAdapter.ViewHolder>(TemplateDiffCallback) {
+class SingleStringAdapter : ListAdapter<String, SingleStringAdapter.ViewHolder>(TemplateDiffCallback) {
     inner class ViewHolder(private val binding: SkillitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")

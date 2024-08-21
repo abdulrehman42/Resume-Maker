@@ -4,7 +4,7 @@ object Constants {
     const val TEMPLATE_ID="template"
     const val BASE_MEDIA_URL="https://n0ngl4zx.tinifycdn.com/"
     const val BASE_URL= "http://35.164.228.120:9000/v1/"
-    const val TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlYWM5Mjc3LWNjYjgtNDAyOC1hM2UxLTYzNWI1OTM2NGU4NyIsIm5hbWUiOm51bGwsImVtYWlsIjoiYS5yZWhtYW5AcGVudGFiaXRsYWIuY29tIiwib2F1dGhJZCI6InN0cmluZyIsInBob25lTGFuZ3VhZ2UiOm51bGwsIm9hdXRoUHJvdmlkZXIiOiJsaW5rZWRJbiIsImlzRGVsZXRlZCI6ZmFsc2UsInByb2ZpbGVzIjpbNzM4OSw3Mzk3LDc0MDIsNzQyMl0sInVzZXJUeXBlIjoidXNlciIsImlhdCI6MTcyNDIxNjQ5OX0.iumSBclVRPMuicXWNce_103v3ok4rNwWbUYT6IkVu1w"
+    const val TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlYWM5Mjc3LWNjYjgtNDAyOC1hM2UxLTYzNWI1OTM2NGU4NyIsIm5hbWUiOm51bGwsImVtYWlsIjoiYS5yZWhtYW5AcGVudGFiaXRsYWIuY29tIiwib2F1dGhJZCI6InN0cmluZyIsInBob25lTGFuZ3VhZ2UiOm51bGwsIm9hdXRoUHJvdmlkZXIiOiJsaW5rZWRJbiIsImlzRGVsZXRlZCI6ZmFsc2UsInByb2ZpbGVzIjpbNzM4OSw3Mzk3LDc0MDIsNzQyMl0sInVzZXJUeXBlIjoidXNlciIsImlhdCI6MTcyNDI3MjQ3MH0.fC4IYY5fItEi4aT-JNmj4A0zogcv1PqBWRT_aymHYVs"
 
     //api
     const val TEMPLATE_API="templates/list"
@@ -32,6 +32,8 @@ object Constants {
     const val RESUME="resume"
     const val PREFS_TOKEN_FILE = "PlayDateApp"
     const val DATA="data"
+    const val DATA_PROFILE="data"
+
     const val TITLE_DATA="data"
     const val IMAGE_CODE = 100
     const val IS_RESUME="IS_RESUME"

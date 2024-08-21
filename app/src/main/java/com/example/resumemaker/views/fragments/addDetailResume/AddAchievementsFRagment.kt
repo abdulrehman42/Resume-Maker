@@ -21,8 +21,8 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
         get() = FragmentAddAchievementsFRagmentBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
-            addDetailResumeVM.isHide.value = true
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+          //  addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
     }

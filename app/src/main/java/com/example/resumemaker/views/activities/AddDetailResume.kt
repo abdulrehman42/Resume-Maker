@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
@@ -87,8 +88,12 @@ class AddDetailResume : BaseActivity() {
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
+            sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
             finish()
         }
+        onBackPressedDispatcher.addCallback(this){
+            sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
+            finish()}
         binding.addTabs.setOnClickListener { alertbox() }
     }
 

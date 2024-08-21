@@ -32,7 +32,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     private lateinit var selectedImageBitmap: Bitmap
     var image=""
     var gender="male"
-    lateinit var data: ProfileModelAddDetailResponse
+    var data: ProfileModelAddDetailResponse?=null
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     lateinit var tabhost:TabLayout
 
@@ -47,7 +47,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner)
         {
-            sharePref.writeString(Constants.PROFILE_ID,"7422")
+            sharePref.writeString(Constants.PROFILE_ID,it.id.toString())
             tabhost.getTabAt(1)!!.select()
         }
     }
@@ -55,9 +55,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     override fun init(savedInstanceState: Bundle?) {
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         data = sharePref.readProfileData()
-        if (data != null)
-        {
-            setValue(data)
+        data?.let {
+            setValue(it)
         }
         onclick()
     }
@@ -71,7 +70,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             address.setText(data.address)
             dobEdit.setText(data.dob)
         }
-        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL+data.path).into(binding.shapeableImageView)
+        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL+data.path).placeholder(R.drawable.imgplaceholder).into(binding.shapeableImageView)
     }
 
     @SuppressLint("ResourceAsColor")
@@ -125,6 +124,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                     callApiUpdate()
                 }
                 callApi()*/
+                sharePref.writeString(Constants.PROFILE_ID,"7422")
+
                 tabhost.getTabAt(1)!!.select()
 
             } else {
@@ -135,7 +136,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     }
 
     private fun callApiUpdate() {
-        addDetailResumeVM.updateProfile(data.id.toString(),
+        addDetailResumeVM.updateProfile(data!!.id.toString(),
             CreateProfileRequestModel(
                 binding.nameedittext.text.toString(),binding.emailtext.text.toString(),
                 binding.phoneedittext.text.toString(),image,gender,binding.jobedittext.text.toString(),

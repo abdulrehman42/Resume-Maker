@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    lateinit var experienceAdapter: ExperienceAdapter
+    val experienceAdapter=ExperienceAdapter()
     override val inflate: Inflate<FragmentExperienceBinding>
         get() = FragmentExperienceBinding::inflate
 

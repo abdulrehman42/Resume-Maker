@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
-    lateinit var referenceAdapter: ReferenceAdapter
+    val referenceAdapter= ReferenceAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentReferrenceBinding>
         get() = FragmentReferrenceBinding::inflate

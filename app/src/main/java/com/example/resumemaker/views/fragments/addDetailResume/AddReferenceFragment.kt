@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.addCallback
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
@@ -16,13 +17,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
 
     override val inflate: Inflate<FragmentAddReferenceBinding>
         get() = FragmentAddReferenceBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -30,7 +31,6 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_referrence)
         val data = sharePref.readProfileReference()
         if (data != null) {
@@ -45,8 +45,7 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                addDetailResumeVM.isHide.value=true
-                currentActivity().onBackPressedDispatcher.onBackPressed()
+                apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 

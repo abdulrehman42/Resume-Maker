@@ -4,10 +4,13 @@ import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
 import com.example.resumemaker.models.request.addDetailResume.CoverLetterRequestModel
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.InterestRequestModel
+import com.example.resumemaker.models.request.addDetailResume.LanguageRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.QualificationModelRequest
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
-import com.example.resumemaker.models.request.addDetailResume.QualificationRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import com.example.resumemaker.utils.Constants
 import com.google.gson.JsonElement
 import retrofit2.Call
@@ -57,25 +60,25 @@ interface ChooseTemplateService {
     @PUT(Constants.EDIT_EDUCATION)
     fun editEducation(
         @Path("profileId") profileId: String,
-        @Body qualification: QualificationRequestModel
+        @Body qualifications: QualificationModelRequest
     ): Call<JsonElement>
 
     @PUT(Constants.EDIT_SKILL)
     fun editSkill(
         @Path("profileId") profileId: String,
-        @Body skills: SingleItemRequestModel
+        @Body skills: SkillRequestModel
     ): Call<JsonElement>
 
     @PUT(Constants.EDIT_INTERESTS)
     fun editInterest(
         @Path("profileId") profileId: String,
-        @Body interests: SingleItemRequestModel
+        @Body interests: InterestRequestModel
     ): Call<JsonElement>
 
     @PUT(Constants.EDIT_LANGUAGE)
     fun editLanguage(
         @Path("profileId") profileId: String,
-        @Body languages: SingleItemRequestModel
+        @Body languages: LanguageRequestModel
     ): Call<JsonElement>
 
     @PUT(Constants.EDIT_REFERENCE)

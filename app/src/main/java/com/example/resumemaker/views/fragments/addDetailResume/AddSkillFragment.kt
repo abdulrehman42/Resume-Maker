@@ -1,21 +1,18 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.addCallback
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.resumemaker.R
-import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddSkillBinding
 import com.example.resumemaker.models.SuggestionModel
-import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
+import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.SuggestionAdapter
 import com.google.android.material.textfield.TextInputLayout
@@ -23,25 +20,25 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
-    lateinit var suggestionAdapter: SuggestionAdapter
     lateinit var suggestionAdapter1: SuggestionAdapter
-    lateinit var addDetailResumeVM: AddDetailResumeVM
-    val list = ArrayList<SuggestionModel>()
+    val data=sharePref.readProfileData()
+    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
+    var list = ArrayList<String>()
 
 
     override val inflate: Inflate<FragmentAddSkillBinding>
         get() = FragmentAddSkillBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_skill)
+        list= data?.userSkills as ArrayList<String>
         val data = sharePref.readString(Constants.DATA)
         if (data != null) {
             binding.skillEdittext.setText(data)
@@ -74,19 +71,19 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     }
 
     private fun onAdapter() {
-        suggestionAdapter = SuggestionAdapter(currentActivity(), Helper.getSuggestions())
+        /*suggestionAdapter = SuggestionAdapter(currentActivity(), Helper.getSuggestions())
         {
             binding.skillEdittext.setText(it)
-        }
+        }*/
         suggestionAdapter1 = SuggestionAdapter(currentActivity(), list)
         {
             binding.skillEdittext.setText(it)
         }
 
-        binding.recyclerviewSuggestions.apply {
+        /*binding.recyclerviewSuggestions.apply {
             layoutManager = GridLayoutManager(currentActivity(), 3)
             adapter = suggestionAdapter
-        }
+        }*/
         binding.recyclerviewSkill.apply {
             layoutManager = GridLayoutManager(currentActivity(), 3)
             adapter = suggestionAdapter1
@@ -98,7 +95,7 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     private fun onclick() {
         binding.skillTextInputLayout.setEndIconOnClickListener {
             binding.skillEdittext.setText("")
-            list.add(SuggestionModel(binding.skillEdittext.text.toString()))
+            list.add(binding.skillEdittext.text.toString())
             suggestionAdapter1 = SuggestionAdapter(currentActivity(), list)
             {
                 binding.skillEdittext.setText(it)
@@ -115,14 +112,12 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
                 currentActivity().showToast(getString(R.string.single_field_missing_error))
 
             }
-
         }
         binding.includeTool.backbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
-
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        currentActivity().onBackPressedDispatcher.addCallback(currentActivity()) {
             addDetailResumeVM.isHide.value = true
         }
         binding.skillEdittext.setOnFocusChangeListener { view, b ->
@@ -138,7 +133,7 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     private fun apiCall() {
         addDetailResumeVM.editSkill(
             sharePref.readString(Constants.PROFILE_ID).toString(),
-            SingleItemRequestModel("1__"+binding.skillEdittext.text.toString())
+            SkillRequestModel(list)
         )
     }
 

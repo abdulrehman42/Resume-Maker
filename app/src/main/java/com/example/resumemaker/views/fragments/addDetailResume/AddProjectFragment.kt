@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.addCallback
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
@@ -20,13 +21,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
 
     override val inflate: Inflate<FragmentAddProjectBinding>
         get() = FragmentAddProjectBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -35,8 +36,6 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text=getString(R.string.add_project)
-        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-
         val data=sharePref.readProfileProject()
         if (data!=null)
         {

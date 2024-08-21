@@ -8,16 +8,14 @@ import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInterestBinding
 import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.adapter.SkillAdapter
-import com.example.resumemaker.views.adapter.adddetailresume.LanguageAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.SingleStringAdapter
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
-    lateinit var interestAdapter: LanguageAdapter
+    val interestAdapter=SingleStringAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
     override val inflate: Inflate<FragmentInterestBinding>

@@ -9,20 +9,20 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentSkillBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.adapter.adddetailresume.LanguageAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.SingleStringAdapter
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
-    lateinit var skillAdapter: LanguageAdapter
+    val skillAdapter= SingleStringAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
     override val inflate: Inflate<FragmentSkillBinding>
         get() = FragmentSkillBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
             setadapter(it.userSkills)
         }
     }
@@ -44,12 +44,13 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
         skillAdapter.setOnEditItemClickCallback {
-            callDeleteApi()
-        }
-        skillAdapter.setOnItemDeleteClickCallback {
             sharePref.writeString(Constants.DATA,it)
             addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = AddSkillFragment()
+        }
+        skillAdapter.setOnItemDeleteClickCallback {
+            callDeleteApi()
+
         }
 
         binding.recyclerviewSkill.apply {

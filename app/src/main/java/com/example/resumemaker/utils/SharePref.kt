@@ -175,7 +175,7 @@ class SharePref constructor(ctx: Context){
     fun writeDataProfile(user: ProfileModelAddDetailResponse) {
         try {
             val data=gson.toJson(user)
-            prefs!!.edit().putString(Constants.DATA, data).apply()
+            prefs!!.edit().putString(Constants.DATA_PROFILE, data).apply()
         }catch (e:Exception)
         {
             Log.e("TAGException", e.message.toString())
@@ -183,10 +183,13 @@ class SharePref constructor(ctx: Context){
 
     }
 
-    fun readProfileData(): ProfileModelAddDetailResponse {
-        val json = prefs!!.getString(Constants.DATA, null)
-        val gson = Gson()
-        return gson.fromJson(json, ProfileModelAddDetailResponse::class.java)
+    fun readProfileData(): ProfileModelAddDetailResponse? {
+        val json = prefs?.getString(Constants.DATA_PROFILE, null)
+        return if (json != null) {
+            Gson().fromJson(json, ProfileModelAddDetailResponse::class.java)
+        } else {
+            null // or ProfileModelAddDetailResponse() if you prefer a non-null return
+        }
     }
 
     fun readDataSkill(): SuggestionModel {

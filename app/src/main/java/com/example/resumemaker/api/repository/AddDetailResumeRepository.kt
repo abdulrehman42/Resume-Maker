@@ -13,10 +13,13 @@ import com.example.resumemaker.models.api.TemplateModel
 import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.InterestRequestModel
+import com.example.resumemaker.models.request.addDetailResume.LanguageRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.QualificationModelRequest
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
-import com.example.resumemaker.models.request.addDetailResume.QualificationRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import retrofit2.Call
@@ -119,7 +122,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
 
     fun editEducation(
         profileId:String,
-        qualification: QualificationRequestModel,
+        qualification: QualificationModelRequest,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -177,7 +180,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
 
     fun editSkill(
         profileId:String,
-        skill: SingleItemRequestModel,
+        skill: SkillRequestModel,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -206,7 +209,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
     }
     fun editInterest(
         profileId:String,
-        interest: SingleItemRequestModel,
+        interest: InterestRequestModel,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -235,7 +238,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
     }
     fun editLanguage(
         profileId:String,
-        language: SingleItemRequestModel,
+        language: LanguageRequestModel,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())

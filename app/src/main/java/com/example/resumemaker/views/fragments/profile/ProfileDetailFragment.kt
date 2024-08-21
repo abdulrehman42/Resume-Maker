@@ -67,7 +67,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             true
         )
         {}
-        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL+profileModelAddDetailResponse.path).into(binding.shapeableImageView)
+        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL+profileModelAddDetailResponse.path).placeholder(R.drawable.placeholder_image).into(binding.shapeableImageView)
         binding.scrollview.isSmoothScrollingEnabled = true
         binding.apply {
             userName.text = profileModelAddDetailResponse.name

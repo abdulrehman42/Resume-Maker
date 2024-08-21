@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
-    lateinit var achievementAdapter: AchievementAdapter
+    val achievementAdapter= AchievementAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
     override fun csnMoveForward(): Boolean {
