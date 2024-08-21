@@ -9,6 +9,7 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddAchievementsFRagmentBinding
 import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,11 +31,11 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
         binding.includeTool.textView.text = getString(R.string.add_achievement)
-        val data = sharePref.readDataEducation()
-        if (data.degree!=null) {
-            binding.achieveedittext.setText(data.universityName)
-            binding.descriptionedittext.setText(data.degree)
-            binding.issueDateeedittext.setText(data.startDate + data.endDate)
+        val data = sharePref.readProfileAchievement()
+        if (data!=null) {
+            binding.achieveedittext.setText(data.title)
+            binding.descriptionedittext.setText(data.description)
+            binding.issueDateeedittext.setText(data.issueDate)
         }
         onclick()
 
@@ -72,7 +73,7 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
 
     private fun apiCall() {
         addDetailResumeVM.editAchievement(
-            "7422",
+            sharePref.readString(Constants.PROFILE_ID).toString(),
             AchievRequestModel(
                 binding.descriptionedittext.text.toString(),
                 binding.issueDateeedittext.text.toString(),

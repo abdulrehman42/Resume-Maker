@@ -2,30 +2,24 @@ package com.example.resumemaker.views.fragments.download
 
 import android.graphics.PorterDuff
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentCoverLetterBinding
-import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.utils.DialogueBoxes
-import com.example.resumemaker.utils.Helper
-import com.example.resumemaker.views.adapter.TemplateAdapter
+import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.example.resumemaker.views.fragments.tablayout.Vadapterswipe
 import com.google.android.material.tabs.TabLayout
 
 
-class CoverLetterFragment : BaseFragment<FragmentCoverLetterBinding>()
+class CatagoryDownload : BaseFragment<FragmentCoverLetterBinding>()
 {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
-
+    lateinit var templateViewModel: TemplateViewModel
     override val inflate: Inflate<FragmentCoverLetterBinding>
         get() = FragmentCoverLetterBinding::inflate
 
@@ -34,6 +28,10 @@ class CoverLetterFragment : BaseFragment<FragmentCoverLetterBinding>()
 
     override fun init(savedInstanceState: Bundle?) {
         setUpTablayout()
+        templateViewModel=ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            templateViewModel.isHide.value=true
+        }
     }
 
     private fun setUpTablayout() {

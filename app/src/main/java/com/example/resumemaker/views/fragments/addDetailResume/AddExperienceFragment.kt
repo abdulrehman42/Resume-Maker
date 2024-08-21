@@ -37,12 +37,12 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         binding.includeTool.textView.text=getString(R.string.add_experience)
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
-        val data=sharePref.readDataEducation()
+        val data=sharePref.readProfileExperience()
         if (data!=null)
         {
-            binding.jobName.setText(data.universityName)
-            binding.description.setText(data.degree)
-            binding.companyName.setText(data.universityName)
+            binding.jobName.setText(data.title)
+            binding.description.setText(data.description)
+            binding.companyName.setText(data.company)
             binding.startdateedittext.setText(data.startDate)
             binding.enddateedittext.setText(data.endDate)
         }
@@ -128,7 +128,7 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
 
     private fun apiCall() {
         addDetailResumeVM.editExperience(
-            "7422",
+            sharePref.readString(Constants.PROFILE_ID).toString(),
             ExperienceRequestModel(
                 binding.companyName.text.toString(),
                 binding.description.text.toString(),

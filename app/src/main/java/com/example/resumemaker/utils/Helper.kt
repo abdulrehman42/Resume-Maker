@@ -3,11 +3,13 @@ package com.example.resumemaker.utils
 import android.content.Context
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import com.example.resumemaker.R
 import com.example.resumemaker.databinding.ActivityBoardingScreenBinding
@@ -20,6 +22,8 @@ import com.example.resumemaker.models.SampleModel
 import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.models.TemplateModel
 import com.google.android.material.tabs.TabLayout
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object Helper {
     fun updateCircleMarker(binding: ActivityBoardingScreenBinding, position: Int) {
@@ -302,5 +306,13 @@ object Helper {
             }
         }
         return null
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentDateFormatted(): String {
+        val currentDate = LocalDate.now()  // Get the current date
+        val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")  // Define the desired format
+        return currentDate.format(formatter)  // Format the current date
     }
 }

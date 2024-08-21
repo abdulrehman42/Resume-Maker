@@ -7,7 +7,7 @@ import com.example.resumemaker.api.http.NetworkResult
 import com.example.resumemaker.api.http.ResponseCallback
 import com.example.resumemaker.json.JSONKeys
 import com.example.resumemaker.json.JSONManager
-import com.example.resumemaker.models.api.ProfileModel
+import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.api.SampleResponseModel
 import com.example.resumemaker.models.api.TemplateModel
 import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
@@ -47,7 +47,67 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                             JSONKeys.DATA,
                             response.body(),
                             object : TypeToken<TemplateModel>() {}.type
-                        ) as ProfileModel
+                        ) as ProfileModelAddDetailResponse
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+
+    fun editObjective(
+        profileId:String,
+        objective: SingleItemRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editObjective(profileId,objective).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+
+    fun editEducation(
+        profileId:String,
+        qualification: QualificationRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.editEducation(profileId,qualification).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -85,65 +145,6 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
             })
         )
     }
-    fun editObjective(
-        profileId:String,
-        objective: SingleItemRequestModel,
-        callback: ResponseCallback
-    ) {
-        _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editObjective(profileId,objective).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.MESSAGE,
-                            response.body(),
-                            object : TypeToken<String>() {}.type
-                        ) as String,
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.DATA,
-                            response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
-                    )
-                }
-
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure(t.message)
-                }
-            })
-        )
-    }
-
-    fun editEducation(
-        profileId:String,
-        qualification: QualificationRequestModel,
-        callback: ResponseCallback
-    ) {
-        _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editEducation(profileId,qualification).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.MESSAGE,
-                            response.body(),
-                            object : TypeToken<String>() {}.type
-                        ) as String,
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.DATA,
-                            response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
-                    )
-                }
-
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure(t.message)
-                }
-            })
-        )
-    }
 
     fun editSkill(
         profileId:String,
@@ -163,8 +164,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -192,8 +193,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -221,8 +222,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -250,8 +251,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -279,8 +280,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -309,8 +310,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 
@@ -339,8 +340,36 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModel>() {}.type
-                        ) as ProfileModel
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+    fun getProfileDetail(
+        profileId:String,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.getProfileDetail(profileId).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
+                        ) as ProfileModelAddDetailResponse
                     )
                 }
 

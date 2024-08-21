@@ -58,12 +58,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             alertboxLogout(this)
         }
         binding.appBarMainActivty.contentmain.cvResumeBtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, ChoiceTemplate::class.java)
             intent.putExtra(Constants.IS_RESUME, true)
             startActivity(intent)
         }
         binding.appBarMainActivty.contentmain.coverletterBtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, ChoiceTemplate::class.java)
             intent.putExtra(Constants.IS_RESUME, false)
             startActivity(intent)
         }

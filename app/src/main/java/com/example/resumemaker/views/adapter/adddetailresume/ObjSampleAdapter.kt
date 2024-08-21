@@ -1,4 +1,4 @@
-package com.example.resumemaker.views.adapter
+package com.example.resumemaker.views.adapter.adddetailresume
 
 import android.annotation.SuppressLint
 import android.content.Context

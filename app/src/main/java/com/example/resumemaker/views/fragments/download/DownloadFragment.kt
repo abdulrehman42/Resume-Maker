@@ -33,7 +33,7 @@ class DownloadFragment :BaseFragment<FragmentDownloadBinding>() {
         val vadapter =
             Vadapterswipe(childFragmentManager) // Use childFragmentManager for fragments within a fragment
         vadapter.addFragment(ResumeFragment(), "Resume")
-        vadapter.addFragment(CoverLetterFragment(), "Cover Letter")
+        vadapter.addFragment(CatagoryDownload(), "Cover Letter")
         viewPager.adapter = vadapter
         tabLayout.setupWithViewPager(viewPager)
 

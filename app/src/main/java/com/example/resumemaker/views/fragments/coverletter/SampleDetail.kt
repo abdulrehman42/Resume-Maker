@@ -21,14 +21,15 @@ class SampleDetail : BaseFragment<FragmentSampleDetailBinding>()
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-
+        val title=arguments?.getString(Constants.TITLE_DATA)
         binding.includeTool.apply {
-            textView.text="Sample"
+            textView.text=getString(R.string.samples)
             share.layoutParams.width=220
             share.layoutParams.height=250
             share.setImageResource(R.drawable.select_option)
             share.setOnClickListener {
                 val bundle=Bundle()
+                bundle.putString(Constants.TITLE_DATA,title)
                 bundle.putString(Constants.DATA,binding.sampleText.text.toString())
                 currentActivity().replaceChoiceFragment(R.id.nav_add_detail_coverletter,bundle)
             }

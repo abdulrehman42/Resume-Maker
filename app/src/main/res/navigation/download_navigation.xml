@@ -10,7 +10,7 @@
         tools:layout="@layout/fragment_resume" />
     <fragment
         android:id="@+id/nav_cover_letter_fragment"
-        android:name="com.example.resumemaker.views.fragments.download.CoverLetterFragment"
+        android:name="com.example.resumemaker.views.fragments.download.CatagoryDownload"
         tools:layout="@layout/fragment_cover_letter" />
     <fragment
         android:id="@+id/nav_download"

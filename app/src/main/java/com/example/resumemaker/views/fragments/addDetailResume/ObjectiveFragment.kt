@@ -9,9 +9,10 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentObjectiveBinding
 import com.example.resumemaker.models.api.SampleResponseModel
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.adapter.ObjSampleAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.ObjSampleAdapter
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -85,7 +86,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     private fun callEditAPi() {
-        addDetailResumeVM.editObjective("7422",
+        addDetailResumeVM.editObjective(sharePref.readString(Constants.PROFILE_ID).toString(),
             SingleItemRequestModel(binding.objectiveTextInput.text.toString())
         )
 
@@ -93,7 +94,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     private fun setAdapter(sampleResponseModels: List<SampleResponseModel>) {
 
-        objSampleAdapter=ObjSampleAdapter(currentActivity(),sampleResponseModels,{
+        objSampleAdapter= ObjSampleAdapter(currentActivity(),sampleResponseModels,{
             binding.objectiveTextInput.setText(it)
         },{
             if (it) {

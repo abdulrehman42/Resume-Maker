@@ -12,6 +12,7 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddProjectBinding
 import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper.dpToPx
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.google.android.material.textfield.TextInputLayout
@@ -36,11 +37,11 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
         binding.includeTool.textView.text=getString(R.string.add_project)
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
-        val data=sharePref.readDataEducation()
-        if (data.degree!=null)
+        val data=sharePref.readProfileProject()
+        if (data!=null)
         {
-            binding.projectedittext.setText(data.universityName)
-            binding.descriptionedittext.setText(data.degree)
+            binding.projectedittext.setText(data.title)
+            binding.descriptionedittext.setText(data.description)
         }
         binding.projecttitleTextInputLayout.apply {
             // Adjust the layout parameters of the end icon
@@ -84,7 +85,7 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     }
     private fun apiCall() {
         addDetailResumeVM.editProjects(
-            "7422",ProjectRequestModel(binding.descriptionedittext.text.toString(),binding.projectedittext.text.toString())
+            sharePref.readString(Constants.PROFILE_ID).toString(),ProjectRequestModel(binding.descriptionedittext.text.toString(),binding.projectedittext.text.toString())
         )
     }
 }

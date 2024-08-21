@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -19,6 +20,7 @@ import com.example.resumemaker.models.api.TemplateModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.example.resumemaker.views.fragments.choose.BasicFragment
+import com.example.resumemaker.views.fragments.coverletter.AddDetailCoverLetterFragment
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.HashMap
@@ -50,6 +52,10 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         templateViewModel.dataMap.observe(this) {
             dataMap= it
             setUpTablayout(it)
+        }
+        templateViewModel.isHide.observe(this){
+            if (it)
+            binding.choiceTemplateContainer.isGone=true
         }
     }
 
@@ -124,11 +130,26 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     override fun onTemplateSelected(model: TemplateModel) {
-        startActivity(
-            Intent(this,
-                AddDetailResume::class.java
+        if (isResume)
+        {
+            startActivity(
+                Intent(this,
+                    AddDetailResume::class.java
+                )
             )
-        )
+        }else{
+            binding.choiceTemplateContainer.isGone=false
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            )
+                .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
     }
 
 }

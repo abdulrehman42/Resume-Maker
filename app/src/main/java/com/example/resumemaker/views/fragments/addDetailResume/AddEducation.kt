@@ -9,6 +9,7 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddEducationBinding
 import com.example.resumemaker.models.request.addDetailResume.QualificationRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +35,7 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
         binding.includeTool.textView.text = getString(R.string.add_education)
         val data = sharePref.readDataEducation()
         if (data.degree!=null) {
-            binding.instituenameedittext.setText(data.universityName)
+            binding.instituenameedittext.setText(data.institute)
             binding.degreeName.setText(data.degree)
             binding.startdateedittext.setText(data.startDate)
             binding.enddateedittext.setText(data.endDate)
@@ -86,7 +87,6 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
                 CallApi()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
-
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
@@ -100,7 +100,7 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
     }
 
     private fun CallApi() {
-        addDetailResumeVM.editQualification("7422",
+        addDetailResumeVM.editQualification(sharePref.readString(Constants.PROFILE_ID).toString(),
             QualificationRequestModel(binding.degreeName.text.toString(),binding.enddateedittext.text.toString(),binding.instituenameedittext.text.toString(),"",binding.startdateedittext.text.toString())
         )
     }

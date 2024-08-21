@@ -15,6 +15,7 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddLanguageBinding
 import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.SuggestionAdapter
@@ -41,10 +42,10 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
         binding.includeTool.textView.text=getString(R.string.add_language)
-        val data=sharePref.readDataSkill()
+        val data=sharePref.readString(Constants.DATA)
         if (data!=null)
         {
-            binding.languageEdittext.setText(data.skillName)
+            binding.languageEdittext.setText(data)
         }
        // onAdapter()
         onclick()
@@ -100,7 +101,7 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
     }
     private fun apiCall() {
         addDetailResumeVM.editInterest(
-            "7422",
+            sharePref.readString(Constants.PROFILE_ID).toString(),
             SingleItemRequestModel(binding.languageEdittext.text.toString())
         )
     }

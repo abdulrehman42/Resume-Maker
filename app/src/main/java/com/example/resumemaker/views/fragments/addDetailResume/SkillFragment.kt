@@ -1,30 +1,30 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
-import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentSkillBinding
 import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.activities.ChoiceTemplate
-import com.example.resumemaker.views.adapter.SkillAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.LanguageAdapter
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
-    lateinit var skillAdapter: SkillAdapter
+    lateinit var skillAdapter: LanguageAdapter
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
     override val inflate: Inflate<FragmentSkillBinding>
         get() = FragmentSkillBinding::inflate
 
     override fun observeLiveData() {
-
+        addDetailResumeVM.dataResponse.observe(this) {
+            setadapter(it.userSkills)
+        }
     }
 
     override fun csnMoveForward(): Boolean {
@@ -32,22 +32,33 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        apiCall()
         onclick()
-        setadapter()
     }
 
-    private fun setadapter() {
-        skillAdapter= SkillAdapter(currentActivity(), Helper.getSuggestions())
-        {
-            sharePref.writeDataSkill(it)
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=AddSkillFragment()
+    private fun apiCall() {
+        addDetailResumeVM.getProfileDetail(sharePref.readString(Constants.PROFILE_ID).toString())
+    }
+
+    private fun setadapter(userSkills: List<String>) {
+        skillAdapter.submitList(userSkills)
+        skillAdapter.setOnEditItemClickCallback {
+            callDeleteApi()
+        }
+        skillAdapter.setOnItemDeleteClickCallback {
+            sharePref.writeString(Constants.DATA,it)
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = AddSkillFragment()
         }
 
         binding.recyclerviewSkill.apply {
-            adapter=skillAdapter
+            adapter = skillAdapter
         }
+    }
+
+    private fun callDeleteApi() {
+
     }
 
     private fun onclick() {
@@ -61,8 +72,8 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
         }
         binding.addskill.setOnClickListener {
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=AddSkillFragment()
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = AddSkillFragment()
         }
     }
 }

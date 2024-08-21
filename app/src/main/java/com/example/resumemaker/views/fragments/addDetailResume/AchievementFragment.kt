@@ -7,31 +7,39 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAchievementBinding
-import com.example.resumemaker.utils.Helper
+import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.adapter.EducationAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.AchievementAdapter
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
-    lateinit var educationAdapter: EducationAdapter
+    lateinit var achievementAdapter: AchievementAdapter
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
-
     override fun csnMoveForward(): Boolean {
-       return true
+        return true
     }
 
     override val inflate: Inflate<FragmentAchievementBinding>
         get() = FragmentAchievementBinding::inflate
 
     override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(this) {
+            setAdapter(it.userAchievement)
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-
+        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        apiCall()
         onclick()
-        setAdapter()
+    }
+
+    private fun apiCall() {
+        addDetailResumeVM.getProfileDetail(sharePref.readString(Constants.PROFILE_ID).toString())
     }
 
     private fun onclick() {
@@ -41,22 +49,32 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
         }
         binding.nextbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=ResumePreviewFragment()
+            sharePref.writeBoolean(Constants.IS_RESUME,true)
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = ResumePreviewFragment()
 
         }
         binding.addachievementbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=AddAchievementsFRagment()
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = ResumePreviewFragment()
         }
     }
-    private fun setAdapter() {
-        educationAdapter= EducationAdapter(currentActivity(), Helper.achievementList(),false)
-        {
-            sharePref.writeDataEdu(it)
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=AddAchievementsFRagment()       }
-        binding.recyclerviewAchievements.adapter=educationAdapter
+
+    private fun setAdapter(userAchievement: List<ProfileModelAddDetailResponse.UserAchievement>) {
+        achievementAdapter.submitList(userAchievement)
+        achievementAdapter.setOnEditItemClickCallback {
+            callDeleteApi()
+        }
+        achievementAdapter.setOnItemDeleteClickCallback {
+            sharePref.writeDataAchievement(it)
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment()
+        }
+        binding.recyclerviewAchievements.adapter = achievementAdapter
+    }
+
+    private fun callDeleteApi() {
+
     }
 
 }

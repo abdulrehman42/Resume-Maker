@@ -1,50 +1,64 @@
 package com.example.resumemaker.views.fragments.addDetailResume
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
-import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentLanguageBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.views.activities.ChoiceTemplate
 import com.example.resumemaker.views.adapter.SkillAdapter
+import com.example.resumemaker.views.adapter.adddetailresume.LanguageAdapter
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
-    lateinit var languageAdapter: SkillAdapter
+    lateinit var languageAdapter: LanguageAdapter
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentLanguageBinding>
         get() = FragmentLanguageBinding::inflate
 
     override fun observeLiveData() {
-
+        addDetailResumeVM.dataResponse.observe(this) {
+            setadapter(it.userLanguages)
+        }
     }
+
     override fun csnMoveForward(): Boolean {
         return true
     }
+
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        apiCall()
         onclick()
-        setadapter()
     }
 
-    private fun setadapter() {
-        languageAdapter= SkillAdapter(currentActivity(), Helper.getLanuages())
-        {
-            sharePref.writeDataSkill(it)
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=AddLanguageFragment()
-        }
+    private fun apiCall() {
+        addDetailResumeVM.getProfileDetail(sharePref.readString(Constants.PROFILE_ID).toString())
+    }
 
-        binding.recyclerviewLanguage.apply {
-            adapter=languageAdapter
+    private fun setadapter(userLanguages: List<String>) {
+       languageAdapter.submitList(userLanguages)
+        languageAdapter.setOnEditItemClickCallback {
+            callDeleteApi()
         }
+        languageAdapter.setOnItemDeleteClickCallback {
+            sharePref.writeString(Constants.DATA,it)
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = AddLanguageFragment()
+        }
+        binding.recyclerviewLanguage.apply {
+            adapter = languageAdapter
+        }
+    }
+
+    private fun callDeleteApi() {
+
     }
 
     private fun onclick() {
@@ -54,15 +68,17 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
         }
         binding.nextbtn.setOnClickListener {
-            if (tabhost.tabCount>=8)
-            {
+            if (tabhost.tabCount >= 8) {
                 tabhost.getTabAt(8)!!.select()
+            }else{
+                addDetailResumeVM.isHide.value = false
+                addDetailResumeVM.fragment.value = ResumePreviewFragment()
             }
 
         }
         binding.addlanguage.setOnClickListener {
-            addDetailResumeVM.isHide.value=false
-            addDetailResumeVM.fragment.value=AddEducation()
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = AddEducation()
         }
     }
 }

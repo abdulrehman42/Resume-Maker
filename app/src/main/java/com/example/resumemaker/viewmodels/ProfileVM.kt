@@ -4,37 +4,34 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.resumemaker.api.http.ResponseCallback
-import com.example.resumemaker.api.repository.TemplatesRepository
-import com.example.resumemaker.models.api.TemplateModel
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.resumemaker.api.repository.ProfileRepository
+import com.example.resumemaker.models.ProfileModel
+import com.example.resumemaker.models.api.ProfileListingModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class TemplateViewModel @Inject constructor(private val templatesRepository: TemplatesRepository) :
+class ProfileVM @Inject constructor(val profileRepository: ProfileRepository):
     ViewModel() {
-    val dataMap = MutableLiveData<Map<String, List<TemplateModel>>>()
-    var isHide=MutableLiveData<Boolean>()
-    fun fetchTemplates(type: String) {
+    val loadingState = MutableLiveData<Boolean>()
+    val dataResponse=MutableLiveData<List<ProfileListingModel>>()
+    fun getProfileList() {
         viewModelScope.launch {
-
+            loadingState.postValue(true)
             try {
-                templatesRepository.getTemplates(
-                    type,
+                profileRepository.getProfileList(
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataMap.postValue(data as Map<String, List<TemplateModel>>)
+                            dataResponse.postValue(data as List<ProfileListingModel>)
+                            loadingState.postValue(false)
                         }
 
                         override fun onFailure(errorMessage: String?) {
-
+                            loadingState.postValue(false)
                         }
-
                     })
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-
 }

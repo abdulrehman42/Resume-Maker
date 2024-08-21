@@ -7,15 +7,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.SampleitemsBinding
 import com.example.resumemaker.models.SuggestionModel
+import com.example.resumemaker.models.api.SampleResponseModel
 
-class SampleAdapter (val context: Context, val list:List<SuggestionModel>,val onclick:(SuggestionModel)->Unit): RecyclerView.Adapter<SampleAdapter.ViewHolder>() {
+class SampleAdapter(
+    val context: Context, val list: List<SampleResponseModel>,
+    val onclick:(SampleResponseModel)->Unit): RecyclerView.Adapter<SampleAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: SampleitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun setData(model: SuggestionModel) {
+        fun setData(model: SampleResponseModel) {
             binding.sampleText.apply {
-                text=model.skillName
+                text=model.title
                 setOnClickListener {
                     onclick(model)
                 }

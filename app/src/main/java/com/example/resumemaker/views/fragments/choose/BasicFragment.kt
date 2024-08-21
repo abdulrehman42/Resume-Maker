@@ -46,6 +46,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
     private fun setAdapter() {
         templateAdapter.submitList(list)
         templateAdapter.setOnEyeItemClickCallback {
+            sharePref.writeString(Constants.TEMPLATE_ID,it.id.toString())
             DialogueBoxes.alertbox(
                 it.path,
                 currentActivity(),
@@ -62,6 +63,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
         }
 
         templateAdapter.setOnItemClickCallback {
+            sharePref.writeString(Constants.TEMPLATE_ID,it.id.toString())
             callback?.onTemplateSelected(it)
         }
 

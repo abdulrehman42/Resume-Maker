@@ -6,16 +6,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.ProfileskillitemsBinding
-import com.example.resumemaker.databinding.SkillitemsBinding
 import com.example.resumemaker.models.SuggestionModel
 
-class SkillProfAdapter(val context: Context, val list:List<SuggestionModel>,val onclick:(SuggestionModel)->Unit): RecyclerView.Adapter<SkillProfAdapter.ViewHolder>() {
+class SkillProfAdapter(val context: Context, val list: List<String>): RecyclerView.Adapter<SkillProfAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ProfileskillitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun setData(model: SuggestionModel) {
-            binding.skillName.text=model.skillName
+        fun setData(model: String) {
+            binding.skillName.text=model
         }
     }
 

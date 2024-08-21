@@ -236,7 +236,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/education_recyclerview"/>
-            <TextView
+           <!-- <TextView
                 android:id="@+id/textView14"
                 style="@style/heading"
                 android:layout_width="0dp"
@@ -255,7 +255,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/textView14" />
+                app:layout_constraintTop_toBottomOf="@id/textView14" />-->
 
             <LinearLayout
                 android:layout_width="@dimen/_85sdp"

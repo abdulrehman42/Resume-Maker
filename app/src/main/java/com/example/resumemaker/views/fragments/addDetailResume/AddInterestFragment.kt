@@ -9,6 +9,7 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddInterestBinding
 import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,10 +31,10 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
 
         binding.includeTool.textView.text=getString(R.string.add_interest)
-        val data=sharePref.readDataSkill()
+        val data = sharePref.readString(Constants.DATA)
         if (data!=null)
         {
-            binding.interestEdittext.setText(data.skillName)
+            binding.interestEdittext.setText(data)
         }
         onclick()
         //onAdapter()
@@ -79,7 +80,7 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
 
     private fun apiCall() {
         addDetailResumeVM.editInterest(
-            "7422",
+            sharePref.readString(Constants.PROFILE_ID).toString(),
             SingleItemRequestModel(binding.interestEdittext.text.toString())
         )
     }

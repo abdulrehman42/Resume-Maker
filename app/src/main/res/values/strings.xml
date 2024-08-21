@@ -135,4 +135,6 @@
     <string name="profile">Profile</string>
     <string name="male">male</string>
     <string name="female">female</string>
+    <string name="preview">Preview</string>
+    <string name="cover_letter_missing_field">Please write CoverLetter</string>
 </resources>

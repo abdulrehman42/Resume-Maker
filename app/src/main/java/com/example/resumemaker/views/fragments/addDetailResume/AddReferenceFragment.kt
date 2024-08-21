@@ -10,6 +10,7 @@ import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddReferenceBinding
 import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
+import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,12 +32,12 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM= ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_referrence)
-        val data = sharePref.readDataEducation()
+        val data = sharePref.readProfileReference()
         if (data != null) {
-            binding.referrencenameedit.setText(data.degree)
-            binding.companyName.setText(data.universityName)
-            binding.emailedit.setText(data.startDate)
-            binding.phone.setText(data.endDate)
+            binding.referrencenameedit.setText(data.name)
+            binding.companyName.setText(data.company)
+            binding.emailedit.setText(data.email)
+            binding.phone.setText(data.phone)
         }
         onclick()
     }
@@ -71,7 +72,7 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
 
     private fun apiCall() {
         addDetailResumeVM.editReference(
-            "7422", ReferenceRequestModel(binding.companyName.text.toString(),binding.emailedit.text.toString()
+            sharePref.readString(Constants.PROFILE_ID).toString(), ReferenceRequestModel(binding.companyName.text.toString(),binding.emailedit.text.toString()
             ,binding.referrencenameedit.text.toString(),binding.phone.text.toString(),binding.jobedittext.text.toString())
         )
     }
