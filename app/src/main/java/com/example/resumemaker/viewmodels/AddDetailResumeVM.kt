@@ -49,6 +49,27 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
     }
+    fun updateProfile(profile_id:String,createProfileRequestModel: CreateProfileRequestModel) {
+        viewModelScope.launch {
+            loadingState.postValue(true)
+            try {
+                addDetailResumeRepository.updateProfile(profile_id,
+                    createProfileRequestModel,
+                    object : ResponseCallback {
+                        override fun onSuccess(message: String?, data: Any?) {
+                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            loadingState.postValue(false)
+                        }
+
+                        override fun onFailure(errorMessage: String?) {
+                            loadingState.postValue(false)
+                        }
+                    })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun editObjective(profileId:String, objective: SingleItemRequestModel) {
         viewModelScope.launch {

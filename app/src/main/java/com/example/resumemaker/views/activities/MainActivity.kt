@@ -71,6 +71,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             startActivity(Intent(this, DownloadActivity::class.java))
         }
         binding.appBarMainActivty.contentmain.profileBtn.setOnClickListener {
+            sharePref.writeString(Constants.FRAGMENT_CALLED,Constants.PROFILE)
             startActivity(Intent(this, ProfileActivity::class.java))
         }
     }

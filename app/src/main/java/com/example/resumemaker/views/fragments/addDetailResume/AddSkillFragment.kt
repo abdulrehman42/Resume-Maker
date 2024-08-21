@@ -138,7 +138,7 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     private fun apiCall() {
         addDetailResumeVM.editSkill(
             sharePref.readString(Constants.PROFILE_ID).toString(),
-            SingleItemRequestModel(binding.skillEdittext.text.toString())
+            SingleItemRequestModel("1__"+binding.skillEdittext.text.toString())
         )
     }
 

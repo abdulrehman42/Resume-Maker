@@ -23,6 +23,7 @@ import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.models.TemplateModel
 import com.google.android.material.tabs.TabLayout
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object Helper {
@@ -310,9 +311,45 @@ object Helper {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentDateFormatted(): String {
-        val currentDate = LocalDate.now()  // Get the current date
-        val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")  // Define the desired format
-        return currentDate.format(formatter)  // Format the current date
+    fun formatDateRange(startDate: String?, endDate: String?): String {
+        if (startDate.isNullOrEmpty() || endDate.isNullOrEmpty()) {
+            return "Invalid date range"
+        }
+
+        val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
+        val outputFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
+
+        return try {
+            val start = ZonedDateTime.parse(startDate, inputFormatter).toLocalDate()
+            val end = ZonedDateTime.parse(endDate, inputFormatter).toLocalDate()
+
+            val startFormatted = start.format(outputFormatter)
+            val endFormatted = end.format(outputFormatter)
+
+            "$startFormatted - $endFormatted"
+        } catch (e: Exception) {
+            "Invalid date format"
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun formatDateRangeYearOnly(startDate: String?, endDate: String?): String {
+        if (startDate.isNullOrEmpty() || endDate.isNullOrEmpty()) {
+            return "Invalid year range"
+        }
+
+        val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
+        val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
+
+        return try {
+            val start = ZonedDateTime.parse(startDate, inputFormatter).toLocalDate()
+            val end = ZonedDateTime.parse(endDate, inputFormatter).toLocalDate()
+
+            val startYear = start.format(yearFormatter)
+            val endYear = end.format(yearFormatter)
+
+            "$startYear - $endYear"
+        } catch (e: Exception) {
+            "Invalid date format"
+        }
     }
 }

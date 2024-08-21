@@ -57,6 +57,35 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
             })
         )
     }
+    fun updateProfile(
+        profile_id: String,
+        profileModel: CreateProfileRequestModel,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.onUpdateProfile(profile_id,profileModel).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<TemplateModel>() {}.type
+                        ) as ProfileModelAddDetailResponse
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
 
     fun editObjective(
         profileId:String,

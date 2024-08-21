@@ -11,7 +11,6 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddExperienceBinding
-import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
 import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
@@ -23,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var endDate: String? =null
     override val inflate: Inflate<FragmentAddExperienceBinding>
         get() = FragmentAddExperienceBinding::inflate
 
@@ -96,6 +96,7 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             if (binding.checkItscontinue.isChecked)
             {
                 binding.enddateTextInputLayout2.isEnabled=false
+                endDate=null
             }else
             {
                 binding.enddateTextInputLayout2.isEnabled=true
@@ -127,13 +128,18 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
     }
 
     private fun apiCall() {
+        endDate = if (binding.checkItscontinue.isChecked) {
+            null
+        } else {
+            binding.enddateedittext.text.toString()
+        }
         addDetailResumeVM.editExperience(
             sharePref.readString(Constants.PROFILE_ID).toString(),
             ExperienceRequestModel(
-                binding.companyName.text.toString(),
+                "1__"+binding.companyName.text.toString(),
                 binding.description.text.toString(),
-                employmentType = "",binding.enddateedittext.text.toString(),binding.startdateedittext.text.toString(),
-                binding.jobName.text.toString()
+                employmentType = "",endDate,binding.startdateedittext.text.toString(),
+                "1__"+binding.jobName.text.toString()
             )
         )
     }

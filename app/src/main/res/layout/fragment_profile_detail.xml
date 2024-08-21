@@ -51,7 +51,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
-                android:text="Christen Willer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shapeableImageView"
@@ -63,7 +62,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
-                android:text="Graphic Designer I UI/UX I Social Media I Video Animator/Editor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userName" />
@@ -104,7 +102,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:text="Lahore,pakistion"
                 android:singleLine="true"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView9"
                 app:layout_constraintEnd_toEndOf="@+id/user_Intro"
@@ -138,7 +135,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="Graphic Designer I UI/UX I Social Media I Video Animator/Editor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
 

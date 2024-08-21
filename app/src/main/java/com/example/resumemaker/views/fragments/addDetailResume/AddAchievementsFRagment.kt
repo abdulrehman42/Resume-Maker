@@ -55,12 +55,10 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
         binding.issueDateeedittext.onFocusChangeListener =
             OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    // The EditText gained focus
                     DialogueBoxes.showWheelDatePickerDialog(
                         currentActivity(),
                         object : DialogueBoxes.StringDialogCallback {
                             override fun onButtonClick(date: String) {
-                                // Handle the result here
                                 binding.issueDateeedittext.setText(date)
                             }
                         })
@@ -77,7 +75,7 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
             AchievRequestModel(
                 binding.descriptionedittext.text.toString(),
                 binding.issueDateeedittext.text.toString(),
-                binding.achieveedittext.text.toString()
+                "1__"+binding.achieveedittext.text.toString()
             )
         )
     }

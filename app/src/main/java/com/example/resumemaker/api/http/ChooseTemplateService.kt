@@ -28,6 +28,12 @@ interface ChooseTemplateService {
     //profile
     @POST(Constants.CREATE_PROFILE_API)
     fun onCreateProfile(@Body createProfileRequestModel: CreateProfileRequestModel): Call<JsonElement>
+    @POST(Constants.UPDATE_PROFILE)
+    fun onUpdateProfile(
+        @Path ("profileId") profileId: String,
+        @Body createProfileRequestModel: CreateProfileRequestModel
+    ): Call<JsonElement>
+
 
     @GET(Constants.GETPROFILES_API)
     fun getProfiles(): Call<JsonElement>

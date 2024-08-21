@@ -81,7 +81,7 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     private fun apiCall() {
         addDetailResumeVM.editInterest(
             sharePref.readString(Constants.PROFILE_ID).toString(),
-            SingleItemRequestModel(binding.interestEdittext.text.toString())
+            SingleItemRequestModel("1__"+binding.interestEdittext.text.toString())
         )
     }
 

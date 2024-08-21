@@ -72,8 +72,8 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
 
     private fun apiCall() {
         addDetailResumeVM.editReference(
-            sharePref.readString(Constants.PROFILE_ID).toString(), ReferenceRequestModel(binding.companyName.text.toString(),binding.emailedit.text.toString()
-            ,binding.referrencenameedit.text.toString(),binding.phone.text.toString(),binding.jobedittext.text.toString())
+            sharePref.readString(Constants.PROFILE_ID).toString(), ReferenceRequestModel("1__"+binding.companyName.text.toString(),binding.emailedit.text.toString()
+            ,binding.referrencenameedit.text.toString(),binding.phone.text.toString(),"1__"+binding.jobedittext.text.toString())
         )
     }
 }

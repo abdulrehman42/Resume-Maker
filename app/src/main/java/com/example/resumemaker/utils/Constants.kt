@@ -9,6 +9,7 @@ object Constants {
     //api
     const val TEMPLATE_API="templates/list"
     const val CREATE_PROFILE_API="profiles"
+    const val UPDATE_PROFILE="profiles/{profileId}"
     const val EDIT_OBJECTIVE="profiles/{profileId}/objective"
     const val EDIT_EDUCATION="profiles/{profileId}/qualifications"
     const val EDIT_SKILL="profiles/{profileId}/skills"
@@ -36,6 +37,7 @@ object Constants {
     const val IS_RESUME="IS_RESUME"
     const val DOWNLOAD="download"
     const val PROFILE="profile"
+    const val FRAGMENT_CALLED="FRAGMENT"
     const val PROFILE_ID="profile_id"
 
     const val CAMERA="CAMERA"

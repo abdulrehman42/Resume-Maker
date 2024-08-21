@@ -102,7 +102,7 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
     private fun apiCall() {
         addDetailResumeVM.editInterest(
             sharePref.readString(Constants.PROFILE_ID).toString(),
-            SingleItemRequestModel(binding.languageEdittext.text.toString())
+            SingleItemRequestModel("1__"+binding.languageEdittext.text.toString())
         )
     }
 

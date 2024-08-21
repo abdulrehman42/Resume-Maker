@@ -2,12 +2,15 @@ package com.example.resumemaker.views.adapter.adddetailresume
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.EducationitemsBinding
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
+import com.example.resumemaker.utils.Helper
 
 class EducationAdapter(
     val context: Context, val list: List<ProfileModelAddDetailResponse.UserQualification>,
@@ -16,11 +19,11 @@ class EducationAdapter(
     inner class ViewHolder(private val binding: EducationitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("SetTextI18n")
+        @RequiresApi(Build.VERSION_CODES.O)
         fun setData(model: ProfileModelAddDetailResponse.UserQualification) {
             binding.universityname.text=model.institute
             binding.degreeName.text=model.degree
-            binding.degreeYears.text=model.startDate+"-"+model.endDate
+            binding.degreeYears.text=Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
             binding.editEdu.setOnClickListener {
                 onclick(model)
             }

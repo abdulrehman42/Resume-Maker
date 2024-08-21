@@ -16,6 +16,7 @@ import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInformationBinding
+import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Constants.IMAGE_CODE
@@ -31,6 +32,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     private lateinit var selectedImageBitmap: Bitmap
     var image=""
     var gender="male"
+    lateinit var data: ProfileModelAddDetailResponse
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     lateinit var tabhost:TabLayout
 
@@ -45,15 +47,31 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner)
         {
-            sharePref.writeInteger(Constants.PROFILE_ID,it.id)
+            sharePref.writeString(Constants.PROFILE_ID,"7422")
             tabhost.getTabAt(1)!!.select()
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        tabhost= currentActivity().findViewById(R.id.tab_layout_adddetail)!!
-
+        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
+        data = sharePref.readProfileData()
+        if (data != null)
+        {
+            setValue(data)
+        }
         onclick()
+    }
+
+    private fun setValue(data: ProfileModelAddDetailResponse) {
+        binding.apply {
+            nameedittext.setText(data.name)
+            jobedittext.setText(data.jobTitle)
+            emailtext.setText(data.email)
+            phoneedittext.setText(data.phone)
+            address.setText(data.address)
+            dobEdit.setText(data.dob)
+        }
+        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL+data.path).into(binding.shapeableImageView)
     }
 
     @SuppressLint("ResourceAsColor")
@@ -61,12 +79,10 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         binding.dobEdit.onFocusChangeListener =
             View.OnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
-                    // The EditText gained focus
                     DialogueBoxes.showWheelDatePickerDialog(
                         currentActivity(),
                         object : DialogueBoxes.StringDialogCallback {
                             override fun onButtonClick(date: String) {
-                                // Handle the result here
                                 binding.dobEdit.setText(date)
                             }
                         })
@@ -104,7 +120,11 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         binding.nextbtn.setOnClickListener {
 
             if (isConditionMet()) {
-               // callApi()
+                /*if (data!=null)
+                {
+                    callApiUpdate()
+                }
+                callApi()*/
                 tabhost.getTabAt(1)!!.select()
 
             } else {
@@ -112,6 +132,15 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
             }
         }
+    }
+
+    private fun callApiUpdate() {
+        addDetailResumeVM.updateProfile(data.id.toString(),
+            CreateProfileRequestModel(
+                binding.nameedittext.text.toString(),binding.emailtext.text.toString(),
+                binding.phoneedittext.text.toString(),image,gender,binding.jobedittext.text.toString(),
+                binding.dobEdit.text.toString(),binding.address.text.toString())
+        )
     }
 
     private fun callApi() {

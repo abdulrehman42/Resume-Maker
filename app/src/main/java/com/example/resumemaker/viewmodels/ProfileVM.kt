@@ -7,9 +7,10 @@ import com.example.resumemaker.api.http.ResponseCallback
 import com.example.resumemaker.api.repository.ProfileRepository
 import com.example.resumemaker.models.ProfileModel
 import com.example.resumemaker.models.api.ProfileListingModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+@HiltViewModel
 class ProfileVM @Inject constructor(val profileRepository: ProfileRepository):
     ViewModel() {
     val loadingState = MutableLiveData<Boolean>()

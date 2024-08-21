@@ -11,36 +11,39 @@ import com.example.resumemaker.databinding.FragmentResumePreviewBinding
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseDownload
 import com.example.resumemaker.utils.DialogueBoxes.shareAppMethod
-import com.example.resumemaker.viewmodels.CoverLetterVM
+import com.example.resumemaker.viewmodels.TemplateViewModel
+import com.unity3d.services.core.webview.WebView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
-    lateinit var coverLetterVM: CoverLetterVM
+    lateinit var templateViewModel: TemplateViewModel
     override val inflate: Inflate<FragmentResumePreviewBinding>
         get() = FragmentResumePreviewBinding::inflate
 
     override fun observeLiveData() {
-        coverLetterVM.getString.observe(currentActivity()){
-            binding.resumePreviewImage.loadUrl(it)
+        templateViewModel.getString.observe(currentActivity()){
+            binding.resumePreviewImage.loadDataWithBaseURL(null, it, "text/html", "UTF-8", null)
+
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        coverLetterVM = ViewModelProvider(currentActivity())[CoverLetterVM::class.java]
+        templateViewModel = ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
+        binding.resumePreviewImage.webViewClient=WebViewClient()
         binding.includeTool.textView.text = getString(R.string.preview)
         onApi()
         onclick()
     }
 
     private fun onApi() {
-        val id = arguments?.getString(Constants.PROFILE_ID).toString()
+        val id = sharePref.readString(Constants.PROFILE_ID).toString()
         val templateId = sharePref.readString(Constants.TEMPLATE_ID).toString()
         val isResume = sharePref.readBoolean(Constants.IS_RESUME, false)
         if (isResume) {
-            coverLetterVM.getResumePreview(id, templateId)
+            templateViewModel.getResumePreview(id, templateId)
         } else {
-            coverLetterVM.getCLPreview(id, templateId)
+            templateViewModel.getCLPreview(id, templateId)
 
         }
     }
@@ -48,8 +51,8 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().finish()
-
         }
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             currentActivity().finish()
         }

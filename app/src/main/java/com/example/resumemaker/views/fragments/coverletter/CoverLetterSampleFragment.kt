@@ -7,28 +7,27 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentCoverLetterSampleBinding
 import com.example.resumemaker.models.api.SampleResponseModel
-import com.example.resumemaker.models.request.addDetailResume.CoverLetterRequestModel
 import com.example.resumemaker.utils.Constants
-import com.example.resumemaker.viewmodels.AddDetailResumeVM
-import com.example.resumemaker.viewmodels.CoverLetterVM
+import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.example.resumemaker.views.adapter.SampleAdapter
+import com.example.resumemaker.views.fragments.addDetailResume.ResumePreviewFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CoverLetterSampleFragment : BaseFragment<FragmentCoverLetterSampleBinding>() {
-    lateinit var coverLetterVM: CoverLetterVM
+    lateinit var templateViewModel: TemplateViewModel
     override val inflate: Inflate<FragmentCoverLetterSampleBinding>
         get() = FragmentCoverLetterSampleBinding::inflate
 
     override fun observeLiveData() {
-        coverLetterVM.getSamples.observe(currentActivity()){
+        templateViewModel.getSamples.observe(currentActivity()){
             setAdapter(it)
         }
 
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        coverLetterVM=ViewModelProvider(currentActivity())[CoverLetterVM::class.java]
+        templateViewModel=ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
         apiCall()
         binding.includeTool.apply {
             textView.text=getString(R.string.samples)
@@ -45,12 +44,25 @@ class CoverLetterSampleFragment : BaseFragment<FragmentCoverLetterSampleBinding>
             val bundle=Bundle()
             bundle.putString(Constants.TITLE_DATA,it.title)
             bundle.putString(Constants.DATA,it.body)
-            currentActivity().replaceChoiceFragment(R.id.nav_sample_detail_cover_letter,bundle)
+            moveToFragment(bundle)
         }
         binding.clSampleRecyclerview.adapter=sampleAdapter
     }
 
     private fun apiCall() {
-        coverLetterVM.getSample(Constants.COVER_LETTER)
+        templateViewModel.getSample(Constants.COVER_LETTER)
+    }
+    private fun moveToFragment(bundle: Bundle) {
+        val fragment = AddDetailCoverLetterFragment()
+        fragment.arguments = bundle
+        currentActivity().supportFragmentManager.beginTransaction().setCustomAnimations(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out,
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+            .replace(R.id.choice_template_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }

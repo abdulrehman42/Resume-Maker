@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var endDate: String? =null
 
 
     override val inflate: Inflate<FragmentAddEducationBinding>
@@ -48,10 +49,12 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
                 binding.enddateTextInputLayout2.isEnabled = false
+
             } else {
                 binding.enddateTextInputLayout2.isEnabled = true
             }
         }
+
         binding.startdateedittext.onFocusChangeListener =
             View.OnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
@@ -100,8 +103,13 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
     }
 
     private fun CallApi() {
+        endDate = if (binding.checkItscontinue.isChecked) {
+            null
+        } else {
+            binding.enddateedittext.text.toString()
+        }
         addDetailResumeVM.editQualification(sharePref.readString(Constants.PROFILE_ID).toString(),
-            QualificationRequestModel(binding.degreeName.text.toString(),binding.enddateedittext.text.toString(),binding.instituenameedittext.text.toString(),"",binding.startdateedittext.text.toString())
+            QualificationRequestModel("1__"+binding.degreeName.text.toString(),endDate,"1__"+binding.instituenameedittext.text.toString(),"degree",binding.startdateedittext.text.toString())
         )
     }
 
@@ -109,7 +117,6 @@ class AddEducation : BaseFragment<FragmentAddEducationBinding>() {
     fun isConditionMet(): Boolean {
         return !binding.instituenameedittext.text.toString().isNullOrEmpty()&&
                 !binding.degreeName.text.toString().isNullOrEmpty()&&
-                !binding.startdateedittext.text.toString().isNullOrEmpty()&&
-                !binding.enddateedittext.text.toString().isNullOrEmpty()
+                !binding.startdateedittext.text.toString().isNullOrEmpty()
     }
 }

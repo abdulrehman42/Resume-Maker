@@ -31,9 +31,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         profileVM = ViewModelProvider(currentActivity())[ProfileVM::class.java]
+        binding.includeTool.textView.text = getString(R.string.profile)
         apiCall()
         onclick()
-        binding.includeTool.textView.text = getString(R.string.profile)
     }
 
     private fun apiCall() {
@@ -71,7 +71,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun setadapter(profileModels: List<ProfileListingModel>) {
         val profileAdapter = ProfileAdapter(currentActivity(),profileModels)
         {
-            val fromCalled = currentActivity().intent.getStringExtra(Constants.IS_RESUME)
+            val fromCalled = sharePref.readString(Constants.FRAGMENT_CALLED)
             if (fromCalled == Constants.PROFILE) {
                 sharePref.writeString(Constants.PROFILE_ID,it.id.toString())
                 currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)

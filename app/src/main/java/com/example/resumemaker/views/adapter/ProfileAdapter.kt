@@ -19,7 +19,7 @@ class ProfileAdapter(
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model: ProfileListingModel) {
-            binding.name.text = model.name
+            binding.name.text = model.name.replaceFirstChar { it.uppercase() }
             binding.profession.text=model.jobTitle
             Glide.with(binding.imageProfile.context).load(Constants.BASE_MEDIA_URL+model.path).into(binding.imageProfile)
             binding.textView4.setOnClickListener {
