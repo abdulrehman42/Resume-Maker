@@ -2,6 +2,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.activity.addCallback
+import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
@@ -30,6 +31,14 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
         addDetailResumeVM.singleResponse.observe(requireActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 

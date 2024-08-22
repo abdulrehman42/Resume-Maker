@@ -21,20 +21,20 @@ class ExperienceAdapter: ListAdapter<ProfileModelAddDetailResponse.UserExperienc
                 editItemClickCallback?.invoke(model)
             }
             binding.deleteEdu.setOnClickListener {
-                deleteitemClickCallback?.invoke(model)
+                deleteitemClickCallback?.invoke(position)
             }
         }
     }
 
     var editItemClickCallback: ((ProfileModelAddDetailResponse.UserExperience) -> Unit)? = null
-    var deleteitemClickCallback: ((ProfileModelAddDetailResponse.UserExperience) -> Unit)? = null
+    var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
     fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserExperience) -> Unit) {
         this.editItemClickCallback = callback
     }
 
-    fun setOnItemDeleteClickCallback(callback: (ProfileModelAddDetailResponse.UserExperience) -> Unit) {
+    fun setOnItemDeleteClickCallback(callback: (Int) -> Unit) {
         this.deleteitemClickCallback = callback
     }
 

@@ -32,6 +32,14 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
             list= it as ArrayList<SampleResponseModel>
             setAdapter(it)
         }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
+        }
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner){
             tabhost.getTabAt(2)!!.select()
         }

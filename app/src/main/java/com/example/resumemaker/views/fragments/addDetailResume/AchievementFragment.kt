@@ -2,6 +2,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
@@ -29,6 +30,14 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             setAdapter(it.userAchievement)
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 

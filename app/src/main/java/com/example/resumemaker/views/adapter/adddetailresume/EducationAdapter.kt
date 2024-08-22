@@ -15,7 +15,7 @@ import com.example.resumemaker.utils.Helper
 class EducationAdapter(
     val context: Context, val list: List<ProfileModelAddDetailResponse.UserQualification>,
     val check:Boolean,
-    val onclick:(ProfileModelAddDetailResponse.UserQualification)->Unit): RecyclerView.Adapter<EducationAdapter.ViewHolder>() {
+    val onclick:(ProfileModelAddDetailResponse.UserQualification)->Unit,val onDelete:(Int)->Unit): RecyclerView.Adapter<EducationAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: EducationitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -26,6 +26,9 @@ class EducationAdapter(
             binding.degreeYears.text=Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
             binding.editEdu.setOnClickListener {
                 onclick(model)
+            }
+            binding.deleteEdu.setOnClickListener {
+                onDelete(position)
             }
             if (check)
             {

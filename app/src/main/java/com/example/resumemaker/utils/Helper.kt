@@ -5,10 +5,23 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.provider.OpenableColumns
-import android.util.Base64
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.print.PrintAttributes
+import android.print.PrintManager
+import android.util.Log
+import androidx.core.content.ContentResolverCompat
+import java.io.OutputStream
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -18,13 +31,17 @@ import com.example.resumemaker.databinding.ActivityBoardingScreenBinding
 import com.example.resumemaker.models.BoardingItems
 import com.example.resumemaker.models.TemplateModel
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
+import com.example.resumemaker.views.adapter.WebViewPrintAdapter
 import com.google.android.material.tabs.TabLayout
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -239,5 +256,82 @@ object Helper {
             "address" to address,
             "image" to imagePart
         )
+    }
+
+    fun getImagesFromResumeMakerFolder(context: Context): List<File> {
+        val images = mutableListOf<File>()
+        val directory = context.getDir(context.getString(R.string.app_name), Context.MODE_PRIVATE)
+
+        // Check if the directory exists and is a directory
+        if (directory.exists() && directory.isDirectory) {
+            // Get all files in the directory
+            val files = directory.listFiles()
+
+            // Filter image files based on common image file extensions
+            if (files != null) {
+                for (file in files) {
+                    if (file.isFile && file.extension in listOf("jpg", "jpeg", "png", "gif", "bmp")) {
+                        images.add(file)
+                    }
+                }
+            }
+        }
+        return images
+    }
+
+
+        fun saveHtmlToInternalStorage(webView: WebView, htmlContent: String, context: Context, fileName: String) {
+        // Configure WebView settings if needed
+        webView.settings.javaScriptEnabled = true
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
+
+        // Load the HTML content
+        webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+
+        // Set WebViewClient to handle page load events
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                view?.post {
+                    // Wait for WebView to finish rendering
+                    view?.measure(
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                    )
+                    view?.layout(0, 0, view.measuredWidth, view.measuredHeight)
+
+                    // Create a bitmap with the dimensions of the WebView
+                    val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+                    val canvas = Canvas(bitmap)
+                    view.draw(canvas)
+
+                    // Save the bitmap as a JPG file
+                    try {
+                        val directory = context.getDir("Resume Maker", Context.MODE_PRIVATE)
+                        if (!directory.exists()) {
+                            directory.mkdir() // Ensure directory exists
+                        }
+                        val file = File(directory, "$fileName.jpg")
+
+                        FileOutputStream(file).use { out ->
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                        }
+
+                        println("Image saved successfully at ${file.absolutePath}")
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        println("Error saving image: ${e.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveHtmlAsPdf(context: Context, htmlContent: String, fileName: String) {
+        val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
+        val printAdapter = WebViewPrintAdapter(context, htmlContent)
+
+        printManager.print("Document", printAdapter, PrintAttributes.Builder().build())
     }
 }

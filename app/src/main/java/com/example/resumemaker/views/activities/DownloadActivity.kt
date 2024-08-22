@@ -12,7 +12,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivityDownloadBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DownloadActivity : BaseActivity() {
     lateinit var binding:ActivityDownloadBinding
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -47,6 +47,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         enableEdgeToEdge()
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharePref.writeBoolean(Constants.IS_FIRST_TIME,false)
         setdrawer()
         onclick()
 

@@ -21,15 +21,14 @@ import javax.inject.Inject
 class TemplateViewModel @Inject constructor(private val templatesRepository: TemplatesRepository) :
     ViewModel() {
     val dataMap = MutableLiveData<Map<String, List<TemplateModel>>>()
-    var isHide=MutableLiveData<Boolean>()
+    var isHide = MutableLiveData<Boolean>()
     val loadingState = MutableLiveData<Boolean>()
     val dataResponse = MutableLiveData<ProfileModelAddDetailResponse>()
     val coverLetterResponse = MutableLiveData<CoverLetterResponse>()
-    val getSamples= MutableLiveData<List<SampleResponseModel>>()
-    val getString=MutableLiveData<String>()
+    val getSamples = MutableLiveData<List<SampleResponseModel>>()
+    val getString = MutableLiveData<String>()
     fun loginRequest(loginRequestModel: LoginRequestModel) {
         viewModelScope.launch {
-
             try {
                 templatesRepository.getLogin(
                     loginRequestModel,
@@ -48,23 +47,27 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
             }
         }
     }
+
     fun fetchTemplates(type: String) {
         viewModelScope.launch {
-
+            loadingState.postValue(true)
             try {
                 templatesRepository.getTemplates(
                     type,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
+                            loadingState.postValue(false)
                             dataMap.postValue(data as Map<String, List<TemplateModel>>)
                         }
 
                         override fun onFailure(errorMessage: String?) {
+                            loadingState.postValue(false)
 
                         }
 
                     })
             } catch (e: Exception) {
+                loadingState.postValue(false)
                 e.printStackTrace()
             }
         }
@@ -91,7 +94,8 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
             }
         }
     }
-    fun getSample(type:String) {
+
+    fun getSample(type: String) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -112,12 +116,13 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
             }
         }
     }
-    fun getCLPreview(id:String,templateID:String) {
+
+    fun getCLPreview(id: String, templateID: String) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
                 templatesRepository.getCLPreview(
-                    id,templateID,
+                    id, templateID,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             getString.postValue(data as String)
@@ -133,26 +138,27 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
             }
         }
     }
-    fun getResumePreview(id:String,templateID:String) {
-        viewModelScope.launch {
-            loadingState.postValue(true)
-            try {
-                templatesRepository.getResumePreview(
-                    id,templateID,
-                    object : ResponseCallback {
-                        override fun onSuccess(message: String?, data: Any?) {
-                            getString.postValue(data as String)
-                            loadingState.postValue(false)
-                        }
 
-                        override fun onFailure(errorMessage: String?) {
-                            loadingState.postValue(false)
-                        }
-                    })
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+    fun getResumePreview(id: String, templateID: String) {
+//        viewModelScope.launch {
+        loadingState.postValue(true)
+        try {
+            templatesRepository.getResumePreview(
+                id, templateID,
+                object : ResponseCallback {
+                    override fun onSuccess(message: String?, data: Any?) {
+                        getString.postValue(data as String)
+                        loadingState.postValue(false)
+                    }
+
+                    override fun onFailure(errorMessage: String?) {
+                        loadingState.postValue(false)
+                    }
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+//        }
     }
 
 

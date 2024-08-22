@@ -40,21 +40,21 @@ interface ChooseTemplateService {
 
     //profile
 
-   /* @POST(Constants.CREATE_PROFILE_API)
-    fun onCreateProfile(@Body createProfileRequestModel: CreateProfileRequestModel): Call<JsonElement>
-*/
-   @Multipart
-   @POST(Constants.CREATE_PROFILE_API)
-   fun createProfileWithImage(
-       @Part("name") name: RequestBody,
-       @Part("email") email: RequestBody,
-       @Part("phone") phone: RequestBody,
-       @Part image: MultipartBody.Part?,
-       @Part("gender") gender: RequestBody,
-       @Part("job") job: RequestBody,
-       @Part("dob") dob: RequestBody,
-       @Part("address") address: RequestBody
-   ): Call<JsonElement>
+    /* @POST(Constants.CREATE_PROFILE_API)
+     fun onCreateProfile(@Body createProfileRequestModel: CreateProfileRequestModel): Call<JsonElement>
+ */
+    @Multipart
+    @POST(Constants.CREATE_PROFILE_API)
+    fun createProfileWithImage(
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part image: MultipartBody.Part?,
+        @Part("gender") gender: RequestBody,
+        @Part("job") job: RequestBody,
+        @Part("dob") dob: RequestBody,
+        @Part("address") address: RequestBody
+    ): Call<JsonElement>
 
     @POST(Constants.UPDATE_PROFILE)
     fun onUpdateProfile(
@@ -138,16 +138,21 @@ interface ChooseTemplateService {
     fun getCoverLetterPreview(
         @Path("id") id: String,
         @Path("templateId") templateId: String,
-    ): Call<JsonElement>
+    ): Call<String>
 
     //PreviewResume
     @GET(Constants.PREVIEW_RESUME_API)
     fun getResumePreview(
         @Path("profileId") profileId: String,
         @Path("templateId") templateId: String,
-    ): Call<JsonElement>
+    ): Call<String>
 
-     @GET(Constants.LOOKUP_API)
-    fun onGetLookup( @Query("key")key: String, @Query("text")query: String, @Query("page")s: String, @Query("size")s1: String): Call<JsonElement>
+    @GET(Constants.LOOKUP_API)
+    fun onGetLookup(
+        @Query("key") key: String,
+        @Query("text") query: String,
+        @Query("page") s: String,
+        @Query("size") s1: String
+    ): Call<JsonElement>
 
 }

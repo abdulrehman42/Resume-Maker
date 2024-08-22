@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.addCallback
+import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,6 +36,14 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         addDetailResumeVM.singleResponse.observe(currentActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 

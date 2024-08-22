@@ -207,6 +207,7 @@ dependencies {
     implementation("com.google.firebase:firebase-config")
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation ("com.google.android.gms:play-services-auth:20.6.0")
+    implementation ("com.itextpdf:itextpdf:5.5.13.3")
 
 
 

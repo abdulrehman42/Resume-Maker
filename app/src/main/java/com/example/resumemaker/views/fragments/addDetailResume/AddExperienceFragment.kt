@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
@@ -35,6 +36,14 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         addDetailResumeVM.educationResponse.observe(currentActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package com.example.resumemaker.utils
 
 object Constants {
-    const val TEMPLATE_ID = "template"
     const val BASE_MEDIA_URL = "https://n0ngl4zx.tinifycdn.com/"
     const val BASE_URL = "http://35.164.228.120:9000/v1/"
     const val TOKEN =
@@ -27,7 +26,7 @@ object Constants {
     const val PREVIEW_RESUME_API = "profiles/{profileId}/templates/{templateId}"
     const val GETPROFILES_API = "profiles"
     const val SAMPLES_API = "samples"
-    const val LOOKUP_API="lookups"
+    const val LOOKUP_API = "lookups"
 
 
     //lockup Keys
@@ -42,6 +41,7 @@ object Constants {
     const val degree = "degree"
     const val position = "position"
     const val achievements = "achievements"
+    const val PDF="pdf"
 
 
     const val COVER_LETTER = "coverLetter"
@@ -57,10 +57,11 @@ object Constants {
     const val PROFILE = "profile"
     const val FRAGMENT_CALLED = "FRAGMENT"
     const val PROFILE_ID = "profile_id"
-
+    const val IS_FIRST_TIME = "IS_FIRST_TIME"
+    const val TEMPLATE_ID = "template"
     const val CAMERA = "CAMERA"
     const val GALLERY = "GALLERY"
-
+    val JPG = "jpg"
     const val CREATE = "CREATE"
     const val IMPORT = "IMPORT"
     const val CHOSE_TEMPLATE = "CHOSE_TEMPLATE"

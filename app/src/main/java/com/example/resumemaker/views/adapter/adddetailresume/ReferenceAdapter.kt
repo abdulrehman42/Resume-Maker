@@ -22,20 +22,20 @@ class ReferenceAdapter:
                 editItemClickCallback?.invoke(model)
             }
             binding.deleteEdu.setOnClickListener {
-                deleteitemClickCallback?.invoke(model)
+                deleteitemClickCallback?.invoke(position)
             }
         }
     }
 
     var editItemClickCallback: ((ProfileModelAddDetailResponse.UserReference) -> Unit)? = null
-    var deleteitemClickCallback: ((ProfileModelAddDetailResponse.UserReference) -> Unit)? = null
+    var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
     fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserReference) -> Unit) {
         this.editItemClickCallback = callback
     }
 
-    fun setOnItemDeleteClickCallback(callback: (ProfileModelAddDetailResponse.UserReference) -> Unit) {
+    fun setOnItemDeleteClickCallback(callback: (Int) -> Unit) {
         this.deleteitemClickCallback = callback
     }
 

@@ -148,15 +148,17 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxChooseDownload(curentactivity: Activity) {
+    fun alertboxChooseDownload(curentactivity: Activity,param: StringValueDialogCallback) {
         val binding= ChoosedownloadLayoutBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.downJpg.setOnClickListener {
+            param.onButtonClick(Constants.JPG)
 
             dialogBuilder.dismiss()
         }
         binding.downPdf.setOnClickListener {
+            param.onButtonClick(Constants.PDF)
 
             dialogBuilder.dismiss()
         }

@@ -22,10 +22,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class TemplatesRepository @Inject constructor(private val chooseTemplateService: ChooseTemplateService) {
+class TemplatesRepository @Inject constructor(
+    @Named("GsonService") private val chooseTemplateService: ChooseTemplateService,
+    @Named("ScalarsService") private val chooseTemplateServiceForHTMLd: ChooseTemplateService
+) {
 
     private val _templateResponse = MutableLiveData<NetworkResult<JsonElement>>()
     private val _resumeResponse = MutableLiveData<NetworkResult<JsonElement>>()
@@ -95,28 +99,30 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.getCoverLetterPreview(id, templateId).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.MESSAGE,
-                            response.body(),
-                            object : TypeToken<String>() {}.type
-                        ) as String,
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.DATA,
-                            response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
-                    )
+        chooseTemplateServiceForHTMLd.getCoverLetterPreview(id, templateId)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        try {
+                            response.body()?.let { jsonElement ->
+                                callback.onSuccess(
+                                    "",
+                                    jsonElement
+                                )
+                            } ?: callback.onFailure("Response body is null")
+                        } catch (e: Exception) {
+                            callback.onFailure("Failed to parse JSON: ${e.message}")
+                        }
+                    } else {
+                        callback.onFailure("Response failed with status: ${response.code()}")
+                    }
                 }
 
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                override fun onFailure(call: Call<String>, t: Throwable) {
                     callback.onFailure(t.message)
                 }
-            })
-        )
+            }
+            )
     }
 
     fun createCoverLetter(
@@ -183,43 +189,30 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
 
-        chooseTemplateService.getResumePreview(id, templateId).enqueue(object : Callback<JsonElement> {
-            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                if (response.isSuccessful) {
-                    try {
-                        response.body()?.let { jsonElement ->
-                            val jsonString = jsonElement.toString()
-
-                            // Use a new JsonParser to parse the string
-                            val jsonParser = JsonParser()
-                            val parsedJson = jsonParser.parse(jsonString).asJsonObject
-
-                            callback.onSuccess(
-                                JSONManager.getInstance().getFormattedResponse(
-                                    JSONKeys.MESSAGE,
-                                    parsedJson,
-                                    object : TypeToken<String>() {}.type
-                                ) as String,
-                                JSONManager.getInstance().getFormattedResponse(
-                                    JSONKeys.DATA,
-                                    parsedJson,
-                                    object : TypeToken<String>() {}.type
-                                ) as String
-                            )
-                        } ?: callback.onFailure("Response body is null")
-                    } catch (e: Exception) {
-                        callback.onFailure("Failed to parse JSON: ${e.message}")
+        chooseTemplateServiceForHTMLd.getResumePreview(id, templateId)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        try {
+                            response.body()?.let { jsonElement ->
+                                callback.onSuccess(
+                                    "",
+                                    jsonElement
+                                )
+                            } ?: callback.onFailure("Response body is null")
+                        } catch (e: Exception) {
+                            callback.onFailure("Failed to parse JSON: ${e.message}")
+                        }
+                    } else {
+                        callback.onFailure("Response failed with status: ${response.code()}")
                     }
-                } else {
-                    callback.onFailure("Response failed with status: ${response.code()}")
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    callback.onFailure(t.message)
                 }
             }
-
-            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                callback.onFailure(t.message)
-            }
-        }
-        )
+            )
     }
 
 }

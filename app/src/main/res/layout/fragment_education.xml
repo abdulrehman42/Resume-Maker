@@ -6,6 +6,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.addDetailResume.EducationFragment">
 
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_education"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview_education" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_education"
         android:layout_width="match_parent"

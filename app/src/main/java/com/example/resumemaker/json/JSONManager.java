@@ -91,6 +91,11 @@ public class JSONManager {
         return gson.fromJson(rootJson, type);
     }
 
+    public Object getFormattedResponse( JsonElement jsonElement, Type type) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonElement, type);
+    }
+
     public Object convertJsonToObject(String json, Type type) {
         Gson gson = new Gson();
         return gson.fromJson(json, type);

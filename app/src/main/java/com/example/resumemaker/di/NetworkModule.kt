@@ -1,7 +1,6 @@
 package com.example.resumemaker.di
 
 
-
 import com.example.resumemaker.api.http.AppIntercepter
 import com.example.resumemaker.api.http.ChooseTemplateService
 import com.example.resumemaker.utils.Constants
@@ -13,7 +12,9 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -22,13 +23,25 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @Named("GsonRetrofit")
     fun providesRetrofit(): Retrofit.Builder {
-
         return Retrofit.Builder().apply {
             baseUrl(Constants.BASE_URL)
             client(provideOkHttpClient(AppIntercepter()))
             addConverterFactory(GsonConverterFactory.create())
-        }    }
+        }
+    }
+
+    @Singleton
+    @Provides
+    @Named("ScalarsRetrofit")
+    fun providesRetrofitWithScalarsConverterFactory(): Retrofit.Builder {
+        return Retrofit.Builder().apply {
+            baseUrl(Constants.BASE_URL)
+            client(provideOkHttpClient(AppIntercepter()))
+            addConverterFactory(ScalarsConverterFactory.create())
+        }
+    }
 
     @Singleton
     @Provides
@@ -37,10 +50,18 @@ class NetworkModule {
             .connectTimeout(4, TimeUnit.MINUTES).build()
     }
 
+
     @Singleton
     @Provides
-    fun chooseTemplate(retrofitBuilder: Retrofit.Builder): ChooseTemplateService
-    {
+    @Named("GsonService")
+    fun chooseTemplate(@Named("GsonRetrofit") retrofitBuilder: Retrofit.Builder): ChooseTemplateService {
+        return retrofitBuilder.build().create(ChooseTemplateService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    @Named("ScalarsService")
+    fun chooseTemplateWithScalarsConverterFactory(@Named("ScalarsRetrofit") retrofitBuilder: Retrofit.Builder): ChooseTemplateService {
         return retrofitBuilder.build().create(ChooseTemplateService::class.java)
     }
 

@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:padding="@dimen/_2sdp"
-        android:layout_margin="@dimen/_20sdp"
+        android:layout_margin="@dimen/_15sdp"
         app:tabIndicatorHeight="0dp"
         android:background="@drawable/greybgradius"
         android:screenOrientation="portrait"
@@ -29,11 +29,14 @@
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/Tab_layout"
-        app:layout_constraintStart_toStartOf="@+id/Tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Tab_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

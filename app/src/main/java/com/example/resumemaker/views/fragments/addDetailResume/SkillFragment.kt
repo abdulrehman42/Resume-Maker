@@ -2,11 +2,14 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentSkillBinding
+import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
+import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.adddetailresume.SingleStringAdapter
@@ -17,13 +20,23 @@ import dagger.hilt.android.AndroidEntryPoint
 class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     val skillAdapter= SingleStringAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var list=ArrayList<String>()
 
     override val inflate: Inflate<FragmentSkillBinding>
         get() = FragmentSkillBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
-            setadapter(it.userSkills)
+            list= it.userSkills as ArrayList<String>
+            setadapter(list)
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 
@@ -49,8 +62,10 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
             addDetailResumeVM.fragment.value = AddSkillFragment()
         }
         skillAdapter.setOnItemDeleteClickCallback {
-            callDeleteApi()
-
+            list.removeAt(it)
+            setadapter(list)
+            callSaveApi()
+            apiCall()
         }
 
         binding.recyclerviewSkill.apply {
@@ -58,8 +73,11 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
         }
     }
 
-    private fun callDeleteApi() {
-
+    private fun callSaveApi() {
+        addDetailResumeVM.editSkill(
+            sharePref.readString(Constants.PROFILE_ID).toString(),
+            SkillRequestModel(list)
+        )
     }
 
     private fun onclick() {

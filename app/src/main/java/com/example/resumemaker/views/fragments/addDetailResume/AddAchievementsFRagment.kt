@@ -2,6 +2,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
 import android.view.View.OnFocusChangeListener
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
@@ -26,6 +27,14 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
         addDetailResumeVM.achievementResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 

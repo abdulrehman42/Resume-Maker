@@ -138,4 +138,5 @@
     <string name="preview">Preview</string>
     <string name="cover_letter_missing_field">Please write CoverLetter</string>
     <string name="user_profile">User Profile</string>
+    <string name="editcover">Edit CoverLetter</string>
 </resources>

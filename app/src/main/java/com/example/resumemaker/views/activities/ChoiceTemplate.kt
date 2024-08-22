@@ -57,6 +57,14 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             if (it)
             binding.choiceTemplateContainer.isGone=true
         }
+        templateViewModel.loadingState.observe(this){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
+        }
     }
 
     fun makeApiCall() {

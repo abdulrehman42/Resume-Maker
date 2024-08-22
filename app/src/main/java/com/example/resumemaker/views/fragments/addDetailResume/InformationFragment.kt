@@ -65,6 +65,14 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         addDetailResumeVM.looksupResponse.observe(viewLifecycleOwner) {
             setAdapter(it)
         }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
+        }
     }
 
     private fun setAdapter(lookUpResponses: List<LookUpResponse>) {

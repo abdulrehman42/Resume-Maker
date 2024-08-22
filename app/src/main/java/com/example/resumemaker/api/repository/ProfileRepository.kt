@@ -15,10 +15,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class ProfileRepository @Inject constructor(private val chooseTemplateService: ChooseTemplateService) {
+class ProfileRepository @Inject constructor(
+    @Named("GsonService")private val chooseTemplateService: ChooseTemplateService) {
     private val _resumeResponse = MutableLiveData<NetworkResult<JsonElement>>()
 
     fun getProfileList(

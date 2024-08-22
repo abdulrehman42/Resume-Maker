@@ -2,28 +2,43 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentProjectBinding
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
+import com.example.resumemaker.models.request.addDetailResume.Project
+import com.example.resumemaker.models.request.addDetailResume.ProjectRequest
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.adddetailresume.ProjectAdapter
 import com.google.android.material.tabs.TabLayout
+import com.ironsource.li
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
-    val projectAdapter= ProjectAdapter()
+    val projectAdapter = ProjectAdapter()
+    lateinit var projectRequest: ProjectRequest
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var list = ArrayList<ProfileModelAddDetailResponse.UserProject>()
     override val inflate: Inflate<FragmentProjectBinding>
         get() = FragmentProjectBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            setAdapter(it.userProjects)
+            list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
+            setAdapter(list)
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 
@@ -46,7 +61,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         binding.nextbtn.setOnClickListener {
             if (tabhost.tabCount >= 9) {
                 tabhost.getTabAt(9)!!.select()
-            }else{
+            } else {
                 addDetailResumeVM.isHide.value = false
                 addDetailResumeVM.fragment.value = ResumePreviewFragment()
 
@@ -65,18 +80,31 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
     private fun setAdapter(userProjects: List<ProfileModelAddDetailResponse.UserProject>) {
         projectAdapter.submitList(userProjects)
         projectAdapter.setOnEditItemClickCallback {
-            callDeleteApi()
-        }
-        projectAdapter.setOnItemDeleteClickCallback {
             sharePref.writeDataProjects(it)
             addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = AddProjectFragment()
         }
+        projectAdapter.setOnItemDeleteClickCallback {
+            list.removeAt(it)
+            setAdapter(list)
+            callSaveApi()
+            apiCall()
+        }
         binding.recyclerviewProjects.adapter = projectAdapter
     }
 
-    private fun callDeleteApi() {
+    private fun callSaveApi() {
 
+        var project = ArrayList<Project>()
+        for (i in 0 until list.size) {
+            project = listOf(
+                Project(list[i].description, list[i].title)
+            ) as ArrayList<Project>
+        }
+        projectRequest = ProjectRequest(projects = project)
+        addDetailResumeVM.editProjects(
+            sharePref.readString(Constants.PROFILE_ID).toString(), projectRequest
+        )
     }
 
 }

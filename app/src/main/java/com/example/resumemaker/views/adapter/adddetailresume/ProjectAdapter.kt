@@ -20,20 +20,20 @@ class ProjectAdapter : ListAdapter<ProfileModelAddDetailResponse.UserProject, Pr
                 editItemClickCallback?.invoke(model)
             }
             binding.deleteEdu.setOnClickListener {
-                deleteitemClickCallback?.invoke(model)
+                deleteitemClickCallback?.invoke(position)
             }
         }
     }
 
     var editItemClickCallback: ((ProfileModelAddDetailResponse.UserProject) -> Unit)? = null
-    var deleteitemClickCallback: ((ProfileModelAddDetailResponse.UserProject) -> Unit)? = null
+    var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
     fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserProject) -> Unit) {
         this.editItemClickCallback = callback
     }
 
-    fun setOnItemDeleteClickCallback(callback: (ProfileModelAddDetailResponse.UserProject) -> Unit) {
+    fun setOnItemDeleteClickCallback(callback: (Int) -> Unit) {
         this.deleteitemClickCallback = callback
     }
 

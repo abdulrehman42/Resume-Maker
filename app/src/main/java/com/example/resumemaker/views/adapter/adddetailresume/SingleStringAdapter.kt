@@ -18,20 +18,20 @@ class SingleStringAdapter : ListAdapter<String, SingleStringAdapter.ViewHolder>(
                 editItemClickCallback?.invoke(model)
             }
             binding.deleteSkill.setOnClickListener {
-                deleteitemClickCallback?.invoke(model)
+                deleteitemClickCallback?.invoke(position)
             }
         }
     }
 
     var editItemClickCallback: ((String) -> Unit)? = null
-    var deleteitemClickCallback: ((String) -> Unit)? = null
+    var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
     fun setOnEditItemClickCallback(callback: (String) -> Unit) {
         this.editItemClickCallback = callback
     }
 
-    fun setOnItemDeleteClickCallback(callback: (String) -> Unit) {
+    fun setOnItemDeleteClickCallback(callback: (Int) -> Unit) {
         this.deleteitemClickCallback = callback
     }
 

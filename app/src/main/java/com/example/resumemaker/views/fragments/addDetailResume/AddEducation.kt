@@ -3,6 +3,7 @@ package com.example.resumemaker.views.fragments.addDetailResume
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
+import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
@@ -32,6 +33,14 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         addDetailResumeVM.educationResponse.observe(currentActivity()) {
                addDetailResumeVM.isHide.value = true
                currentActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+            if (it)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
         }
     }
 

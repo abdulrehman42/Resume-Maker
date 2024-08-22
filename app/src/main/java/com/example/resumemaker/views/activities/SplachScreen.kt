@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import com.example.resumemaker.base.BaseActivity
 import com.example.resumemaker.databinding.ActivitySplashScreenBinding
+import com.example.resumemaker.utils.Constants
 import com.google.android.material.elevation.SurfaceColors
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -24,8 +25,14 @@ class SplachScreen : BaseActivity() {
         setContentView(binding.root)
         MainScope().launch {
             delay(2000)
-            startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
-            finish()
+            if (sharePref.readBoolean(Constants.IS_FIRST_TIME,true)){
+                startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
+                finish()
+            }else{
+                startActivity(Intent(this@SplachScreen, MainActivity::class.java))
+                finish()
+            }
+
         }
     }
 

@@ -13,13 +13,14 @@ import com.example.resumemaker.databinding.FragmentCoverLetterBinding
 import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.example.resumemaker.views.fragments.tablayout.Vadapterswipe
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class CatagoryDownload : BaseFragment<FragmentCoverLetterBinding>()
 {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
-    lateinit var templateViewModel: TemplateViewModel
+  //  lateinit var templateViewModel: TemplateViewModel
     override val inflate: Inflate<FragmentCoverLetterBinding>
         get() = FragmentCoverLetterBinding::inflate
 
@@ -28,10 +29,10 @@ class CatagoryDownload : BaseFragment<FragmentCoverLetterBinding>()
 
     override fun init(savedInstanceState: Bundle?) {
         setUpTablayout()
-        templateViewModel=ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
+        /*templateViewModel=ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             templateViewModel.isHide.value=true
-        }
+        }*/
     }
 
     private fun setUpTablayout() {
