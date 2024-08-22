@@ -15,6 +15,7 @@ import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.models.api.TemplateModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
+import com.example.resumemaker.utils.Helper
 import com.example.resumemaker.viewmodels.TemplateViewModel
 import com.example.resumemaker.views.activities.AddDetailResume
 import com.example.resumemaker.views.activities.LoginActivity
@@ -53,7 +54,12 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                 object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {
-                            callback?.onTemplateSelected(it)
+                            if (it.contentType==1)
+                            {
+                                DialogueBoxes.alertboxImport(currentActivity())
+                            }else{
+                                callback?.onTemplateSelected(it)
+                            }
                         } else {
                             currentActivity().replaceChoiceFragment(R.id.nav_add_detail_coverletter)
                         }
@@ -63,6 +69,10 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
         }
 
         templateAdapter.setOnItemClickCallback {
+            if (it.contentType==1)
+            {
+                DialogueBoxes.alertboxImport(currentActivity())
+            }
             sharePref.writeString(Constants.TEMPLATE_ID,it.id.toString())
             callback?.onTemplateSelected(it)
         }

@@ -4,29 +4,34 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddEducationBinding
+import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.request.addDetailResume.Qualification
 import com.example.resumemaker.models.request.addDetailResume.QualificationModelRequest
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
-    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     var endDate: String? = null
 
     override val inflate: Inflate<FragmentAddEducationBinding>
         get() = FragmentAddEducationBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+        addDetailResumeVM.educationResponse.observe(currentActivity()) {
+               addDetailResumeVM.isHide.value = true
+               currentActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -35,9 +40,10 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_education)
         val data = sharePref.readDataEducation()
-        if (data.degree != null) {
+        data?.let {
             binding.instituenameedittext.setText(data.institute)
             binding.degreeName.setText(data.degree)
             binding.startdateedittext.setText(data.startDate)
@@ -90,18 +96,24 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
                 CallApi()
+                /*MainScope().launch {
+                    delay(2000)
+                        addDetailResumeVM.isHide.value = true
+                        currentActivity().onBackPressedDispatcher.onBackPressed()
+                }*/
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = true
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-        requireActivity().onBackPressedDispatcher.addCallback(currentActivity()) {
+        /*currentActivity().onBackPressedDispatcher.addCallback (viewLifecycleOwner){
             addDetailResumeVM.isHide.value = true
-        }
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }*/
     }
 
     private fun CallApi() {
@@ -112,13 +124,14 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         }
         val qualifications = listOf(
             Qualification(
-                "1__"+binding.degreeName.text.toString(),
-                endDate,
-                "1__"+binding.instituenameedittext.text.toString(),
-                "degree",
-                binding.startdateedittext.text.toString()
+                degree = "1__"+binding.degreeName.text.toString(),
+                endDate = endDate,
+                institute = "1__"+binding.instituenameedittext.text.toString(),
+                qualificationType = "degree",
+                startDate = binding.startdateedittext.text.toString()
             )
         )
+
         val qualificationModelRequest = QualificationModelRequest(qualifications = qualifications)
 
         addDetailResumeVM.editQualification(

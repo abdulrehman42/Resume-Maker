@@ -3,6 +3,7 @@ package com.example.resumemaker.views.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,30 +12,45 @@ import com.example.resumemaker.databinding.TemplatelayoutitemsBinding
 import com.example.resumemaker.models.api.TemplateModel
 import com.example.resumemaker.utils.Constants
 
-class TempResListAdpter: ListAdapter<TemplateModel,TempResListAdpter.ViewHolder>(TemplateDiffCallback) {
+class TempResListAdpter :
+    ListAdapter<TemplateModel, TempResListAdpter.ViewHolder>(TemplateDiffCallback) {
     inner class ViewHolder(private val binding: TemplatelayoutitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model: TemplateModel) {
-            Glide.with(binding.templateimage.context).load(Constants.BASE_MEDIA_URL+model.path).into(binding.templateimage)
+            Glide.with(binding.templateimage.context).load(Constants.BASE_MEDIA_URL + model.path)
+                .into(binding.templateimage)
+            if (model.contentType == 0) {
+                binding.videoIconId.isGone = true
+            } else {
+                binding.videoIconId.isGone = false
+            }
             binding.eyeIconId.setOnClickListener {
                 eyeItemClickCallback?.invoke(model)
             }
-            binding.templateimage.setOnClickListener{
+            binding.templateimage.setOnClickListener {
                 itemClickCallback?.invoke(model)
+            }
+            binding.videoIconId.setOnClickListener {
+                videoItemClickCallback?.invoke(model)
             }
         }
     }
 
-     var eyeItemClickCallback: (( TemplateModel) -> Unit)? = null
-     var itemClickCallback: ((TemplateModel) -> Unit)? = null
-
+    var eyeItemClickCallback: ((TemplateModel) -> Unit)? = null
+    var itemClickCallback: ((TemplateModel) -> Unit)? = null
+    var videoItemClickCallback: ((TemplateModel) -> Unit)? = null
 
     fun setOnEyeItemClickCallback(callback: (TemplateModel) -> Unit) {
-        this.eyeItemClickCallback=callback
+        this.eyeItemClickCallback = callback
     }
+
+    fun setOnVideoItemClickCallback(callback: (TemplateModel) -> Unit) {
+        this.videoItemClickCallback = callback
+    }
+
     fun setOnItemClickCallback(callback: (TemplateModel) -> Unit) {
-        this.itemClickCallback=callback
+        this.itemClickCallback = callback
     }
 
     object TemplateDiffCallback : DiffUtil.ItemCallback<TemplateModel>() {

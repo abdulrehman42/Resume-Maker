@@ -4,37 +4,49 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentInformationBinding
+import com.example.resumemaker.models.api.LookUpResponse
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.Constants.IMAGE_CODE
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseImage
+import com.example.resumemaker.utils.Helper.getFileFromUri
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
+import com.example.resumemaker.views.adapter.adddetailresume.LooksAdapter
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
 @AndroidEntryPoint
 class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>() {
+    var image = ""
+    var getImage = ""
+    var gender = ""
     private lateinit var selectedImageBitmap: Bitmap
-    var image=""
-    var gender="male"
-    var data: ProfileModelAddDetailResponse?=null
+    val looksAdapter = LooksAdapter()
+    var data: ProfileModelAddDetailResponse? = null
+    var defaulValueAddress: String? = null
+    var defaulValuePhone: String? = null
+
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
-    lateinit var tabhost:TabLayout
+    lateinit var tabhost: TabLayout
 
     override fun csnMoveForward(): Boolean {
         return isConditionMet()
@@ -45,10 +57,26 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner)
+        addDetailResumeVM.informationResponse.observe(viewLifecycleOwner)
         {
-            sharePref.writeString(Constants.PROFILE_ID,it.id.toString())
+            sharePref.writeString(Constants.PROFILE_ID, it.id.toString())
             tabhost.getTabAt(1)!!.select()
+        }
+        addDetailResumeVM.looksupResponse.observe(viewLifecycleOwner) {
+            setAdapter(it)
+        }
+    }
+
+    private fun setAdapter(lookUpResponses: List<LookUpResponse>) {
+        looksAdapter.submitList(lookUpResponses)
+
+        binding.lookidRecyclerview.apply {
+            isGone = false
+            adapter = looksAdapter
+        }
+        looksAdapter.setOnItemClickCallback {
+            binding.jobedittext.setText(it.text)
+            binding.lookidRecyclerview.isGone = true
         }
     }
 
@@ -69,8 +97,14 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             phoneedittext.setText(data.phone)
             address.setText(data.address)
             dobEdit.setText(data.dob)
+            if (data.gender == "male") {
+                male()
+            } else {
+                female()
+            }
         }
-        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL+data.path).placeholder(R.drawable.imgplaceholder).into(binding.shapeableImageView)
+        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL + data.path)
+            .placeholder(R.drawable.imgplaceholder).into(binding.shapeableImageView)
     }
 
     @SuppressLint("ResourceAsColor")
@@ -88,17 +122,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                 }
             }
         binding.man.setOnClickListener {
-            binding.man.setBackgroundResource(R.drawable.bluebgradius)
-            binding.woman.setBackgroundResource(R.drawable.greybgradius)
-            gender=getString(R.string.male)
-            binding.woman.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.light_black
-                )
-            )
-            binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-
+            male()
         }
         binding.editprofile.setOnClickListener {
             alertboxChooseImage(currentActivity()) {
@@ -110,46 +134,85 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             }
         }
         binding.woman.setOnClickListener {
-            binding.man.setBackgroundResource(R.drawable.greybgradius)
-            binding.woman.setBackgroundResource(R.drawable.bluebgradius)
-            gender=getString(R.string.female)
-            binding.woman.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_black))
+            female()
         }
+        binding.jobedittext.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = binding.jobedittext.text.toString()
+                callLookUpApi(query)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val query = binding.jobedittext.text.toString()
+                callLookUpApi(query)
+            }
+        })
         binding.nextbtn.setOnClickListener {
 
             if (isConditionMet()) {
-                /*if (data!=null)
-                {
+                if (data != null) {
                     callApiUpdate()
                 }
-                callApi()*/
-                sharePref.writeString(Constants.PROFILE_ID,"7422")
+                callApi()
+                /*
+                                sharePref.writeString(Constants.PROFILE_ID,"7422")
 
-                tabhost.getTabAt(1)!!.select()
+                                tabhost.getTabAt(1)!!.select()
+                */
 
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
-
             }
         }
     }
 
+    private fun callLookUpApi(query: String) {
+        addDetailResumeVM.getLookUp(Constants.position, query, "", "")
+    }
+
     private fun callApiUpdate() {
-        addDetailResumeVM.updateProfile(data!!.id.toString(),
+        addDetailResumeVM.updateProfile(
+            data!!.id.toString(),
             CreateProfileRequestModel(
-                binding.nameedittext.text.toString(),binding.emailtext.text.toString(),
-                binding.phoneedittext.text.toString(),image,gender,binding.jobedittext.text.toString(),
-                binding.dobEdit.text.toString(),binding.address.text.toString())
+                binding.nameedittext.text.toString(),
+                binding.emailtext.text.toString(),
+                binding.phoneedittext.text.toString(),
+                image,
+                gender,
+                binding.jobedittext.text.toString(),
+                binding.dobEdit.text.toString(),
+                binding.address.text.toString()
+            )
         )
     }
 
     private fun callApi() {
+        defaulValueAddress = if (binding.address.text.isNullOrEmpty()) {
+            null
+        } else {
+            binding.address.text.toString()
+        }
+        defaulValuePhone = if (binding.phoneedittext.text.isNullOrEmpty()) {
+            null
+        } else {
+            binding.phoneedittext.text.toString()
+        }
+
         addDetailResumeVM.createProfile(
             CreateProfileRequestModel(
-            binding.nameedittext.text.toString(),binding.emailtext.text.toString(),
-            binding.phoneedittext.text.toString(),image,gender,binding.jobedittext.text.toString(),
-            binding.dobEdit.text.toString(),binding.address.text.toString())
+                binding.nameedittext.text.toString(),
+                binding.emailtext.text.toString(),
+                defaulValuePhone,
+                getImage,
+                gender,
+                binding.jobedittext.text.toString(),
+                binding.dobEdit.text.toString(),
+                defaulValueAddress
+            )
         )
     }
 
@@ -157,7 +220,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         return !binding.nameedittext.text.toString().trim().isNullOrEmpty() &&
                 !binding.emailtext.text.toString().trim().isNullOrEmpty() &&
                 !binding.jobedittext.text.toString().trim().isNullOrEmpty() &&
-                !binding.phoneedittext.text.toString().trim().isNullOrEmpty()
+                !binding.dobEdit.text.toString().trim().isNullOrEmpty() &&
+                !gender.isNullOrEmpty()
     }
 
     private fun openCamera() {
@@ -193,12 +257,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                     e.printStackTrace()
                 }
                 binding.shapeableImageView.setImageBitmap(selectedImageBitmap)
-                image= selectedImageBitmap.toString()
-                /*val stream = ByteArrayOutputStream()
-                selectedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream)
-                val bytes: ByteArray = stream.toByteArray()
-                image = Base64.encodeToString(bytes, Base64.DEFAULT)*/
-
+                image = selectedImageBitmap.toString()
+                val uri: Uri? = data?.data
+                getImage = uri?.let { getFileFromUri(currentActivity(), it) }.toString()
             }
         }
     }
@@ -207,14 +268,34 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_CODE) {
-            image = (data!!.extras!!["data"] as Bitmap?).toString()
-            Glide.with(requireActivity()).load(image).into(binding.shapeableImageView)
-            /*  val stream = ByteArrayOutputStream()
-              photo?.compress(Bitmap.CompressFormat.JPEG, 60, stream)
-              val bytes: ByteArray = stream.toByteArray()
-              image = Base64.encodeToString(bytes, Base64.DEFAULT)
-   */       }
+            val uri: Uri? = data?.data
+            getImage = uri?.let { getFileFromUri(currentActivity(), it) }.toString()
+            Glide.with(requireActivity()).load(uri).into(binding.shapeableImageView)
+
+        }
     }
 
+    fun male() {
+        binding.man.setBackgroundResource(R.drawable.bluebgradius)
+        binding.woman.setBackgroundResource(R.drawable.greybgradius)
+        gender = getString(R.string.male)
+        binding.woman.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.light_black
+            )
+        )
+        binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+    }
+
+    fun female() {
+        binding.man.setBackgroundResource(R.drawable.greybgradius)
+        binding.woman.setBackgroundResource(R.drawable.bluebgradius)
+        gender = getString(R.string.female)
+        binding.woman.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_black))
+
+    }
 
 }

@@ -60,11 +60,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         binding.appBarMainActivty.contentmain.cvResumeBtn.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
             intent.putExtra(Constants.IS_RESUME, true)
+            sharePref.writeBoolean(Constants.IS_RESUME,true)
             startActivity(intent)
         }
         binding.appBarMainActivty.contentmain.coverletterBtn.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
             intent.putExtra(Constants.IS_RESUME, false)
+            sharePref.writeBoolean(Constants.IS_RESUME,false)
             startActivity(intent)
         }
         binding.appBarMainActivty.contentmain.downloadBtn.setOnClickListener {

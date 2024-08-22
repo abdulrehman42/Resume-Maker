@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
     annotationProcessor(libs.compiler)
 
     //SSP
@@ -203,7 +205,14 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-config")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("com.google.android.gms:play-services-auth:20.6.0")
 
+
+
+    /*//KProgressHud
+    implementation ("com.kaopiz:kprogresshud:1.2.0")
+*/
     //hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

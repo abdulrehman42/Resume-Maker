@@ -20,7 +20,7 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return false
     }
 
     override val inflate: Inflate<FragmentAchievementBinding>

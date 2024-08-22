@@ -6,17 +6,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.resumemaker.api.http.ResponseCallback
 import com.example.resumemaker.api.repository.AddDetailResumeRepository
+import com.example.resumemaker.models.api.LookUpResponse
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.api.SampleResponseModel
-import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
+import com.example.resumemaker.models.api.adddetailresume.AchievementResponse
+import com.example.resumemaker.models.api.adddetailresume.EducationResponse
+import com.example.resumemaker.models.api.adddetailresume.ExperienceResponse
+import com.example.resumemaker.models.api.adddetailresume.InformationModelResponsedata
+import com.example.resumemaker.models.api.adddetailresume.ProjectResponse
+import com.example.resumemaker.models.api.adddetailresume.ReferrenceResponseModel
+import com.example.resumemaker.models.request.addDetailResume.AchievementRequest
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ExperienceRequest
 import com.example.resumemaker.models.request.addDetailResume.InterestRequestModel
 import com.example.resumemaker.models.request.addDetailResume.LanguageRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ProjectRequest
 import com.example.resumemaker.models.request.addDetailResume.QualificationModelRequest
+import com.example.resumemaker.models.request.addDetailResume.ReferenceRequest
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
 import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -28,7 +35,16 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
 
     var fragment=SingleLiveEvent<Fragment>()
     var isHide=SingleLiveEvent<Boolean>()
+    var looksupResponse=MutableLiveData<List<LookUpResponse>>()
     val dataResponse = MutableLiveData<ProfileModelAddDetailResponse>()
+    val informationResponse=MutableLiveData<InformationModelResponsedata>()
+    val projectResponse=MutableLiveData<List<ProjectResponse>>()
+    val referenceResponse=MutableLiveData<List<ReferrenceResponseModel>>()
+    val achievementResponse=MutableLiveData<List<AchievementResponse>>()
+    val experienceResponse=MutableLiveData<List<ExperienceResponse>>()
+    val educationResponse=MutableLiveData<List<EducationResponse>>()
+    val singleResponse=MutableLiveData<List<String>>()
+
     val getSamples=MutableLiveData<List<SampleResponseModel>>()
 
     fun createProfile(createProfileRequestModel: CreateProfileRequestModel) {
@@ -39,7 +55,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     createProfileRequestModel,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            informationResponse.postValue(data as InformationModelResponsedata)
                             loadingState.postValue(false)
                         }
 
@@ -103,10 +119,9 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId,qualification,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            educationResponse.postValue(data as List<EducationResponse>)
                             loadingState.postValue(false)
                         }
-
                         override fun onFailure(errorMessage: String?) {
                             loadingState.postValue(false)
                         }
@@ -145,7 +160,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId,skill,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            singleResponse.postValue(data as List<String>)
                             loadingState.postValue(false)
                         }
 
@@ -166,7 +181,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId, interest,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            singleResponse.postValue(data as List<String>)
                             loadingState.postValue(false)
                         }
 
@@ -187,7 +202,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                         profileId, language,
                         object : ResponseCallback {
                             override fun onSuccess(message: String?, data: Any?) {
-                                dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                                singleResponse.postValue(data as List<String>)
                                 loadingState.postValue(false)
                             }
 
@@ -201,7 +216,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
 
-    fun editExperience(profileId:String, experience: ExperienceRequestModel) {
+    fun editExperience(profileId:String, experience: ExperienceRequest) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -209,7 +224,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId, experience,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            experienceResponse.postValue(data as List<ExperienceResponse>)
                             loadingState.postValue(false)
                         }
 
@@ -222,7 +237,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
             }
         }
     }
-        fun editReference(profileId:String, referenceRequestModel: ReferenceRequestModel) {
+        fun editReference(profileId:String, referenceRequestModel: ReferenceRequest) {
             viewModelScope.launch {
                 loadingState.postValue(true)
                 try {
@@ -230,7 +245,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                         profileId,referenceRequestModel,
                         object : ResponseCallback {
                             override fun onSuccess(message: String?, data: Any?) {
-                                dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                                referenceResponse.postValue(data as List<ReferrenceResponseModel>)
                                 loadingState.postValue(false)
                             }
 
@@ -243,7 +258,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                 }
             }
     }
-    fun editAchievement(profileId:String, achievRequestModel: AchievRequestModel) {
+    fun editAchievement(profileId:String, achievRequestModel: AchievementRequest) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -251,7 +266,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId, achievRequestModel,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            achievementResponse.postValue(data as List<AchievementResponse>)
                             loadingState.postValue(false)
                         }
 
@@ -265,7 +280,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun editProjects(profileId:String, projectRequestModel: ProjectRequestModel) {
+    fun editProjects(profileId:String, projectRequestModel: ProjectRequest) {
         viewModelScope.launch {
             loadingState.postValue(true)
             try {
@@ -273,7 +288,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId, projectRequestModel,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            projectResponse.postValue(data as List<ProjectResponse>)
                             loadingState.postValue(false)
                         }
 
@@ -295,6 +310,28 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            loadingState.postValue(false)
+                        }
+
+                        override fun onFailure(errorMessage: String?) {
+                            loadingState.postValue(false)
+                        }
+                    })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    fun getLookUp(key: String, query: String, s: String, s1: String) {
+        viewModelScope.launch {
+            loadingState.postValue(true)
+            try {
+                addDetailResumeRepository.getLookups(
+                    key,
+                    query,s,s1,
+                    object : ResponseCallback {
+                        override fun onSuccess(message: String?, data: Any?) {
+                            looksupResponse.postValue(data as List<LookUpResponse>)
                             loadingState.postValue(false)
                         }
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.SuggestionitemBinding
-import com.example.resumemaker.models.SuggestionModel
 
 class SuggestionAdapter(val context: Context, val list: ArrayList<String>, val onclick:(String)->Unit): RecyclerView.Adapter<SuggestionAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: SuggestionitemBinding) :

@@ -91,7 +91,7 @@ class AddDetailResume : BaseActivity() {
             sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
             finish()
         }
-        onBackPressedDispatcher.addCallback(this){
+        onBackPressedDispatcher.addCallback{
             sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
             finish()}
         binding.addTabs.setOnClickListener { alertbox() }
@@ -174,10 +174,10 @@ class AddDetailResume : BaseActivity() {
         tab.text = tabModel.name
         tab.icon = tabModel.icon
         binding.tabLayoutAdddetail.addTab(tab)
-        for (i in 0 until allTabs.size) {
+        /*for (i in 0 until allTabs.size) {
             binding.tabLayoutAdddetail.getTabAt(binding.viewPagerContainer.currentItem)?.view?.isClickable =
                 false
-        }
+        }*/
     }
 
 

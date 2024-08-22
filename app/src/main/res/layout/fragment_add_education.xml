@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.addDetailResume.AddEducation">
+
     <include
+        android:id="@+id/include_tool"
+        layout="@layout/toolbars"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
-        layout="@layout/toolbars"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:id="@+id/include_tool"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/instituate_textInputLayout"
         android:layout_width="match_parent"
@@ -21,14 +23,15 @@
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_tool"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/include_tool">
 
         <com.google.android.material.textfield.TextInputEditText
-           android:id="@+id/instituenameedittext"
+            android:id="@+id/instituenameedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/institue_name" />
+            android:hint="@string/institue_name"
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -36,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
+        android:layout_margin="@dimen/_10sdp"
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
-        android:layout_margin="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instituate_textInputLayout">
@@ -47,7 +50,8 @@
             android:id="@+id/degree_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/degree" />
+            android:hint="@string/degree"
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -66,8 +70,10 @@
             android:id="@+id/startdateedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/start_date" />
+            android:hint="@string/start_date"
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/enddate_textInputLayout2"
         android:layout_width="match_parent"
@@ -81,17 +87,19 @@
         app:layout_constraintTop_toBottomOf="@+id/startdate_textInputLayout2">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/enddateedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/enddateedittext"
-            android:hint="@string/end_date" />
+
+            android:hint="@string/end_date"
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_marginTop="@dimen/_10sdp"
         android:id="@+id/check_itscontinue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="@+id/enddate_textInputLayout2"
         app:layout_constraintTop_toBottomOf="@+id/enddate_textInputLayout2" />
 

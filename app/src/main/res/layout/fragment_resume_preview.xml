@@ -9,8 +9,8 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_15sdp"
         layout="@layout/toolbarwithshareoption"
-        android:layout_marginTop="@dimen/_25sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -93,9 +93,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-
                     android:hint="Job Title" />
-            </com.google.android.material.textfield.TextInputLayout>
+                  </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout3"
@@ -177,8 +176,19 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:id="@+id/dob_edit"
-                    android:hint="Date of Birth(Optional)" />
+                    android:hint="Date of Birth" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lookid_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="@+id/dob_inputlayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
             <TextView
                 android:id="@+id/man"

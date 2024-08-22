@@ -132,12 +132,11 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     override fun onTemplateSelected(model: TemplateModel) {
         if (isResume)
         {
-            startActivity(
-                Intent(this,
-                    AddDetailResume::class.java
-                )
-            )
+            val intent=Intent(this,LoginActivity::class.java)
+            intent.putExtra(Constants.IS_RESUME,true)
+            startActivity(intent)
         }else{
+
             binding.choiceTemplateContainer.isGone=false
             supportFragmentManager.beginTransaction().setCustomAnimations(
                 android.R.anim.fade_in,

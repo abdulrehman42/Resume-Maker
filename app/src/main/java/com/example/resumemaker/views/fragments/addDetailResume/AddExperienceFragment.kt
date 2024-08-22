@@ -5,41 +5,46 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.activity.addCallback
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddExperienceBinding
-import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.api.adddetailresume.ExperienceResponse
+import com.example.resumemaker.models.request.addDetailResume.Experience
+import com.example.resumemaker.models.request.addDetailResume.ExperienceRequest
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes
 import com.example.resumemaker.utils.Helper.dpToPx
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
-    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
+    lateinit var addDetailResumeVM :AddDetailResumeVM
     var endDate: String? =null
+    val list=ArrayList<ExperienceResponse>()
     override val inflate: Inflate<FragmentAddExperienceBinding>
         get() = FragmentAddExperienceBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.educationResponse.observe(currentActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+
         binding.includeTool.textView.text=getString(R.string.add_experience)
 
         val data=sharePref.readProfileExperience()
-        if (data!=null)
-        {
+        data?.let {
             binding.jobName.setText(data.title)
             binding.description.setText(data.description)
             binding.companyName.setText(data.company)
@@ -105,6 +110,11 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
                 apiCall()
+                MainScope().launch {
+                    delay(2000)
+                    addDetailResumeVM.isHide.value = true
+                    currentActivity().onBackPressedDispatcher.onBackPressed()
+                }
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -115,19 +125,31 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        /*currentActivity().onBackPressedDispatcher.addCallback(this) {
             addDetailResumeVM.isHide.value=true
-        }
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }*/
     }
     fun isConditionMet(): Boolean {
         return !binding.companyName.text.toString().isNullOrEmpty()&&
                 !binding.jobName.text.toString().isNullOrEmpty()&&
                 !binding.description.text.toString().trim().isNullOrEmpty()&&
-                !binding.startdateedittext.text.toString().isNullOrEmpty()&&
-                !binding.enddateedittext.text.toString().isNullOrEmpty()
-    }
+                !binding.startdateedittext.text.toString().isNullOrEmpty()}
 
     private fun apiCall() {
+
+        val experience = listOf(
+            Experience(
+                "1__"+binding.companyName.text.toString(),
+                binding.description.text.toString(),
+                employmentType = "fullTime",endDate,binding.startdateedittext.text.toString(),
+                "1__"+binding.jobName.text.toString()
+            )
+        )
+        val experienceRequest = ExperienceRequest(experiences = experience)
+
+
+
         endDate = if (binding.checkItscontinue.isChecked) {
             null
         } else {
@@ -135,12 +157,7 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         }
         addDetailResumeVM.editExperience(
             sharePref.readString(Constants.PROFILE_ID).toString(),
-            ExperienceRequestModel(
-                "1__"+binding.companyName.text.toString(),
-                binding.description.text.toString(),
-                employmentType = "",endDate,binding.startdateedittext.text.toString(),
-                "1__"+binding.jobName.text.toString()
-            )
+            experienceRequest
         )
     }
 

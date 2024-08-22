@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.resumemaker.databinding.CustomprofileitemBinding
-import com.example.resumemaker.models.ProfileModel
 import com.example.resumemaker.models.api.ProfileListingModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.utils.DialogueBoxes.alertboxChooseProfile

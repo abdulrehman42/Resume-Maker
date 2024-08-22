@@ -8,11 +8,15 @@ import com.example.resumemaker.api.http.ResponseCallback
 import com.example.resumemaker.json.JSONKeys
 import com.example.resumemaker.json.JSONManager
 import com.example.resumemaker.models.api.CoverLetterResponse
+import com.example.resumemaker.models.api.LookUpResponse
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.api.SampleResponseModel
 import com.example.resumemaker.models.api.TemplateModel
 import com.example.resumemaker.models.request.addDetailResume.CoverLetterRequestModel
+import com.example.resumemaker.models.request.addDetailResume.LoginRequestModel
+import com.example.resumemaker.models.request.addDetailResume.LookUpRequest
 import com.google.gson.JsonElement
+import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,7 +30,7 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
     private val _templateResponse = MutableLiveData<NetworkResult<JsonElement>>()
     private val _resumeResponse = MutableLiveData<NetworkResult<JsonElement>>()
 
-     fun getTemplates(
+    fun getTemplates(
         type: String,
         callback: ResponseCallback
     ) {
@@ -43,7 +47,7 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<Map<String,List<TemplateModel>>>() {}.type
+                            object : TypeToken<Map<String, List<TemplateModel>>>() {}.type
                         ) as Map<String, List<TemplateModel>>
                     )
                 }
@@ -55,12 +59,43 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
             })
         )
     }
+
+    fun getLogin(
+        loginRequestModel: LoginRequestModel,
+        callback: ResponseCallback
+    ) {
+        _templateResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.onLogin(loginRequestModel).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<Map<String, List<TemplateModel>>>() {}.type
+                        ) as Map<String, List<TemplateModel>>
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+
+            })
+        )
+    }
+
     fun getCLPreview(
-        id:String,templateId:String,
+        id: String, templateId: String,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.getCoverLetterPreview(id,templateId).enqueue(
+        chooseTemplateService.getCoverLetterPreview(id, templateId).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
@@ -83,6 +118,7 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
             })
         )
     }
+
     fun createCoverLetter(
         coverLetterRequestModel: CoverLetterRequestModel,
         callback: ResponseCallback
@@ -113,7 +149,7 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
     }
 
     fun getsample(
-        type:String,
+        type: String,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -140,32 +176,50 @@ class TemplatesRepository @Inject constructor(private val chooseTemplateService:
             })
         )
     }
+
     fun getResumePreview(
-        id:String,templateId:String,
+        id: String, templateId: String,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.getResumePreview(id,templateId).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.MESSAGE,
-                            response.body(),
-                            object : TypeToken<String>() {}.type
-                        ) as String,
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.DATA,
-                            response.body(),
-                            object : TypeToken<TemplateModel>() {}.type
-                        ) as ProfileModelAddDetailResponse
-                    )
-                }
 
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure(t.message)
+        chooseTemplateService.getResumePreview(id, templateId).enqueue(object : Callback<JsonElement> {
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                if (response.isSuccessful) {
+                    try {
+                        response.body()?.let { jsonElement ->
+                            val jsonString = jsonElement.toString()
+
+                            // Use a new JsonParser to parse the string
+                            val jsonParser = JsonParser()
+                            val parsedJson = jsonParser.parse(jsonString).asJsonObject
+
+                            callback.onSuccess(
+                                JSONManager.getInstance().getFormattedResponse(
+                                    JSONKeys.MESSAGE,
+                                    parsedJson,
+                                    object : TypeToken<String>() {}.type
+                                ) as String,
+                                JSONManager.getInstance().getFormattedResponse(
+                                    JSONKeys.DATA,
+                                    parsedJson,
+                                    object : TypeToken<String>() {}.type
+                                ) as String
+                            )
+                        } ?: callback.onFailure("Response body is null")
+                    } catch (e: Exception) {
+                        callback.onFailure("Failed to parse JSON: ${e.message}")
+                    }
+                } else {
+                    callback.onFailure("Response failed with status: ${response.code()}")
                 }
-            })
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                callback.onFailure(t.message)
+            }
+        }
         )
     }
+
 }

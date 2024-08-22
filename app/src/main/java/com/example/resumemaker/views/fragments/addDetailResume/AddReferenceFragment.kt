@@ -2,28 +2,28 @@ package com.example.resumemaker.views.fragments.addDetailResume
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.addCallback
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddReferenceBinding
-import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ReferenceRequest
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
-    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
+    lateinit var addDetailResumeVM :AddDetailResumeVM
 
     override val inflate: Inflate<FragmentAddReferenceBinding>
         get() = FragmentAddReferenceBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.referenceResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -31,9 +31,10 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_referrence)
         val data = sharePref.readProfileReference()
-        if (data != null) {
+        data?.let {
             binding.referrencenameedit.setText(data.name)
             binding.companyName.setText(data.company)
             binding.emailedit.setText(data.email)
@@ -46,6 +47,11 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
                 apiCall()
+                MainScope().launch {
+                    delay(2000)
+                    addDetailResumeVM.isHide.value = true
+                    currentActivity().onBackPressedDispatcher.onBackPressed()
+                }
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -56,9 +62,9 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        /*requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value=true
-        }
+        }*/
     }
 
     fun isConditionMet(): Boolean {
@@ -70,9 +76,14 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     }
 
     private fun apiCall() {
-        addDetailResumeVM.editReference(
-            sharePref.readString(Constants.PROFILE_ID).toString(), ReferenceRequestModel("1__"+binding.companyName.text.toString(),binding.emailedit.text.toString()
-            ,binding.referrencenameedit.text.toString(),binding.phone.text.toString(),"1__"+binding.jobedittext.text.toString())
+        val reference = listOf(
+            ReferenceRequest.Reference("1__"+binding.companyName.text.toString(),binding.emailedit.text.toString()
+                ,binding.referrencenameedit.text.toString(),binding.phone.text.toString(),"1__"+binding.jobedittext.text.toString())
         )
+
+        val referenceRequest = ReferenceRequest(references = reference)
+
+        addDetailResumeVM.editReference(
+            sharePref.readString(Constants.PROFILE_ID).toString(), referenceRequest)
     }
 }

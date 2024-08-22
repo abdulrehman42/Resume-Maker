@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.example.resumemaker.R
 import com.example.resumemaker.base.AddDetailsBaseFragment
+import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentReferrenceBinding
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
@@ -45,12 +46,13 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
         referenceAdapter.submitList(userReferences)
         referenceAdapter.setOnEditItemClickCallback {
-            callDeleteApi()
-        }
-        referenceAdapter.setOnItemDeleteClickCallback {
             sharePref.writeDataReference(it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment()
+            addDetailResumeVM.fragment.value = AddReferenceFragment()
+
+        }
+        referenceAdapter.setOnItemDeleteClickCallback {
+            callDeleteApi()
         }
         binding.recyclerviewReference.adapter = referenceAdapter
     }
@@ -62,7 +64,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(4)!!.select()
+            tabhost.getTabAt(5)!!.select()
 
         }
         binding.nextbtn.setOnClickListener {
@@ -71,7 +73,6 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
             }else{
                 addDetailResumeVM.isHide.value = false
                 addDetailResumeVM.fragment.value = ResumePreviewFragment()
-
             }
         }
         binding.addreferrenebtn.setOnClickListener {

@@ -61,7 +61,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(5)!!.select()
+            tabhost.getTabAt(6)!!.select()
 
         }
         binding.nextbtn.setOnClickListener {

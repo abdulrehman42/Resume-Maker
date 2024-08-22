@@ -47,7 +47,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
 
         binding.addTabs.setOnClickListener {
-            DialogueBoxes.alertboxChooseCreate(
+            startActivity( Intent(
+                currentActivity(),
+                AddDetailResume::class.java
+            ))
+            /*DialogueBoxes.alertboxChooseCreate(
                 currentActivity(),
                 object : DialogueBoxes.StringValueDialogCallback {
                     override fun onButtonClick(value: String) {
@@ -63,7 +67,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                         }
 
                     }
-                })
+                })*/
         }
 
     }
@@ -76,6 +80,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 sharePref.writeString(Constants.PROFILE_ID,it.id.toString())
                 currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
             } else {
+                sharePref.writeString(Constants.PROFILE_ID,it.id.toString())
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.profileHostFragment, ResumePreviewFragment())
                     .addToBackStack(null)

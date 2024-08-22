@@ -7,21 +7,31 @@ import com.example.resumemaker.api.http.NetworkResult
 import com.example.resumemaker.api.http.ResponseCallback
 import com.example.resumemaker.json.JSONKeys
 import com.example.resumemaker.json.JSONManager
+import com.example.resumemaker.models.api.LookUpResponse
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.models.api.SampleResponseModel
 import com.example.resumemaker.models.api.TemplateModel
-import com.example.resumemaker.models.request.addDetailResume.AchievRequestModel
+import com.example.resumemaker.models.api.adddetailresume.AchievementResponse
+import com.example.resumemaker.models.api.adddetailresume.EducationResponse
+import com.example.resumemaker.models.api.adddetailresume.ExperienceResponse
+import com.example.resumemaker.models.api.adddetailresume.InformationModelResponsedata
+import com.example.resumemaker.models.api.adddetailresume.ProjectResponse
+import com.example.resumemaker.models.api.adddetailresume.ReferrenceResponseModel
+import com.example.resumemaker.models.request.addDetailResume.AchievementRequest
 import com.example.resumemaker.models.request.addDetailResume.CreateProfileRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ExperienceRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ExperienceRequest
 import com.example.resumemaker.models.request.addDetailResume.InterestRequestModel
 import com.example.resumemaker.models.request.addDetailResume.LanguageRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ProjectRequestModel
+import com.example.resumemaker.models.request.addDetailResume.ProjectRequest
 import com.example.resumemaker.models.request.addDetailResume.QualificationModelRequest
+import com.example.resumemaker.models.request.addDetailResume.ReferenceRequest
 import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestModel
-import com.example.resumemaker.models.request.addDetailResume.ReferenceRequestModel
 import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
+import com.example.resumemaker.utils.Helper.prepareMultipartRequest
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,7 +47,17 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.onCreateProfile(profileModel).enqueue(
+        val multipartParts = prepareMultipartRequest(profileModel)
+        chooseTemplateService.createProfileWithImage(
+            multipartParts["name"] as RequestBody,
+            multipartParts["email"] as RequestBody,
+            multipartParts["phone"] as RequestBody,
+            multipartParts["image"] as MultipartBody.Part,
+            multipartParts["gender"] as RequestBody,
+            multipartParts["job"] as RequestBody,
+            multipartParts["dob"] as RequestBody,
+            multipartParts["address"] as RequestBody
+        ).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
@@ -49,8 +69,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<TemplateModel>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<InformationModelResponsedata>() {}.type
+                        ) as InformationModelResponsedata
                     )
                 }
 
@@ -138,8 +158,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<EducationResponse>>() {}.type
+                        ) as List<EducationResponse>
                     )
                 }
 
@@ -196,8 +216,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<String>>() {}.type
+                        ) as List<String>
                     )
                 }
 
@@ -225,8 +245,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<String>>() {}.type
+                        ) as List<String>
                     )
                 }
 
@@ -254,8 +274,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<String>>() {}.type
+                        ) as List<String>
                     )
                 }
 
@@ -267,7 +287,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
     }
     fun editReference(
         profileId:String,
-        referenceRequestModel: ReferenceRequestModel,
+        referenceRequestModel: ReferenceRequest,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -283,8 +303,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<ReferrenceResponseModel>>() {}.type
+                        ) as List<ReferrenceResponseModel>
                     )
                 }
 
@@ -295,9 +315,9 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
         )
     }
         fun editAchievement(
-        profileId:String,
-        achievRequestModel: AchievRequestModel,
-        callback: ResponseCallback
+            profileId:String,
+            achievRequestModel: AchievementRequest,
+            callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
         chooseTemplateService.editAchievment(profileId,achievRequestModel).enqueue(
@@ -312,8 +332,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<AchievementResponse>>() {}.type
+                        ) as List<AchievementResponse>
                     )
                 }
 
@@ -326,7 +346,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
 
     fun editExperience(
         profileId:String,
-        experienceRequestModel: ExperienceRequestModel,
+        experienceRequestModel: ExperienceRequest,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -342,8 +362,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<ExperienceResponse>>() {}.type
+                        ) as List<ExperienceResponse>
                     )
                 }
 
@@ -356,7 +376,7 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
 
     fun editProjects(
         profileId:String,
-        projectRequestModel: ProjectRequestModel,
+        projectRequestModel: ProjectRequest,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
@@ -372,8 +392,8 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.DATA,
                             response.body(),
-                            object : TypeToken<ProfileModelAddDetailResponse>() {}.type
-                        ) as ProfileModelAddDetailResponse
+                            object : TypeToken<List<ProjectResponse>>() {}.type
+                        ) as List<ProjectResponse>
                     )
                 }
 
@@ -402,6 +422,37 @@ class AddDetailResumeRepository @Inject constructor(private val chooseTemplateSe
                             response.body(),
                             object : TypeToken<ProfileModelAddDetailResponse>() {}.type
                         ) as ProfileModelAddDetailResponse
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+            })
+        )
+    }
+    fun getLookups(
+        key: String,
+        query:String,
+        s: String,
+        s1: String,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.onGetLookup(key,query,s,s1).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<List<LookUpResponse>>() {}.type
+                        ) as List<LookUpResponse>
                     )
                 }
 

@@ -44,13 +44,14 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     private fun setadapter(userExperiences: List<ProfileModelAddDetailResponse.UserExperience>) {
         experienceAdapter.submitList(userExperiences)
         experienceAdapter.setOnEditItemClickCallback {
-            callDeleteApi()
-        }
-        experienceAdapter.setOnItemDeleteClickCallback {
             sharePref.writeDataExperience(it)
             addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = AddExperienceFragment()
+
         }
+        experienceAdapter.setOnItemDeleteClickCallback {
+              callDeleteApi()
+               }
         binding.recyclerviewExperience.adapter = experienceAdapter
     }
 

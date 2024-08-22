@@ -6,26 +6,51 @@
     android:layout_marginBottom="@dimen/_5sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/templateimage"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_200sdp"
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_2sdp"
         android:layout_margin="@dimen/_5sdp"
-        android:src="@drawable/resume_placeholder"
+        app:cardCornerRadius="@dimen/_15sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearance="@dimen/_10sdp" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/eye_iconId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/blue_eye"
-        app:layout_constraintBottom_toBottomOf="@+id/templateimage"
-        app:layout_constraintEnd_toEndOf="@+id/templateimage" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/templateimage"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_200sdp"
+            android:src="@drawable/resume_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@dimen/_40sdp" />
+
+        <ImageView
+            android:id="@+id/eye_iconId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/blue_eye"
+            app:layout_constraintBottom_toBottomOf="@+id/templateimage"
+            app:layout_constraintEnd_toEndOf="@+id/templateimage" />
+
+        <ImageView
+            android:id="@+id/video_iconId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/video_icon"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/templateimage"
+            app:layout_constraintTop_toTopOf="@+id/templateimage" />
+
+    </androidx.cardview.widget.CardView>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

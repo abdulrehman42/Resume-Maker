@@ -15,7 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
-    lateinit var singleStringAdapter: SingleStringAdapter
+    val  singleStringAdapter= SingleStringAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentLanguageBinding>
         get() = FragmentLanguageBinding::inflate

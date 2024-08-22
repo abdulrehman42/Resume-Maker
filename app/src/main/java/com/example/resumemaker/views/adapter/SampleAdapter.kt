@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.SampleitemsBinding
-import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.models.api.SampleResponseModel
 
 class SampleAdapter(

@@ -23,7 +23,7 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
     override fun observeLiveData() {
         templateViewModel.getString.observe(currentActivity()){
-            binding.resumePreviewImage.loadDataWithBaseURL(null, it, "text/html", "UTF-8", null)
+            binding.resumePreviewImage.loadDataWithBaseURL(Constants.BASE_URL, it, "text/html", "UTF-8", null)
 
         }
     }
@@ -50,10 +50,12 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
+            sharePref.deleteAllSharedPrefs()
             currentActivity().finish()
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            sharePref.deleteAllSharedPrefs()
             currentActivity().finish()
         }
         binding.includeTool.share.setOnClickListener {

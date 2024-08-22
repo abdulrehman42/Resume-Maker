@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.resumemaker.models.ExperienceModel
-import com.example.resumemaker.models.ProfileModelData
-import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.utils.Constants.PREFS_TOKEN_FILE
 import com.google.gson.Gson
@@ -78,28 +75,14 @@ class SharePref constructor(ctx: Context){
         prefs!!.edit().remove(value).apply()
     }
 
-    fun readData(key: String?, defValue: String): String? {
-        return prefs!!.getString(key, defValue)
-    }
-    fun readDataProfile(): ProfileModelData {
-        val json = prefs!!.getString(Constants.DATA, null)
-        val gson = Gson()
-        return gson.fromJson(json, ProfileModelData::class.java)
-    }
-    fun writeData(user: ProfileModelData) {
-        try {
-            val data=gson.toJson(user)
-            prefs!!.edit().putString(Constants.DATA, data).apply()
-        }catch (e:Exception)
-        {
-            Log.e("TAGException", e.message.toString())
+    fun readDataEducation(): ProfileModelAddDetailResponse.UserQualification? {
+        val json = prefs?.getString(Constants.DATA, null)
+        return if (!json.isNullOrEmpty()) {
+            Gson().fromJson(json, ProfileModelAddDetailResponse.UserQualification::class.java)
+        } else {
+            // Return a default instance if the JSON is null or empty
+            return null
         }
-
-    }
-    fun readDataEducation(): ProfileModelAddDetailResponse.UserQualification {
-        val json = prefs!!.getString(Constants.DATA, null)
-        val gson = Gson()
-        return gson.fromJson(json, ProfileModelAddDetailResponse.UserQualification::class.java)
     }
     fun writeDataEdu(user: ProfileModelAddDetailResponse.UserQualification) {
         try {
@@ -121,7 +104,7 @@ class SharePref constructor(ctx: Context){
         }
 
     }
-    fun readProfileReference(): ProfileModelAddDetailResponse.UserReference {
+    fun readProfileReference(): ProfileModelAddDetailResponse.UserReference? {
         val json = prefs!!.getString(Constants.DATA, null)
         val gson = Gson()
         return gson.fromJson(json, ProfileModelAddDetailResponse.UserReference::class.java)
@@ -151,7 +134,7 @@ class SharePref constructor(ctx: Context){
         }
 
     }
-    fun readProfileExperience(): ProfileModelAddDetailResponse.UserExperience {
+    fun readProfileExperience(): ProfileModelAddDetailResponse.UserExperience? {
         val json = prefs!!.getString(Constants.DATA, null)
         val gson = Gson()
         return gson.fromJson(json, ProfileModelAddDetailResponse.UserExperience::class.java)
@@ -167,7 +150,7 @@ class SharePref constructor(ctx: Context){
 
     }
 
-    fun readProfileAchievement(): ProfileModelAddDetailResponse.UserAchievement {
+    fun readProfileAchievement(): ProfileModelAddDetailResponse.UserAchievement? {
         val json = prefs!!.getString(Constants.DATA, null)
         val gson = Gson()
         return gson.fromJson(json, ProfileModelAddDetailResponse.UserAchievement::class.java)
@@ -192,33 +175,6 @@ class SharePref constructor(ctx: Context){
         }
     }
 
-    fun readDataSkill(): SuggestionModel {
-        val json = prefs!!.getString(Constants.DATA, null)
-        val gson = Gson()
-        return gson.fromJson(json, SuggestionModel::class.java)
-    }
-    fun writeDataSkill(user: SuggestionModel) {
-        try {
-            val data=gson.toJson(user)
-            prefs!!.edit().putString(Constants.DATA, data).apply()
-        }catch (e:Exception)
-        {
-            Log.e("TAGException", e.message.toString())
-        }
-        fun readDataExperience(): ExperienceModel {
-            val json = prefs!!.getString(Constants.DATA, null)
-            val gson = Gson()
-            return gson.fromJson(json, ExperienceModel::class.java)
-        }
-        fun writeDataExp(user: ExperienceModel) {
-            try {
-                val data=gson.toJson(user)
-                prefs!!.edit().putString(Constants.DATA, data).apply()
-            }catch (e:Exception)
-            {
-                Log.e("TAGException", e.message.toString())
-            }
 
-        }
-    }
+
 }

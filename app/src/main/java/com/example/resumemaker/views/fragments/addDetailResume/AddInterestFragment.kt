@@ -14,26 +14,33 @@ import com.example.resumemaker.models.request.addDetailResume.SingleItemRequestM
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
 {
-    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
-    val data=sharePref.readProfileData()
+    lateinit var addDetailResumeVM :AddDetailResumeVM
     var interest=ArrayList<String>()
     override val inflate: Inflate<FragmentAddInterestBinding>
         get() = FragmentAddInterestBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.singleResponse.observe(requireActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text=getString(R.string.add_interest)
-        interest= data?.userInterests as ArrayList<String>
+        val data_list=sharePref.readProfileData()
+        if (data_list!=null)
+        {
+            interest= data_list.userInterests as ArrayList<String>
+        }
         val data = sharePref.readString(Constants.DATA)
         if (data!=null)
         {
@@ -60,8 +67,13 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                interest.add(binding.interestEdittext.text.toString())
+                interest.add("1__"+binding.interestEdittext.text.toString())
                 apiCall()
+                MainScope().launch {
+                    delay(2000)
+                    addDetailResumeVM.isHide.value = true
+                    currentActivity().onBackPressedDispatcher.onBackPressed()
+                }
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -72,9 +84,9 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value=true
-        }
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+//            addDetailResumeVM.isHide.value=true
+//        }
 
     }
     fun isConditionMet(): Boolean {

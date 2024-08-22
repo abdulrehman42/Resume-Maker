@@ -21,6 +21,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     lateinit var addDetailResumeVM:AddDetailResumeVM
     lateinit var objSampleAdapter: ObjSampleAdapter
     lateinit var tabhost:TabLayout
+    var list=ArrayList<SampleResponseModel>()
     var num=0
 
     override val inflate: Inflate<FragmentObjectiveBinding>
@@ -28,6 +29,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.getSamples.observe(viewLifecycleOwner){
+            list= it as ArrayList<SampleResponseModel>
             setAdapter(it)
         }
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner){
@@ -54,7 +56,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     private fun onclick() {
 
         binding.viewall.setOnClickListener {
-            objSampleAdapter.updateMaxItemCount(Helper.getSampleList().size)
+            objSampleAdapter.updateMaxItemCount(list.size)
         }
         binding.viewless.setOnClickListener {
             objSampleAdapter.updateMaxItemCount(2)

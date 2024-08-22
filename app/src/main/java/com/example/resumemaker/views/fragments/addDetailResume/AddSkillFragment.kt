@@ -5,24 +5,26 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.resumemaker.R
 import com.example.resumemaker.base.BaseFragment
 import com.example.resumemaker.base.Inflate
 import com.example.resumemaker.databinding.FragmentAddSkillBinding
-import com.example.resumemaker.models.SuggestionModel
 import com.example.resumemaker.models.request.addDetailResume.SkillRequestModel
 import com.example.resumemaker.utils.Constants
 import com.example.resumemaker.viewmodels.AddDetailResumeVM
 import com.example.resumemaker.views.adapter.SuggestionAdapter
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     lateinit var suggestionAdapter1: SuggestionAdapter
-    val data=sharePref.readProfileData()
-    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
+    lateinit var addDetailResumeVM :AddDetailResumeVM
     var list = ArrayList<String>()
 
 
@@ -30,15 +32,21 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         get() = FragmentAddSkillBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.singleResponse.observe(currentActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM= ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+
         binding.includeTool.textView.text = getString(R.string.add_skill)
-        list= data?.userSkills as ArrayList<String>
+        /*val data_list=sharePref.readProfileData()
+        if (data_list!=null)
+        {
+            list= data_list.userSkills as ArrayList<String>
+        }*/
         val data = sharePref.readString(Constants.DATA)
         if (data != null) {
             binding.skillEdittext.setText(data)
@@ -107,7 +115,13 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         }
         binding.savebtn.setOnClickListener {
             if (binding.skillEdittext.text.toString().length > 3) {
+                list.add("1__"+binding.skillEdittext.text.toString())
                 apiCall()
+                /*MainScope().launch {
+                    delay(2000)
+                    addDetailResumeVM.isHide.value = true
+                    currentActivity().onBackPressedDispatcher.onBackPressed()
+                }*/
             } else {
                 currentActivity().showToast(getString(R.string.single_field_missing_error))
 

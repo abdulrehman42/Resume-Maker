@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.ProfileexperienceitemBinding
-import com.example.resumemaker.models.ExperienceModel
 import com.example.resumemaker.models.api.ProfileModelAddDetailResponse
 import com.example.resumemaker.utils.Helper
 

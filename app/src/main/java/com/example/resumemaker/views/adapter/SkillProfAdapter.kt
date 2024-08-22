@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resumemaker.databinding.ProfileskillitemsBinding
-import com.example.resumemaker.models.SuggestionModel
 
 class SkillProfAdapter(val context: Context, val list: List<String>): RecyclerView.Adapter<SkillProfAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ProfileskillitemsBinding) :
