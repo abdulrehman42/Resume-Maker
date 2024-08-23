@@ -1,0 +1,10 @@
+package com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume
+
+data class ProjectResponse(
+    val createdAt: String,
+    val description: String,
+    val id: Int,
+    val profileId: Int,
+    val title: String,
+    val updatedAt: String
+)

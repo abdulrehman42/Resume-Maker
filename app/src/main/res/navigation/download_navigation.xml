@@ -6,15 +6,15 @@
     android:id="@+id/download_navigation">
     <fragment
         android:id="@+id/nav_resume_fragment"
-        android:name="com.example.resumemaker.views.fragments.download.ResumeFragment"
+        android:name="com.pentabit.cvmaker.resumebuilder.views.fragments.download.ResumeFragment"
         tools:layout="@layout/fragment_resume" />
     <fragment
         android:id="@+id/nav_cover_letter_fragment"
-        android:name="com.example.resumemaker.views.fragments.download.CatagoryDownload"
+        android:name="com.pentabit.cvmaker.resumebuilder.views.fragments.download.CatagoryDownload"
         tools:layout="@layout/fragment_cover_letter" />
     <fragment
         android:id="@+id/nav_download"
-        android:name="com.example.resumemaker.views.fragments.download.DownloadFragment"
+        android:name="com.pentabit.cvmaker.resumebuilder.views.fragments.download.DownloadFragment"
         tools:layout="@layout/fragment_download" />
 
 </navigation>

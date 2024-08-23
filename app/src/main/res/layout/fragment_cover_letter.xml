@@ -28,7 +28,7 @@
         app:tabSelectedTextColor="@color/black"
         app:tabTextAppearance="@style/MyTabTextCustom" />
 
-    <com.example.resumemaker.views.fragments.tablayout.NonSwipeableViewPager
+    <com.pentabit.cvmaker.resumebuilder.views.fragments.tablayout.NonSwipeableViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "426343981575-igr3hn7p22rutle33kutss2rr51u95tl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pentabit.cvmaker.resumebuilder",
+            "certificate_hash": "8f71326be887aa48b9f5d355d7e49f47ac9b9343"
+          }
+        },
+        {
           "client_id": "426343981575-njl3hq05jhrg8q04oimrelgsmcelkgb1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

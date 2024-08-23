@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.resumemaker"
+    namespace = "com.pentabit.cvmaker.resumebuilder"
     compileSdk = 34
 
     defaultConfig {
@@ -208,8 +208,8 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation ("com.google.android.gms:play-services-auth:20.6.0")
     implementation ("com.itextpdf:itextpdf:5.5.13.3")
-
-
+    implementation("io.github.pilgr:paperdb:2.7.2")
+    implementation ("id.zelory:compressor:3.0.1")
 
     /*//KProgressHud
     implementation ("com.kaopiz:kprogresshud:1.2.0")
