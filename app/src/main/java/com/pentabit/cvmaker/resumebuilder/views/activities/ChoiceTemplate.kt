@@ -29,7 +29,7 @@ import java.util.HashMap
 
 @AndroidEntryPoint
 class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
-    lateinit var templateViewModel: TemplateViewModel// by viewModels<TemplateViewModel>()
+    lateinit var templateViewModel: TemplateViewModel
     lateinit var binding: ActivityChoiceTemplateBinding
     private val templatesTitle = ArrayList<String>()
     private var dataMap: Map<String, List<TemplateModel>> = HashMap<String, List<TemplateModel>>()
@@ -44,7 +44,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         setContentView(binding.root)
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class]
         isResume = intent.getBooleanExtra(
-            com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME,
+            Constants.IS_RESUME,
             false
         )
         handleLiveData()
@@ -141,34 +141,45 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     override fun onTemplateSelected(model: TemplateModel) {
-        val check = sharePref.readBoolean(Constants.IS_LOGGED,false)
+        val check = sharePref.readBoolean(Constants.IS_LOGGED, false)
         if (check) {
             if (isResume) {
                 navigateToProfileActivity()
             } else {
-                navigateToAddDetailResumeActivity()
+                navigateToCoverLetterResumeActivity()
             }
         } else {
-           // navigateToProfileActivity()
             if (isResume) {
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.putExtra(Constants.IS_RESUME, true)
                 startActivity(intent)
             } else {
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.putExtra(Constants.IS_RESUME, false)
+                startActivity(intent)
 
-                binding.choiceTemplateContainer.isGone = false
-                supportFragmentManager.beginTransaction().setCustomAnimations(
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out,
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out
-                )
-                    .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
-                    .addToBackStack(null)
-                    .commit()
+
             }
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val isCoverLetter = intent.getBooleanExtra(Constants.Is_CoverLtter, false)
+        if (isCoverLetter) {
+            binding.choiceTemplateContainer.isGone = false
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            )
+                .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
     }
 
     private fun navigateToProfileActivity() {
@@ -178,11 +189,17 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         finish()
     }
 
-    private fun navigateToAddDetailResumeActivity() {
-        val intent = Intent(this, AddDetailResume::class.java)
-        intent.putExtra(Constants.IS_RESUME, isResume)
-        startActivity(intent)
-        finish()
+    private fun navigateToCoverLetterResumeActivity() {
+        binding.choiceTemplateContainer.isGone = false
+        supportFragmentManager.beginTransaction().setCustomAnimations(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out,
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+            .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
+            .addToBackStack(null)
+            .commit()
     }
 
 }

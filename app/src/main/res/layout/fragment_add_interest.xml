@@ -5,7 +5,12 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.addDetailResume.AddInterestFragment">
-
+    <FrameLayout
+        android:id="@+id/banner_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/include_tool"
+        app:layout_constraintEnd_toEndOf="parent" />
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -31,7 +36,7 @@
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_tool"
+        app:layout_constraintTop_toBottomOf="@id/banner_add"
         app:layout_constraintStart_toStartOf="parent"
         >
 

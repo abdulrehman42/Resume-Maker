@@ -7,8 +7,11 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.DatePicker
 import com.bumptech.glide.Glide
 import com.pentabit.cvmaker.resumebuilder.R
@@ -20,6 +23,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ChoosedownloadLayoutBindin
 import com.pentabit.cvmaker.resumebuilder.databinding.DeleteAccountBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ImportProfileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.LogoutBinding
+import com.pentabit.cvmaker.resumebuilder.databinding.PreviewdownloadBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.RatingLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplateSelectLayoutBinding
 
@@ -46,6 +50,27 @@ object DialogueBoxes {
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
+    }
+
+    fun alertboxPdf(template: String, currentActivity: Activity) {
+        val binding= PreviewdownloadBinding.inflate(currentActivity.layoutInflater)
+        val dialogBuilder = Dialog(currentActivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.templateimage.webViewClient = WebViewClient()
+            binding.templateimage.loadDataWithBaseURL(
+                Constants.BASE_URL_PRODUCTION,
+                template,
+                "text/html",
+                "UTF-8",
+                null
+            )
+                binding.linearbtn.setOnClickListener {
+                    dialogBuilder.dismiss()
+                }
+                dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+                dialogBuilder.setCancelable(true)
+                dialogBuilder.show()
+
     }
     fun alertboxRate(curentactivity:Activity) {
         val binding= RatingLayoutBinding.inflate(curentactivity.layoutInflater)
@@ -74,12 +99,12 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxLogout(curentactivity: Activity) {
+    fun alertboxLogout(curentactivity: Activity,param: StringValueDialogCallback) {
         val binding= LogoutBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.yesBtn.setOnClickListener {
-
+            param.onButtonClick(Constants.YES)
             dialogBuilder.dismiss()
         }
         binding.noBtn.setOnClickListener {
@@ -90,16 +115,15 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxDelete(curentactivity: Activity) {
+    fun alertboxDelete(curentactivity: Activity,param: StringValueDialogCallback) {
         val binding= DeleteAccountBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.yesBtn.setOnClickListener {
-
+            param.onButtonClick(Constants.YES)
             dialogBuilder.dismiss()
         }
         binding.noBtn.setOnClickListener {
-
             dialogBuilder.dismiss()
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
@@ -111,7 +135,7 @@ object DialogueBoxes {
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.camerbtn.setOnClickListener {
-            onclick(com.pentabit.cvmaker.resumebuilder.utils.Constants.CAMERA)
+            onclick(Constants.CAMERA)
             dialogBuilder.dismiss()
         }
         binding.gallerybtn.setOnClickListener {
@@ -122,12 +146,12 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxChooseProfile(curentactivity: Activity) {
+    fun alertboxChooseProfile(curentactivity: Activity,param: StringValueDialogCallback) {
         val binding= ChooseEditProfileBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.editProfile.setOnClickListener {
-
+            param.onButtonClick(Constants.EDIT)
             dialogBuilder.dismiss()
         }
         binding.rename.setOnClickListener {
@@ -139,14 +163,14 @@ object DialogueBoxes {
             dialogBuilder.dismiss()
         }
         binding.deleteProfile.setOnClickListener {
-
+            param.onButtonClick(Constants.DELETE)
             dialogBuilder.dismiss()
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxChooseDownload(curentactivity: Activity,param: com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringValueDialogCallback) {
+    fun alertboxChooseDownload(curentactivity: Activity,param: StringValueDialogCallback) {
         val binding= ChoosedownloadLayoutBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
@@ -182,38 +206,42 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun showWheelDatePickerDialog(context: Activity,param: com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback) {
+    fun showWheelDatePickerDialog(
+        context: Activity,
+        param: StringDialogCallback
+    ) {
         // Inflate the custom layout
         val inflater = LayoutInflater.from(context)
         val datePickerView: View = inflater.inflate(R.layout.wheelstyledatepicker, null)
 
         val dayPicker = datePickerView.findViewById<DatePicker>(R.id.day_picker)
 
+        // Set the maximum date to the current date to hide future dates
+        dayPicker.maxDate = System.currentTimeMillis()
 
         // Build the AlertDialog
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setView(datePickerView)
         builder.setTitle("Select Date")
 
-        builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-            param.onButtonClick("${dayPicker.month}/${dayPicker.dayOfMonth}/${dayPicker.year}") // Set the date in your EditText
-        })
+        builder.setPositiveButton("OK") { dialog, which ->
+            param.onButtonClick("${dayPicker.month + 1}/${dayPicker.dayOfMonth}/${dayPicker.year}") // Set the date in your EditText
+        }
 
         builder.setNegativeButton("Cancel", null)
 
         val dialog: AlertDialog = builder.create()
         dialog.show()
-
     }
-    fun alertboxImport(curentactivity:Activity) {
+    fun alertboxImport(curentactivity:Activity,param: StringValueDialogCallback) {
         val binding= ImportProfileBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.cancelBtn.setOnClickListener {
-
             dialogBuilder.dismiss()
         }
         binding.importbtn.setOnClickListener {
+            param.onButtonClick(Constants.YES)
             dialogBuilder.dismiss()
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)

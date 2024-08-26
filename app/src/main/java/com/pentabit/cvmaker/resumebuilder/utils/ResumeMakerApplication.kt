@@ -18,6 +18,7 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
     }
 
 
+
     override fun onCreate() {
         super.onCreate()
         instance = this@ResumeMakerApplication

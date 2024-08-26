@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentInterestBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +28,9 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
         addDetailResumeVM.dataResponse.observe(this) {
             list= it.userInterests as ArrayList<String>
             setadapter(list)
+        }
+        addDetailResumeVM.interestResponse.observe(viewLifecycleOwner){
+            apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
             if (it)
@@ -44,6 +48,9 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
+
+        );
         apiCall()
         onclick()
     }
@@ -62,8 +69,12 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
         }
         interestAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
-            callSaveApi()
-            apiCall()
+            if (list.size!=0)
+            {
+                callSaveApi()
+                apiCall()
+
+            }
         }
         binding.recyclerviewInterest.adapter = interestAdapter
     }

@@ -14,7 +14,7 @@ class SingleStringAdapter : ListAdapter<String, SingleStringAdapter.ViewHolder>(
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model: String) {
-            binding.skillname.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.removeOneUnderscores(model)
+            binding.skillname.text= Helper.removeOneUnderscores(model)
             binding.editSkill.setOnClickListener {
                 editItemClickCallback?.invoke(model)
             }

@@ -2,6 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.AdSize
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxDelete
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxLogout
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxPurchase
@@ -22,13 +24,18 @@ import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.link
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityMainActivtyBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
 import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,9 +44,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     lateinit var templateViewModel: TemplateViewModel
     private lateinit var binding: ActivityMainActivtyBinding
     lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
-
     private var flagDrawer = false
     private val scaleFactor = 6f
+    var versionName = ""
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,20 +54,69 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         enableEdgeToEdge()
         binding = ActivityMainActivtyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
-        sharePref.writeBoolean(Constants.IS_FIRST_TIME, false)
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+        initView()
         setdrawer()
         onclick()
         refreshToken()
         onObserver()
+        onFcm()
 
 
     }
 
-    private fun onObserver() {
-        templateViewModel.loginResponse.observe(this) {
+    private fun initView() {
+        templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
+        AppsKitSDKAdsManager.initializeAds(
+            Constants.YOUR_IRON_SOURCE_APP_KEY,
+            Constants.YOUR_MAX_SDK_KEY,
+            Constants.YOUR_HELIUM_APP_ID,
+            Constants.YOUR_HELIUM_SIGNATURES,
+            Constants.isChildDirected,
+            Constants.isSubjectToGDPR,
+            Constants.userHasGivenConsent,
+            Constants.isCCPAConsent
+        )
 
+
+        AppsKitSDKAdsManager.showBanner(
+            this,
+            binding.appBarMainActivty.contentmain.bannerAdd,
+            placeholder = ""
+        )
+        sharePref.writeBoolean(Constants.IS_FIRST_TIME, false)
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        versionName = packageInfo.versionName
+        binding.version.setText(versionName)
+        AppsKitSDKPreferencesManager.getInstance()
+            .addInPreferences(Constants.VERSION_NAME, versionName)
+        if (sharePref.readBoolean(Constants.IS_LOGGED, false)) {
+            binding.logout.setText("Logout")
+        } else {
+            binding.logout.setText("Login")
+
+        }
+    }
+
+    private fun onFcm() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    templateViewModel.onFCM(task.result)
+                } else {
+                    val exception = task.exception
+                    if (exception != null) {
+                        showToast(exception.message)
+                    }
+                }
+            }
+    }
+
+    private fun onObserver() {
+        templateViewModel.getString.observe(this) {
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TOKEN, "")
+            sharePref.writeBoolean(Constants.IS_LOGGED, false)
+            binding.logout.setText("Login")
         }
     }
 
@@ -69,42 +125,57 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (sharePref.readBoolean(Constants.IS_LOGGED, false)) {
             templateViewModel.tokenRefresh()
         }
-
     }
 
     private fun onclick() {
         binding.logoutBtn.setOnClickListener {
             drawerLayout.closeDrawers()
-            alertboxLogout(this)
+            alertboxLogout(this,
+                object : DialogueBoxes.StringValueDialogCallback {
+                    override fun onButtonClick(value: String) {
+                        if (value == Constants.YES) {
+                            AppsKitSDKPreferencesManager.getInstance()
+                                .addInPreferences(Constants.TOKEN, "")
+                            AppsKitSDKPreferencesManager.getInstance()
+                                .addInPreferences(Constants.IS_LOGGED, false)
+
+                            sharePref.writeBoolean(Constants.IS_LOGGED, false)
+                        }
+                    }
+                })
         }
         binding.appBarMainActivty.contentmain.cvResumeBtn.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
-            intent.putExtra(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME, true)
+            intent.putExtra(Constants.IS_RESUME, true)
             sharePref.writeBoolean(
-                com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME,
+                Constants.IS_RESUME,
                 true
             )
             startActivity(intent)
         }
         binding.appBarMainActivty.contentmain.coverletterBtn.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
-            intent.putExtra(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME, false)
+            intent.putExtra(Constants.IS_RESUME, false)
             sharePref.writeBoolean(
-                com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME,
+                Constants.IS_RESUME,
                 false
             )
             startActivity(intent)
         }
         binding.appBarMainActivty.contentmain.downloadBtn.setOnClickListener {
-            startActivity(Intent(this, DownloadActivity::class.java))
+            if (sharePref.readBoolean(Constants.IS_LOGGED, false)) {
+                startActivity(Intent(this, DownloadActivity::class.java))
+            } else {
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
         }
+
         binding.appBarMainActivty.contentmain.profileBtn.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-//            sharePref.writeString(
-//                com.pentabit.cvmaker.resumebuilder.utils.Constants.FRAGMENT_CALLED,
-//                com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE
-//            )
-//            startActivity(Intent(this, ProfileActivity::class.java))
+            sharePref.writeString(
+                Constants.FRAGMENT_CALLED,
+                Constants.PROFILE
+            )
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 
@@ -162,7 +233,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         when (item.itemId) {
             R.id.nav_rate -> alertboxRate(this)
             R.id.nav_share -> shareAppMethod(this)
-            R.id.nav_delete -> alertboxDelete(this)
+            R.id.nav_delete -> alertboxDelete(this,
+                object : DialogueBoxes.StringValueDialogCallback {
+                    override fun onButtonClick(value: String) {
+                        if (value == Constants.YES) {
+                            templateViewModel.onDeleteMe()
+                        }
+                    }
+                })
+
             R.id.nav_privacy -> link("https://www.pentabitapps.com/privacy-policy", this)
             R.id.nav_term -> link("https://www.pentabitapps.com/terms-of-use", this)
             R.id.nav_more -> link(

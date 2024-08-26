@@ -14,7 +14,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+    <FrameLayout
+        android:id="@+id/banner_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/include_tool"
+        app:layout_constraintEnd_toEndOf="parent" />
     <ProgressBar
         android:id="@+id/loader"
         android:layout_width="wrap_content"
@@ -33,7 +38,7 @@
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_tool">
+        app:layout_constraintTop_toBottomOf="@id/banner_add">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/instituenameedittext"

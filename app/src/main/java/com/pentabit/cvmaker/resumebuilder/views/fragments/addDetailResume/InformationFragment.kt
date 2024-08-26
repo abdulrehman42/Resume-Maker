@@ -29,9 +29,13 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentInformationBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
@@ -40,6 +44,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     var image = ""
     var getImage = ""
     var gender = ""
+    var profile_id = ""
     private lateinit var selectedImageBitmap: Bitmap
     val looksAdapter = LooksAdapter()
     var data: ProfileModelAddDetailResponse? = null
@@ -57,10 +62,17 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         get() = FragmentInformationBinding::inflate
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(currentActivity()) {
+            sharePref.writeDataProfile(it)
+            setValue(it)
+        }
         addDetailResumeVM.informationResponse.observe(viewLifecycleOwner)
         {
-            sharePref.writeString(PROFILE_ID, it.id.toString())
+            AppsKitSDKPreferencesManager.getInstance()
+                .addInPreferences(Constants.AUTH_TOKEN, it.token)
+            sharePref.writeString(PROFILE_ID, it.profile.id.toString())
             tabhost.getTabAt(1)!!.select()
         }
         /*addDetailResumeVM.looksupResponse.observe(viewLifecycleOwner) {
@@ -91,6 +103,14 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun init(savedInstanceState: Bundle?) {
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
+        addDetailResumeVM.getProfileDetail(sharePref.readString(PROFILE_ID).toString())
+        profile_id = currentActivity().intent.getStringExtra(Constants.CALL_API).toString()
+        if (!profile_id.isNullOrEmpty()) {
+            addDetailResumeVM.getProfileDetail(
+                profile_id
+            )
+
+        }
         data = sharePref.readProfileData()
         data?.let {
             setValue(it)
@@ -106,14 +126,14 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             emailtext.setText(data.email)
             phoneedittext.setText(data.phone)
             address.setText(data.address)
-            dobEdit.setText(com.pentabit.cvmaker.resumebuilder.utils.Helper.convertIsoToCustomFormat(data.dob))
+            dobEdit.setText(Helper.convertIsoToCustomFormat(data.dob))
             if (data.gender == "male") {
                 male()
             } else {
                 female()
             }
         }
-        Glide.with(currentActivity()).load(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_MEDIA_URL + data.path)
+        Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL + data.path)
             .placeholder(R.drawable.imgplaceholder).into(binding.shapeableImageView)
     }
 
@@ -122,9 +142,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         binding.dobEdit.onFocusChangeListener =
             View.OnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
-                    com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.showWheelDatePickerDialog(
+                    DialogueBoxes.showWheelDatePickerDialog(
                         currentActivity(),
-                        object : com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
+                        object : DialogueBoxes.StringDialogCallback {
                             override fun onButtonClick(date: String) {
                                 binding.dobEdit.setText(date)
                             }
@@ -153,25 +173,25 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = binding.jobedittext.text.toString()
-             //   callLookUpApi(query)
+                //   callLookUpApi(query)
             }
 
             override fun afterTextChanged(s: Editable?) {
                 val query = binding.jobedittext.text.toString()
-            //    callLookUpApi(query)
+                //    callLookUpApi(query)
             }
         })
         binding.nextbtn.setOnClickListener {
-
-            if (isConditionMet()) {
-                if (data != null) {
-                    callApiUpdate()
+            if (data != null) {
+                if (isConditionMet2()) {
+                    callApiUpdate(data!!.id.toString())
                 }
+            } else if (profile_id != null) {
+                if (isConditionMet2()) {
+                    callApiUpdate(profile_id)
+                }
+            } else if (isConditionMet()) {
                 callApi()
-              /*  sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID, "7422")
-
-                tabhost.getTabAt(1)!!.select()*/
-
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
@@ -179,17 +199,17 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     }
 
     private fun callLookUpApi(query: String) {
-        addDetailResumeVM.getLookUp(com.pentabit.cvmaker.resumebuilder.utils.Constants.position, query, "", "")
+        addDetailResumeVM.getLookUp(Constants.position, query, "", "")
     }
 
-    private fun callApiUpdate() {
+    private fun callApiUpdate(profileId: String) {
         addDetailResumeVM.updateProfile(
-            data!!.id.toString(),
+            profileId,
             CreateProfileRequestModel(
                 binding.nameedittext.text.toString(),
                 binding.emailtext.text.toString(),
                 binding.phoneedittext.text.toString(),
-                image,
+                getImage,
                 gender,
                 binding.jobedittext.text.toString(),
                 binding.dobEdit.text.toString(),
@@ -226,7 +246,16 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
     fun isConditionMet(): Boolean {
         return !binding.nameedittext.text.toString().trim().isNullOrEmpty() &&
-                !binding.emailtext.text.toString().trim().isNullOrEmpty() &&
+                Helper.isValidEmail(currentActivity(), binding.emailtext.text.toString()) &&
+                !binding.jobedittext.text.toString().trim().isNullOrEmpty() &&
+                !binding.dobEdit.text.toString().trim().isNullOrEmpty() &&
+                !gender.isNullOrEmpty() &&
+                !getImage.isNullOrEmpty()
+    }
+
+    fun isConditionMet2(): Boolean {
+        return !binding.nameedittext.text.toString().trim().isNullOrEmpty() &&
+                Helper.isValidEmail(currentActivity(), binding.emailtext.text.toString()) &&
                 !binding.jobedittext.text.toString().trim().isNullOrEmpty() &&
                 !binding.dobEdit.text.toString().trim().isNullOrEmpty() &&
                 !gender.isNullOrEmpty()

@@ -1,8 +1,10 @@
 package com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,11 +15,12 @@ import com.pentabit.cvmaker.resumebuilder.utils.Helper
 class ExperienceAdapter: ListAdapter<ProfileModelAddDetailResponse.UserExperience, ExperienceAdapter.ViewHolder>(TemplateDiffCallback) {
     inner class ViewHolder(private val binding: EducationitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n")
         fun setData(model: ProfileModelAddDetailResponse.UserExperience) {
-            binding.universityname.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.removeOneUnderscores(model.title)
+            binding.universityname.text= Helper.removeOneUnderscores(model.title)
             binding.degreeName.text=model.description
-            binding.degreeYears.text=model.startDate+"-"+model.endDate
+            binding.degreeYears.text=Helper.formatDateRange(model.startDate,model.endDate)
             binding.editEdu.setOnClickListener {
                 editItemClickCallback?.invoke(model)
             }

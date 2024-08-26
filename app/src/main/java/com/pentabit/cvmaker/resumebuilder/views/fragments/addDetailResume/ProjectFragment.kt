@@ -14,6 +14,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ProjectAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,6 +30,9 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         addDetailResumeVM.dataResponse.observe(this) {
             list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
             setAdapter(list)
+        }
+        addDetailResumeVM.projectResponse.observe(viewLifecycleOwner){
+            apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
             if (it)
@@ -46,6 +50,11 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         apiCall()
         onclick()
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pentabit.cvmaker.resumebuilder.databinding.ProfileskillitemsBinding
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 
 class SkillProfAdapter(val context: Context, val list: List<String>): RecyclerView.Adapter<SkillProfAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ProfileskillitemsBinding) :
@@ -13,7 +14,7 @@ class SkillProfAdapter(val context: Context, val list: List<String>): RecyclerVi
 
         @SuppressLint("SetTextI18n")
         fun setData(model: String) {
-            binding.skillName.text=model
+            binding.skillName.text=Helper.removeOneUnderscores(model)
         }
     }
 

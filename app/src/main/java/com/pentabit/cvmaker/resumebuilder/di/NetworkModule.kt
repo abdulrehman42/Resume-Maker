@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.di
 
 
+import com.bytedance.sdk.component.embedapplog.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.api.http.AppIntercepter
 import com.pentabit.cvmaker.resumebuilder.api.http.ChooseTemplateService
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
@@ -25,7 +26,13 @@ class NetworkModule {
     @Named("GsonRetrofit")
     fun providesRetrofit(): Retrofit.Builder {
         return Retrofit.Builder().apply {
-            baseUrl(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_URL)
+//            if (BuildConfig.DEBUG)
+//            {
+//                baseUrl(Constants.BASE_URL_DEVELOPMENT)
+//
+//            }else{
+                baseUrl(Constants.BASE_URL_PRODUCTION)
+//            }
             client(provideOkHttpClient(AppIntercepter()))
             addConverterFactory(GsonConverterFactory.create())
         }
@@ -36,7 +43,13 @@ class NetworkModule {
     @Named("ScalarsRetrofit")
     fun providesRetrofitWithScalarsConverterFactory(): Retrofit.Builder {
         return Retrofit.Builder().apply {
-            baseUrl(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_URL)
+//            if (BuildConfig.DEBUG)
+//            {
+//                baseUrl(Constants.BASE_URL_DEVELOPMENT)
+//
+//            }else{
+                baseUrl(Constants.BASE_URL_PRODUCTION)
+//            }
             client(provideOkHttpClient(AppIntercepter()))
             addConverterFactory(ScalarsConverterFactory.create())
         }

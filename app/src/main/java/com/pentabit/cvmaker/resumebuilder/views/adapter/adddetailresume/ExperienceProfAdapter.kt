@@ -19,9 +19,9 @@ class ExperienceProfAdapter(
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n")
         fun setData(model: ProfileModelAddDetailResponse.UserExperience) {
-            binding.experiencename.text=model.title
-            binding.officeName.text=model.company+"- "+model.employmentType
-            binding.experienceTime.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.formatDateRange(model.startDate,model.endDate)
+            binding.experiencename.text=Helper.removeOneUnderscores(model.title)
+            binding.officeName.text=Helper.removeOneUnderscores(model.company)+" - "+model.employmentType
+            binding.experienceTime.text= Helper.formatDateRange(model.startDate,model.endDate)
         }
     }
 

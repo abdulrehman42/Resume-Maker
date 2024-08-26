@@ -14,6 +14,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualifi
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,6 +48,9 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_education)
+        AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
+
+        );
         val data = sharePref.readDataEducation()
         data?.let {
             binding.instituenameedittext.setText(data.institute)
@@ -130,9 +134,9 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         }
         val qualifications = listOf(
             Qualification(
-                degree = "1__"+binding.degreeName.text.toString(),
+                degree = "-1__"+binding.degreeName.text.toString(),
                 endDate = endDate,
-                institute = "1__"+binding.instituenameedittext.text.toString(),
+                institute = "-1__"+binding.instituenameedittext.text.toString(),
                 qualificationType = "degree",
                 startDate = binding.startdateedittext.text.toString()
             )

@@ -13,6 +13,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ReferenceAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +28,9 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
         addDetailResumeVM.dataResponse.observe(this) {
             list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
             setadapter(list)
+        }
+        addDetailResumeVM.referenceResponse.observe(viewLifecycleOwner){
+            apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
             if (it) {
@@ -43,6 +47,11 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         sharePref.writeBoolean(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME, true)
         apiCall()
         onclick()

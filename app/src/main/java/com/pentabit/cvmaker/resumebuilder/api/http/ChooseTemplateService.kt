@@ -2,11 +2,9 @@ package com.pentabit.cvmaker.resumebuilder.api.http
 
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LoginRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
@@ -18,6 +16,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -35,11 +34,11 @@ interface ChooseTemplateService {
     @POST(Constants.LOGIN_API)
     fun onLogin(@Field("email") email: String,@Field("oauthProvider") authProvider: String): Call<JsonElement>
 
-    @GET(Constants.TOKEN_REFRESH)
+    @POST(Constants.TOKEN_REFRESH)
     fun onRefreshToken(): Call<JsonElement>
 
 
-    @GET(com.pentabit.cvmaker.resumebuilder.utils.Constants.TEMPLATE_API)
+    @GET(Constants.TEMPLATE_API)
     fun getHomeCategory(
         @Query("type") type: String
     ): Call<JsonElement>
@@ -62,14 +61,21 @@ interface ChooseTemplateService {
         @Part("address") address: RequestBody
     ): Call<JsonElement>
 
-    @POST(Constants.UPDATE_PROFILE)
+    @PUT(Constants.UPDATE_PROFILE)
     fun onUpdateProfile(
         @Path("profileId") profileId: String,
-        @Body createProfileRequestModel: CreateProfileRequestModel
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part image: MultipartBody.Part,
+        @Part("gender") gender: RequestBody,
+        @Part("jobTitle") job: RequestBody,
+        @Part("dob") dob: RequestBody,
+        @Part("address") address: RequestBody
     ): Call<JsonElement>
 
 
-    @GET(com.pentabit.cvmaker.resumebuilder.utils.Constants.GETPROFILES_API)
+    @GET(Constants.GETPROFILES_API)
     fun getProfiles(): Call<JsonElement>
 
     @GET(com.pentabit.cvmaker.resumebuilder.utils.Constants.GET_PROFILE_DETAIL)
@@ -82,7 +88,7 @@ interface ChooseTemplateService {
     fun onCreateCoverLetter(@Body coverLetterRequestModel: CoverLetterRequestModel): Call<JsonElement>
 
     //add detail cv
-    @PUT(com.pentabit.cvmaker.resumebuilder.utils.Constants.EDIT_OBJECTIVE)
+    @PUT(Constants.EDIT_OBJECTIVE)
     fun editObjective(
         @Path("profileId") profileId: String,
         @Body objective: SingleItemRequestModel
@@ -100,7 +106,7 @@ interface ChooseTemplateService {
         @Body skills: SkillRequestModel
     ): Call<JsonElement>
 
-    @PUT(com.pentabit.cvmaker.resumebuilder.utils.Constants.EDIT_INTERESTS)
+    @PUT(Constants.EDIT_INTERESTS)
     fun editInterest(
         @Path("profileId") profileId: String,
         @Body interests: InterestRequestModel
@@ -140,7 +146,7 @@ interface ChooseTemplateService {
     fun getSamples(@Query("type") type: String): Call<JsonElement>
 
     //previewCoverLetter
-    @GET(com.pentabit.cvmaker.resumebuilder.utils.Constants.PREVIEW_COVERLETTER_API)
+    @GET(Constants.PREVIEW_COVERLETTER_API)
     fun getCoverLetterPreview(
         @Path("id") id: String,
         @Path("templateId") templateId: String,
@@ -166,9 +172,12 @@ interface ChooseTemplateService {
         @Query("token") profileId: String,
     ): Call<JsonElement>
 
-    @POST(Constants.DELTER_PROFILE)
+    @DELETE(Constants.DELTER_PROFILE)
     fun deleteProfile(
         @Path("profileId") profileId: String,
+    ): Call<JsonElement>
+    @DELETE(Constants.DELETE_ACCOUNT)
+    fun deleteMe(
     ): Call<JsonElement>
 
 

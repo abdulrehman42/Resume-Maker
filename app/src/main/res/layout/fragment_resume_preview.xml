@@ -7,15 +7,20 @@
     android:background="@color/white"
     tools:context=".views.fragments.addDetailResume.ResumePreviewFragment">
     <include
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_45sdp"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         layout="@layout/toolbarwithshareoption"
+        android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/include_tool"/>
-
+    <FrameLayout
+        android:id="@+id/banner_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/include_tool"
+        app:layout_constraintEnd_toEndOf="parent" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include_tool">
+        app:layout_constraintTop_toBottomOf="@+id/banner_ad">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

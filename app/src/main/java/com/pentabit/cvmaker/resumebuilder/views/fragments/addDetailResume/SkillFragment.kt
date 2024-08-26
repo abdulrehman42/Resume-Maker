@@ -10,8 +10,10 @@ import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentSkillBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +30,10 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
             list= it.userSkills as ArrayList<String>
             setadapter(list)
         }
+        addDetailResumeVM.skillResponse.observe(viewLifecycleOwner){
+            apiCall()
+        }
+
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
             if (it)
             {
@@ -44,26 +50,37 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-        apiCall()
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         onclick()
+        apiCall()
+
     }
 
+
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail(sharePref.readString(Constants.PROFILE_ID).toString())
     }
 
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
         skillAdapter.setOnEditItemClickCallback {
-            sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA,it)
+            sharePref.writeString(Constants.DATA,it)
             addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = AddSkillFragment()
         }
         skillAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
             setadapter(list)
-            callSaveApi()
-            apiCall()
+            if (list.size!=0)
+            {
+                callSaveApi()
+                apiCall()
+
+            }
         }
 
         binding.recyclerviewSkill.apply {

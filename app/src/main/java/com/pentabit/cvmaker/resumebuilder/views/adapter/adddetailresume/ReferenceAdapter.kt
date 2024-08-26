@@ -16,8 +16,8 @@ class ReferenceAdapter:
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model: ProfileModelAddDetailResponse.UserReference) {
-            binding.universityname.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.removeOneUnderscores(model.name)
-            binding.degreeName.text=model.position
+            binding.universityname.text= Helper.removeOneUnderscores(model.name)
+            binding.degreeName.text=Helper.removeOneUnderscores(model.position)
             binding.degreeYears.text=model.email
             binding.editEdu.setOnClickListener {
                 editItemClickCallback?.invoke(model)

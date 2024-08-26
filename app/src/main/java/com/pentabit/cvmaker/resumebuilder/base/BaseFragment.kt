@@ -24,7 +24,7 @@ abstract class BaseFragment<VB : ViewBinding>() : Fragment() {
     private var _binding: VB? = null
     val binding get() = _binding!!
     lateinit var sharePref: SharePref
-    private lateinit var mActivity: com.pentabit.cvmaker.resumebuilder.base.BaseActivity
+    private lateinit var mActivity: BaseActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

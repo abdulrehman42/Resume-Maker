@@ -23,6 +23,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+            <FrameLayout
+                android:id="@+id/banner_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
             <ProgressBar
                 android:id="@+id/loader"
                 android:layout_width="wrap_content"
@@ -42,7 +48,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/banner_add"
                 app:shapeAppearance="@style/Circular" />
 
 
@@ -172,7 +178,6 @@
                 android:id="@+id/dob_inputlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_margin="@dimen/_10sdp"
                 app:boxStrokeColor="@color/green_light"
                 app:hintTextColor="@color/green_light"

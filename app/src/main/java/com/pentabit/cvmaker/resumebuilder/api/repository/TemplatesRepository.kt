@@ -93,6 +93,35 @@ class TemplatesRepository @Inject constructor(
         )
     }
 
+    fun onDeleteMe(
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.deleteMe().enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+
+            })
+        )
+    }
+
     fun onFcm(
         token: String,
         callback: ResponseCallback
@@ -122,35 +151,7 @@ class TemplatesRepository @Inject constructor(
             })
         )
     }
-    fun onDeleteProfile(
-        profileId: String,
-        callback: ResponseCallback
-    ) {
-        _templateResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.deleteProfile(profileId).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.MESSAGE,
-                            response.body(),
-                            object : TypeToken<String>() {}.type
-                        ) as String,
-                        JSONManager.getInstance().getFormattedResponse(
-                            JSONKeys.DATA,
-                            response.body(),
-                            object : TypeToken<String>() {}.type
-                        ) as String
-                    )
-                }
 
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure(t.message)
-                }
-
-            })
-        )
-    }
 
     fun getRefreshToken(
         callback: ResponseCallback
@@ -168,7 +169,7 @@ class TemplatesRepository @Inject constructor(
                         JSONManager.getInstance().getFormattedResponse(
                             JSONKeys.TOKEN,
                             response.body(),
-                            object : TypeToken<String>() {}.type
+                            object : TypeToken<FcmResponse>() {}.type
                         ) as String
                     )
                 }

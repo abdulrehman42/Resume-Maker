@@ -2,18 +2,23 @@ package com.pentabit.cvmaker.resumebuilder.models.api
 
 data class Profile(
 
-    val address: String,
-    val baseUrl: String,
-    val createdAt: String,
-    val dob: String,
-    val email: String,
-    val gender: String,
-    val id: Int,
-    val jobTitle: String,
+    val profile: Profile1,
+    val token: String
+)
+
+data class Profile1(
+    val id: Long,
+    val userID: String,
     val name: String,
-    val objective: String? = null,
-    val path: String,
+    val email: String,
+    val jobTitle: String,
     val phone: String,
-    val updatedAt: String,
-    val userId: String
+    val address: String,
+    val dob: String,
+    val gender: String,
+    val objective: Any? = null,
+    val path: String,
+    val baseURL: String,
+    val createdAt: String,
+    val updatedAt: String
 )

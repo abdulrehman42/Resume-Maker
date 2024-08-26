@@ -13,6 +13,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleI
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -50,6 +51,11 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM= ViewModelProvider(this)[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         callAPi()
         onclick()

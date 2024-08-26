@@ -11,6 +11,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddAchievementsFRa
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,7 +40,11 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
     override fun init(savedInstanceState: Bundle?) {
 
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         binding.includeTool.textView.text = getString(R.string.add_achievement)
         val data = sharePref.readProfileAchievement()
         if (data != null) {
@@ -85,9 +90,9 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
     private fun apiCall() {
         val achievemnt = listOf(
             Achievement(
-                description = "1__" + binding.descriptionedittext.text.toString(),
+                description = "-1__" + binding.descriptionedittext.text.toString(),
                 issueDate = binding.issueDateeedittext.text.toString(),
-                title = "1__" + binding.achieveedittext.text.toString(),
+                title = "-1__" + binding.achieveedittext.text.toString(),
             )
         )
 

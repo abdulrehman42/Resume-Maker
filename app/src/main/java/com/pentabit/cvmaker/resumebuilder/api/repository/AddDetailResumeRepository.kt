@@ -14,7 +14,6 @@ import com.pentabit.cvmaker.resumebuilder.models.api.Profile
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
-import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.AchievementResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.EducationResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.ExperienceResponse
@@ -99,30 +98,46 @@ class AddDetailResumeRepository @Inject constructor(
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.onUpdateProfile(profile_id, profileModel).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
-                            .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+        val multipartParts = prepareMultipartRequest(profileModel)
+        ImageCompressorHelper().compressInBackground(
+            File(profileModel.image)
+        ) {
+            chooseTemplateService.onUpdateProfile(profile_id,
+                multipartParts["name"] as RequestBody,
+                multipartParts["email"] as RequestBody,
+                multipartParts["phone"] as RequestBody,
+                it,
+                multipartParts["gender"] as RequestBody,
+                multipartParts["jobTitle"] as RequestBody,
+                multipartParts["dob"] as RequestBody,
+                multipartParts["address"] as RequestBody
+            ).enqueue(
+                SinglePointOfResponse(object : Callback<JsonElement> {
+                    override fun onResponse(
+                        call: Call<JsonElement>,
+                        response: Response<JsonElement>
+                    ) {
+                        callback.onSuccess(
+                            JSONManager.getInstance().getFormattedResponse(
+                                JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
                             ) as String,
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
-                            .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.DATA,
+                            JSONManager.getInstance().getFormattedResponse(
+                                JSONKeys.DATA,
                                 response.body(),
-                                object : TypeToken<TemplateModel>() {}.type
-                            ) as ProfileModelAddDetailResponse
-                    )
-                }
+                                object : TypeToken<Profile>() {}.type
+                            ) as Profile
+                        )
+                    }
 
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure(t.message)
-                }
-            })
-        )
+                    override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                        callback.onFailure(t.message)
+                    }
+                })
+            )
+        }
+
     }
 
     fun editObjective(
@@ -135,15 +150,15 @@ class AddDetailResumeRepository @Inject constructor(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                                JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
                             ) as String,
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.DATA,
+                                JSONKeys.DATA,
                                 response.body(),
                                 object : TypeToken<ProfileModelAddDetailResponse>() {}.type
                             ) as ProfileModelAddDetailResponse
@@ -230,9 +245,9 @@ class AddDetailResumeRepository @Inject constructor(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                                JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
                             ) as String,
@@ -451,15 +466,15 @@ class AddDetailResumeRepository @Inject constructor(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                                JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
                             ) as String,
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.DATA,
+                                JSONKeys.DATA,
                                 response.body(),
                                 object : TypeToken<ProfileModelAddDetailResponse>() {}.type
                             ) as ProfileModelAddDetailResponse

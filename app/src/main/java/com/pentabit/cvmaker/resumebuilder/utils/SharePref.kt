@@ -185,7 +185,7 @@ class SharePref constructor(ctx: Context){
     fun writeDataProfile(user: ProfileModelAddDetailResponse) {
         try {
             val data=gson.toJson(user)
-            prefs!!.edit().putString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE, data).apply()
+            prefs!!.edit().putString(Constants.DATA_PROFILE, data).apply()
         }catch (e:Exception)
         {
             Log.e("TAGException", e.message.toString())

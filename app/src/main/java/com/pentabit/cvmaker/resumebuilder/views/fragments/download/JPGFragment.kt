@@ -36,11 +36,11 @@ class JPGFragment : BaseFragment<FragmentJPGBinding>()
         if (ImageFileUtils.getInstance().loadImageFromHiddenStorage(sharePref.readString(Constants.PROFILE_ID),name).size!=0)
         {
             binding.text.isGone=true
-            val templateAdapter= DownloadImgAdapter(ImageFileUtils.getInstance().loadImageFromHiddenStorage(sharePref.readString(Constants.PROFILE_ID),name))
-            binding.recyclerviewTemplete.apply {
-                layoutManager= GridLayoutManager(requireActivity(),2)
-                adapter = templateAdapter
-            }
+//            val templateAdapter= DownloadImgAdapter(ImageFileUtils.getInstance().loadImageFromHiddenStorage(sharePref.readString(Constants.PROFILE_ID),name))
+//            binding.recyclerviewTemplete.apply {
+//                layoutManager= GridLayoutManager(requireActivity(),2)
+//                adapter = templateAdapter
+//            }
         }else{
             binding.text.isGone=false
         }

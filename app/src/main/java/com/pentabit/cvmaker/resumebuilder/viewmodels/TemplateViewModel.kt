@@ -59,6 +59,8 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
         }
     }
 
+
+
     fun onFCM(token: String) {
         loadingState.postValue(true)
         viewModelScope.launch {
@@ -83,12 +85,11 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
         }
     }
 
-    fun onDeleteProfile(profileID: String) {
+    fun onDeleteMe() {
         loadingState.postValue(true)
         viewModelScope.launch {
             try {
-                templatesRepository.onDeleteProfile(
-                    profileID,
+                templatesRepository.onDeleteMe(
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             loadingState.postValue(false)
@@ -106,6 +107,8 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
             }
         }
     }
+
+
 
     fun tokenRefresh() {
         loadingState.postValue(true)

@@ -3,6 +3,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SuggestionAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +35,7 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         get() = FragmentAddSkillBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.singleResponse.observe(currentActivity()) {
+        addDetailResumeVM.skillResponse.observe(currentActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -52,6 +54,8 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_skill)
+        AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
+        );
         val userskillList=sharePref.readProfileData()?.userSkills
         userskillList?.let {
             alreadyUserSkills= userskillList as ArrayList<String>
@@ -70,7 +74,6 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
                 if (binding.skillEdittext.text!!.length > 3) {
                     binding.skillTextInputLayout.setEndIconMode(TextInputLayout.END_ICON_CUSTOM)
                     binding.skillTextInputLayout.setEndIconDrawable(R.drawable.tick_green)
-
                 } else {
                     binding.skillTextInputLayout.setEndIconMode(TextInputLayout.END_ICON_NONE)
                 }
@@ -90,7 +93,7 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
     }
 
     private fun callLookUpApi(query: String) {
-        addDetailResumeVM.getLookUp(com.pentabit.cvmaker.resumebuilder.utils.Constants.skills, query, "", "")
+        addDetailResumeVM.getLookUp(Constants.skills, query, "", "")
 
     }
 
@@ -99,29 +102,29 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         {
             binding.skillEdittext.setText(it.text)
         }
-
         binding.recyclerviewSuggestions.apply {
             layoutManager = GridLayoutManager(currentActivity(), 3)
-            adapter = userSkillAdapter
+            adapter = suggestionAdapter1
         }
         binding.recyclerviewSkill.apply {
             layoutManager = GridLayoutManager(currentActivity(), 3)
-            adapter = suggestionAdapter1
+            adapter = userSkillAdapter
         }
 
 
     }
 
     private fun onclick() {
+        binding.skillTextInputLayout.isEnabled = true
         binding.skillTextInputLayout.setEndIconOnClickListener {
-            binding.skillEdittext.setText("")
-            list.add(binding.skillEdittext.text.toString())
-
-            binding.recyclerviewSkill.apply {
-                layoutManager = GridLayoutManager(currentActivity(), 3)
-                adapter = suggestionAdapter1
+            val skill = binding.skillEdittext.text.toString().trim()
+            if (skill.isNotEmpty()) {
+                list.add(skill) // Add the captured text to the list
+                userSkillAdapter.submitList(list.toList()) // Update the adapter with a new list
+                binding.skillEdittext.setText("") // Clear the text after adding it to the list
             }
         }
+
         binding.savebtn.setOnClickListener {
             if (binding.skillEdittext.text.toString().length > 3) {
                 list.add("1__" + binding.skillEdittext.text.toString())

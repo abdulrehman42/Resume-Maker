@@ -24,17 +24,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <FrameLayout
+        android:id="@+id/banner_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/include_tool"
+        app:layout_constraintEnd_toEndOf="parent" />
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/skill_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="true"
         android:layout_margin="@dimen/_10sdp"
         app:endIconTint="@null"
+        app:endIconCheckable="true"
         app:endIconMode="custom"
+        app:passwordToggleEnabled="true"
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_tool"
+        app:layout_constraintTop_toBottomOf="@id/banner_add"
         app:layout_constraintStart_toStartOf="parent"
         >
 

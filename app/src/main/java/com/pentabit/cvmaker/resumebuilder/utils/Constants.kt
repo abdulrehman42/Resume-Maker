@@ -3,12 +3,19 @@ package com.pentabit.cvmaker.resumebuilder.utils
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 
 object Constants {
+
+    const val CALL_API=""
     const val BASE_MEDIA_URL = "https://n0ngl4zx.tinifycdn.com/"
-    const val BASE_URL = "http://35.164.228.120:9000/v1/"
+    const val BASE_URL_PRODUCTION = "http://35.164.228.120:9000/v1/"
+    const val BASE_URL_DEVELOPMENT = "http://54.70.21.233:9001/v1"
     const val GUEST_TOKEN = "guestToken"
+    const val AUTH_TOKEN = "AUTH_TOKEN"
+
     var TOKEN = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(
-        GUEST_TOKEN,
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU2MmMyYjk0LTAyNGEtNDgwZi1iNjc3LWFmMjNjMTBjMGUxYSIsIm5hbWUiOm51bGwsImVtYWlsIjoicmVjb21tZW5kbWVAcGVudGFiaXRhcHBzLmNvbSIsIm9hdXRoSWQiOm51bGwsInBob25lTGFuZ3VhZ2UiOm51bGwsIm9hdXRoUHJvdmlkZXIiOiJlbWFpbCIsImlzRGVsZXRlZCI6ZmFsc2UsInByb2ZpbGVzIjpbXSwidXNlclR5cGUiOiJ1c2VyIiwiaWF0IjoxNzA2MjY5NjcyfQ.bq09dt2Cj6vP8lh1UKHf3cWysZDT60zftzHxtrTMNVk"
+        GUEST_TOKEN
+    )
+    var TOKEN_AUTH = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(
+        AUTH_TOKEN
     )
 
 
@@ -35,9 +42,23 @@ object Constants {
     const val SAMPLES_API = "samples"
     const val LOOKUP_API = "lookups"
     const val FCM_API = "fcm-token"
-    const val DELTER_PROFILE="profiles/{profileId}"
-    const val DELETE_ACCOUNT="users/delete-me"
-    const val LOGOUT_ACCOUNT=""
+    const val DELTER_PROFILE = "profiles/{profileId}"
+    const val DELETE_ACCOUNT = "users/delete-me"
+    const val LOGOUT_ACCOUNT = ""
+    const val Is_CoverLtter = "Is_CoverLtter"
+    const val YES = "yes"
+    const val NO = "no"
+    const val VERSION_NAME = "version"
+
+    //ads
+    const val YOUR_IRON_SOURCE_APP_KEY = ""
+    const val YOUR_HELIUM_APP_ID=""
+    const val YOUR_MAX_SDK_KEY=""
+    const val YOUR_HELIUM_SIGNATURES=""
+    const val isChildDirected=true
+    const val isSubjectToGDPR=true
+    const val userHasGivenConsent=true
+    const val isCCPAConsent=true
 
 
     //lockup Keys
@@ -53,7 +74,8 @@ object Constants {
     const val position = "position"
     const val achievements = "achievements"
     const val PDF = "pdf"
-
+    const val DELETE = "DELETE"
+    const val EDIT = "EDIT"
 
     const val COVER_LETTER = "coverLetter"
     const val RESUME = "resume"
@@ -78,8 +100,6 @@ object Constants {
     const val CREATE = "CREATE"
     const val IMPORT = "IMPORT"
     const val CHOSE_TEMPLATE = "CHOSE_TEMPLATE"
-
-    const val AUTH_TOKEN = "AUTH_TOKEN"
 
 
 }

@@ -6,20 +6,22 @@ import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
+import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAchievementBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AchievementFragment : com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment<FragmentAchievementBinding>() {
+class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
     val achievementAdapter= AchievementAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
 
     override fun csnMoveForward(): Boolean {
-        return false
+        return true
     }
 
     override val inflate: Inflate<FragmentAchievementBinding>
@@ -28,6 +30,9 @@ class AchievementFragment : com.pentabit.cvmaker.resumebuilder.base.AddDetailsBa
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             setAdapter(it.userAchievement)
+        }
+        addDetailResumeVM.achievementResponse.observe(viewLifecycleOwner){
+            apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
             if (it)
@@ -41,6 +46,11 @@ class AchievementFragment : com.pentabit.cvmaker.resumebuilder.base.AddDetailsBa
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         apiCall()
         onclick()
     }
@@ -63,7 +73,7 @@ class AchievementFragment : com.pentabit.cvmaker.resumebuilder.base.AddDetailsBa
         }
         binding.addachievementbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = ResumePreviewFragment()
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment()
         }
     }
 

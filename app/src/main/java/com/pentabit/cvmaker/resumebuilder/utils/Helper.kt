@@ -1,8 +1,9 @@
 package com.pentabit.cvmaker.resumebuilder.utils
 
 import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
@@ -10,24 +11,24 @@ import android.os.Build
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.provider.MediaStore
-import android.util.Base64
+import android.text.TextUtils
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityBoardingScreenBinding
 import com.pentabit.cvmaker.resumebuilder.models.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
-import com.pentabit.cvmaker.resumebuilder.views.adapter.WebViewPrintAdapter
 import com.google.android.material.tabs.TabLayout
-import com.pentabit.cvmaker.resumebuilder.callbacks.OnImageCompressed
+import com.pentabit.cvmaker.resumebuilder.views.adapter.WebViewPrintAdapter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
@@ -35,6 +36,7 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 
 object Helper {
@@ -164,25 +166,72 @@ object Helper {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun formatDateRange(startDate: String?, endDate: String?): String {
-        if (startDate.isNullOrEmpty() || endDate.isNullOrEmpty()) {
+        if (startDate.isNullOrEmpty()) {
             return "Invalid date range"
         }
 
-        val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
+        // Define input and output formatters
+        val inputFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME // Adjusted to handle offsets
         val outputFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
 
         return try {
+            // Parse start date with the input formatter
             val start = ZonedDateTime.parse(startDate, inputFormatter).toLocalDate()
-            val end = ZonedDateTime.parse(endDate, inputFormatter).toLocalDate()
-
             val startFormatted = start.format(outputFormatter)
+
+            // If endDate is null, return "startFormatted - Present"
+            if (endDate.isNullOrEmpty()) {
+                return "$startFormatted - Present"
+            }
+
+            // Parse end date with the input formatter
+            val end = ZonedDateTime.parse(endDate, inputFormatter).toLocalDate()
             val endFormatted = end.format(outputFormatter)
 
             "$startFormatted - $endFormatted"
+        } catch (e: DateTimeParseException) {
+            // Handle specific parsing errors
+            "Invalid date format: ${e.message}"
         } catch (e: Exception) {
-            "Invalid date format"
+            // Handle any other unexpected exceptions
+            "An error occurred: ${e.message}"
         }
     }
+
+    fun isValidEmail(context: Context, email: String): Boolean {
+
+        if (email.isEmpty()) {
+            showToast(context, "Please Enter Your Email")
+            return false
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showToast(context, "Please Enter Your Correct Email")
+            if (TextUtils.isEmpty(email)) {
+                showToast(context, "Please Enter Email")
+                return false
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                showToast(context, "Please Correct Your Email")
+                return false
+            }
+        }
+        return true
+    }
+
+    fun showToast(context: Context, message: String?) {
+        message?.let {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        } ?: kotlin.run {
+            Toast.makeText(
+                context,
+                context.getString(R.string.something_went_wrong),
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+
+    }
+
 
     fun removeOneUnderscores(input: String): String {
         return input.replace("1__", "")
@@ -191,8 +240,18 @@ object Helper {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun convertIsoToCustomFormat(isoDateTime: String?): String {
+        // Check if the input string is null or blank
+        if (isoDateTime.isNullOrBlank()) return ""
+
         // Parse the ISO_DATE_TIME string to a LocalDateTime object
         val dateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+
+        // Check if the parsed dateTime is in the future
+        if (dateTime.isAfter(LocalDateTime.now())) {
+            // Handle future date according to your needs
+            // For example, return an empty string or throw an exception
+            return "" // or throw IllegalArgumentException("Future dates are not allowed.")
+        }
 
         // Define the desired format
         val customFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
@@ -211,36 +270,48 @@ object Helper {
         val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
 
         return try {
-            var date = ""
-            var startYear = ""
             val start = ZonedDateTime.parse(startDate, inputFormatter).toLocalDate()
+            val startYear = start.format(yearFormatter)
+
             if (endDate.isNullOrEmpty()) {
-                date = start.format(yearFormatter)
+                "$startYear - Present"
             } else {
                 val end = ZonedDateTime.parse(endDate, inputFormatter).toLocalDate()
-                startYear = start.format(yearFormatter)
-
                 val endYear = end.format(yearFormatter)
-
-                date = "$startYear - $endYear"
+                "$startYear - $endYear"
             }
-            return date
-
         } catch (e: Exception) {
             "Invalid date format"
         }
     }
 
     fun getFileFromUri(context: Context, uri: Uri): String? {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-        cursor?.use {
-            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            if (cursor.moveToFirst()) {
-                return cursor.getString(columnIndex)
-            }
+        return when (uri.scheme) {
+            "content" -> copyUriContentToFile(context, uri)
+            "file" -> uri.path
+            else -> null
         }
-        return null
+    }
+
+    private fun copyUriContentToFile(context: Context, uri: Uri): String? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            inputStream?.let {
+                val tempFile = File(context.cacheDir, "temp_image_${System.currentTimeMillis()}")
+                FileOutputStream(tempFile).use { outputStream ->
+                    val buffer = ByteArray(1024)
+                    var length: Int
+                    while (inputStream.read(buffer).also { length = it } > 0) {
+                        outputStream.write(buffer, 0, length)
+                    }
+                    outputStream.flush()
+                }
+                tempFile.absolutePath
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
 
@@ -362,10 +433,38 @@ object Helper {
     }
 
 
-    fun saveHtmlAsPdf(context: Context, htmlContent: String, fileName: String) {
+    fun saveHtmlAsPdf(
+        context: Context,
+        htmlContent: String,
+        fileName: String,
+        subFileName: String
+    ) {
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val printAdapter = WebViewPrintAdapter(context, htmlContent)
+        val printAdapter = WebViewPrintAdapter(htmlContent,fileName,subFileName,context)
 
         printManager.print("Document", printAdapter, PrintAttributes.Builder().build())
+    }
+
+    fun loadPdfFromHiddenStorage(headerDir: String, subheading: String, context: Context): List<String> {
+        val list = mutableListOf<String>()
+
+        // Get the app's private storage directory using ContextWrapper
+        val cw = ContextWrapper(context)
+
+        // Get the main directory within the app's private storage
+        val mainDirectory = cw.getDir(headerDir, Context.MODE_PRIVATE)
+
+        // Construct the path to the target directory (subheading/IMAGES)
+        val targetDirectory = File(mainDirectory, "$subheading/IMAGES")
+
+        // Get the list of files in the target directory
+        val files = targetDirectory.listFiles()
+        if (files != null) {
+            for (file in files) {
+                list.add(file.absolutePath) // Add the absolute path of each file to the list
+            }
+        }
+
+        return list // Return the list of file paths
     }
 }

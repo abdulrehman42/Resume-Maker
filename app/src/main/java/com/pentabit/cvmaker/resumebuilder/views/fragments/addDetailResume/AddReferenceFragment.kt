@@ -9,7 +9,9 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddReferenceBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -41,6 +43,11 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_referrence)
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         val data = sharePref.readProfileReference()
         data?.let {
             binding.referrencenameedit.setText(data.name)
@@ -78,7 +85,7 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     fun isConditionMet(): Boolean {
         return !binding.jobedittext.text.toString().isNullOrEmpty() &&
                 !binding.referrencenameedit.text.toString().isNullOrEmpty()&&
-                !binding.emailedit.text.toString().isNullOrEmpty() &&
+                Helper.isValidEmail(currentActivity(),binding.emailedit.text.toString()) &&
                 !binding.phone.text.toString().isNullOrEmpty() &&
                 !binding.companyName.text.toString().isNullOrEmpty()
     }

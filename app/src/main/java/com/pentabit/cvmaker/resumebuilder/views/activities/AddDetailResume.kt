@@ -2,10 +2,14 @@ package com.pentabit.cvmaker.resumebuilder.views.activities
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -48,8 +52,10 @@ class AddDetailResume : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddDetailResumeBinding.inflate(layoutInflater)
         bottomNavigationColor()
+        enableEdgeToEdge()
         setContentView(binding.root)
         addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
+
         setUpTablayout()
         onclick()
         observeLiveData()
@@ -75,6 +81,7 @@ class AddDetailResume : BaseActivity() {
                 .replace(R.id.add_detail_container, it)
                 .addToBackStack(null)
                 .commit()
+
         }
     }
 
@@ -109,8 +116,9 @@ class AddDetailResume : BaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
                 if (currentFragment.csnMoveForward()) {
-                    binding.viewPagerContainer.currentItem =
-                        binding.tabLayoutAdddetail.selectedTabPosition
+                    binding.viewPagerContainer.setCurrentItem(binding.tabLayoutAdddetail.selectedTabPosition, true)
+                   /* binding.viewPagerContainer.currentItem =
+                        binding.tabLayoutAdddetail.selectedTabPosition*/
                 } else {
                     showToast(getString(R.string.field_missing_error))
                 }
@@ -155,6 +163,7 @@ class AddDetailResume : BaseActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addOrRemoveTab(tabModel: TabModel) {
         if (allTabs.contains(tabModel)) {
             binding.tabLayoutAdddetail.removeTabAt(allTabs.indexOf(tabModel))
@@ -170,6 +179,8 @@ class AddDetailResume : BaseActivity() {
             binding.tabLayoutAdddetail.getTabAt(binding.viewPagerContainer.currentItem)?.view?.isClickable =
                 false
         }*/
+        binding.viewPagerContainer.adapter?.notifyDataSetChanged()
+
     }
 
 
@@ -224,6 +235,30 @@ class AddDetailResume : BaseActivity() {
             return tab
         }
 
+    }
+
+
+    private fun enableEdgeToEdge() {
+        // Set the decor view to enable full-screen layout
+        val window = window
+
+        // Make sure that the content extends into the system bars (status bar and navigation bar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
+
+        // Set system bars to be transparent
+        window.statusBarColor = ContextCompat.getColor(this,R.color.navy_blue)
+        window.navigationBarColor = Color.TRANSPARENT
+
+        // Optionally, handle light or dark mode for the status bar icons
+        var flags = window.decorView.systemUiVisibility
+        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // Light status bar (dark icons)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            flags =
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
+        }
+        window.decorView.systemUiVisibility = flags
     }
 
 }

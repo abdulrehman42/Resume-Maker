@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLanguageBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,6 +27,9 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         addDetailResumeVM.dataResponse.observe(this) {
             list= it.userLanguages as ArrayList<String>
             setadapter(list)
+        }
+        addDetailResumeVM.languageResponse.observe(viewLifecycleOwner){
+            apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
             if (it)
@@ -43,6 +47,9 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
+
+        );
         apiCall()
         onclick()
     }
@@ -60,8 +67,12 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
-            saveCallApi()
-            apiCall()
+            if (list.size!=0)
+            {
+                saveCallApi()
+                apiCall()
+
+            }
         }
         binding.recyclerviewLanguage.apply {
             adapter = singleStringAdapter

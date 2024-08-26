@@ -10,6 +10,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ActivitySplashScreenBindin
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.addToken
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -29,6 +30,8 @@ class SplachScreen : BaseActivity() {
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
+
+        AppsKitSDKAdsManager.isUserConsentsProvided(true)
         if (sharePref.readBoolean(Constants.IS_FIRST_TIME, true)) {
             startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
             finish()

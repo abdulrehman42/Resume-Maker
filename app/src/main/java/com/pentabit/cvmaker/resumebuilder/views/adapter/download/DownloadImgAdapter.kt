@@ -1,40 +1,57 @@
 package com.pentabit.cvmaker.resumebuilder.views.adapter.download
 
-import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isGone
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplatelayoutitemsBinding
+import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
+import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
+import java.io.File
 
-class DownloadImgAdapter(
-    val list: MutableList<String>,
-) : RecyclerView.Adapter<DownloadImgAdapter.ViewHolder>() {
-    inner class ViewHolder(private val binding: TemplatelayoutitemsBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
-        fun setData(model: String) {
-            Glide.with(binding.templateimage.context).load(model).into(binding.templateimage)
-            binding.eyeIconId.isGone=true
+class DownloadImgAdapter(val activity:Activity,val openPdf:(File)->Unit) : ListAdapter<File, AppsKitSDKRecyclerBaseViewBinding>(FileDiffCallback) {
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AppsKitSDKRecyclerBaseViewBinding {
+        return AppsKitSDKRecyclerBaseViewBinding(
+            TemplatelayoutitemsBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
+    }
+    override fun onBindViewHolder(holder: AppsKitSDKRecyclerBaseViewBinding, position: Int) {
+        val binding1 = holder.binding as TemplatelayoutitemsBinding
+        binding1.eyeIconId.visibility = View.GONE
+        val currenytItem = getItem(position)
+        Glide.with(ResumeMakerApplication.instance).load(currenytItem)
+            .into(binding1.templateimage)
+        binding1.templateimage.setOnClickListener {
+            openPdf(currenytItem)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = TemplatelayoutitemsBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return ViewHolder(binding)
-    }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(list[position])
+    object FileDiffCallback : DiffUtil.ItemCallback<File>() {
+        override fun areItemsTheSame(oldItem: File, newItem: File): Boolean {
+            return oldItem.hashCode() == newItem.hashCode()
+        }
+
+        override fun areContentsTheSame(oldItem: File, newItem: File): Boolean {
+            return oldItem.toString() == newItem.toString()
+        }
     }
 
 

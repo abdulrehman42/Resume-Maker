@@ -16,11 +16,11 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -207,9 +207,12 @@ dependencies {
     implementation("com.google.firebase:firebase-config")
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation ("com.google.android.gms:play-services-auth:20.6.0")
-    implementation ("com.itextpdf:itextpdf:5.5.13.3")
+//    implementation ("com.itextpdf:itextpdf:5.5.13.3")
     implementation("io.github.pilgr:paperdb:2.7.2")
     implementation ("id.zelory:compressor:3.0.1")
+
+//    implementation ("com.itextpdf:itext7-core:7.2.3")
+//    implementation ("com.itextpdf:html2pdf:4.0.0")
 
     /*//KProgressHud
     implementation ("com.kaopiz:kprogresshud:1.2.0")

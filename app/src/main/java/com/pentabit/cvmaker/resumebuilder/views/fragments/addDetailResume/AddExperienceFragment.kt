@@ -20,6 +20,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.ExperienceR
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -34,7 +35,7 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         get() = FragmentAddExperienceBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.educationResponse.observe(currentActivity()) {
+        addDetailResumeVM.experienceResponse.observe(currentActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -53,6 +54,11 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
         addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
 
         binding.includeTool.textView.text=getString(R.string.add_experience)
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
 
         val data=sharePref.readProfileExperience()
         data?.let {
@@ -152,10 +158,10 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
 
         val experience = listOf(
             Experience(
-                "1__"+binding.companyName.text.toString(),
+                "-1__"+binding.companyName.text.toString(),
                 binding.description.text.toString(),
                 employmentType = "fullTime",endDate,binding.startdateedittext.text.toString(),
-                "1__"+binding.jobName.text.toString()
+                "-1__"+binding.jobName.text.toString()
             )
         )
         val experienceRequest = ExperienceRequest(experiences = experience)

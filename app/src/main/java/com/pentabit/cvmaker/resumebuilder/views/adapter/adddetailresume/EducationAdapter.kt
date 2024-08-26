@@ -20,9 +20,9 @@ class EducationAdapter(
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun setData(model: ProfileModelAddDetailResponse.UserQualification) {
-            binding.universityname.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.removeOneUnderscores(model.institute)
-            binding.degreeName.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.removeOneUnderscores(model.degree)
-            binding.degreeYears.text= com.pentabit.cvmaker.resumebuilder.utils.Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
+            binding.universityname.text= Helper.removeOneUnderscores(model.institute)
+            binding.degreeName.text= Helper.removeOneUnderscores(model.degree)
+            binding.degreeYears.text= Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
             binding.editEdu.setOnClickListener {
                 onclick(model)
             }

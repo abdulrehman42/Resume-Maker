@@ -16,6 +16,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddProjectBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -46,6 +47,11 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text=getString(R.string.add_project)
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         val data=sharePref.readProfileProject()
         data?.let {
             binding.projectedittext.setText(data.title)

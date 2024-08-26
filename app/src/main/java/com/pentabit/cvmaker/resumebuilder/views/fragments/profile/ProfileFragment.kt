@@ -10,6 +10,7 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.ProfileVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileAdapter
@@ -24,9 +25,25 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         get() = FragmentProfileBinding::inflate
 
     override fun observeLiveData() {
+        profileVM.loadingState.observe(currentActivity()) {
+            if (it) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+        }
+        profileVM.getString.observe(currentActivity()) {
+            apiCall()
+        }
         profileVM.dataResponse.observe(currentActivity()) {
-            AppsKitSDKUtils.setVisibility(it.isNullOrEmpty(), binding.popupmsg)
-            setadapter(it)
+            if (it.size == 0) {
+                binding.popupmsg.isGone = false
+            } else {
+                binding.popupmsg.isGone = true
+                setadapter(it)
+
+            }
+            // AppsKitSDKUtils.setVisibility(it.isNullOrEmpty(), binding.popupmsg)
         }
     }
 
@@ -54,55 +71,44 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     AddDetailResume::class.java
                 )
             )
-            /*DialogueBoxes.alertboxChooseCreate(
-                currentActivity(),
-                object : DialogueBoxes.StringValueDialogCallback {
-                    override fun onButtonClick(value: String) {
-                        when (value) {
-                            Constants.CREATE -> startActivity(
-                                Intent(
-                                    currentActivity(),
-                                    AddDetailResume::class.java
-                                )
-                            )
 
-                            Constants.IMPORT -> DialogueBoxes.alertboxImport(currentActivity())
-                        }
-
-                    }
-                })*/
         }
 
     }
 
     private fun setadapter(profileModels: List<ProfileListingModel>) {
-        val profileAdapter = ProfileAdapter(currentActivity(), profileModels)
-        {
+        val profileAdapter = ProfileAdapter(currentActivity(), profileModels, {
             val fromCalled =
-                sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.FRAGMENT_CALLED)
-            if (fromCalled == com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE) {
+                sharePref.readString(Constants.FRAGMENT_CALLED)
+            if (fromCalled == Constants.PROFILE) {
                 sharePref.writeString(
-                    com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID,
-                    it.id.toString()
+                    Constants.PROFILE_ID,
+                    it.toString()
                 )
                 currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
             } else {
                 sharePref.writeString(
-                    com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID,
-                    it.id.toString()
+                    Constants.PROFILE_ID,
+                    it.toString()
                 )
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.profileHostFragment, ResumePreviewFragment())
                     .addToBackStack(null)
                     .commit()
             }
+        }, {
+            profileVM.onDeleteProfile(it.toString())
+        }, { profile_id ->
+            val intent = Intent(requireActivity(), AddDetailResume::class.java)
+            intent.putExtra(Constants.CALL_API, profile_id)
+            startActivity(intent)
 
-        }
+        })
         binding.recyclerview.apply {
             layoutManager = GridLayoutManager(requireActivity(), 2)
 
             adapter = profileAdapter
         }
     }
-
 }
+

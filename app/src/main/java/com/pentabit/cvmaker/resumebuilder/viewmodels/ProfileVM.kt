@@ -14,6 +14,7 @@ class ProfileVM @Inject constructor(val profileRepository: ProfileRepository):
     ViewModel() {
     val loadingState = MutableLiveData<Boolean>()
     val dataResponse=MutableLiveData<List<ProfileListingModel>>()
+    val getString = MutableLiveData<String>()
     fun getProfileList() {
         viewModelScope.launch {
             loadingState.postValue(true)
@@ -34,4 +35,29 @@ class ProfileVM @Inject constructor(val profileRepository: ProfileRepository):
             }
         }
     }
+
+    fun onDeleteProfile(profileID: String) {
+        loadingState.postValue(true)
+        viewModelScope.launch {
+            try {
+                profileRepository.onDeleteProfile(
+                    profileID,
+                    object : ResponseCallback {
+                        override fun onSuccess(message: String?, data: Any?) {
+                            loadingState.postValue(false)
+                            getString.postValue(data as String)
+                        }
+
+                        override fun onFailure(errorMessage: String?) {
+                            loadingState.postValue(false)
+                        }
+
+                    })
+            } catch (e: Exception) {
+                loadingState.postValue(false)
+                e.printStackTrace()
+            }
+        }
+    }
+
 }

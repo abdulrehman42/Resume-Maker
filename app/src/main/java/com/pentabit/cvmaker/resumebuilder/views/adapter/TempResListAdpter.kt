@@ -17,7 +17,8 @@ class TempResListAdpter :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model: TemplateModel) {
-            Glide.with(binding.templateimage.context).load(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_MEDIA_URL + model.path)
+            Glide.with(binding.templateimage.context)
+                .load(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_MEDIA_URL + model.path)
                 .into(binding.templateimage)
             if (model.contentType == 0) {
                 binding.videoIconId.isGone = true
@@ -74,4 +75,5 @@ class TempResListAdpter :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.setData(getItem(position))
     }
+
 }

@@ -20,8 +20,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLoginBinding
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LoginRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.AUTH_TOKEN
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,7 +54,10 @@ class LoginActivity : BaseActivity() {
             }
         }
         templateViewModel.loginResponse.observe(this) {
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED,true)
             sharePref.writeBoolean(Constants.IS_LOGGED, true)
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(AUTH_TOKEN, it)
+
             //addToken(it.token)
             if (isResume) {
                 navigateToProfileActivity()
@@ -136,8 +140,8 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun navigateToAddDetailResumeActivity() {
-        val intent = Intent(this, AddDetailResume::class.java)
-        intent.putExtra(Constants.IS_RESUME, isResume)
+        val intent = Intent(this, ChoiceTemplate::class.java)
+        intent.putExtra(Constants.Is_CoverLtter, true)
         startActivity(intent)
         finish()
     }

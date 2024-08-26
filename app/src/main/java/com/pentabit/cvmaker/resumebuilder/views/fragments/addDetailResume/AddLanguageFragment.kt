@@ -15,6 +15,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddLanguageBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -27,7 +28,7 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
         get() = FragmentAddLanguageBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.singleResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.languageResponse.observe(viewLifecycleOwner) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -46,6 +47,11 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
         addDetailResumeVM= ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         val data_list=sharePref.readProfileData()
         binding.includeTool.textView.text=getString(R.string.add_language)
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         if (data_list!=null)
         {
             list= data_list.userLanguages as ArrayList<String>
@@ -73,20 +79,11 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
 
     @SuppressLint("NotifyDataSetChanged")
     private fun onclick() {
-        binding.languageEdittext.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-                val enteredText = binding.languageEdittext.text.toString()
-                list.add("1__"+enteredText)
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(binding.languageEdittext.windowToken, 0)
 
-                true // Return true to indicate that the action has been handled
-            } else {
-                false
-            }
-        }
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
+                list.add("-1__"+binding.languageEdittext.text.toString())
+
                 apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.single_field_missing_error))
@@ -107,7 +104,7 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
     }
     private fun apiCall() {
         addDetailResumeVM.editLanguage(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
+            sharePref.readString(Constants.PROFILE_ID).toString(),
             LanguageRequestModel(list)
         )
     }

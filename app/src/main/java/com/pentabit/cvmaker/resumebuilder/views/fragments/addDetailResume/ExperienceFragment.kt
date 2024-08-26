@@ -14,28 +14,30 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experie
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    var list=ArrayList<ProfileModelAddDetailResponse.UserExperience>()
-    val experienceAdapter= ExperienceAdapter()
+    var list = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
+    val experienceAdapter = ExperienceAdapter()
     override val inflate: Inflate<FragmentExperienceBinding>
         get() = FragmentExperienceBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            list= it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>
+            list = it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>
             setadapter(list)
         }
-
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+        addDetailResumeVM.experienceResponse.observe(viewLifecycleOwner) {
+            apiCall()
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
             }
         }
     }
@@ -46,12 +48,20 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         apiCall()
         onclick()
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail(
+            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID)
+                .toString()
+        )
     }
 
     private fun setadapter(userExperiences: List<ProfileModelAddDetailResponse.UserExperience>) {
@@ -67,27 +77,27 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
             callSaveApi()
             apiCall()
 
-               }
+        }
         binding.recyclerviewExperience.adapter = experienceAdapter
     }
 
     private fun callSaveApi() {
-        var experience=ArrayList<Experience>()
-        for (i in 0 until list.size)
-        {
+        var experience = ArrayList<Experience>()
+        for (i in 0 until list.size) {
             experience = listOf(
                 Experience(
                     list[i].company,
                     list[i].description,
                     "fullTime",
-                    list[i].endDate,list[i].startDate,list[i].title
+                    list[i].endDate, list[i].startDate, list[i].title
                 )
             ) as ArrayList<Experience>
 
         }
         val experienceRequest = ExperienceRequest(experiences = experience)
         addDetailResumeVM.editExperience(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
+            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID)
+                .toString(),
             experienceRequest
         )
     }

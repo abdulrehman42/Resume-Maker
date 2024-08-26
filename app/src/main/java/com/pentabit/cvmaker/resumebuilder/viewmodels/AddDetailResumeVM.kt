@@ -43,7 +43,11 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
     val achievementResponse=MutableLiveData<List<AchievementResponse>>()
     val experienceResponse=MutableLiveData<List<ExperienceResponse>>()
     val educationResponse=MutableLiveData<List<EducationResponse>>()
-    val singleResponse=MutableLiveData<List<String>>()
+    val skillResponse=MutableLiveData<List<String>>()
+    val interestResponse=MutableLiveData<List<String>>()
+    val languageResponse=MutableLiveData<List<String>>()
+
+
 
     val getSamples=MutableLiveData<List<SampleResponseModel>>()
 
@@ -76,7 +80,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     createProfileRequestModel,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
+                            informationResponse.postValue(data as Profile)
                             loadingState.postValue(false)
                         }
 
@@ -86,6 +90,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     })
             } catch (e: Exception) {
                 e.printStackTrace()
+                loadingState.postValue(false)
             }
         }
     }
@@ -160,7 +165,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId,skill,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            singleResponse.postValue(data as List<String>)
+                            skillResponse.postValue(data as List<String>)
                             loadingState.postValue(false)
                         }
 
@@ -181,7 +186,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     profileId, interest,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            singleResponse.postValue(data as List<String>)
+                            interestResponse.postValue(data as List<String>)
                             loadingState.postValue(false)
                         }
 
@@ -202,7 +207,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                         profileId, language,
                         object : ResponseCallback {
                             override fun onSuccess(message: String?, data: Any?) {
-                                singleResponse.postValue(data as List<String>)
+                                languageResponse.postValue(data as List<String>)
                                 loadingState.postValue(false)
                             }
 

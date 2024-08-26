@@ -18,24 +18,55 @@ import java.io.File
 
 class ImageCompressorHelper {
     fun compressInBackground(file: File?, callback: OnImageCompressed) {
-        if (file == null) return
-        GlobalScope.launch(Dispatchers.IO) {
-            val requestBody: RequestBody = RequestBody.create(
-                "image/png".toMediaTypeOrNull(),
-                runCompressor(file, ResumeMakerApplication.instance)
-            )
+        // Check if the file is null or empty
+        if (file == null || !file.exists() || file.length() == 0L) {
+            // Handle the case where the file is null or empty
             AppsKitSDKLogManager.getInstance().log(
-                AppsKitSDKLogType.WARNING,
-                "Compressed File Size in MBs : " + file.length()
+                AppsKitSDKLogType.ERROR,
+                "File is null, does not exist, or is empty."
             )
-            callback.pmImageCompressed(
-                MultipartBody.Part.createFormData(
-                    "image",
-                    file.name,
-                    requestBody
-                )
-            )
+            return
         }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val compressedFile = runCompressor(file, ResumeMakerApplication.instance)
+
+                // Ensure the compressed file is not null or empty
+                if (compressedFile == null || compressedFile.isEmpty()) {
+                    AppsKitSDKLogManager.getInstance().log(
+                        AppsKitSDKLogType.ERROR,
+                        "Compression failed: Compressed file is null or empty."
+                    )
+                    return@launch
+                }
+
+                val requestBody: RequestBody = RequestBody.create(
+                    "image/png".toMediaTypeOrNull(),
+                    compressedFile
+                )
+                AppsKitSDKLogManager.getInstance().log(
+                    AppsKitSDKLogType.WARNING,
+                    "Compressed File Size in MBs : ${file.length() / (1024 * 1024)} MB"
+                )
+                callback.pmImageCompressed(
+                    MultipartBody.Part.createFormData(
+                        "image",
+                        file.name,
+                        requestBody
+                    )
+                )
+            } catch (e: Exception) {
+                AppsKitSDKLogManager.getInstance().log(
+                    AppsKitSDKLogType.ERROR,
+                    "Error during compression: ${e.message}"
+                )
+            }
+        }
+    }
+
+    fun File?.isEmpty(): Boolean {
+        return this == null || !this.exists() || this.length() == 0L
     }
 
     private suspend fun runCompressor(imageFile: File, context: Context): File {

@@ -9,6 +9,7 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddInterestBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
@@ -24,7 +25,7 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
         get() = FragmentAddInterestBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.singleResponse.observe(requireActivity()) {
+        addDetailResumeVM.interestResponse.observe(requireActivity()) {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -41,6 +42,11 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text=getString(R.string.add_interest)
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            placeholder = ""
+        )
         val data_list=sharePref.readProfileData()
         if (data_list!=null)
         {
@@ -72,13 +78,8 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                interest.add("1__"+binding.interestEdittext.text.toString())
+                interest.add("-1__"+binding.interestEdittext.text.toString())
                 apiCall()
-                MainScope().launch {
-                    delay(2000)
-                    addDetailResumeVM.isHide.value = true
-                    currentActivity().onBackPressedDispatcher.onBackPressed()
-                }
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
@@ -89,9 +90,7 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-//            addDetailResumeVM.isHide.value=true
-//        }
+
 
     }
     fun isConditionMet(): Boolean {

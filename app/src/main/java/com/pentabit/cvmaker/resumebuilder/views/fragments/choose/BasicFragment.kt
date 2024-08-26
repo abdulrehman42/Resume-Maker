@@ -8,7 +8,12 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.callbacks.OnTemplateSelected
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentBasicBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.Helper.saveHtmlAsPdf
 import com.pentabit.cvmaker.resumebuilder.views.adapter.TempResListAdpter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.ads_manager.ads_callback.RewardedAdCallbacks
 
 
 class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasicBinding>() {
@@ -35,21 +40,68 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
     private fun setAdapter() {
         templateAdapter.submitList(list)
         templateAdapter.setOnEyeItemClickCallback {
-            sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.TEMPLATE_ID,it.id.toString())
-            com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertbox(
+            sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+            DialogueBoxes.alertbox(
                 it.path,
                 currentActivity(),
-                object : com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.DialogCallback {
+                object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {
-                            if (it.contentType==1)
-                            {
-                                com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxImport(currentActivity())
-                            }else{
+                            if (it.contentType == 1) {
+                                DialogueBoxes.alertboxImport(currentActivity(),
+                                    object :
+                                        DialogueBoxes.StringValueDialogCallback {
+                                        override fun onButtonClick(value: String) {
+                                            if (value == Constants.YES) {
+                                                AppsKitSDKAdsManager.showRewarded(
+                                                    currentActivity(),
+                                                    "",
+                                                    object : RewardedAdCallbacks {
+                                                        override fun onRewardedCompleted() {
+                                                            sharePref.writeString(
+                                                                Constants.TEMPLATE_ID,
+                                                                it.id.toString()
+                                                            )
+                                                            callback?.onTemplateSelected(it)
+
+                                                        }
+
+                                                        override fun onAdRewarded() {
+                                                            sharePref.writeString(
+                                                                Constants.TEMPLATE_ID,
+                                                                it.id.toString()
+                                                            )
+                                                            callback?.onTemplateSelected(it)
+                                                        }
+
+                                                        override fun onAdDismissed() {
+
+                                                        }
+
+                                                        override fun onRewardedFailedToShow() {
+                                                            currentActivity().showToast("ad failed")
+                                                        }
+
+                                                        override fun onRewardedLoaded() {
+                                                        }
+
+                                                        override fun onLoadFailure() {
+                                                            currentActivity().showToast("ad failed")
+                                                        }
+
+                                                    })
+
+                                            }
+                                        }
+
+                                    })
+                            } else {
+                                sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
                                 callback?.onTemplateSelected(it)
                             }
                         } else {
-                            currentActivity().replaceChoiceFragment(R.id.nav_add_detail_coverletter)
+                            sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+                            callback?.onTemplateSelected(it)
                         }
                     }
                 }
@@ -57,12 +109,59 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
         }
 
         templateAdapter.setOnItemClickCallback {
-            if (it.contentType==1)
-            {
-                com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxImport(currentActivity())
+            if (it.contentType == 1) {
+                DialogueBoxes.alertboxImport(currentActivity(),
+                    object :
+                        DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.YES) {
+                                AppsKitSDKAdsManager.showRewarded(
+                                    currentActivity(),
+                                    "",
+                                    object : RewardedAdCallbacks {
+                                        override fun onRewardedCompleted() {
+                                            sharePref.writeString(
+                                                Constants.TEMPLATE_ID,
+                                                it.id.toString()
+                                            )
+                                            callback?.onTemplateSelected(it)
+
+                                        }
+
+                                        override fun onAdRewarded() {
+                                            sharePref.writeString(
+                                                Constants.TEMPLATE_ID,
+                                                it.id.toString()
+                                            )
+                                            callback?.onTemplateSelected(it)
+                                        }
+
+                                        override fun onAdDismissed() {
+
+                                        }
+
+                                        override fun onRewardedFailedToShow() {
+                                            currentActivity().showToast("ad failed")
+                                        }
+
+                                        override fun onRewardedLoaded() {
+                                        }
+
+                                        override fun onLoadFailure() {
+                                            currentActivity().showToast("ad failed")
+                                        }
+
+                                    })
+
+                            }
+                        }
+
+                    })
+            } else {
+                sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+                callback?.onTemplateSelected(it)
             }
-            sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.TEMPLATE_ID,it.id.toString())
-            callback?.onTemplateSelected(it)
+
         }
 
         binding.recyclerviewTemplete.apply {

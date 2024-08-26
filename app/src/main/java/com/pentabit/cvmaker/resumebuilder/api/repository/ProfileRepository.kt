@@ -31,8 +31,8 @@ class ProfileRepository @Inject constructor(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance().getFormattedResponse(
-                            com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                        JSONManager.getInstance().getFormattedResponse(
+                       JSONKeys.MESSAGE,
                             response.body(),
                             object : TypeToken<String>() {}.type
                         ) as String,
@@ -47,6 +47,35 @@ class ProfileRepository @Inject constructor(
                 override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                     callback.onFailure(t.message)
                 }
+            })
+        )
+    }
+    fun onDeleteProfile(
+        profileId: String,
+        callback: ResponseCallback
+    ) {
+        _resumeResponse.postValue(NetworkResult.Loading())
+        chooseTemplateService.deleteProfile(profileId).enqueue(
+            SinglePointOfResponse(object : Callback<JsonElement> {
+                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                    callback.onSuccess(
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.MESSAGE,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String,
+                        JSONManager.getInstance().getFormattedResponse(
+                            JSONKeys.DATA,
+                            response.body(),
+                            object : TypeToken<String>() {}.type
+                        ) as String
+                    )
+                }
+
+                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                    callback.onFailure(t.message)
+                }
+
             })
         )
     }

@@ -3,6 +3,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
@@ -43,15 +44,26 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
     }
 
     private fun apiCAll() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail(
+            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID)
+                .toString()
+        )
     }
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
+            sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
+        /*currentActivity().onBackPressedDispatcher.addCallback {
+            sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
+            currentActivity().onBackPressedDispatcher.onBackPressed()
+        }*/
         binding.includeTool.share.setOnClickListener {
             currentActivity().startActivity(Intent(currentActivity(), AddDetailResume::class.java))
+        }
+        binding.createBtn.setOnClickListener {
+            startActivity(Intent(currentActivity(), AddDetailResume::class.java))
         }
     }
 
@@ -64,14 +76,18 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             currentActivity(),
             profileModelAddDetailResponse.userQualifications,
             true,
-        {},{},)
-        Glide.with(currentActivity()).load(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_MEDIA_URL+profileModelAddDetailResponse.path).placeholder(R.drawable.placeholder_image).into(binding.shapeableImageView)
+            {}, {},
+        )
+        Glide.with(currentActivity())
+            .load(Constants.BASE_MEDIA_URL + profileModelAddDetailResponse.path)
+            .placeholder(R.drawable.placeholder_image).into(binding.shapeableImageView)
         binding.scrollview.isSmoothScrollingEnabled = true
         binding.apply {
             userName.text = profileModelAddDetailResponse.name
             userIntro.text = profileModelAddDetailResponse.objective
-            gender.text = profileModelAddDetailResponse.gender
-            location.text = profileModelAddDetailResponse.address
+            gender.text = profileModelAddDetailResponse.gender.replaceFirstChar { it.uppercase() }
+            location.text =
+                profileModelAddDetailResponse.address.replaceFirstChar { it.uppercase() }
             objexttext.text = profileModelAddDetailResponse.objective
             skillRecyclerview.apply {
                 layoutManager = GridLayoutManager(currentActivity(), 3)
