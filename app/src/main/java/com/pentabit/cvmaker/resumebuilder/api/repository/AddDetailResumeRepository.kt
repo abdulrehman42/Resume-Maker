@@ -10,6 +10,7 @@ import com.pentabit.cvmaker.resumebuilder.json.JSONManager
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.prepareMultipartRequest
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
+import com.pentabit.cvmaker.resumebuilder.callbacks.OnImageCompressed
 import com.pentabit.cvmaker.resumebuilder.models.api.Profile
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
@@ -29,7 +30,10 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualifi
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleItemRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.ImageCompressorHelper
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -52,43 +56,57 @@ class AddDetailResumeRepository @Inject constructor(
         _resumeResponse.postValue(NetworkResult.Loading())
         val multipartParts = prepareMultipartRequest(profileModel)
         ImageCompressorHelper().compressInBackground(
-            File(profileModel.image)
-        ) {
-            chooseTemplateService.createProfileWithImage(
-                multipartParts["name"] as RequestBody,
-                multipartParts["email"] as RequestBody,
-                multipartParts["phone"] as RequestBody,
-                it,
-                multipartParts["gender"] as RequestBody,
-                multipartParts["jobTitle"] as RequestBody,
-                multipartParts["dob"] as RequestBody,
-                multipartParts["address"] as RequestBody
-            ).enqueue(
-                SinglePointOfResponse(object : Callback<JsonElement> {
-                    override fun onResponse(
-                        call: Call<JsonElement>,
-                        response: Response<JsonElement>
-                    ) {
-                        callback.onSuccess(
-                            JSONManager.getInstance().getFormattedResponse(
-                                JSONKeys.MESSAGE,
-                                response.body(),
-                                object : TypeToken<String>() {}.type
-                            ) as String,
-                            JSONManager.getInstance().getFormattedResponse(
-                                JSONKeys.DATA,
-                                response.body(),
-                                object : TypeToken<Profile>() {}.type
-                            ) as Profile
-                        )
-                    }
+            File(profileModel.image), object : OnImageCompressed {
+                override fun pmImageCompressed(multipartBody: MultipartBody.Part) {
+                    chooseTemplateService.createProfileWithImage(
+                        multipartParts["name"] as RequestBody,
+                        multipartParts["email"] as RequestBody,
+                        multipartParts["phone"] as RequestBody,
+                        multipartBody,
+                        multipartParts["gender"] as RequestBody,
+                        multipartParts["jobTitle"] as RequestBody,
+                        multipartParts["dob"] as RequestBody,
+                        multipartParts["address"] as RequestBody
+                    ).enqueue(
+                        SinglePointOfResponse(object : Callback<JsonElement> {
+                            override fun onResponse(
+                                call: Call<JsonElement>,
+                                response: Response<JsonElement>
+                            ) {
+                                callback.onSuccess(
+                                    JSONManager.getInstance().getFormattedResponse(
+                                        JSONKeys.MESSAGE,
+                                        response.body(),
+                                        object : TypeToken<String>() {}.type
+                                    ) as String,
+                                    JSONManager.getInstance().getFormattedResponse(
+                                        JSONKeys.PROFILE,
+                                        response.body(),
+                                        object : TypeToken<Profile>() {}.type
+                                    ) as Profile
+                                )
+                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(
+                                    Constants.AUTH_TOKEN,
+                                    JSONManager.getInstance().getFormattedResponse(
+                                        JSONKeys.TOKEN,
+                                        response.body(),
+                                        object : TypeToken<String>() {}.type
+                                    ) as String
+                                )
+                            }
 
-                    override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                        callback.onFailure(t.message)
-                    }
-                })
-            )
-        }
+                            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                                callback.onFailure(t.message)
+                            }
+                        })
+                    )
+                }
+
+                override fun onCompressFailed() {
+                    // TODO SHOW ERROR
+                }
+
+            })
 
     }
 
@@ -100,41 +118,77 @@ class AddDetailResumeRepository @Inject constructor(
         _resumeResponse.postValue(NetworkResult.Loading())
         val multipartParts = prepareMultipartRequest(profileModel)
         ImageCompressorHelper().compressInBackground(
-            File(profileModel.image)
-        ) {
-            chooseTemplateService.onUpdateProfile(profile_id,
+            File(profileModel.image), object : OnImageCompressed {
+                override fun pmImageCompressed(multipartBody: MultipartBody.Part) {
+                    makeUpdateCall(profile_id, multipartParts, multipartBody, callback)
+                }
+
+                override fun onCompressFailed() {
+                    makeUpdateCall(profile_id, multipartParts, null, callback)
+                }
+
+            })
+
+    }
+
+    private fun makeUpdateCall(
+        profile_id: String,
+        multipartParts: Map<String, Any>,
+        multipartBody: MultipartBody.Part?,
+        callback: ResponseCallback
+    ) {
+
+        val responseHandler = SinglePointOfResponse(object : Callback<JsonElement> {
+            override fun onResponse(
+                call: Call<JsonElement>,
+                response: Response<JsonElement>
+            ) {
+                callback.onSuccess(
+                    JSONManager.getInstance().getFormattedResponse(
+                        JSONKeys.MESSAGE,
+                        response.body(),
+                        object : TypeToken<String>() {}.type
+                    ) as String,
+                    JSONManager.getInstance().getFormattedResponse(
+                        JSONKeys.DATA,
+                        response.body(),
+                        object : TypeToken<Profile>() {}.type
+                    ) as Profile
+                )
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                callback.onFailure(t.message)
+            }
+        })
+
+        if (multipartBody != null) {
+            chooseTemplateService.onUpdateProfile(
+                profile_id,
                 multipartParts["name"] as RequestBody,
                 multipartParts["email"] as RequestBody,
                 multipartParts["phone"] as RequestBody,
-                it,
+                multipartBody,
                 multipartParts["gender"] as RequestBody,
                 multipartParts["jobTitle"] as RequestBody,
                 multipartParts["dob"] as RequestBody,
                 multipartParts["address"] as RequestBody
             ).enqueue(
-                SinglePointOfResponse(object : Callback<JsonElement> {
-                    override fun onResponse(
-                        call: Call<JsonElement>,
-                        response: Response<JsonElement>
-                    ) {
-                        callback.onSuccess(
-                            JSONManager.getInstance().getFormattedResponse(
-                                JSONKeys.MESSAGE,
-                                response.body(),
-                                object : TypeToken<String>() {}.type
-                            ) as String,
-                            JSONManager.getInstance().getFormattedResponse(
-                                JSONKeys.DATA,
-                                response.body(),
-                                object : TypeToken<Profile>() {}.type
-                            ) as Profile
-                        )
-                    }
-
-                    override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                        callback.onFailure(t.message)
-                    }
-                })
+                responseHandler
+            )
+        } else {
+            chooseTemplateService.onUpdateProfile(
+                profile_id,
+                multipartParts["name"] as RequestBody,
+                multipartParts["email"] as RequestBody,
+                multipartParts["phone"] as RequestBody,
+                null,
+                multipartParts["gender"] as RequestBody,
+                multipartParts["jobTitle"] as RequestBody,
+                multipartParts["dob"] as RequestBody,
+                multipartParts["address"] as RequestBody
+            ).enqueue(
+                responseHandler
             )
         }
 
@@ -182,15 +236,15 @@ class AddDetailResumeRepository @Inject constructor(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                                JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
                             ) as String,
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.DATA,
+                                JSONKeys.DATA,
                                 response.body(),
                                 object : TypeToken<List<EducationResponse>>() {}.type
                             ) as List<EducationResponse>
@@ -213,7 +267,7 @@ class AddDetailResumeRepository @Inject constructor(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                       JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
                                 JSONKeys.MESSAGE,
                                 response.body(),

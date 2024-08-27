@@ -64,35 +64,32 @@ class AddDetailResume : BaseActivity() {
     }
 
     private fun observeLiveData() {
-        addDetailResumeVM.isHide.observe(this) {
-            if (it) {
-                binding.addDetailContainer.isGone = true
-            } else {
-                binding.addDetailContainer.isGone = false
-            }
-        }
         addDetailResumeVM.fragment.observe(this) {
-            supportFragmentManager.beginTransaction().setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out,
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-            )
-                .replace(R.id.add_detail_container, it)
-                .addToBackStack(null)
-                .commit()
+            this.runOnUiThread {
+                supportFragmentManager.beginTransaction().setCustomAnimations(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out,
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                )
+                    .add(R.id.add_detail_container, it)
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+            }
+
 
         }
     }
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
-            sharePref.deleteItemSharePref(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE)
+//            sharePref.deleteItemSharePref(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE)
             finish()
         }
-        onBackPressedDispatcher.addCallback{
-            sharePref.deleteItemSharePref(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE)
-            finish()}
+        onBackPressedDispatcher.addCallback {
+//            sharePref.deleteItemSharePref(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE)
+            finish()
+        }
         binding.addTabs.setOnClickListener { alertbox() }
     }
 
@@ -116,9 +113,12 @@ class AddDetailResume : BaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
                 if (currentFragment.csnMoveForward()) {
-                    binding.viewPagerContainer.setCurrentItem(binding.tabLayoutAdddetail.selectedTabPosition, true)
-                   /* binding.viewPagerContainer.currentItem =
-                        binding.tabLayoutAdddetail.selectedTabPosition*/
+                    binding.viewPagerContainer.setCurrentItem(
+                        binding.tabLayoutAdddetail.selectedTabPosition,
+                        true
+                    )
+                    /* binding.viewPagerContainer.currentItem =
+                         binding.tabLayoutAdddetail.selectedTabPosition*/
                 } else {
                     showToast(getString(R.string.field_missing_error))
                 }
@@ -248,7 +248,7 @@ class AddDetailResume : BaseActivity() {
         }
 
         // Set system bars to be transparent
-        window.statusBarColor = ContextCompat.getColor(this,R.color.navy_blue)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
         window.navigationBarColor = Color.TRANSPARENT
 
         // Optionally, handle light or dark mode for the status bar icons

@@ -11,9 +11,11 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentReferrenceBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ReferenceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,14 +31,20 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
             list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
             setadapter(list)
         }
+
         addDetailResumeVM.referenceResponse.observe(viewLifecycleOwner){
             apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
+            if (it.loader)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -52,21 +60,20 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
             binding.bannerAdd,
             placeholder = ""
         )
-        sharePref.writeBoolean(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME, true)
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(IS_RESUME, true)
         apiCall()
         onclick()
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
         referenceAdapter.submitList(userReferences)
         referenceAdapter.setOnEditItemClickCallback {
-            sharePref.writeDataReference(it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddReferenceFragment()
+            addDetailResumeVM.fragment.value = AddReferenceFragment(it)
 
         }
         referenceAdapter.setOnItemDeleteClickCallback {
@@ -94,7 +101,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
         val referenceRequest = ReferenceRequest(references = reference)
 
         addDetailResumeVM.editReference(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(), referenceRequest
+           referenceRequest
         )
     }
 
@@ -114,7 +121,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
         }
         binding.addreferrenebtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddReferenceFragment()
+            addDetailResumeVM.fragment.value = AddReferenceFragment(null)
         }
     }
 }

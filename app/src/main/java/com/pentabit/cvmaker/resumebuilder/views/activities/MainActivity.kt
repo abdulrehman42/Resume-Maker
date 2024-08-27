@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -37,6 +39,8 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -76,6 +80,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             Constants.userHasGivenConsent,
             Constants.isCCPAConsent
         )
+        if (AppsKitSDKPreferencesManager.getInstance()
+                .getBooleanPreferences(Constants.IS_LOGGED, false)
+        ) {
+            templateViewModel.isLogin.value = true
+        }
 
 
         AppsKitSDKAdsManager.showBanner(
@@ -83,19 +92,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             binding.appBarMainActivty.contentmain.bannerAdd,
             placeholder = ""
         )
-        sharePref.writeBoolean(Constants.IS_FIRST_TIME, false)
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        versionName = packageInfo.versionName
-        binding.version.setText(versionName)
-        AppsKitSDKPreferencesManager.getInstance()
-            .addInPreferences(Constants.VERSION_NAME, versionName)
-        if (sharePref.readBoolean(Constants.IS_LOGGED, false)) {
-            binding.logout.setText("Logout")
-        } else {
-            binding.logout.setText("Login")
-
-        }
     }
 
     private fun onFcm() {
@@ -114,15 +111,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun onObserver() {
         templateViewModel.getString.observe(this) {
-            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TOKEN, "")
-            sharePref.writeBoolean(Constants.IS_LOGGED, false)
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, false)
             binding.logout.setText("Login")
+        }
+        templateViewModel.isLogin.observe(this) {
+            if (it) {
+                Handler(Looper.getMainLooper()).post {
+                    binding.logout.text = "Logout"
+                }
+            } else {
+                Handler(Looper.getMainLooper()).post {
+                    binding.logout.text = "Login"
+                }
+            }
         }
     }
 
 
     private fun refreshToken() {
-        if (sharePref.readBoolean(Constants.IS_LOGGED, false)) {
+        if (AppsKitSDKPreferencesManager.getInstance()
+                .getBooleanPreferences(Constants.IS_LOGGED, false)
+        ) {
             templateViewModel.tokenRefresh()
         }
     }
@@ -130,24 +139,30 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun onclick() {
         binding.logoutBtn.setOnClickListener {
             drawerLayout.closeDrawers()
-            alertboxLogout(this,
-                object : DialogueBoxes.StringValueDialogCallback {
-                    override fun onButtonClick(value: String) {
-                        if (value == Constants.YES) {
-                            AppsKitSDKPreferencesManager.getInstance()
-                                .addInPreferences(Constants.TOKEN, "")
-                            AppsKitSDKPreferencesManager.getInstance()
-                                .addInPreferences(Constants.IS_LOGGED, false)
-
-                            sharePref.writeBoolean(Constants.IS_LOGGED, false)
+            if (binding.logout.text.toString().contains("Login")) {
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.putExtra(Constants.IS_MAIN, true)
+                startActivity(intent)
+            } else {
+                alertboxLogout(this,
+                    object : DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.YES) {
+                                AppsKitSDKPreferencesManager.getInstance()
+                                    .addInPreferences(Constants.AUTH_TOKEN, "")
+                                AppsKitSDKPreferencesManager.getInstance()
+                                    .addInPreferences(Constants.IS_LOGGED, false)
+//                                sharePref.writeBoolean(Constants.IS_LOGGED, false)
+                                templateViewModel.isLogin.value = false
+                            }
                         }
-                    }
-                })
+                    })
+            }
         }
         binding.appBarMainActivty.contentmain.cvResumeBtn.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
             intent.putExtra(Constants.IS_RESUME, true)
-            sharePref.writeBoolean(
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                 Constants.IS_RESUME,
                 true
             )
@@ -156,14 +171,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         binding.appBarMainActivty.contentmain.coverletterBtn.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
             intent.putExtra(Constants.IS_RESUME, false)
-            sharePref.writeBoolean(
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                 Constants.IS_RESUME,
                 false
             )
             startActivity(intent)
         }
         binding.appBarMainActivty.contentmain.downloadBtn.setOnClickListener {
-            if (sharePref.readBoolean(Constants.IS_LOGGED, false)) {
+            if (AppsKitSDKPreferencesManager.getInstance()
+                    .getBooleanPreferences(Constants.IS_LOGGED, false)
+            ) {
                 startActivity(Intent(this, DownloadActivity::class.java))
             } else {
                 startActivity(Intent(this, LoginActivity::class.java))
@@ -171,11 +188,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         binding.appBarMainActivty.contentmain.profileBtn.setOnClickListener {
-            sharePref.writeString(
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                 Constants.FRAGMENT_CALLED,
                 Constants.PROFILE
             )
             startActivity(Intent(this, ProfileActivity::class.java))
+        }
+        binding.appBarMainActivty.contentmain.removeAddbtn.setOnClickListener {
+            startActivity(Intent(this, SubscriptionActivity::class.java))
         }
     }
 
@@ -242,6 +262,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     }
                 })
 
+            R.id.nav_retore -> {
+                startActivity(Intent(this, SubscriptionActivity::class.java))
+            }
+
             R.id.nav_privacy -> link("https://www.pentabitapps.com/privacy-policy", this)
             R.id.nav_term -> link("https://www.pentabitapps.com/terms-of-use", this)
             R.id.nav_more -> link(
@@ -274,7 +298,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_settings -> {
-                alertboxPurchase(this)
+                alertboxPurchase(this,
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        SubscriptionActivity::class.java
+                                    )
+                                )
+                            }
+                        }
+                    })
             }
         }
         return super.onOptionsItemSelected(item)

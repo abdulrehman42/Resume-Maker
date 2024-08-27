@@ -7,12 +7,11 @@ import com.pentabit.cvmaker.resumebuilder.api.http.ResponseCallback
 import com.pentabit.cvmaker.resumebuilder.api.repository.TemplatesRepository
 import com.pentabit.cvmaker.resumebuilder.models.api.CoverLetterResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.FcmResponse
-import com.pentabit.cvmaker.resumebuilder.models.api.LoginModel
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LoginRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.AUTH_TOKEN
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TemplateViewModel @Inject constructor(private val templatesRepository: TemplatesRepository) :
     ViewModel() {
+    val isLogin=MutableLiveData<Boolean>()
     val dataMap = MutableLiveData<Map<String, List<TemplateModel>>>()
     var isHide = MutableLiveData<Boolean>()
     val loadingState = MutableLiveData<Boolean>()
@@ -44,6 +44,7 @@ class TemplateViewModel @Inject constructor(private val templatesRepository: Tem
                             loadingState.postValue(false)
                             AppsKitSDKPreferencesManager.getInstance()
                                 .addInPreferences(AUTH_TOKEN, data as String)
+                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, true)
                             loginResponse.postValue(data as String)
                         }
 

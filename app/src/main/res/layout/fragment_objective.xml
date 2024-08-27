@@ -82,16 +82,6 @@
                 app:layout_constraintTop_toTopOf="@id/samplehearder" />
 
 
-            <TextView
-                android:id="@+id/viewless"
-                style="@style/regular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/view_less"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
-                app:layout_constraintTop_toTopOf="@id/samplehearder" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sample_recyclerview"
                 android:layout_width="match_parent"
@@ -123,18 +113,19 @@
         android:backgroundTint="@color/grey_dim"
         android:text="@string/back"
         android:textSize="@dimen/_12ssp"
-        android:layout_margin="@dimen/_15sdp"
+        android:layout_margin="@dimen/_18sdp"
         android:padding="@dimen/_5sdp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
 />
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/nextbtn"
         style="@style/subheading"
         android:layout_width="@dimen/_185sdp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_15sdp"
+        android:layout_margin="@dimen/_18sdp"
         android:backgroundTint="@color/green_light"
         android:drawableEnd="@drawable/next"
         android:gravity="start|center"
@@ -144,6 +135,7 @@
         app:cornerRadius="@dimen/_55sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/backbtn"
         app:shapeAppearance="@style/CircularFloating" />
 
 

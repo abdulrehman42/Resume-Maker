@@ -16,7 +16,6 @@ class SampleDetail : BaseFragment<FragmentSampleDetailBinding>()
 
     override fun observeLiveData() {
 
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -29,8 +28,8 @@ class SampleDetail : BaseFragment<FragmentSampleDetailBinding>()
             share.setImageResource(R.drawable.select_option)
             share.setOnClickListener {
                 val bundle=Bundle()
-                bundle.putString(com.pentabit.cvmaker.resumebuilder.utils.Constants.TITLE_DATA,title)
-                bundle.putString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA,binding.sampleText.text.toString())
+                bundle.putString(Constants.TITLE_DATA,title)
+                bundle.putString(Constants.DATA,binding.sampleText.text.toString())
                 currentActivity().replaceChoiceFragment(R.id.nav_add_detail_coverletter,bundle)
             }
         }

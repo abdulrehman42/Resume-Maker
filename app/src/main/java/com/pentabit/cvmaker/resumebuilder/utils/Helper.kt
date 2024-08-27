@@ -28,15 +28,20 @@ import com.pentabit.cvmaker.resumebuilder.models.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.views.adapter.WebViewPrintAdapter
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 
 object Helper {
@@ -198,20 +203,20 @@ object Helper {
         }
     }
 
-    fun isValidEmail(context: Context, email: String): Boolean {
+    fun isValidEmail( email: String): Boolean {
 
         if (email.isEmpty()) {
-            showToast(context, "Please Enter Your Email")
+            AppsKitSDKUtils.makeToast("Please Enter Your Email")
             return false
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showToast(context, "Please Enter Your Correct Email")
+            AppsKitSDKUtils.makeToast("Please Enter Your Correct Email")
             if (TextUtils.isEmpty(email)) {
-                showToast(context, "Please Enter Email")
+                AppsKitSDKUtils.makeToast( "Please Enter Email")
                 return false
             }
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                showToast(context, "Please Correct Your Email")
+                AppsKitSDKUtils.makeToast( "Please Correct Your Email")
                 return false
             }
         }
@@ -238,26 +243,50 @@ object Helper {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     fun convertIsoToCustomFormat(isoDateTime: String?): String {
         // Check if the input string is null or blank
         if (isoDateTime.isNullOrBlank()) return ""
 
-        // Parse the ISO_DATE_TIME string to a LocalDateTime object
-        val dateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
 
-        // Check if the parsed dateTime is in the future
-        if (dateTime.isAfter(LocalDateTime.now())) {
-            // Handle future date according to your needs
-            // For example, return an empty string or throw an exception
+
+        // Define the ISO 8601 date format
+        val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        isoFormatter.timeZone = TimeZone.getTimeZone("UTC")
+
+        // Parse the ISO 8601 date string into a Date object
+        val date = isoFormatter.parse(isoDateTime) ?: return ""
+
+        // Get the current time
+        val now = Calendar.getInstance().time
+
+        // Check if the parsed date is in the future
+        if (date.after(now)) {
             return "" // or throw IllegalArgumentException("Future dates are not allowed.")
         }
 
-        // Define the desired format
-        val customFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
+        // Define the desired output format
+        val customFormatter = SimpleDateFormat("M/d/yyyy", Locale.getDefault())
 
-        // Format the LocalDateTime to the desired format
-        return dateTime.format(customFormatter)
+        // Format the Date object to the desired format
+        return customFormatter.format(date)
+
+
+        // Parse the ISO_DATE_TIME string to a LocalDateTime object
+//        val dateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+
+        // Check if the parsed dateTime is in the future
+//        if (dateTime.isAfter(LocalDateTime.now())) {
+//            // Handle future date according to your needs
+//            // For example, return an empty string or throw an exception
+//            return "" // or throw IllegalArgumentException("Future dates are not allowed.")
+//        }
+//
+//        // Define the desired format
+//        val customFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
+//
+//        // Format the LocalDateTime to the desired format
+//        return dateTime.format(customFormatter)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -440,12 +469,16 @@ object Helper {
         subFileName: String
     ) {
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val printAdapter = WebViewPrintAdapter(htmlContent,fileName,subFileName,context)
+        val printAdapter = WebViewPrintAdapter(htmlContent, fileName, subFileName, context)
 
         printManager.print("Document", printAdapter, PrintAttributes.Builder().build())
     }
 
-    fun loadPdfFromHiddenStorage(headerDir: String, subheading: String, context: Context): List<String> {
+    fun loadPdfFromHiddenStorage(
+        headerDir: String,
+        subheading: String,
+        context: Context
+    ): List<String> {
         val list = mutableListOf<String>()
 
         // Get the app's private storage directory using ContextWrapper

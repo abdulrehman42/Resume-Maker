@@ -13,6 +13,7 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddProjectBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
@@ -23,8 +24,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
-    lateinit var addDetailResumeVM : AddDetailResumeVM
+class AddProjectFragment(val data: ProfileModelAddDetailResponse.UserProject?) :
+    BaseFragment<FragmentAddProjectBinding>() {
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentAddProjectBinding>
         get() = FragmentAddProjectBinding::inflate
 
@@ -33,26 +35,27 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
-        binding.includeTool.textView.text=getString(R.string.add_project)
+        addDetailResumeVM = ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+        binding.includeTool.textView.text = getString(R.string.add_project)
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
-        val data=sharePref.readProfileProject()
         data?.let {
             binding.projectedittext.setText(data.title)
             binding.descriptionedittext.setText(data.description)
@@ -60,7 +63,8 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
         binding.projecttitleTextInputLayout.apply {
             // Adjust the layout parameters of the end icon
             endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set
-            val endIconView = findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
+            val endIconView =
+                findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
 
             val params = endIconView.layoutParams as FrameLayout.LayoutParams
             params.gravity = Gravity.BOTTOM or Gravity.END
@@ -73,7 +77,6 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
     }
 
 
-
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
@@ -83,13 +86,13 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
                     addDetailResumeVM.isHide.value = true
                     currentActivity().onBackPressedDispatcher.onBackPressed()
                 }
-            }else{
+            } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value=true
+            addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
@@ -98,18 +101,24 @@ class AddProjectFragment : BaseFragment<FragmentAddProjectBinding>() {
         }*/
 
     }
+
     fun isConditionMet(): Boolean {
-        return !binding.projectedittext.text.toString().isNullOrEmpty()&&
+        return !binding.projectedittext.text.toString().isNullOrEmpty() &&
                 !binding.descriptionedittext.text.toString().isNullOrEmpty()
     }
+
     private fun apiCall() {
         val project = listOf(
-            Project(binding.descriptionedittext.text.toString(),binding.projectedittext.text.toString())
+            Project(
+                binding.descriptionedittext.text.toString(),
+                binding.projectedittext.text.toString()
+            )
         )
 
         val projectRequest = ProjectRequest(projects = project)
 
         addDetailResumeVM.editProjects(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),projectRequest)
+            projectRequest
+        )
     }
 }

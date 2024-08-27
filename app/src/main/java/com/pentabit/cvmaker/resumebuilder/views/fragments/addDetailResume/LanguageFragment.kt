@@ -19,25 +19,26 @@ import dagger.hilt.android.AndroidEntryPoint
 class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     val singleStringAdapter = SingleStringAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    var list=ArrayList<String>()
+    var list = ArrayList<String>()
     override val inflate: Inflate<FragmentLanguageBinding>
         get() = FragmentLanguageBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            list= it.userLanguages as ArrayList<String>
+            list = it.userLanguages as ArrayList<String>
             setadapter(list)
         }
-        addDetailResumeVM.languageResponse.observe(viewLifecycleOwner){
+
+        addDetailResumeVM.languageResponse.observe(viewLifecycleOwner) {
             apiCall()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
             }
+            currentActivity().showToast(it.msg)
         }
     }
 
@@ -47,7 +48,8 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-        AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
+        AppsKitSDKAdsManager.showNative(
+            currentActivity(), binding.bannerAdd, ""
 
         );
         apiCall()
@@ -55,20 +57,18 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun setadapter(userLanguages: List<String>) {
         singleStringAdapter.submitList(userLanguages)
         singleStringAdapter.setOnEditItemClickCallback {
-            sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddLanguageFragment()
+            addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, it)
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 saveCallApi()
                 apiCall()
 
@@ -81,7 +81,6 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun saveCallApi() {
         addDetailResumeVM.editLanguage(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             LanguageRequestModel(list)
         )
     }
@@ -103,7 +102,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         }
         binding.addlanguage.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddLanguageFragment()
+            addDetailResumeVM.fragment.value = AddLanguageFragment(null, null)
         }
     }
 }

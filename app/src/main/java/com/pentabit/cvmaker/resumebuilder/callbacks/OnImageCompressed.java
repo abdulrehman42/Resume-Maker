@@ -5,4 +5,5 @@ import okhttp3.MultipartBody;
 
 public interface OnImageCompressed {
     void pmImageCompressed(MultipartBody.Part multipartBody);
+    void onCompressFailed();
 }

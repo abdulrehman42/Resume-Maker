@@ -7,6 +7,7 @@ import android.util.Log
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.PREFS_TOKEN_FILE
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 
 class SharePref constructor(ctx: Context){
     val gson = Gson()
@@ -104,11 +105,23 @@ class SharePref constructor(ctx: Context){
 
     fun readDataEducation(): ProfileModelAddDetailResponse.UserQualification? {
         val json = prefs?.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, null)
-        return if (!json.isNullOrEmpty()) {
-            Gson().fromJson(json, ProfileModelAddDetailResponse.UserQualification::class.java)
-        } else {
-            // Return a default instance if the JSON is null or empty
-            return null
+
+        return when {
+            json.isNullOrEmpty() -> null
+            json.startsWith("{") -> {
+                // Parse as JSON object
+                try {
+                    Gson().fromJson(json, ProfileModelAddDetailResponse.UserQualification::class.java)
+                } catch (e: JsonSyntaxException) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+            else -> {
+                // Handle as a simple string or other cases
+                println("Unexpected JSON format: $json")
+                null
+            }
         }
     }
     fun writeDataEdu(user: ProfileModelAddDetailResponse.UserQualification) {
@@ -132,14 +145,22 @@ class SharePref constructor(ctx: Context){
 
     }
     fun readProfileReference(): ProfileModelAddDetailResponse.UserReference? {
-        val json = prefs!!.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, null)
-        val gson = Gson()
-        return gson.fromJson(json, ProfileModelAddDetailResponse.UserReference::class.java)
+        val json = prefs?.getString(Constants.DATA, null)
+
+        return when {
+            json.isNullOrEmpty() -> null
+            json.startsWith("{") -> Gson().fromJson(json, ProfileModelAddDetailResponse.UserReference::class.java)
+            else -> {
+                // Handle unexpected formats
+                println("Unexpected JSON format: $json")
+                null
+            }
+        }
     }
     fun writeDataReference(user: ProfileModelAddDetailResponse.UserReference) {
         try {
             val data=gson.toJson(user)
-            prefs!!.edit().putString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, data).apply()
+            prefs!!.edit().putString(Constants.DATA, data).apply()
         }catch (e:Exception)
         {
             Log.e("TAGException", e.message.toString())
@@ -147,14 +168,14 @@ class SharePref constructor(ctx: Context){
 
     }
     fun readProfileProject(): ProfileModelAddDetailResponse.UserProject? {
-        val json = prefs!!.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, null)
+        val json = prefs!!.getString(Constants.DATA, null)
         val gson = Gson()
         return gson.fromJson(json, ProfileModelAddDetailResponse.UserProject::class.java)
     }
     fun writeDataProjects(user: ProfileModelAddDetailResponse.UserProject) {
         try {
             val data=gson.toJson(user)
-            prefs!!.edit().putString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, data).apply()
+            prefs!!.edit().putString(Constants.DATA, data).apply()
         }catch (e:Exception)
         {
             Log.e("TAGException", e.message.toString())
@@ -162,14 +183,14 @@ class SharePref constructor(ctx: Context){
 
     }
     fun readProfileExperience(): ProfileModelAddDetailResponse.UserExperience? {
-        val json = prefs!!.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, null)
+        val json = prefs!!.getString(Constants.DATA, null)
         val gson = Gson()
         return gson.fromJson(json, ProfileModelAddDetailResponse.UserExperience::class.java)
     }
     fun writeDataAchievement(user: ProfileModelAddDetailResponse.UserAchievement) {
         try {
             val data=gson.toJson(user)
-            prefs!!.edit().putString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA, data).apply()
+            prefs!!.edit().putString(Constants.DATA, data).apply()
         }catch (e:Exception)
         {
             Log.e("TAGException", e.message.toString())
@@ -195,10 +216,15 @@ class SharePref constructor(ctx: Context){
 
     fun readProfileData(): ProfileModelAddDetailResponse? {
         val json = prefs?.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE, null)
-        return if (json != null) {
-            Gson().fromJson(json, ProfileModelAddDetailResponse::class.java)
-        } else {
-            null // or ProfileModelAddDetailResponse() if you prefer a non-null return
+
+        return when {
+            json == null -> null
+            json.startsWith("{") -> Gson().fromJson(json, ProfileModelAddDetailResponse::class.java)
+            else -> {
+                // Handle other cases like simple string or invalid JSON
+                println("Unexpected JSON format: $json")
+                null
+            }
         }
     }
 

@@ -20,6 +20,7 @@ class ProfileActivity : BaseActivity() {
     override fun attachViewMode() {
 
     }
+
     private fun enableEdgeToEdge() {
         // Set the decor view to enable full-screen layout
         val window = window

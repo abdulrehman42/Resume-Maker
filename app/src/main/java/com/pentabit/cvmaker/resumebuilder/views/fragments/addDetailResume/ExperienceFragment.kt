@@ -30,14 +30,18 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
             list = it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>
             setadapter(list)
         }
+
         addDetailResumeVM.experienceResponse.observe(viewLifecycleOwner) {
             apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it) {
+            if (it.loader) {
                 binding.loader.isGone = false
             } else {
                 binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -59,17 +63,15 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
     private fun apiCall() {
         addDetailResumeVM.getProfileDetail(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID)
-                .toString()
+
         )
     }
 
     private fun setadapter(userExperiences: List<ProfileModelAddDetailResponse.UserExperience>) {
         experienceAdapter.submitList(userExperiences)
         experienceAdapter.setOnEditItemClickCallback {
-            sharePref.writeDataExperience(it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddExperienceFragment()
+            addDetailResumeVM.fragment.value = AddExperienceFragment(it)
 
         }
         experienceAdapter.setOnItemDeleteClickCallback {
@@ -96,8 +98,6 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
         }
         val experienceRequest = ExperienceRequest(experiences = experience)
         addDetailResumeVM.editExperience(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID)
-                .toString(),
             experienceRequest
         )
     }
@@ -113,7 +113,7 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
         }
         binding.addexperiencebtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddExperienceFragment()
+            addDetailResumeVM.fragment.value = AddExperienceFragment(null)
 
         }
     }

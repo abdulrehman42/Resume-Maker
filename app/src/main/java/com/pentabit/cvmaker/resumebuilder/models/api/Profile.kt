@@ -1,12 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.models.api
 
 data class Profile(
-
-    val profile: Profile1,
-    val token: String
-)
-
-data class Profile1(
     val id: Long,
     val userID: String,
     val name: String,

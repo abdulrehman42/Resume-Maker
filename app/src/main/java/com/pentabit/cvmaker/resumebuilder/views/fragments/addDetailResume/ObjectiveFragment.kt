@@ -1,6 +1,8 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
@@ -13,6 +15,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleI
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
+import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.CoverLetterSampleFragment
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,27 +23,33 @@ import dagger.hilt.android.AndroidEntryPoint
 class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     lateinit var objSampleAdapter: ObjSampleAdapter
-    lateinit var tabhost:TabLayout
-    var list=ArrayList<SampleResponseModel>()
-    var num=0
+    lateinit var tabhost: TabLayout
+    var list = ArrayList<SampleResponseModel>()
+    var num = 0
 
     override val inflate: Inflate<FragmentObjectiveBinding>
         get() = FragmentObjectiveBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.getSamples.observe(viewLifecycleOwner){
-            list= it as ArrayList<SampleResponseModel>
+        addDetailResumeVM.getSamples.observe(viewLifecycleOwner) {
+            list = it as ArrayList<SampleResponseModel>
             setAdapter(it)
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+
+        addDetailResumeVM.data.observe(currentActivity()) {
+            binding.objectiveTextInput.setText(it.toString())
+        }
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner){
+        addDetailResumeVM.objectiveResponse.observe(viewLifecycleOwner) {
             tabhost.getTabAt(2)!!.select()
         }
     }
@@ -50,14 +59,16 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(this)[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
-        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
+
         callAPi()
+
+        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         onclick()
 
     }
@@ -69,39 +80,25 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     private fun onclick() {
 
         binding.viewall.setOnClickListener {
-            objSampleAdapter.updateMaxItemCount(list.size)
+            //objSampleAdapter.updateMaxItemCount(list.size)
+            addDetailResumeVM.isHide.value = false
+            addDetailResumeVM.fragment.value = ObjectiveSample()
         }
-        binding.viewless.setOnClickListener {
-            objSampleAdapter.updateMaxItemCount(2)
-            binding.viewall.setOnClickListener {
-                num += 2
-                objSampleAdapter.updateMaxItemCount(num)
 
-                //setAdapter(it)
-            }
-            binding.viewless.setOnClickListener {
-                num -= 2
-                objSampleAdapter.updateMaxItemCount(num)
-                // setAdapter(it)
-            }
-
-
-        }
         binding.backbtn.setOnClickListener {
             tabhost.getTabAt(0)!!.select()
         }
         binding.nextbtn.setOnClickListener {
-            if (isConditionMet())
-            {
+            if (isConditionMet()) {
                 callEditAPi()
-            }else{
+            } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
     }
 
     private fun callEditAPi() {
-        addDetailResumeVM.editObjective(sharePref.readString(Constants.PROFILE_ID).toString(),
+        addDetailResumeVM.editObjective(
             SingleItemRequestModel(binding.objectiveTextInput.text.toString())
         )
 
@@ -109,20 +106,23 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     private fun setAdapter(sampleResponseModels: List<SampleResponseModel>) {
 
-        objSampleAdapter= ObjSampleAdapter(currentActivity(),sampleResponseModels,{
+        objSampleAdapter = ObjSampleAdapter(currentActivity(), sampleResponseModels, {
             binding.objectiveTextInput.setText(it)
-        },{
-            if (it) {
-                binding.viewall.isGone=true
-                binding.viewless.isGone=false
-            }else{
-                binding.viewall.isGone=false
-                binding.viewless.isGone=true
-            }
+        }, {
+            /*if (it) {
+                binding.viewall.isGone = true
+                binding.viewLess.isGone = false
+            } else {
+                binding.viewall.isGone = false
+                binding.viewLess.isGone = true
+            }*/
         })
-        binding.sampleRecyclerview.adapter=objSampleAdapter
+        binding.sampleRecyclerview.adapter = objSampleAdapter
     }
+
     fun isConditionMet(): Boolean {
         return !binding.objectiveTextInput.text.toString().isNullOrEmpty()
     }
+
+
 }

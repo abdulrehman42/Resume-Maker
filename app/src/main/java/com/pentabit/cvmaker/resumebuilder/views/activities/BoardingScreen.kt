@@ -8,8 +8,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityBoardingScreenBinding
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.views.adapter.ImagePagerAdapter
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 
 class BoardingScreen : BaseActivity() {
     private var onBoardingPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -34,19 +36,22 @@ class BoardingScreen : BaseActivity() {
         TODO("Not yet implemented")
     }
 
+    private fun mpveToNextActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_INTRO_DONE, true)
+        finish()
+    }
+
     private fun onclick() {
         binding.nextbtn.setOnClickListener {
-            if (binding.viewPager.currentItem==3)
-            {
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }else{
+            if (binding.viewPager.currentItem == 3) {
+                mpveToNextActivity()
+            } else {
                 binding.viewPager.setCurrentItem(getItem(+1), true)
             }
         }
         binding.skipbtn.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            mpveToNextActivity()
         }
     }
 
@@ -72,10 +77,6 @@ class BoardingScreen : BaseActivity() {
         this.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
     }
-
-
-
-
 
 
 }

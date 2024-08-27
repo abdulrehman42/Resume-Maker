@@ -33,12 +33,13 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
             apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
             }
+            currentActivity().showToast(it.msg)
         }
     }
 
@@ -56,15 +57,14 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun setadapter(userInterests: List<String>) {
         interestAdapter.submitList(userInterests)
         interestAdapter.setOnEditItemClickCallback {
-            sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA,it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddInterestFragment()
+            addDetailResumeVM.fragment.value = AddInterestFragment(userInterests,it)
 
         }
         interestAdapter.setOnItemDeleteClickCallback {
@@ -82,7 +82,6 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     private fun callSaveApi() {
 
         addDetailResumeVM.editInterest(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             InterestRequestModel(list)
         )
     }
@@ -104,7 +103,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
         }
         binding.addinterestbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddInterestFragment()
+            addDetailResumeVM.fragment.value = AddInterestFragment(null,null)
         }
     }
 

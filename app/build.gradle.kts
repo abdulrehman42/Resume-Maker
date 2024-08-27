@@ -40,6 +40,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -205,11 +206,11 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-config")
-    implementation ("com.google.android.gms:play-services-auth:20.7.0")
-    implementation ("com.google.android.gms:play-services-auth:20.6.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
 //    implementation ("com.itextpdf:itextpdf:5.5.13.3")
     implementation("io.github.pilgr:paperdb:2.7.2")
-    implementation ("id.zelory:compressor:3.0.1")
+    implementation("id.zelory:compressor:3.0.1")
 
 //    implementation ("com.itextpdf:itext7-core:7.2.3")
 //    implementation ("com.itextpdf:html2pdf:4.0.0")

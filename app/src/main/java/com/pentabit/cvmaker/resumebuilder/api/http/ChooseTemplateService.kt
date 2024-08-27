@@ -32,7 +32,10 @@ interface ChooseTemplateService {
     //login
     @FormUrlEncoded
     @POST(Constants.LOGIN_API)
-    fun onLogin(@Field("email") email: String,@Field("oauthProvider") authProvider: String): Call<JsonElement>
+    fun onLogin(
+        @Field("email") email: String,
+        @Field("oauthProvider") authProvider: String
+    ): Call<JsonElement>
 
     @POST(Constants.TOKEN_REFRESH)
     fun onRefreshToken(): Call<JsonElement>
@@ -61,13 +64,27 @@ interface ChooseTemplateService {
         @Part("address") address: RequestBody
     ): Call<JsonElement>
 
+    @Multipart
     @PUT(Constants.UPDATE_PROFILE)
     fun onUpdateProfile(
         @Path("profileId") profileId: String,
         @Part("name") name: RequestBody,
         @Part("email") email: RequestBody,
         @Part("phone") phone: RequestBody,
-        @Part image: MultipartBody.Part,
+        @Part image: MultipartBody.Part?,
+        @Part("gender") gender: RequestBody,
+        @Part("jobTitle") job: RequestBody,
+        @Part("dob") dob: RequestBody,
+        @Part("address") address: RequestBody
+    ): Call<JsonElement>
+
+    @Multipart
+    @PUT(Constants.UPDATE_PROFILE)
+    fun onUpdateProfile(
+        @Path("profileId") profileId: String,
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("phone") phone: RequestBody,
         @Part("gender") gender: RequestBody,
         @Part("jobTitle") job: RequestBody,
         @Part("dob") dob: RequestBody,
@@ -176,6 +193,7 @@ interface ChooseTemplateService {
     fun deleteProfile(
         @Path("profileId") profileId: String,
     ): Call<JsonElement>
+
     @DELETE(Constants.DELETE_ACCOUNT)
     fun deleteMe(
     ): Call<JsonElement>

@@ -11,6 +11,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentDownloadBinding
 import com.pentabit.cvmaker.resumebuilder.views.fragments.tablayout.Vadapterswipe
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 
 
 class DownloadFragment :BaseFragment<FragmentDownloadBinding>() {
@@ -47,10 +48,10 @@ class DownloadFragment :BaseFragment<FragmentDownloadBinding>() {
                 )
                 if (tab.position==0)
                 {
-                    sharePref.writeBoolean(Constants.IS_RESUME,true)
+                    AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_RESUME,true)
 
                 }else{
-                    sharePref.writeBoolean(Constants.IS_RESUME,false)
+                    AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_RESUME,false)
                 }
             }
 

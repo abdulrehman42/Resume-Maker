@@ -12,12 +12,9 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
+class AddInterestFragment(val userInterests: List<String>?, val interest_name: String?) : BaseFragment<FragmentAddInterestBinding>()
 {
     lateinit var addDetailResumeVM : AddDetailResumeVM
     var interest=ArrayList<String>()
@@ -30,11 +27,15 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -47,15 +48,14 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
             binding.bannerAdd,
             placeholder = ""
         )
-        val data_list=sharePref.readProfileData()
-        if (data_list!=null)
+        if (userInterests!=null)
         {
-            interest= data_list.userInterests as ArrayList<String>
+            interest= userInterests as ArrayList<String>
         }
-        val data = sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA)
-        if (data!=null)
+//        val data = sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA)
+        if (interest_name!=null)
         {
-            binding.interestEdittext.setText(data)
+            binding.interestEdittext.setText(interest_name)
         }
         onclick()
 
@@ -99,7 +99,6 @@ class AddInterestFragment : BaseFragment<FragmentAddInterestBinding>()
 
     private fun apiCall() {
         addDetailResumeVM.editInterest(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             InterestRequestModel(interest)
         )
     }

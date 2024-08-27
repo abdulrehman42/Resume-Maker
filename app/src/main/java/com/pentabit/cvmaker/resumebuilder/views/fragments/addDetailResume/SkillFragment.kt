@@ -30,16 +30,21 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
             list= it.userSkills as ArrayList<String>
             setadapter(list)
         }
+
         addDetailResumeVM.skillResponse.observe(viewLifecycleOwner){
             apiCall()
         }
 
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -62,15 +67,14 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
         skillAdapter.setOnEditItemClickCallback {
-            sharePref.writeString(Constants.DATA,it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddSkillFragment()
+            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills,it)
         }
         skillAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
@@ -90,7 +94,6 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     private fun callSaveApi() {
         addDetailResumeVM.editSkill(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             SkillRequestModel(list)
         )
     }
@@ -107,7 +110,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
         }
         binding.addskill.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddSkillFragment()
+            addDetailResumeVM.fragment.value = AddSkillFragment(null, null)
         }
     }
 }

@@ -38,7 +38,7 @@
     <string name="language">Language</string>
     <string name="project">Projects</string>
     <string name="achievment">Achievements</string>
-    <string name="view_all">View More</string>
+    <string name="view_all">View All</string>
     <string name="samples">Samples</string>
     <string name="back">Back</string>
     <string name="objectives">Objectives</string>
@@ -125,6 +125,10 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <string name="purchase1">Get Remove Ads to free yourself from interruptions.</string>
+    <string name="purchase2">1. Create resumes and cover letters\n \t\twithout any disturbances.</string>
+    <string name="purchase3">2. Access all the resume and cover letter\n \t\t templates without watching any ads.</string>
     <string name="delete_account">Are you sure you want to delete of your account?</string>
     <string name="field_missing_error">please complete all missing fields</string>
     <string name="single_field_missing_error">please complete the field</string>
@@ -140,4 +144,6 @@
     <string name="user_profile">User Profile</string>
     <string name="editcover">Edit CoverLetter</string>
     <string name="resume">Resume</string>
+    <string name="purchase_header">Let nobody come between\n you and your next job.</string>
+    <string name="login">Login</string>
 </resources>

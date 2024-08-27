@@ -41,6 +41,7 @@ class CatagoryDownload : BaseFragment<FragmentCoverLetterBinding>()
         vadapter.addFragment(PdfFragment(), "PDF")
         viewPager.adapter = vadapter
         tabLayout.setupWithViewPager(viewPager)
+        binding.TabLayout.getTabAt(0)
 
         val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

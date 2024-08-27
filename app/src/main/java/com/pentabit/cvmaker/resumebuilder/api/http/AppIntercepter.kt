@@ -1,12 +1,10 @@
 package com.pentabit.cvmaker.resumebuilder.api.http
 
 
+import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.AUTH_TOKEN
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.TOKEN
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.TOKEN_AUTH
-import com.pentabit.cvmaker.resumebuilder.utils.SharePref
-import com.pentabit.cvmaker.resumebuilder.utils.getToken
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.GUEST_TOKEN
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import javax.inject.Inject
 import okhttp3.Interceptor
@@ -19,28 +17,27 @@ class AppIntercepter @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest: Request = chain.request()
 
-        // Get the instance of SharedPreferences manager
-        val preferencesManager = AppsKitSDKPreferencesManager.getInstance()
-
-        // Check if the user is logged in
-        val isLoggedIn = preferencesManager.getBooleanPreferences(Constants.IS_LOGGED, false)
-        val versionName=preferencesManager.getStringPreferences(Constants.VERSION_NAME)
         // Choose the token based on the login status
-        val token = if (isLoggedIn) {
-            // If logged in, use the logged-in token
-            preferencesManager.getStringPreferences(AUTH_TOKEN, TOKEN_AUTH)
+        val token = if (AppsKitSDKPreferencesManager.getInstance()
+                .getBooleanPreferences(Constants.IS_LOGGED, false)
+        ) {
+            // If not logged in, use a different token or a guest token
+            AppsKitSDKPreferencesManager.getInstance().getStringPreferences(
+                AUTH_TOKEN
+            )
 
         } else {
-            // If not logged in, use a different token or a guest token
-            preferencesManager.getStringPreferences(AUTH_TOKEN, TOKEN)
-
+            // If logged in, use the logged-in token
+            AppsKitSDKPreferencesManager.getInstance().getStringPreferences(
+                GUEST_TOKEN
+            )
         }
 
 
         // Build the request with the selected token
         val requestBuilder = originalRequest.newBuilder()
             .addHeader("Accept", "application/json")
-            .addHeader("x-app-version",versionName)
+            .addHeader("x-app-version", BuildConfig.VERSION_NAME)
             .addHeader("x-auth-token", token)
             .method(originalRequest.method, originalRequest.body)
 

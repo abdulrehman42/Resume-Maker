@@ -22,24 +22,25 @@ import dagger.hilt.android.AndroidEntryPoint
 class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     lateinit var educationAdapter: EducationAdapter
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    var list=ArrayList<ProfileModelAddDetailResponse.UserQualification>()
+    var list = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
     override val inflate: Inflate<FragmentEducationBinding>
         get() = FragmentEducationBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
-            list= it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>
+            list =
+                it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>
             setAdapter(list)
         }
-        addDetailResumeVM.educationResponse.observe(viewLifecycleOwner){
-            apiCall()
-        }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
 
@@ -56,12 +57,16 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
             binding.bannerAdd,
             placeholder = ""
         )
-        apiCall()
         onclick()
     }
 
+    override fun onResume() {
+        super.onResume()
+        apiCall()
+    }
+
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun onclick() {
@@ -75,18 +80,17 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
         }
         binding.addeducationbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddEducation()
+            addDetailResumeVM.fragment.value = AddEducation(null)
         }
 
     }
 
     private fun setAdapter(userQualifications: List<ProfileModelAddDetailResponse.UserQualification>) {
         educationAdapter = EducationAdapter(currentActivity(), userQualifications, false, {
-            sharePref.writeDataEdu(it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddEducation()
-
-        },{
+            addDetailResumeVM.fragment.value =
+                AddEducation(it)
+        }, {
             list.removeAt(it)
             callSaveApi()
             apiCall()
@@ -95,23 +99,21 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     }
 
     private fun callSaveApi() {
-        var qualifications=ArrayList<Qualification>()
-        for (i in 0 until list.size)
-        {
-             qualifications = listOf(
-                 Qualification(
-                     degree = list[i].degree,
-                     endDate = list[i].endDate,
-                     institute = list[i].institute,
-                     qualificationType = "degree",
-                     startDate = list[i].startDate
-                 )
-             ) as ArrayList<Qualification>
+        var qualifications = ArrayList<Qualification>()
+        for (i in 0 until list.size) {
+            qualifications = listOf(
+                Qualification(
+                    degree = list[i].degree,
+                    endDate = list[i].endDate,
+                    institute = list[i].institute,
+                    qualificationType = "degree",
+                    startDate = list[i].startDate
+                )
+            ) as ArrayList<Qualification>
         }
         val qualificationModelRequest = QualificationModelRequest(qualifications = qualifications)
 
         addDetailResumeVM.editQualification(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             qualificationModelRequest
         )
     }

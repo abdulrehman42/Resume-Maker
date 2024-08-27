@@ -8,13 +8,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivitySplashScreenBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.addToken
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SplachScreen : BaseActivity() {
@@ -32,13 +29,14 @@ class SplachScreen : BaseActivity() {
 
 
         AppsKitSDKAdsManager.isUserConsentsProvided(true)
-        if (sharePref.readBoolean(Constants.IS_FIRST_TIME, true)) {
-            startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
-            finish()
-        } else {
+        if (AppsKitSDKPreferencesManager.getInstance()
+                .getBooleanPreferences(Constants.IS_INTRO_DONE, false)
+        ) {
             startActivity(Intent(this@SplachScreen, MainActivity::class.java))
-            finish()
+        } else {
+            startActivity(Intent(this@SplachScreen, BoardingScreen::class.java))
         }
+        finish()
     }
 
 

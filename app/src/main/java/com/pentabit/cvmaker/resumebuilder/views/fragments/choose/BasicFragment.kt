@@ -14,6 +14,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Helper.saveHtmlAsPdf
 import com.pentabit.cvmaker.resumebuilder.views.adapter.TempResListAdpter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.ads_manager.ads_callback.RewardedAdCallbacks
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 
 
 class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasicBinding>() {
@@ -40,7 +41,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
     private fun setAdapter() {
         templateAdapter.submitList(list)
         templateAdapter.setOnEyeItemClickCallback {
-            sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
             DialogueBoxes.alertbox(
                 it.path,
                 currentActivity(),
@@ -58,7 +59,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                                                     "",
                                                     object : RewardedAdCallbacks {
                                                         override fun onRewardedCompleted() {
-                                                            sharePref.writeString(
+                                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                                                                 Constants.TEMPLATE_ID,
                                                                 it.id.toString()
                                                             )
@@ -67,7 +68,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                                                         }
 
                                                         override fun onAdRewarded() {
-                                                            sharePref.writeString(
+                                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                                                                 Constants.TEMPLATE_ID,
                                                                 it.id.toString()
                                                             )
@@ -96,11 +97,11 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
 
                                     })
                             } else {
-                                sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                                 callback?.onTemplateSelected(it)
                             }
                         } else {
-                            sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                             callback?.onTemplateSelected(it)
                         }
                     }
@@ -120,7 +121,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                                     "",
                                     object : RewardedAdCallbacks {
                                         override fun onRewardedCompleted() {
-                                            sharePref.writeString(
+                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                                                 Constants.TEMPLATE_ID,
                                                 it.id.toString()
                                             )
@@ -129,7 +130,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                                         }
 
                                         override fun onAdRewarded() {
-                                            sharePref.writeString(
+                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                                                 Constants.TEMPLATE_ID,
                                                 it.id.toString()
                                             )
@@ -158,7 +159,7 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
 
                     })
             } else {
-                sharePref.writeString(Constants.TEMPLATE_ID, it.id.toString())
+                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                 callback?.onTemplateSelected(it)
             }
 

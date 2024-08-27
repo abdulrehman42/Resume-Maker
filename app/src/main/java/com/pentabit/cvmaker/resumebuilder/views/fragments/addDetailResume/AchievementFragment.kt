@@ -13,13 +13,13 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
     val achievementAdapter= AchievementAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
-
     override fun csnMoveForward(): Boolean {
         return true
     }
@@ -35,11 +35,15 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
             apiCall()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -56,7 +60,7 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun onclick() {
@@ -66,14 +70,14 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
         }
         binding.nextbtn.setOnClickListener {
-            sharePref.writeBoolean(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME,true)
+            AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME,true)
             addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = ResumePreviewFragment()
 
         }
         binding.addachievementbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment()
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment(null)
         }
     }
 
@@ -83,9 +87,8 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
             callDeleteApi()
         }
         achievementAdapter.setOnItemDeleteClickCallback {
-            sharePref.writeDataAchievement(it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment()
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment(it)
         }
         binding.recyclerviewAchievements.adapter = achievementAdapter
     }

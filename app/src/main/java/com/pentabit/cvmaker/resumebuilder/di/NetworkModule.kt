@@ -1,7 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.di
 
-
-import com.bytedance.sdk.component.embedapplog.BuildConfig
+import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.api.http.AppIntercepter
 import com.pentabit.cvmaker.resumebuilder.api.http.ChooseTemplateService
 import com.pentabit.cvmaker.resumebuilder.utils.Constants

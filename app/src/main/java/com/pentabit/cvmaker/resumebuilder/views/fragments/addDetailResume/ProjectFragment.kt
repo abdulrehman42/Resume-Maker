@@ -31,15 +31,18 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
             list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
             setAdapter(list)
         }
-        addDetailResumeVM.projectResponse.observe(viewLifecycleOwner){
+
+        addDetailResumeVM.projectResponse.observe(viewLifecycleOwner) {
             apiCall()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -76,20 +79,20 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         }
         binding.addprojectbtn.setOnClickListener {
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddProjectFragment()
+            addDetailResumeVM.fragment.value = AddProjectFragment(null)
         }
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString())
+        addDetailResumeVM.getProfileDetail(
+        )
     }
 
     private fun setAdapter(userProjects: List<ProfileModelAddDetailResponse.UserProject>) {
         projectAdapter.submitList(userProjects)
         projectAdapter.setOnEditItemClickCallback {
-            sharePref.writeDataProjects(it)
             addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddProjectFragment()
+            addDetailResumeVM.fragment.value = AddProjectFragment(it)
         }
         projectAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
@@ -110,7 +113,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         }
         projectRequest = ProjectRequest(projects = project)
         addDetailResumeVM.editProjects(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(), projectRequest
+            projectRequest
         )
     }
 

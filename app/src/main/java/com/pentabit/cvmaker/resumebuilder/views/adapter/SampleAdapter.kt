@@ -17,6 +17,7 @@ class SampleAdapter(
         @SuppressLint("SetTextI18n")
         fun setData(model: SampleResponseModel) {
             binding.sampleText.apply {
+
                 text=model.title
                 setOnClickListener {
                     onclick(model)

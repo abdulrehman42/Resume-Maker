@@ -19,10 +19,10 @@ import com.pentabit.cvmaker.resumebuilder.callbacks.OnTemplateSelected
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityChoiceTemplateBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.getToken
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.fragments.choose.BasicFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.AddDetailCoverLetterFragment
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.HashMap
 
@@ -141,7 +141,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     override fun onTemplateSelected(model: TemplateModel) {
-        val check = sharePref.readBoolean(Constants.IS_LOGGED, false)
+        val check = AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED, false)
         if (check) {
             if (isResume) {
                 navigateToProfileActivity()
@@ -184,7 +184,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
 
     private fun navigateToProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
-        sharePref.writeString(Constants.FRAGMENT_CALLED, Constants.RESUME)
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
         startActivity(intent)
         finish()
     }

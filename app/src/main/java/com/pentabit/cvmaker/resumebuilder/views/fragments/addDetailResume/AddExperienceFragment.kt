@@ -16,6 +16,7 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddExperienceBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.ExperienceResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
@@ -27,7 +28,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
+class AddExperienceFragment(val data: ProfileModelAddDetailResponse.UserExperience?) : BaseFragment<FragmentAddExperienceBinding>(){
     lateinit var addDetailResumeVM : AddDetailResumeVM
     var endDate: String? =null
     val list=ArrayList<ExperienceResponse>()
@@ -40,11 +41,15 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -60,7 +65,6 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             placeholder = ""
         )
 
-        val data=sharePref.readProfileExperience()
         data?.let {
             binding.jobName.setText(data.title)
             binding.description.setText(data.description)
@@ -174,7 +178,6 @@ class AddExperienceFragment : BaseFragment<FragmentAddExperienceBinding>(){
             binding.enddateedittext.text.toString()
         }
         addDetailResumeVM.editExperience(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             experienceRequest
         )
     }

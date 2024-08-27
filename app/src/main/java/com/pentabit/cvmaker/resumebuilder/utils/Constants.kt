@@ -1,23 +1,17 @@
 package com.pentabit.cvmaker.resumebuilder.utils
 
-import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
-
 object Constants {
 
-    const val CALL_API=""
+
     const val BASE_MEDIA_URL = "https://n0ngl4zx.tinifycdn.com/"
     const val BASE_URL_PRODUCTION = "http://35.164.228.120:9000/v1/"
-    const val BASE_URL_DEVELOPMENT = "http://54.70.21.233:9001/v1"
+    const val BASE_URL_DEVELOPMENT = "http://54.70.21.233:9001/v1/"
     const val GUEST_TOKEN = "guestToken"
     const val AUTH_TOKEN = "AUTH_TOKEN"
 
-    var TOKEN = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(
-        GUEST_TOKEN
-    )
-    var TOKEN_AUTH = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(
-        AUTH_TOKEN
-    )
-
+    const val DATA_BODY = "data"
+    const val IS_MAIN = "main"
+    const val IS_EDIT = "IS_EDIT"
 
     //api
     const val TEMPLATE_API = "templates/list"
@@ -48,17 +42,16 @@ object Constants {
     const val Is_CoverLtter = "Is_CoverLtter"
     const val YES = "yes"
     const val NO = "no"
-    const val VERSION_NAME = "version"
 
     //ads
     const val YOUR_IRON_SOURCE_APP_KEY = ""
-    const val YOUR_HELIUM_APP_ID=""
-    const val YOUR_MAX_SDK_KEY=""
-    const val YOUR_HELIUM_SIGNATURES=""
-    const val isChildDirected=true
-    const val isSubjectToGDPR=true
-    const val userHasGivenConsent=true
-    const val isCCPAConsent=true
+    const val YOUR_HELIUM_APP_ID = ""
+    const val YOUR_MAX_SDK_KEY = ""
+    const val YOUR_HELIUM_SIGNATURES = ""
+    const val isChildDirected = true
+    const val isSubjectToGDPR = true
+    const val userHasGivenConsent = true
+    const val isCCPAConsent = true
 
 
     //lockup Keys
@@ -78,6 +71,7 @@ object Constants {
     const val EDIT = "EDIT"
 
     const val COVER_LETTER = "coverLetter"
+    const val OBJECTIVE = "objective"
     const val RESUME = "resume"
     const val PREFS_TOKEN_FILE = "PlayDateApp"
     const val DATA = "data"
@@ -91,8 +85,8 @@ object Constants {
     const val DOWNLOAD = "download"
     const val PROFILE = "profile"
     const val FRAGMENT_CALLED = "FRAGMENT"
-    const val PROFILE_ID = "profile_id"
-    const val IS_FIRST_TIME = "IS_FIRST_TIME"
+    const val PROFILE_ID = "PROFILE_ID"
+    const val IS_INTRO_DONE = "IS_INTRO_DONE"
     const val TEMPLATE_ID = "template"
     const val CAMERA = "CAMERA"
     const val GALLERY = "GALLERY"

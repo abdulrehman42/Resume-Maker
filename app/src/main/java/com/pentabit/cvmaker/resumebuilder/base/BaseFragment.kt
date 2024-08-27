@@ -23,7 +23,6 @@ abstract class BaseFragment<VB : ViewBinding>() : Fragment() {
     abstract val inflate: Inflate<VB>
     private var _binding: VB? = null
     val binding get() = _binding!!
-    lateinit var sharePref: SharePref
     private lateinit var mActivity: BaseActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +35,6 @@ abstract class BaseFragment<VB : ViewBinding>() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = inflate.invoke(inflater, container, false)
-        sharePref = SharePref.mInstence!!
         return binding.root
 
     }

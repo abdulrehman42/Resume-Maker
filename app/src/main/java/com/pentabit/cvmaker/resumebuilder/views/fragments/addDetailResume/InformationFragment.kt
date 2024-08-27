@@ -5,15 +5,14 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
@@ -36,60 +35,51 @@ import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
 @AndroidEntryPoint
 class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>() {
-    var image = ""
-    var getImage = ""
-    var gender = ""
-    var profile_id = ""
+    private var image = ""
+    private var getImage = ""
+    private var gender = ""
     private lateinit var selectedImageBitmap: Bitmap
-    val looksAdapter = LooksAdapter()
-    var data: ProfileModelAddDetailResponse? = null
-    var defaulValueAddress: String? = null
-    var defaulValuePhone: String? = null
-
+    private val looksAdapter = LooksAdapter()
+    private var isEditProfile = false
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     lateinit var tabhost: TabLayout
 
     override fun csnMoveForward(): Boolean {
-        return isConditionMet()
+        return isAllRequiredFieldsComplete()
     }
 
     override val inflate: Inflate<FragmentInformationBinding>
         get() = FragmentInformationBinding::inflate
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(currentActivity()) {
-            sharePref.writeDataProfile(it)
             setValue(it)
         }
+
         addDetailResumeVM.informationResponse.observe(viewLifecycleOwner)
         {
             AppsKitSDKPreferencesManager.getInstance()
-                .addInPreferences(Constants.AUTH_TOKEN, it.token)
-            sharePref.writeString(PROFILE_ID, it.profile.id.toString())
+                .addInPreferences(PROFILE_ID, it.id.toString())
             tabhost.getTabAt(1)!!.select()
         }
-        /*addDetailResumeVM.looksupResponse.observe(viewLifecycleOwner) {
-            setAdapter(it)
-        }*/
+
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
 
     private fun setAdapter(lookUpResponses: List<LookUpResponse>) {
         looksAdapter.submitList(lookUpResponses)
-
         binding.lookidRecyclerview.apply {
             isGone = false
             adapter = looksAdapter
@@ -100,25 +90,18 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun init(savedInstanceState: Bundle?) {
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
-        addDetailResumeVM.getProfileDetail(sharePref.readString(PROFILE_ID).toString())
-        profile_id = currentActivity().intent.getStringExtra(Constants.CALL_API).toString()
-        if (!profile_id.isNullOrEmpty()) {
-            addDetailResumeVM.getProfileDetail(
-                profile_id
-            )
+        isEditProfile = requireActivity().intent.getBooleanExtra(Constants.IS_EDIT, false)
+        if (isEditProfile) {
+            addDetailResumeVM.getProfileDetail()
+        }
 
-        }
-        data = sharePref.readProfileData()
-        data?.let {
-            setValue(it)
-        }
         onclick()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     private fun setValue(data: ProfileModelAddDetailResponse) {
         binding.apply {
             nameedittext.setText(data.name)
@@ -127,10 +110,10 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             phoneedittext.setText(data.phone)
             address.setText(data.address)
             dobEdit.setText(Helper.convertIsoToCustomFormat(data.dob))
-            if (data.gender == "male") {
-                male()
+            if (data.gender == getString(R.string.male)) {
+                manageGenderSelection(getString(R.string.male))
             } else {
-                female()
+                manageGenderSelection(getString(R.string.female))
             }
         }
         Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL + data.path)
@@ -151,12 +134,14 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                         })
                 }
             }
+
         binding.man.setOnClickListener {
-            male()
+            manageGenderSelection(getString(R.string.male))
         }
+
         binding.editprofile.setOnClickListener {
             alertboxChooseImage(currentActivity()) {
-                if (it == com.pentabit.cvmaker.resumebuilder.utils.Constants.CAMERA) {
+                if (it == Constants.CAMERA) {
                     openCamera()
                 } else {
                     galleryOpen()
@@ -164,8 +149,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             }
         }
         binding.woman.setOnClickListener {
-            female()
+            manageGenderSelection(getString(R.string.female))
         }
+
         binding.jobedittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -181,17 +167,13 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                 //    callLookUpApi(query)
             }
         })
+
         binding.nextbtn.setOnClickListener {
-            if (data != null) {
-                if (isConditionMet2()) {
-                    callApiUpdate(data!!.id.toString())
-                }
-            } else if (profile_id != null) {
-                if (isConditionMet2()) {
-                    callApiUpdate(profile_id)
-                }
-            } else if (isConditionMet()) {
-                callApi()
+            if (isAllRequiredFieldsComplete()) {
+                if (isEditProfile)
+                    callApiUpdate()
+                else
+                    callApi()
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
@@ -202,63 +184,46 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         addDetailResumeVM.getLookUp(Constants.position, query, "", "")
     }
 
-    private fun callApiUpdate(profileId: String) {
+    private fun callApiUpdate() {
         addDetailResumeVM.updateProfile(
-            profileId,
-            CreateProfileRequestModel(
-                binding.nameedittext.text.toString(),
-                binding.emailtext.text.toString(),
-                binding.phoneedittext.text.toString(),
-                getImage,
-                gender,
-                binding.jobedittext.text.toString(),
-                binding.dobEdit.text.toString(),
-                binding.address.text.toString()
-            )
+            grtProfileModel()
         )
     }
 
     private fun callApi() {
-        defaulValueAddress = if (binding.address.text.isNullOrEmpty()) {
-            null
-        } else {
-            binding.address.text.toString()
-        }
-        defaulValuePhone = if (binding.phoneedittext.text.isNullOrEmpty()) {
-            null
-        } else {
-            binding.phoneedittext.text.toString()
-        }
-
         addDetailResumeVM.createProfile(
-            CreateProfileRequestModel(
-                binding.nameedittext.text.toString(),
-                binding.emailtext.text.toString(),
-                defaulValuePhone,
-                getImage,
-                gender,
-                binding.jobedittext.text.toString(),
-                binding.dobEdit.text.toString(),
-                defaulValueAddress
-            )
+            grtProfileModel()
         )
     }
 
-    fun isConditionMet(): Boolean {
-        return !binding.nameedittext.text.toString().trim().isNullOrEmpty() &&
-                Helper.isValidEmail(currentActivity(), binding.emailtext.text.toString()) &&
-                !binding.jobedittext.text.toString().trim().isNullOrEmpty() &&
-                !binding.dobEdit.text.toString().trim().isNullOrEmpty() &&
-                !gender.isNullOrEmpty() &&
-                !getImage.isNullOrEmpty()
+    fun grtProfileModel(): CreateProfileRequestModel {
+        return CreateProfileRequestModel(
+            binding.nameedittext.text.toString(),
+            binding.emailtext.text.toString(),
+            binding.phoneedittext.text.toString(),
+            getImage,
+            gender,
+            binding.jobedittext.text.toString(),
+            binding.dobEdit.text.toString(),
+            binding.address.text.toString()
+        )
     }
 
-    fun isConditionMet2(): Boolean {
-        return !binding.nameedittext.text.toString().trim().isNullOrEmpty() &&
-                Helper.isValidEmail(currentActivity(), binding.emailtext.text.toString()) &&
-                !binding.jobedittext.text.toString().trim().isNullOrEmpty() &&
-                !binding.dobEdit.text.toString().trim().isNullOrEmpty() &&
-                !gender.isNullOrEmpty()
+    private fun isAllRequiredFieldsComplete(): Boolean {
+        return isFieldNotNullOrEmpty(binding.nameedittext, binding.jobedittext, binding.dobEdit) &&
+                Helper.isValidEmail(binding.emailtext.text.toString()) &&
+                !gender.isNullOrEmpty() &&
+                (isEditProfile || !getImage.isNullOrEmpty())
+    }
+
+
+    private fun isFieldNotNullOrEmpty(vararg views: TextView): Boolean {
+        for (v in views) {
+            if (v.text.toString().trim().isEmpty()) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun openCamera() {
@@ -312,27 +277,26 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         }
     }
 
-    fun male() {
-        binding.man.setBackgroundResource(R.drawable.bluebgradius)
-        binding.woman.setBackgroundResource(R.drawable.greybgradius)
-        gender = getString(R.string.male)
-        binding.woman.setTextColor(
+    private fun manageGenderSelection(gend: String) {
+        gender = gend
+        if (gender == getString(R.string.male)) {
+            handleGenderSelectionUI(binding.man, binding.woman)
+        } else {
+            handleGenderSelectionUI(binding.woman, binding.man)
+        }
+    }
+
+    private fun handleGenderSelectionUI(selected: TextView, unselected: TextView) {
+        selected.setBackgroundResource(R.drawable.bluebgradius)
+        selected.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        unselected.setBackgroundResource(R.drawable.greybgradius)
+        unselected.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.light_black
             )
         )
-        binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-
     }
 
-    fun female() {
-        binding.man.setBackgroundResource(R.drawable.greybgradius)
-        binding.woman.setBackgroundResource(R.drawable.bluebgradius)
-        gender = getString(R.string.female)
-        binding.woman.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-        binding.man.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_black))
-
-    }
 
 }

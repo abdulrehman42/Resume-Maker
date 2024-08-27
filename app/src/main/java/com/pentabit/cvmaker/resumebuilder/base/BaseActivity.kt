@@ -16,7 +16,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.SharePref
 abstract class BaseActivity : AppCompatActivity() {
 
    // var progressBar: KProgressHUD? = null
-   lateinit var sharePref: SharePref
+//   lateinit var sharePref: SharePref
      lateinit var options: NavOptions
 
 
@@ -24,7 +24,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bottomNavigationColor()
         enableEdgeToEdge()
-        sharePref = SharePref.mInstence!!
+//        sharePref = SharePref.mInstence!!
         options = NavOptions.Builder()
             .setLaunchSingleTop(true)
             .setEnterAnim(R.anim.fade_in)

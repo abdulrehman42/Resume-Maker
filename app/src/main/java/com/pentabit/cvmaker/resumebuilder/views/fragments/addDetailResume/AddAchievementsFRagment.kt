@@ -8,14 +8,17 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddAchievementsFRagmentBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBinding>() {
+class AddAchievementsFRagment(val data: ProfileModelAddDetailResponse.UserAchievement?) : BaseFragment<FragmentAddAchievementsFRagmentBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     val list = ArrayList<AchievementRequest>()
 
@@ -27,12 +30,14 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
             addDetailResumeVM.isHide.value = true
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -46,7 +51,7 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
             placeholder = ""
         )
         binding.includeTool.textView.text = getString(R.string.add_achievement)
-        val data = sharePref.readProfileAchievement()
+//        val data = sharePref.readProfileAchievement()
         if (data != null) {
             binding.achieveedittext.setText(data.title)
             binding.descriptionedittext.setText(data.description)
@@ -75,7 +80,8 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
                 if (hasFocus) {
                     com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.showWheelDatePickerDialog(
                         currentActivity(),
-                        object : com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
+                        object :
+                            com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
                             override fun onButtonClick(date: String) {
                                 binding.issueDateeedittext.setText(date)
                             }
@@ -99,8 +105,7 @@ class AddAchievementsFRagment : BaseFragment<FragmentAddAchievementsFRagmentBind
         val achievementRequest = AchievementRequest(achievements = achievemnt)
 
         addDetailResumeVM.editAchievement(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
-            achievementRequest
+             achievementRequest
         )
     }
 

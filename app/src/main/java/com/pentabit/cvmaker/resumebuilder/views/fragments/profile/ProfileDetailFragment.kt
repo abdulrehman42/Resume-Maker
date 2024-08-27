@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.addCallback
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
@@ -18,6 +19,7 @@ import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceProfAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SkillProfAdapter
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,8 +30,18 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(currentActivity()) {
-            sharePref.writeDataProfile(it)
             setValues(it)
+        }
+        addDetailResumeVM.loadingState.observe(currentActivity()) {
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
+            }
         }
     }
 
@@ -44,23 +56,18 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
     }
 
     private fun apiCAll() {
-        addDetailResumeVM.getProfileDetail(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID)
-                .toString()
-        )
+        addDetailResumeVM.getProfileDetail()
+
     }
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
-            sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
-        /*currentActivity().onBackPressedDispatcher.addCallback {
-            sharePref.deleteItemSharePref(Constants.DATA_PROFILE)
-            currentActivity().onBackPressedDispatcher.onBackPressed()
-        }*/
         binding.includeTool.share.setOnClickListener {
-            currentActivity().startActivity(Intent(currentActivity(), AddDetailResume::class.java))
+            val intent = Intent(requireActivity(), AddDetailResume::class.java)
+            intent.putExtra(Constants.IS_EDIT, true)
+            startActivity(intent)
         }
         binding.createBtn.setOnClickListener {
             startActivity(Intent(currentActivity(), AddDetailResume::class.java))

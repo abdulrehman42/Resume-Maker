@@ -84,12 +84,12 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-    fun alertboxPurchase(curentactivity:Activity) {
+    fun alertboxPurchase(curentactivity:Activity,param: DialogCallback) {
         val binding= AddRemoveBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
         binding.removeAddBtn.setOnClickListener {
-
+            param.onButtonClick(true)
             dialogBuilder.dismiss()
         }
         binding.maybeLaterBtn.setOnClickListener {

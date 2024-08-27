@@ -11,7 +11,7 @@ import io.paperdb.Paper
 
 @HiltAndroidApp
 class ResumeMakerApplication : AppsKitSDKApplication() {
-    var sharePref: SharePref? = null
+//    var sharePref: SharePref? = null
 
     companion object {
         lateinit var instance: ResumeMakerApplication
@@ -50,8 +50,8 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
     }
 
     private fun initialize() {
-        SharePref.init(this)
-        sharePref = SharePref.getInstance()
+//        SharePref.init(this)
+//        sharePref = SharePref.getInstance()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 }

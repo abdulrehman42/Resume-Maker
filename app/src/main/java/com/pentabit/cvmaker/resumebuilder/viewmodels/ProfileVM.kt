@@ -5,16 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pentabit.cvmaker.resumebuilder.api.http.ResponseCallback
 import com.pentabit.cvmaker.resumebuilder.api.repository.ProfileRepository
+import com.pentabit.cvmaker.resumebuilder.models.LoaderModel
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class ProfileVM @Inject constructor(val profileRepository: ProfileRepository):
     ViewModel() {
+
     val loadingState = MutableLiveData<Boolean>()
     val dataResponse=MutableLiveData<List<ProfileListingModel>>()
     val getString = MutableLiveData<String>()
+
     fun getProfileList() {
         viewModelScope.launch {
             loadingState.postValue(true)

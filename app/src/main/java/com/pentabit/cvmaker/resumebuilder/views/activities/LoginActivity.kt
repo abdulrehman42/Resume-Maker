@@ -33,12 +33,16 @@ class LoginActivity : BaseActivity() {
     lateinit var googleoption: GoogleSignInOptions
     lateinit var googleclient: GoogleSignInClient
     var isResume = false
+    var isMain = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.navy_blue)
         binding = FragmentLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         isResume = intent.getBooleanExtra(Constants.IS_RESUME, false)
+        isMain = intent.getBooleanExtra(Constants.IS_MAIN, false)
+
         binding.loginbtnlinearbtn.setOnClickListener {
             sign_process()
         }
@@ -54,13 +58,16 @@ class LoginActivity : BaseActivity() {
             }
         }
         templateViewModel.loginResponse.observe(this) {
-            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED,true)
-            sharePref.writeBoolean(Constants.IS_LOGGED, true)
-            AppsKitSDKPreferencesManager.getInstance().addInPreferences(AUTH_TOKEN, it)
+           // AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, true)
+//            sharePref.writeBoolean(Constants.IS_LOGGED, true)
+            templateViewModel.isLogin.value=true
+         //   AppsKitSDKPreferencesManager.getInstance().addInPreferences(AUTH_TOKEN, it)
 
             //addToken(it.token)
             if (isResume) {
                 navigateToProfileActivity()
+            } else if (isMain) {
+                finish()
             } else {
                 navigateToAddDetailResumeActivity()
             }
@@ -134,7 +141,7 @@ class LoginActivity : BaseActivity() {
 
     private fun navigateToProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
-        sharePref.writeString(Constants.FRAGMENT_CALLED, Constants.RESUME)
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
         startActivity(intent)
         finish()
     }

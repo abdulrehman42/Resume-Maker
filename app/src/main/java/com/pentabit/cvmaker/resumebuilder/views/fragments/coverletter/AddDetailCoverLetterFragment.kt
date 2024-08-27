@@ -11,6 +11,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddDetailCoverLett
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +24,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
 
     override fun observeLiveData() {
         templateViewModel.coverLetterResponse.observe(currentActivity()) {
-            sharePref.writeString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID, it.id.toString())
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID, it.id.toString())
             moveToFragment()
         }
 

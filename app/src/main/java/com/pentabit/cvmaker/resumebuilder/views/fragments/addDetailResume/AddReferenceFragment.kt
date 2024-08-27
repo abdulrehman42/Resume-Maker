@@ -8,6 +8,7 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddReferenceBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
@@ -18,7 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
+class AddReferenceFragment(val userReference: ProfileModelAddDetailResponse.UserReference?) : BaseFragment<FragmentAddReferenceBinding>() {
     lateinit var addDetailResumeVM : AddDetailResumeVM
 
     override val inflate: Inflate<FragmentAddReferenceBinding>
@@ -30,11 +31,15 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -48,12 +53,11 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
             binding.bannerAdd,
             placeholder = ""
         )
-        val data = sharePref.readProfileReference()
-        data?.let {
-            binding.referrencenameedit.setText(data.name)
-            binding.companyName.setText(data.company)
-            binding.emailedit.setText(data.email)
-            binding.phone.setText(data.phone)
+        userReference?.let {
+            binding.referrencenameedit.setText(userReference.name)
+            binding.companyName.setText(userReference.company)
+            binding.emailedit.setText(userReference.email)
+            binding.phone.setText(userReference.phone)
         }
         onclick()
     }
@@ -85,7 +89,7 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
     fun isConditionMet(): Boolean {
         return !binding.jobedittext.text.toString().isNullOrEmpty() &&
                 !binding.referrencenameedit.text.toString().isNullOrEmpty()&&
-                Helper.isValidEmail(currentActivity(),binding.emailedit.text.toString()) &&
+                Helper.isValidEmail(binding.emailedit.text.toString()) &&
                 !binding.phone.text.toString().isNullOrEmpty() &&
                 !binding.companyName.text.toString().isNullOrEmpty()
     }
@@ -99,6 +103,6 @@ class AddReferenceFragment : BaseFragment<FragmentAddReferenceBinding>() {
         val referenceRequest = ReferenceRequest(references = reference)
 
         addDetailResumeVM.editReference(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(), referenceRequest)
+             referenceRequest)
     }
 }

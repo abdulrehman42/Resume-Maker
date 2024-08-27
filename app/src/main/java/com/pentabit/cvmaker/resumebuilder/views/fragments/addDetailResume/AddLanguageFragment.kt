@@ -1,11 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
@@ -20,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
+class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFragment<FragmentAddLanguageBinding>()
 {
     lateinit var addDetailResumeVM : AddDetailResumeVM
     var list=ArrayList<String>()
@@ -33,11 +29,15 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
+            if (it.loader)
             {
                 binding.loader.isGone=false
             }else{
                 binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -45,20 +45,19 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM= ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
-        val data_list=sharePref.readProfileData()
+//        val data_list=sharePref.readProfileData()
         binding.includeTool.textView.text=getString(R.string.add_language)
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
-        if (data_list!=null)
+        if (data!=null)
         {
-            list= data_list.userLanguages as ArrayList<String>
+            list= data as ArrayList<String>
         }
-        val data=sharePref.readString(Constants.DATA)
-        data?.let{
-            binding.languageEdittext.setText(data)
+        language?.let{
+            binding.languageEdittext.setText(language)
         }
        // onAdapter()
         onclick()
@@ -104,7 +103,6 @@ class AddLanguageFragment : BaseFragment<FragmentAddLanguageBinding>()
     }
     private fun apiCall() {
         addDetailResumeVM.editLanguage(
-            sharePref.readString(Constants.PROFILE_ID).toString(),
             LanguageRequestModel(list)
         )
     }

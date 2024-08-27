@@ -11,6 +11,7 @@ public enum JSONKeys {
     PAGE_NUMBER("page"),
     PROFILE_COMPLETION("profileCompletion"),
     DATA_SOURCE("source"),
+    PROFILE("profile"),
     TOKEN("token");
 
     private final String key;

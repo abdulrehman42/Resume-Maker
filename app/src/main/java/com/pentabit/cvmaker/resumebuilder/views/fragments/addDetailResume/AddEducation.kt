@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddEducationBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.EducationResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualification
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
@@ -18,7 +21,8 @@ import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
+class AddEducation(val data: ProfileModelAddDetailResponse.UserQualification?) :
+    AddDetailsBaseFragment<FragmentAddEducationBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     var endDate: String? = null
 
@@ -26,16 +30,19 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         get() = FragmentAddEducationBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.educationResponse.observe(currentActivity()) {
-               addDetailResumeVM.isHide.value = true
-               currentActivity().onBackPressedDispatcher.onBackPressed()
+        addDetailResumeVM.educationResponse.observe(this) {
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+
+            if (it.loader) {
+                binding.loader.isGone = false
+            } else {
+                binding.loader.isGone = true
+            }
+            if (!it.msg.isNullOrBlank()) {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -46,17 +53,19 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_education)
-        AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
+        AppsKitSDKAdsManager.showNative(
+            currentActivity(), binding.bannerAdd, ""
 
         );
-        val data = sharePref.readDataEducation()
+//        val data = sharePref.readDataEducation()
         data?.let {
             binding.instituenameedittext.setText(data.institute)
             binding.degreeName.setText(data.degree)
             binding.startdateedittext.setText(
-                Helper.convertIsoToCustomFormat(data.startDate))
+                Helper.convertIsoToCustomFormat(data.startDate)
+            )
             binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(data.endDate))
         }
         onclick()
@@ -79,7 +88,8 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
                     // The EditText gained focus
                     com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.showWheelDatePickerDialog(
                         currentActivity(),
-                        object : com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
+                        object :
+                            com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
                             override fun onButtonClick(date: String) {
                                 // Handle the result here
                                 binding.startdateedittext.setText(date)
@@ -93,7 +103,8 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
                     // The EditText gained focus
                     com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.showWheelDatePickerDialog(
                         currentActivity(),
-                        object : com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
+                        object :
+                            com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringDialogCallback {
                             override fun onButtonClick(date: String) {
                                 // Handle the result here
                                 binding.enddateedittext.setText(date)
@@ -106,19 +117,12 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
                 CallApi()
-                /*MainScope().launch {
-                    delay(2000)
-                        addDetailResumeVM.isHide.value = true
-                        currentActivity().onBackPressedDispatcher.onBackPressed()
-                }*/
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
-
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
         /*currentActivity().onBackPressedDispatcher.addCallback (viewLifecycleOwner){
             addDetailResumeVM.isHide.value = true
@@ -132,11 +136,12 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         } else {
             binding.enddateedittext.text.toString()
         }
+
         val qualifications = listOf(
             Qualification(
-                degree = "-1__"+binding.degreeName.text.toString(),
+                degree = "-1__" + binding.degreeName.text.toString(),
                 endDate = endDate,
-                institute = "-1__"+binding.instituenameedittext.text.toString(),
+                institute = "-1__" + binding.instituenameedittext.text.toString(),
                 qualificationType = "degree",
                 startDate = binding.startdateedittext.text.toString()
             )
@@ -145,7 +150,6 @@ class AddEducation : AddDetailsBaseFragment<FragmentAddEducationBinding>() {
         val qualificationModelRequest = QualificationModelRequest(qualifications = qualifications)
 
         addDetailResumeVM.editQualification(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             qualificationModelRequest
         )
     }

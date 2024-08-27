@@ -3,7 +3,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
@@ -23,7 +22,7 @@ import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
+class AddSkillFragment(val userSkills: List<String>?, val skill_name: String?) : BaseFragment<FragmentAddSkillBinding>() {
     lateinit var suggestionAdapter1: SuggestionAdapter
     val userSkillAdapter= UserSkillAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
@@ -43,10 +42,15 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
             onAdapter(it)
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
+            if (it.loader)
+            {
+                binding.loader.isGone=false
+            }else{
+                binding.loader.isGone=true
+            }
+            if (!it.msg.isNullOrBlank())
+            {
+                currentActivity().showToast(it.msg)
             }
         }
     }
@@ -55,14 +59,12 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
         addDetailResumeVM = ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_skill)
         AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
-        );
-        val userskillList=sharePref.readProfileData()?.userSkills
-        userskillList?.let {
-            alreadyUserSkills= userskillList as ArrayList<String>
+        )
+        userSkills?.let {
+            alreadyUserSkills= userSkills as ArrayList<String>
         }
-        val data = sharePref.readString(Constants.DATA)
-        data?.let {
-            binding.skillEdittext.setText(data)
+        skill_name?.let {
+            binding.skillEdittext.setText(skill_name)
         }
         binding.skillEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -158,7 +160,6 @@ class AddSkillFragment : BaseFragment<FragmentAddSkillBinding>() {
 
     private fun apiCall() {
         addDetailResumeVM.editSkill(
-            sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID).toString(),
             SkillRequestModel(list)
         )
     }
