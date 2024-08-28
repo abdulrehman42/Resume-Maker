@@ -11,15 +11,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_education"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
-        app:layout_constraintTop_toTopOf="@+id/recyclerview_education" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_education"
@@ -50,6 +41,17 @@
         app:layout_constraintEnd_toEndOf="@+id/nextbtn"
         app:shapeAppearance="@style/CircularFloating" />
 
+    <TextView
+        android:id="@+id/popup"
+        style="@style/regular"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Education Added"
+        app:layout_constraintBottom_toTopOf="@+id/addeducationbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview_education" />
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/nextbtn"
         style="@style/subheading"
@@ -84,6 +86,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/nextbtn"
         app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
         app:layout_constraintTop_toTopOf="@+id/nextbtn" />
+
+
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_education"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview_education" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

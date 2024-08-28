@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.addDetailResume.AddAchievementsFRagment">
+>
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -19,15 +22,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/include_tool"
         app:layout_constraintEnd_toEndOf="parent" />
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/savebtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/achievementtitle_textInputLayout"
         android:layout_width="match_parent"
@@ -63,6 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/issueDateeedittext"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
             android:hint="Issue Date"
             tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -100,5 +97,13 @@
         app:layout_constraintHorizontal_bias="0.659"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
-
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/savebtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

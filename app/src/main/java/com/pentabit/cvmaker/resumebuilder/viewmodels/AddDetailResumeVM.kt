@@ -38,7 +38,6 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
     val loadingState = MutableLiveData<LoaderModel>()
     val data = MutableLiveData<String>()
     var fragment = SingleLiveEvent<Fragment>()
-    var isHide = SingleLiveEvent<Boolean>()
     var looksupResponse = MutableLiveData<List<LookUpResponse>>()
     val dataResponse = MutableLiveData<ProfileModelAddDetailResponse>()
     val objectiveResponse = MutableLiveData<ProfileModelAddDetailResponse>()
@@ -376,8 +375,8 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     getProfileId(),
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
                             loadingState.postValue(LoaderModel(false, ""))
+                            dataResponse.postValue(data as ProfileModelAddDetailResponse)
 
                         }
 
@@ -393,7 +392,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun getLookUp(key: String, query: String, s: String, s1: String) {
+    fun getLookUp(key: String, query: String?, s: String, s1: String) {
         viewModelScope.launch {
             loadingState.postValue(LoaderModel(true, ""))
 

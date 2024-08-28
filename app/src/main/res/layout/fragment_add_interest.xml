@@ -4,7 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.addDetailResume.AddInterestFragment">
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+>
     <FrameLayout
         android:id="@+id/banner_add"
         android:layout_width="match_parent"
@@ -46,6 +49,17 @@
             android:layout_height="wrap_content"
             android:hint="@string/interest" />
     </com.google.android.material.textfield.TextInputLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lookid_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/interest_textInputLayout" />
 
 
     <androidx.recyclerview.widget.RecyclerView

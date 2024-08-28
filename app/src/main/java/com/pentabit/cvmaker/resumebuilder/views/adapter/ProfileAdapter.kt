@@ -22,7 +22,7 @@ import java.io.File
 class ProfileAdapter : ListAdapter<ProfileListingModel, AppsKitSDKRecyclerBaseViewBinding>(
     ProfileListingModelDiffCallback
 ) {
-
+     var isViewProfile=false
      private var callback: ProfileItemCallbacks? = null
 
     fun setCallback(callback1: ProfileItemCallbacks) {
@@ -44,6 +44,10 @@ class ProfileAdapter : ListAdapter<ProfileListingModel, AppsKitSDKRecyclerBaseVi
     override fun onBindViewHolder(holder: AppsKitSDKRecyclerBaseViewBinding, position: Int) {
         val binding = holder.binding as CustomprofileitemBinding
         val model = getItem(position)
+        if (isViewProfile)
+        {
+            binding.textView4.setText("View Profile")
+        }
         binding.name.text = model.name.replaceFirstChar { it.uppercase() }
         binding.profession.text = model.jobTitle
         Glide.with(binding.imageProfile.context)

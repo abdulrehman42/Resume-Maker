@@ -1,14 +1,18 @@
 package com.pentabit.cvmaker.resumebuilder.views.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
@@ -21,6 +25,7 @@ import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityAddDetailResumeBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.AddmorealertdialogueBinding
+import com.pentabit.cvmaker.resumebuilder.utils.PermisionHElper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.AchievementFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.EducationFragment
@@ -41,6 +46,7 @@ class AddDetailResume : BaseActivity() {
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var permissionList=ArrayList<String>()
 
     data class TabModel(
         val id: Int,
@@ -55,7 +61,6 @@ class AddDetailResume : BaseActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
         addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
-
         setUpTablayout()
         onclick()
         observeLiveData()
@@ -248,7 +253,7 @@ class AddDetailResume : BaseActivity() {
         }
 
         // Set system bars to be transparent
-        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
+        window.statusBarColor = ContextCompat.getColor(this,R.color.navy_blue)
         window.navigationBarColor = Color.TRANSPARENT
 
         // Optionally, handle light or dark mode for the status bar icons
@@ -261,4 +266,53 @@ class AddDetailResume : BaseActivity() {
         window.decorView.systemUiVisibility = flags
     }
 
+
+
+
+    fun checkReadPermission(): Boolean {
+        return ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+            this, Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED)) || (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+            this, Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED)
+    }
+
+    fun askReadWritePermission() {
+        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            permissionList.clear()
+            if (SDK_INT < Build.VERSION_CODES.TIRAMISU) permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (SDK_INT < Build.VERSION_CODES.Q) permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            permissionList.add(Manifest.permission.CAMERA)
+            PermisionHElper.askForPermission(
+                permissionList,
+                this,
+                "To enhance your experience, we kindly request access to your device's storage to retrieve necessary data."
+            )
+        } else {
+            askAbovePermission()
+        }
+    }
+
+    private fun askAbovePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(
+                Manifest.permission.READ_MEDIA_IMAGES
+            )
+        }
+    }
+    fun askCameraPermission() {
+        permissionList.clear()
+        permissionList.add(Manifest.permission.CAMERA)
+        PermisionHElper.askForPermission(
+            permissionList,
+            this,
+            "For a more interactive and personalized experience, we seek permission to access your device's camera to enable features such as photo capture and augmented reality."
+        )
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (java.lang.Boolean.TRUE == isGranted) {
+            }
+        }
 }

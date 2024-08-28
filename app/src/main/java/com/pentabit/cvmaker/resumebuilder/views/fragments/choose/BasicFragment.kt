@@ -41,7 +41,8 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
     private fun setAdapter() {
         templateAdapter.submitList(list)
         templateAdapter.setOnEyeItemClickCallback {
-            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
+            AppsKitSDKPreferencesManager.getInstance()
+                .addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
             DialogueBoxes.alertbox(
                 it.path,
                 currentActivity(),
@@ -59,19 +60,21 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                                                     "",
                                                     object : RewardedAdCallbacks {
                                                         override fun onRewardedCompleted() {
-                                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                                                                Constants.TEMPLATE_ID,
-                                                                it.id.toString()
-                                                            )
+                                                            AppsKitSDKPreferencesManager.getInstance()
+                                                                .addInPreferences(
+                                                                    Constants.TEMPLATE_ID,
+                                                                    it.id.toString()
+                                                                )
                                                             callback?.onTemplateSelected(it)
 
                                                         }
 
                                                         override fun onAdRewarded() {
-                                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                                                                Constants.TEMPLATE_ID,
-                                                                it.id.toString()
-                                                            )
+                                                            AppsKitSDKPreferencesManager.getInstance()
+                                                                .addInPreferences(
+                                                                    Constants.TEMPLATE_ID,
+                                                                    it.id.toString()
+                                                                )
                                                             callback?.onTemplateSelected(it)
                                                         }
 
@@ -97,11 +100,13 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
 
                                     })
                             } else {
-                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
+                                AppsKitSDKPreferencesManager.getInstance()
+                                    .addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                                 callback?.onTemplateSelected(it)
                             }
                         } else {
-                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
+                            AppsKitSDKPreferencesManager.getInstance()
+                                .addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                             callback?.onTemplateSelected(it)
                         }
                     }
@@ -121,19 +126,21 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
                                     "",
                                     object : RewardedAdCallbacks {
                                         override fun onRewardedCompleted() {
-                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                                                Constants.TEMPLATE_ID,
-                                                it.id.toString()
-                                            )
+                                            AppsKitSDKPreferencesManager.getInstance()
+                                                .addInPreferences(
+                                                    Constants.TEMPLATE_ID,
+                                                    it.id.toString()
+                                                )
                                             callback?.onTemplateSelected(it)
 
                                         }
 
                                         override fun onAdRewarded() {
-                                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                                                Constants.TEMPLATE_ID,
-                                                it.id.toString()
-                                            )
+                                            AppsKitSDKPreferencesManager.getInstance()
+                                                .addInPreferences(
+                                                    Constants.TEMPLATE_ID,
+                                                    it.id.toString()
+                                                )
                                             callback?.onTemplateSelected(it)
                                         }
 
@@ -159,7 +166,8 @@ class BasicFragment(val list: List<TemplateModel>?) : BaseFragment<FragmentBasic
 
                     })
             } else {
-                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
+                AppsKitSDKPreferencesManager.getInstance()
+                    .addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                 callback?.onTemplateSelected(it)
             }
 

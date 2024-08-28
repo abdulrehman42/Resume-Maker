@@ -11,16 +11,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_skill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner_add" />
-    <androidx.recyclerview.widget.RecyclerView
+       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_skill"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -83,5 +74,25 @@
         app:layout_constraintBottom_toBottomOf="@+id/nextbtn"
         app:layout_constraintStart_toStartOf="@+id/recyclerview_skill"
         app:layout_constraintTop_toTopOf="@+id/nextbtn" />
+    <TextView
+        android:id="@+id/popup"
+        style="@style/regular"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Skill Added"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_experience"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview_experience" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

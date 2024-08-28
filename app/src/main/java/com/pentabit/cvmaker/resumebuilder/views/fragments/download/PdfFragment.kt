@@ -13,6 +13,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.views.adapter.download.DownloadImgAdapter
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import java.io.File
 
 
@@ -37,23 +38,12 @@ class PdfFragment : BaseFragment<FragmentPdfBinding>() {
                 it.path,
                 currentActivity())
         }
-//        var name= Constants.RESUME
-//        if (sharePref.readBoolean(Constants.IS_RESUME,false))
-//        {
-//            name= Constants.RESUME
-//        }else{
-//            name= Constants.COVER_LETTER
-//        }
-//        val load=Helper.loadPdfFromHiddenStorage(
-//            sharePref.readString(Constants.PROFILE_ID).toString(),
-//            name,
-//            currentActivity()
-//        )
+
         val cw = ContextWrapper(AppsKitSDK.getInstance().context)
 
 
         // Get the base directory
-        val directory = cw.getDir("USER_ID", Context.MODE_PRIVATE)
+        val directory = cw.getDir(AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.USER_ID), Context.MODE_PRIVATE)
 
 
         // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)

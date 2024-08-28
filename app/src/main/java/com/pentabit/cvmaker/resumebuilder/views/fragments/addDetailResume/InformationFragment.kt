@@ -1,23 +1,23 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
-import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
+import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.IMAGE_CODE
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseImage
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.getFileFromUri
 import com.google.android.material.tabs.TabLayout
@@ -25,7 +25,6 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentInformationBinding
-import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
@@ -33,6 +32,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -45,8 +45,10 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     private var getImage = ""
     private var gender = ""
     private lateinit var selectedImageBitmap: Bitmap
-    private val looksAdapter = LooksAdapter()
+    private var looksAdapter = LooksAdapter()
     private var isEditProfile = false
+    private var isProgrammaticallySettingText = false
+    val adapter = ""
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     lateinit var tabhost: TabLayout
 
@@ -69,24 +71,18 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                 .addInPreferences(PROFILE_ID, it.id.toString())
             tabhost.getTabAt(1)!!.select()
         }
-
+        addDetailResumeVM.looksupResponse.observe(this) {
+            looksAdapter.submitList(it)
+            if (it.size == 0)
+                binding.lookidRecyclerview.isGone = true
+            else
+                binding.lookidRecyclerview.isGone = false
+        }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
             AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
             if (it.msg.isNotBlank()) {
                 AppsKitSDKUtils.makeToast(it.msg)
             }
-        }
-    }
-
-    private fun setAdapter(lookUpResponses: List<LookUpResponse>) {
-        looksAdapter.submitList(lookUpResponses)
-        binding.lookidRecyclerview.apply {
-            isGone = false
-            adapter = looksAdapter
-        }
-        looksAdapter.setOnItemClickCallback {
-            binding.jobedittext.setText(it.text)
-            binding.lookidRecyclerview.isGone = true
         }
     }
 
@@ -98,6 +94,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             addDetailResumeVM.getProfileDetail()
         }
 
+        binding.lookidRecyclerview.apply {
+            adapter = looksAdapter
+        }
         onclick()
     }
 
@@ -120,20 +119,24 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             .placeholder(R.drawable.imgplaceholder).into(binding.shapeableImageView)
     }
 
-    @SuppressLint("ResourceAsColor")
     private fun onclick() {
-        binding.dobEdit.onFocusChangeListener =
-            View.OnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    DialogueBoxes.showWheelDatePickerDialog(
-                        currentActivity(),
-                        object : DialogueBoxes.StringDialogCallback {
-                            override fun onButtonClick(date: String) {
-                                binding.dobEdit.setText(date)
-                            }
-                        })
+        binding.dobEdit.setOnClickListener {
+            DialogueBoxes.showWheelDatePickerDialogDOB(
+                currentActivity(),
+                object : DialogueBoxes.StringDialogCallback {
+                    override fun onButtonClick(date: String) {
+                        binding.dobEdit.setText(date)
+                    }
                 }
-            }
+            )
+        }
+        looksAdapter.setOnItemClickCallback {
+            binding.jobedittext.setText(Helper.removeOneUnderscores("1__" + it.text))
+           // callLookUpApi(null)
+            isProgrammaticallySettingText=true
+            binding.lookidRecyclerview.isGone = true
+        }
+
 
         binding.man.setOnClickListener {
             manageGenderSelection(getString(R.string.male))
@@ -142,9 +145,20 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         binding.editprofile.setOnClickListener {
             alertboxChooseImage(currentActivity()) {
                 if (it == Constants.CAMERA) {
-                    openCamera()
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(), Manifest.permission.CAMERA
+                        ) == PackageManager.PERMISSION_GRANTED && (requireActivity() as AddDetailResume).checkReadPermission()
+                    ) openCamera()
+                    else {
+                        (requireActivity() as AddDetailResume).askCameraPermission()
+                        (requireActivity() as AddDetailResume).askReadWritePermission()
+                    }
                 } else {
-                    galleryOpen()
+                    if ((requireActivity() as AddDetailResume).checkReadPermission())
+                        galleryOpen()
+                    else {
+                        (requireActivity() as AddDetailResume).askReadWritePermission()
+                    }
                 }
             }
         }
@@ -153,18 +167,30 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         }
 
         binding.jobedittext.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = binding.jobedittext.text.toString()
-                //   callLookUpApi(query)
+                if (!isProgrammaticallySettingText) {
+                    val query = s.toString()
+                    if (query.isEmpty()) {
+                        callLookUpApi(null) // Send null query if the text is erased
+                        binding.lookidRecyclerview.isGone = true
+                    } else {
+                        callLookUpApi(query)
+                        binding.lookidRecyclerview.isGone = false
+                    }
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                val query = binding.jobedittext.text.toString()
-                //    callLookUpApi(query)
+                if (!isProgrammaticallySettingText) {
+                    if (s.isNullOrEmpty()) {
+                        callLookUpApi(null) // Send null query when text is erased
+                        binding.lookidRecyclerview.isGone = true
+                    }
+                }
+                isProgrammaticallySettingText=false
+
             }
         })
 
@@ -180,8 +206,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         }
     }
 
-    private fun callLookUpApi(query: String) {
-        addDetailResumeVM.getLookUp(Constants.position, query, "", "")
+    private fun callLookUpApi(query: String?) {
+        addDetailResumeVM.getLookUp(Constants.position, query, "", "10")
     }
 
     private fun callApiUpdate() {
@@ -197,6 +223,11 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     }
 
     fun grtProfileModel(): CreateProfileRequestModel {
+        var address: String? = null
+        address = binding.address.text.toString()
+        if (address.isEmpty()) {
+            address = null
+        }
         return CreateProfileRequestModel(
             binding.nameedittext.text.toString(),
             binding.emailtext.text.toString(),
@@ -205,13 +236,13 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             gender,
             binding.jobedittext.text.toString(),
             binding.dobEdit.text.toString(),
-            binding.address.text.toString()
+            address
         )
     }
 
     private fun isAllRequiredFieldsComplete(): Boolean {
         return isFieldNotNullOrEmpty(binding.nameedittext, binding.jobedittext, binding.dobEdit) &&
-                Helper.isValidEmail(binding.emailtext.text.toString()) &&
+                Helper.isValidEmail(binding.emailtext.text.toString())&&
                 !gender.isNullOrEmpty() &&
                 (isEditProfile || !getImage.isNullOrEmpty())
     }
@@ -226,55 +257,48 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         return true
     }
 
-    private fun openCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, IMAGE_CODE)
-    }
 
-
-    fun galleryOpen() {
-        val i = Intent()
-        i.type = "image/*"
-        i.action = Intent.ACTION_GET_CONTENT
-        launchSomeActivity.launch(i)
-    }
-
-    var launchSomeActivity = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result: ActivityResult ->
-        if (result.resultCode
-            == RESULT_OK
-        ) {
-            val data = result.data
-            if (data != null
-                && data.data != null
-            ) {
-                val selectedImageUri = data.data
+    private val galleryResultLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
                 try {
-                    selectedImageBitmap = MediaStore.Images.Media.getBitmap(
-                        requireActivity().contentResolver,
-                        selectedImageUri
-                    )
+                    selectedImageBitmap =
+                        MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, it)
+                    binding.shapeableImageView.setImageBitmap(selectedImageBitmap)
+                    image = selectedImageBitmap.toString()
+                    getImage = getFileFromUri(currentActivity(), it).toString()
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-                binding.shapeableImageView.setImageBitmap(selectedImageBitmap)
-                image = selectedImageBitmap.toString()
-                val uri: Uri? = data?.data
-                getImage = uri?.let { getFileFromUri(currentActivity(), it) }.toString()
+            }
+        }
+
+
+    private var cameraPhotoUri: Uri? = null
+
+    @RequiresPermission(Manifest.permission.CAMERA)
+    private fun openCamera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraPhotoUri = requireActivity().contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues()
+        )
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraPhotoUri)
+        takePhotoLauncher.launch(cameraPhotoUri!!)
+    }
+
+    private val takePhotoLauncher: ActivityResultLauncher<Uri> = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { result ->
+        if (java.lang.Boolean.TRUE == result) {
+            if (cameraPhotoUri != null) {
+                Glide.with(requireActivity()).load(cameraPhotoUri).into(binding.shapeableImageView)
+                getImage = getFileFromUri(currentActivity(), cameraPhotoUri!!).toString()
             }
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_CODE) {
-            val uri: Uri? = data?.data
-            getImage = uri?.let { getFileFromUri(currentActivity(), it) }.toString()
-            Glide.with(requireActivity()).load(uri).into(binding.shapeableImageView)
-
-        }
+    private fun galleryOpen() {
+        galleryResultLauncher.launch("image/*")
     }
 
     private fun manageGenderSelection(gend: String) {

@@ -20,9 +20,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLoginBinding
+import com.pentabit.cvmaker.resumebuilder.json.JWTUtils
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.AUTH_TOKEN
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,19 +53,16 @@ class LoginActivity : BaseActivity() {
 
     private fun liveDataObserve() {
         templateViewModel.loadingState.observe(this) {
-            if (it) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
+            AppsKitSDKUtils.setVisibility(it, binding.loader)
+            /*if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
+            }*/
         }
         templateViewModel.loginResponse.observe(this) {
-           // AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, true)
-//            sharePref.writeBoolean(Constants.IS_LOGGED, true)
-            templateViewModel.isLogin.value=true
-         //   AppsKitSDKPreferencesManager.getInstance().addInPreferences(AUTH_TOKEN, it)
-
-            //addToken(it.token)
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, true)
+            templateViewModel.isLogin.value = true
+            AppsKitSDKPreferencesManager.getInstance()
+                .addInPreferences(Constants.USER_ID, JWTUtils.decoded(it))
             if (isResume) {
                 navigateToProfileActivity()
             } else if (isMain) {
@@ -121,8 +120,6 @@ class LoginActivity : BaseActivity() {
                                             showToast("Authentication failed with unknown error")
                                         }
                                     }
-                                    // Safely retrieve the user's email
-
                                 } else {
                                     task1.exception?.let { exception ->
                                         showToast(exception.message ?: "Authentication failed")
@@ -141,7 +138,8 @@ class LoginActivity : BaseActivity() {
 
     private fun navigateToProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
+        AppsKitSDKPreferencesManager.getInstance()
+            .addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
         startActivity(intent)
         finish()
     }

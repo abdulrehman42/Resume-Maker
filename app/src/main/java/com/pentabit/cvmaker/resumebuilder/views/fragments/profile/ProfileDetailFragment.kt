@@ -3,7 +3,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.addCallback
+import android.view.View
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,12 +14,14 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileDetailBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.OnDoubleClickListener
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
+import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceProfAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SkillProfAdapter
-import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,14 +35,10 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             setValues(it)
         }
         addDetailResumeVM.loadingState.observe(currentActivity()) {
-            if (it.loader) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
-            if (!it.msg.isNullOrBlank())
-            {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
@@ -70,8 +68,31 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             startActivity(intent)
         }
         binding.createBtn.setOnClickListener {
-            startActivity(Intent(currentActivity(), AddDetailResume::class.java))
+            binding.createProfile.isGone=false
+            binding.createCoverletter.isGone=false
         }
+        binding.createProfile.setOnClickListener {
+            startActivity(Intent(currentActivity(),AddDetailResume::class.java))
+        }
+        binding.createCoverletter.setOnClickListener {
+            val intent =Intent(currentActivity(),ChoiceTemplate::class.java)
+            intent.putExtra(Constants.IS_RESUME,false)
+            startActivity(Intent(currentActivity(),AddDetailResume::class.java))
+        }
+        binding.createBtn.setOnClickListener(OnDoubleClickListener { v ->
+            binding.createProfile.animate()
+                .alpha(0f) // Fade out to transparency
+                .setDuration(300) // Duration of the animation
+                .withEndAction {
+                    binding.createProfile.isGone = true // Make it gone after the animation
+                    binding.createCoverletter.animate()
+                        .alpha(0f)
+                        .setDuration(300)
+                        .withEndAction {
+                            binding.createCoverletter.isGone = true
+                        }
+                }
+        })
     }
 
     private fun setValues(profileModelAddDetailResponse: ProfileModelAddDetailResponse) {
@@ -80,11 +101,10 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         val experienceAdapter =
             ExperienceProfAdapter(currentActivity(), profileModelAddDetailResponse.userExperiences)
         val eduAdapter = EducationAdapter(
-            currentActivity(),
-            profileModelAddDetailResponse.userQualifications,
             true,
             {}, {},
         )
+        eduAdapter.submitList(profileModelAddDetailResponse.userQualifications)
         Glide.with(currentActivity())
             .load(Constants.BASE_MEDIA_URL + profileModelAddDetailResponse.path)
             .placeholder(R.drawable.placeholder_image).into(binding.shapeableImageView)

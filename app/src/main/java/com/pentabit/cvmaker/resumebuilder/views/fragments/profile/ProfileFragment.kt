@@ -39,6 +39,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
         profileVM.dataResponse.observe(currentActivity()) {
             if (it.isNullOrEmpty()) {
+                startActivity(Intent(currentActivity(),AddDetailResume::class.java))
                 binding.popupmsg.isGone = false
             } else {
                 binding.popupmsg.isGone = true
@@ -50,6 +51,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun init(savedInstanceState: Bundle?) {
         profileVM = ViewModelProvider(currentActivity())[ProfileVM::class.java]
         binding.includeTool.textView.text = getString(R.string.profile)
+        if(AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.VIEW_PROFILE))
+        {
+            profileAdapter.isViewProfile=true
+        }
         setadapter()
         apiCall()
         onclick()
@@ -116,6 +121,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         binding.recyclerview.apply {
             adapter = profileAdapter
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,false)
     }
 }
 

@@ -6,52 +6,66 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.pentabit.cvmaker.resumebuilder.databinding.CustomprofileitemBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.EducationitemsBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 
 class EducationAdapter(
-    val context: Context, val list: List<ProfileModelAddDetailResponse.UserQualification>,
     val check:Boolean,
-    val onclick:(ProfileModelAddDetailResponse.UserQualification)->Unit,val onDelete:(Int)->Unit): RecyclerView.Adapter<EducationAdapter.ViewHolder>() {
-    inner class ViewHolder(private val binding: EducationitemsBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    val onclick:(ProfileModelAddDetailResponse.UserQualification)->Unit,val onDelete:(Int)->Unit): ListAdapter<ProfileModelAddDetailResponse.UserQualification, AppsKitSDKRecyclerBaseViewBinding>(AddEducationDiffCallback){
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun setData(model: ProfileModelAddDetailResponse.UserQualification) {
-            binding.universityname.text= Helper.removeOneUnderscores(model.institute)
-            binding.degreeName.text= Helper.removeOneUnderscores(model.degree)
-            binding.degreeYears.text= Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
-            binding.editEdu.setOnClickListener {
-                onclick(model)
-            }
-            binding.deleteEdu.setOnClickListener {
-                onDelete(position)
-            }
-            if (check)
-            {
-                binding.editEdu.isGone=true
-                binding.deleteEdu.isGone=true
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AppsKitSDKRecyclerBaseViewBinding {
         val binding = EducationitemsBinding.inflate(
-            LayoutInflater.from(context),
+            LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return ViewHolder(binding)
+        return AppsKitSDKRecyclerBaseViewBinding(binding)
     }
 
-    override fun getItemCount(): Int {
-        return  list.size
-    }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(list[position])
+    override fun onBindViewHolder(holder: AppsKitSDKRecyclerBaseViewBinding, position: Int) {
+        val binding = holder.binding as EducationitemsBinding
+        val model = getItem(position)
+        binding.universityname.text= Helper.removeOneUnderscores(model.institute)
+        binding.degreeName.text= Helper.removeOneUnderscores(model.degree)
+        binding.degreeYears.text= Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
+        binding.editEdu.setOnClickListener {
+            onclick(model)
+        }
+        binding.deleteEdu.setOnClickListener {
+            onDelete(position)
+        }
+        if (check)
+        {
+            binding.editEdu.isGone=true
+            binding.deleteEdu.isGone=true
+        }
+    }
+    object AddEducationDiffCallback : DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserQualification>() {
+        override fun areItemsTheSame(
+            oldItem: ProfileModelAddDetailResponse.UserQualification,
+            newItem: ProfileModelAddDetailResponse.UserQualification
+        ): Boolean {
+            return oldItem.hashCode() == newItem.hashCode()
+        }
+
+        override fun areContentsTheSame(
+            oldItem: ProfileModelAddDetailResponse.UserQualification,
+            newItem: ProfileModelAddDetailResponse.UserQualification
+        ): Boolean {
+            return oldItem.toString() == newItem.toString()
+        }
     }
 
 

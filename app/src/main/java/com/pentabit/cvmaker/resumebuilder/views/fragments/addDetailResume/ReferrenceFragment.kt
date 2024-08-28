@@ -1,5 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
@@ -11,41 +12,49 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentReferrenceBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
+import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
+import com.pentabit.cvmaker.resumebuilder.views.activities.ProfileActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ReferenceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     val referenceAdapter = ReferenceAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    lateinit var tabhost: TabLayout
     var list = ArrayList<ProfileModelAddDetailResponse.UserReference>()
     override val inflate: Inflate<FragmentReferrenceBinding>
         get() = FragmentReferrenceBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
             list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
             setadapter(list)
         }
 
-        addDetailResumeVM.referenceResponse.observe(viewLifecycleOwner){
-            apiCall()
-        }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it.loader)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
-            if (!it.msg.isNullOrBlank())
-            {
-                currentActivity().showToast(it.msg)
-            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
+            apiCall()
         }
     }
 
@@ -55,6 +64,8 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
+
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
@@ -72,15 +83,18 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
         referenceAdapter.submitList(userReferences)
         referenceAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddReferenceFragment(it)
+            addDetailResumeVM.fragment.value = AddReferenceFragment(it, list)
 
         }
         referenceAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
             setadapter(list)
-            callSaveApi()
-            apiCall()
+            if (list.size!=0)
+            {
+                callSaveApi()
+                apiCall()
+
+            }
         }
         binding.recyclerviewReference.adapter = referenceAdapter
     }
@@ -88,7 +102,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     private fun callSaveApi() {
         var reference = ArrayList<ReferenceRequest.Reference>()
         for (i in 0 until list.size) {
-            reference = listOf(
+            reference.add(
                 ReferenceRequest.Reference(
                     list[i].company,
                     list[i].email,
@@ -96,7 +110,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
                     list[i].phone,
                     list[i].position
                 )
-            ) as ArrayList<ReferenceRequest.Reference>
+            )
         }
         val referenceRequest = ReferenceRequest(references = reference)
 
@@ -106,7 +120,6 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     }
 
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
             tabhost.getTabAt(5)!!.select()
 
@@ -115,13 +128,27 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
             if (tabhost.tabCount >= 7) {
                 tabhost.getTabAt(6)!!.select()
             } else {
-                addDetailResumeVM.isHide.value = false
-                addDetailResumeVM.fragment.value = ResumePreviewFragment()
+                alertboxChooseCreation(requireActivity(),
+                    object : DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.PROFILE) {
+                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,true)
+                                startActivity(Intent(requireActivity(),ProfileActivity::class.java))
+                                requireActivity().finish()
+                            } else {
+                                val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
+                                intent.putExtra(IS_RESUME,true)
+                                intent.putExtra(CREATION_TIME, true)
+                                startActivity(intent)
+                                currentActivity().finish()
+                            }
+                        }
+
+                    })
             }
         }
         binding.addreferrenebtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddReferenceFragment(null)
+            addDetailResumeVM.fragment.value = AddReferenceFragment(null,list)
         }
     }
 }

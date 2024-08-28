@@ -2,6 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
@@ -12,6 +13,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Languag
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -24,27 +26,21 @@ class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFr
         get() = FragmentAddLanguageBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.languageResponse.observe(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+        addDetailResumeVM.languageResponse.observe(this) {
+            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it.loader)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
-            }
-            if (!it.msg.isNullOrBlank())
-            {
-                currentActivity().showToast(it.msg)
+        addDetailResumeVM.loadingState.observe(this){
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM= ViewModelProvider(this)[AddDetailResumeVM::class.java]
 //        val data_list=sharePref.readProfileData()
         binding.includeTool.textView.text=getString(R.string.add_language)
         AppsKitSDKAdsManager.showBanner(
@@ -89,13 +85,12 @@ class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFr
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value=true
             currentActivity().onBackPressedDispatcher.onBackPressed()
 
         }
-        /*requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value=true
-        }*/
+        requireActivity().onBackPressedDispatcher.addCallback {
+            currentActivity().supportFragmentManager.popBackStackImmediate()
+        }
 
     }
     fun isConditionMet(): Boolean {

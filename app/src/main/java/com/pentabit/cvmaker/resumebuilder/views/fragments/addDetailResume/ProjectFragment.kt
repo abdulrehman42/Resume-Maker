@@ -1,5 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
@@ -12,9 +13,17 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProjectBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ProjectAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,21 +37,14 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
             list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
             setAdapter(list)
         }
-
-        addDetailResumeVM.projectResponse.observe(viewLifecycleOwner) {
-            apiCall()
-        }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it.loader) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
-            if (!it.msg.isNullOrBlank()) {
-                currentActivity().showToast(it.msg)
+        addDetailResumeVM.loadingState.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
@@ -61,7 +63,12 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         apiCall()
         onclick()
     }
-
+    override fun onResume() {
+        super.onResume()
+        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
+            apiCall()
+        }
+    }
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
@@ -72,44 +79,60 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
             if (tabhost.tabCount >= 9) {
                 tabhost.getTabAt(9)!!.select()
             } else {
-                addDetailResumeVM.isHide.value = false
-                addDetailResumeVM.fragment.value = ResumePreviewFragment()
+                alertboxChooseCreation(requireActivity(),
+                    object : DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.PROFILE) {
+                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(
+                                    Constants.VIEW_PROFILE,true)
+                                currentActivity().finish()
+                            } else {
+                                val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
+                                intent.putExtra(IS_RESUME,true)
+                                intent.putExtra(CREATION_TIME, true)
+                                startActivity(intent)
+                                currentActivity().finish()
+                            }
+                        }
+
+                    })
 
             }
         }
         binding.addprojectbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddProjectFragment(null)
+            addDetailResumeVM.fragment.value = AddProjectFragment(null, list)
         }
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(
-        )
+        addDetailResumeVM.getProfileDetail()
     }
 
     private fun setAdapter(userProjects: List<ProfileModelAddDetailResponse.UserProject>) {
         projectAdapter.submitList(userProjects)
         projectAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddProjectFragment(it)
+            addDetailResumeVM.fragment.value = AddProjectFragment(it,list)
         }
         projectAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
             setAdapter(list)
-            callSaveApi()
-            apiCall()
+            if (list.size!=0)
+            {
+                callSaveApi()
+                apiCall()
+
+            }
         }
         binding.recyclerviewProjects.adapter = projectAdapter
     }
 
     private fun callSaveApi() {
 
-        var project = ArrayList<Project>()
+        val project = ArrayList<Project>()
         for (i in 0 until list.size) {
-            project = listOf(
+            project.add(
                 Project(list[i].description, list[i].title)
-            ) as ArrayList<Project>
+            )
         }
         projectRequest = ProjectRequest(projects = project)
         addDetailResumeVM.editProjects(

@@ -35,10 +35,12 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
@@ -203,7 +205,7 @@ object Helper {
         }
     }
 
-    fun isValidEmail( email: String): Boolean {
+    fun isValidEmail(email: String): Boolean {
 
         if (email.isEmpty()) {
             AppsKitSDKUtils.makeToast("Please Enter Your Email")
@@ -212,11 +214,11 @@ object Helper {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             AppsKitSDKUtils.makeToast("Please Enter Your Correct Email")
             if (TextUtils.isEmpty(email)) {
-                AppsKitSDKUtils.makeToast( "Please Enter Email")
+                AppsKitSDKUtils.makeToast("Please Enter Email")
                 return false
             }
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                AppsKitSDKUtils.makeToast( "Please Correct Your Email")
+                AppsKitSDKUtils.makeToast("Please Correct Your Email")
                 return false
             }
         }
@@ -239,15 +241,16 @@ object Helper {
 
 
     fun removeOneUnderscores(input: String): String {
-        return input.replace("1__", "")
+        var result = input.replace("1__", "")
+        result = input.replace("__", "")
+        result = result.replace(Regex("\\d"), "")
+        return result
     }
-
 
 
     fun convertIsoToCustomFormat(isoDateTime: String?): String {
         // Check if the input string is null or blank
         if (isoDateTime.isNullOrBlank()) return ""
-
 
 
         // Define the ISO 8601 date format
@@ -289,24 +292,24 @@ object Helper {
 //        return dateTime.format(customFormatter)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun formatDateRangeYearOnly(startDate: String?, endDate: String?): String {
         if (startDate.isNullOrEmpty()) {
             return "Invalid year range"
         }
 
-        val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
-        val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
+        // Use SimpleDateFormat for older Android versions
+        val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+        val yearFormatter = SimpleDateFormat("yyyy", Locale.getDefault())
 
         return try {
-            val start = ZonedDateTime.parse(startDate, inputFormatter).toLocalDate()
-            val startYear = start.format(yearFormatter)
+            val start = inputFormatter.parse(startDate)
+            val startYear = yearFormatter.format(start)
 
             if (endDate.isNullOrEmpty()) {
                 "$startYear - Present"
             } else {
-                val end = ZonedDateTime.parse(endDate, inputFormatter).toLocalDate()
-                val endYear = end.format(yearFormatter)
+                val end = inputFormatter.parse(endDate)
+                val endYear = yearFormatter.format(end)
                 "$startYear - $endYear"
             }
         } catch (e: Exception) {
@@ -499,5 +502,42 @@ object Helper {
         }
 
         return list // Return the list of file paths
+    }
+
+
+    fun isDateAtLeast15YearsLater(dateString: String, dateFormat: String = "M/d/yyyy"): Boolean {
+        return try {
+            // Define the date formatter
+            val formatter = DateTimeFormatter.ofPattern(dateFormat)
+
+            // Parse the input date
+            val inputDate = LocalDate.parse(dateString, formatter)
+
+            // Get the current date
+            val currentDate = LocalDate.now()
+
+            // Print dates for debugging
+            println("Current Date: $currentDate")
+            println("Input Date: $inputDate")
+
+            // Calculate the difference in years
+            val yearsBetween = ChronoUnit.YEARS.between(inputDate,currentDate)
+
+            // Print the calculated difference for debugging
+            println("Years Between: $yearsBetween")
+
+            // Check if the input date is at least 15 years later than the current date
+            if (yearsBetween >= 15) {
+                true
+            } else {
+                // Show a Toast message
+                AppsKitSDKUtils.makeToast("The date is not at least 15 years later.")
+                false
+            }
+        } catch (e: DateTimeParseException) {
+            // Handle the exception, e.g., log the error or show an error message
+            e.printStackTrace()
+            false
+        }
     }
 }

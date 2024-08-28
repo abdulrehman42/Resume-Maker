@@ -3,7 +3,6 @@ package com.pentabit.cvmaker.resumebuilder.api.http
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
@@ -123,10 +122,11 @@ interface ChooseTemplateService {
         @Body skills: SkillRequestModel
     ): Call<JsonElement>
 
+    @FormUrlEncoded
     @PUT(Constants.EDIT_INTERESTS)
     fun editInterest(
         @Path("profileId") profileId: String,
-        @Body interests: InterestRequestModel
+        @Field("interests") interests: List<String>
     ): Call<JsonElement>
 
     @PUT(com.pentabit.cvmaker.resumebuilder.utils.Constants.EDIT_LANGUAGE)
@@ -179,7 +179,7 @@ interface ChooseTemplateService {
     @GET(Constants.LOOKUP_API)
     fun onGetLookup(
         @Query("key") key: String,
-        @Query("text") query: String,
+        @Query("text") query: String?,
         @Query("page") s: String,
         @Query("size") s1: String
     ): Call<JsonElement>

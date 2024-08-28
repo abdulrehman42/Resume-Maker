@@ -2,6 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import android.view.View.OnFocusChangeListener
+import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
@@ -11,40 +12,43 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddAchievementsFRa
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
+import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddAchievementsFRagment(val data: ProfileModelAddDetailResponse.UserAchievement?) : BaseFragment<FragmentAddAchievementsFRagmentBinding>() {
+class AddAchievementsFRagment(
+    val data: ProfileModelAddDetailResponse.UserAchievement?,
+    val listAchievement: ArrayList<ProfileModelAddDetailResponse.UserAchievement>?
+) : BaseFragment<FragmentAddAchievementsFRagmentBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     val list = ArrayList<AchievementRequest>()
-
+    var oldList = ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
+    val updateList = ArrayList<Achievement>()
     override val inflate: Inflate<FragmentAddAchievementsFRagmentBinding>
         get() = FragmentAddAchievementsFRagmentBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.achievementResponse.observe(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+        addDetailResumeVM.achievementResponse.observe(this) {
+            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it.loader) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
-            if (!it.msg.isNullOrBlank()) {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
 
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
@@ -53,9 +57,23 @@ class AddAchievementsFRagment(val data: ProfileModelAddDetailResponse.UserAchiev
         binding.includeTool.textView.text = getString(R.string.add_achievement)
 //        val data = sharePref.readProfileAchievement()
         if (data != null) {
-            binding.achieveedittext.setText(data.title)
-            binding.descriptionedittext.setText(data.description)
-            binding.issueDateeedittext.setText(data.issueDate)
+            binding.achieveedittext.setText(
+                Helper.removeOneUnderscores(Helper.removeOneUnderscores(data.title))
+            )
+            binding.descriptionedittext.setText(Helper.removeOneUnderscores(data.description))
+            binding.issueDateeedittext.setText(Helper.removeOneUnderscores(data.issueDate))
+        }
+        listAchievement?.let {
+            oldList = listAchievement
+            for (i in 0 until oldList.size) {
+                updateList.add(
+                    Achievement(
+                        oldList[i].description,
+                        oldList[i].issueDate,
+                        oldList[i].title,
+                    )
+                )
+            }
         }
         onclick()
 
@@ -68,13 +86,12 @@ class AddAchievementsFRagment(val data: ProfileModelAddDetailResponse.UserAchiev
 
         }
         binding.includeTool.backbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
 
         }
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-//            addDetailResumeVM.isHide.value = true
-//        }
+        requireActivity().onBackPressedDispatcher.addCallback {
+            currentActivity().supportFragmentManager.popBackStackImmediate()
+        }
         binding.issueDateeedittext.onFocusChangeListener =
             OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
@@ -89,23 +106,32 @@ class AddAchievementsFRagment(val data: ProfileModelAddDetailResponse.UserAchiev
                 }
             }
         binding.issueDateeedittext.setOnClickListener {
-
+            DialogueBoxes.showWheelDatePickerDialog(
+                currentActivity(),
+                object : DialogueBoxes.StringDialogCallback {
+                    override fun onButtonClick(date: String) {
+                        binding.issueDateeedittext.setText(date)
+                    }
+                }
+            )
         }
+
     }
 
     private fun apiCall() {
-        val achievemnt = listOf(
+        updateList.add(
             Achievement(
-                description = "-1__" + binding.descriptionedittext.text.toString(),
+                description = binding.descriptionedittext.text.toString(),
                 issueDate = binding.issueDateeedittext.text.toString(),
                 title = "-1__" + binding.achieveedittext.text.toString(),
             )
         )
 
-        val achievementRequest = AchievementRequest(achievements = achievemnt)
+
+        val achievementRequest = AchievementRequest(achievements = updateList)
 
         addDetailResumeVM.editAchievement(
-             achievementRequest
+            achievementRequest
         )
     }
 

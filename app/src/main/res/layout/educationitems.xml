@@ -30,7 +30,6 @@
             android:layout_marginEnd="@dimen/_5sdp"
             android:singleLine="true"
             android:layout_height="wrap_content"
-            android:text="Lahore Garrsion University"
             app:layout_constraintEnd_toStartOf="@+id/edit_Edu"
             app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +40,6 @@
             style="@style/regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BSCS"
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="@+id/universityname"
             app:layout_constraintTop_toBottomOf="@id/universityname" />
@@ -50,7 +48,6 @@
             style="@style/regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2019-2023"
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="@+id/degree_name"
             app:layout_constraintTop_toBottomOf="@id/degree_name" />

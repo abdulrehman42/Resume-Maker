@@ -21,20 +21,20 @@ class AchievementAdapter : ListAdapter<ProfileModelAddDetailResponse.UserAchieve
                 editItemClickCallback?.invoke(model)
             }
             binding.deleteEdu.setOnClickListener {
-                deleteitemClickCallback?.invoke(model)
+                deleteitemClickCallback?.invoke(position)
             }
         }
     }
 
     var editItemClickCallback: ((ProfileModelAddDetailResponse.UserAchievement) -> Unit)? = null
-    var deleteitemClickCallback: ((ProfileModelAddDetailResponse.UserAchievement) -> Unit)? = null
+    var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
     fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserAchievement) -> Unit) {
         this.editItemClickCallback = callback
     }
 
-    fun setOnItemDeleteClickCallback(callback: (ProfileModelAddDetailResponse.UserAchievement) -> Unit) {
+    fun setOnItemDeleteClickCallback(callback: (Int) -> Unit) {
         this.deleteitemClickCallback = callback
     }
 

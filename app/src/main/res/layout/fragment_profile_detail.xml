@@ -11,7 +11,6 @@
     <include
         android:id="@+id/include_tool"
         layout="@layout/toolbarwithedit"
-        android:layout_marginTop="@dimen/_15sdp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -277,9 +276,10 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            android:src="@drawable/baseline_add_24"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/down_menu"
+            android:layout_marginEnd="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -291,6 +291,66 @@
             android:text="Create"
             android:textSize="@dimen/_9ssp"
             android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/create_profile"
+        android:layout_width="@dimen/_78sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/greyripple_roundbtn"
+        android:backgroundTint="@color/navy_blue"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@+id/create_btn"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+
+        <TextView
+            style="@style/regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resume"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_9ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/create_coverletter"
+        android:layout_width="@dimen/_78sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/greyripple_roundbtn"
+        android:backgroundTint="@color/navy_blue"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@+id/create_profile"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+
+        <TextView
+            style="@style/regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cover Letter"
+            android:textColor="@color/white"
+
+            android:textSize="@dimen/_9ssp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView4"

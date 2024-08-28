@@ -1,5 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
@@ -10,9 +11,17 @@ import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentInterestBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,26 +29,21 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     val interestAdapter= SingleStringAdapter()
     var list=ArrayList<String>()
     lateinit var addDetailResumeVM: AddDetailResumeVM
-
+    lateinit var tabhost: TabLayout
     override val inflate: Inflate<FragmentInterestBinding>
         get() = FragmentInterestBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
             list= it.userInterests as ArrayList<String>
-            setadapter(list)
-        }
-        addDetailResumeVM.interestResponse.observe(viewLifecycleOwner){
-            apiCall()
+            setadapter()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it.loader)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
-            currentActivity().showToast(it.msg)
         }
     }
 
@@ -48,10 +52,11 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
+        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showNative(currentActivity(),binding.bannerAdd,""
 
-        );
+        )
         apiCall()
         onclick()
     }
@@ -60,11 +65,10 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
         addDetailResumeVM.getProfileDetail()
     }
 
-    private fun setadapter(userInterests: List<String>) {
-        interestAdapter.submitList(userInterests)
+    private fun setadapter() {
+        interestAdapter.submitList(list)
         interestAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddInterestFragment(userInterests,it)
+            addDetailResumeVM.fragment.value = AddInterestFragment(list,it,true)
 
         }
         interestAdapter.setOnItemDeleteClickCallback {
@@ -87,25 +91,42 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     }
 
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(6)!!.select()
-
+            if (tabhost.tabCount >= 7) {
+                tabhost.getTabAt(6)!!.select()
+            }
         }
         binding.nextbtn.setOnClickListener {
             if (tabhost.tabCount >= 7) {
                 tabhost.getTabAt(7)!!.select()
             }else{
-                addDetailResumeVM.isHide.value = false
-                addDetailResumeVM.fragment.value = ResumePreviewFragment()
+                alertboxChooseCreation(requireActivity(),
+                    object : DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.PROFILE) {
+                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,true)
+                                currentActivity().finish()
+                            } else {
+                                val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
+                                intent.putExtra(IS_RESUME,true)
+                                intent.putExtra(CREATION_TIME, true)
+                                startActivity(intent)
+                                currentActivity().finish()
+                            }
+                        }
 
+                    })
             }
         }
         binding.addinterestbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddInterestFragment(null,null)
+            addDetailResumeVM.fragment.value = AddInterestFragment(list,null,false)
         }
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
+            apiCall()
+        }
+    }
 }

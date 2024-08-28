@@ -1,9 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
@@ -15,8 +12,8 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleI
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
-import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.CoverLetterSampleFragment
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,28 +22,28 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     lateinit var objSampleAdapter: ObjSampleAdapter
     lateinit var tabhost: TabLayout
     var list = ArrayList<SampleResponseModel>()
-    var num = 0
+    private var isEditProfile = false
 
     override val inflate: Inflate<FragmentObjectiveBinding>
         get() = FragmentObjectiveBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.getSamples.observe(viewLifecycleOwner) {
+        addDetailResumeVM.getSamples.observe(this) {
             list = it as ArrayList<SampleResponseModel>
             setAdapter(it)
         }
 
-        addDetailResumeVM.data.observe(currentActivity()) {
+        addDetailResumeVM.dataResponse.observe(this) {
+            binding.objectiveTextInput.setText(it.objective)
+        }
+
+        addDetailResumeVM.data.observe(this) {
             binding.objectiveTextInput.setText(it.toString())
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it.loader) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
-            if (!it.msg.isNullOrBlank()) {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
         addDetailResumeVM.objectiveResponse.observe(viewLifecycleOwner) {
@@ -60,15 +57,18 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
+        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
+        isEditProfile = requireActivity().intent.getBooleanExtra(Constants.IS_EDIT, false)
+        if (isEditProfile) {
+            addDetailResumeVM.getProfileDetail()
+        }
 
         callAPi()
-
-        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         onclick()
 
     }
@@ -80,9 +80,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     private fun onclick() {
 
         binding.viewall.setOnClickListener {
-            //objSampleAdapter.updateMaxItemCount(list.size)
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = ObjectiveSample()
+            addDetailResumeVM.fragment.value = ObjectiveSample(list)
         }
 
         binding.backbtn.setOnClickListener {
@@ -92,7 +90,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
             if (isConditionMet()) {
                 callEditAPi()
             } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
+                AppsKitSDKUtils.makeToast(getString(R.string.field_missing_error))
             }
         }
     }
@@ -106,17 +104,9 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     private fun setAdapter(sampleResponseModels: List<SampleResponseModel>) {
 
-        objSampleAdapter = ObjSampleAdapter(currentActivity(), sampleResponseModels, {
+        objSampleAdapter = ObjSampleAdapter(currentActivity(), sampleResponseModels) {
             binding.objectiveTextInput.setText(it)
-        }, {
-            /*if (it) {
-                binding.viewall.isGone = true
-                binding.viewLess.isGone = false
-            } else {
-                binding.viewall.isGone = false
-                binding.viewLess.isGone = true
-            }*/
-        })
+        }
         binding.sampleRecyclerview.adapter = objSampleAdapter
     }
 

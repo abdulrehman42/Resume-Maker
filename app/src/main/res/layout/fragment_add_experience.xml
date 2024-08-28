@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.addDetailResume.AddExperienceFragment">
+>
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
@@ -64,6 +67,28 @@
             android:layout_height="wrap_content"
             android:hint="@string/company_name" />
     </com.google.android.material.textfield.TextInputLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lookid_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/jobtitle_textInputLayout" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lookid_recyclerviewcompany"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/companyName_textInputLayout2" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/description_textInputLayout2"
@@ -103,6 +128,8 @@
             android:id="@+id/startdateedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
             android:hint="@string/start_date" />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
@@ -121,6 +148,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/enddateedittext"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:hint="@string/end_date" />
     </com.google.android.material.textfield.TextInputLayout>
 

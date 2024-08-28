@@ -14,6 +14,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,25 +27,17 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
         get() = FragmentSkillBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
             list= it.userSkills as ArrayList<String>
             setadapter(list)
         }
 
-        addDetailResumeVM.skillResponse.observe(viewLifecycleOwner){
-            apiCall()
-        }
 
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it.loader)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
-            }
-            if (!it.msg.isNullOrBlank())
-            {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
@@ -52,7 +45,12 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     override fun csnMoveForward(): Boolean {
         return true
     }
-
+    override fun onResume() {
+        super.onResume()
+        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
+            apiCall()
+        }
+    }
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
@@ -73,7 +71,6 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
         skillAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.isHide.value = false
             addDetailResumeVM.fragment.value = AddSkillFragment(userSkills,it)
         }
         skillAdapter.setOnItemDeleteClickCallback {
@@ -109,8 +106,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
         }
         binding.addskill.setOnClickListener {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddSkillFragment(null, null)
+            addDetailResumeVM.fragment.value = AddSkillFragment(list, null)
         }
     }
 }

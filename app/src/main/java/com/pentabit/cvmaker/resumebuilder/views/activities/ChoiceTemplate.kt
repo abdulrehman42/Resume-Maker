@@ -20,6 +20,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ActivityChoiceTemplateBind
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
+import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.choose.BasicFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.AddDetailCoverLetterFragment
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
@@ -34,6 +35,8 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     private val templatesTitle = ArrayList<String>()
     private var dataMap: Map<String, List<TemplateModel>> = HashMap<String, List<TemplateModel>>()
     private var isResume = false
+    private var isCreation=false
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +50,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             Constants.IS_RESUME,
             false
         )
+        isCreation=intent.getBooleanExtra(Constants.CREATION_TIME,false)
         handleLiveData()
         makeApiCall()
         onclick()
@@ -71,7 +75,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     fun makeApiCall() {
-        templateViewModel.fetchTemplates(if (isResume) com.pentabit.cvmaker.resumebuilder.utils.Constants.RESUME else com.pentabit.cvmaker.resumebuilder.utils.Constants.COVER_LETTER)
+        templateViewModel.fetchTemplates(if (isResume) Constants.RESUME else Constants.COVER_LETTER)
     }
 
     override fun attachViewMode() {
@@ -143,7 +147,9 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     override fun onTemplateSelected(model: TemplateModel) {
         val check = AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED, false)
         if (check) {
-            if (isResume) {
+            if(isCreation){
+                navigateToPreviewScreen()
+            }else if (isResume) {
                 navigateToProfileActivity()
             } else {
                 navigateToCoverLetterResumeActivity()
@@ -198,6 +204,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             android.R.anim.fade_out
         )
             .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+    private fun navigateToPreviewScreen() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.choice_template_container, ResumePreviewFragment())
             .addToBackStack(null)
             .commit()
     }

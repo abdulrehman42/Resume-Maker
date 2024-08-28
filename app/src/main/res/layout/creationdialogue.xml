@@ -5,10 +5,10 @@
     android:padding="@dimen/_10sdp"
     android:orientation="vertical">
     <TextView
-        android:id="@+id/edit_profile"
+        android:id="@+id/template"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"
+        android:text="Choose Template"
         style="@style/regular"
         android:gravity="center"
         android:layout_margin="@dimen/_10sdp"
@@ -21,11 +21,10 @@
         />
 
     <TextView
-        android:id="@+id/delete_profile"
+        android:id="@+id/profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/delete_profile"
-        android:textColor="@color/red"
+        android:text="Profile"
         style="@style/regular"
         android:gravity="center"
         android:layout_margin="@dimen/_10sdp"
@@ -47,5 +46,5 @@
         android:layout_margin="@dimen/_10sdp"
         android:layout_gravity="center"
         android:textSize="@dimen/_12ssp"/>
-    
+
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -11,16 +11,20 @@ import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 
 class LooksAdapter :
     ListAdapter<LookUpResponse, LooksAdapter.ViewHolder>(TemplateDiffCallback) {
+
     inner class ViewHolder(private val binding: LooksitemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
-        fun setData(model: LookUpResponse) {
+
+        fun bind(model: LookUpResponse) {
+            // Bind data to views
             binding.loock.text = model.text
-            itemClickCallback?.invoke(model)
+            itemClickCallback?.let { callback ->
+                binding.root.setOnClickListener { callback(model) }
+            }
         }
     }
 
-    var itemClickCallback: ((LookUpResponse) -> Unit)? = null
+    private var itemClickCallback: ((LookUpResponse) -> Unit)? = null
 
     fun setOnItemClickCallback(callback: (LookUpResponse) -> Unit) {
         this.itemClickCallback = callback
@@ -46,6 +50,8 @@ class LooksAdapter :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(getItem(position))
+        val model = getItem(position)
+        holder.bind(model)
     }
+
 }

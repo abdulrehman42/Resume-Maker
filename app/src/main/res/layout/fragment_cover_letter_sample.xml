@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.fragments.coverletter.CoverLetterSampleFragment">
+>
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"

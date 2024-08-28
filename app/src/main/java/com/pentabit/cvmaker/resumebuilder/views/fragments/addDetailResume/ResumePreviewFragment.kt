@@ -48,8 +48,8 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
     lateinit var templateViewModel: TemplateViewModel
     var cv = ""
     var isResume = false
-    var id =""
-    var templateId=""
+    var id = ""
+    var templateId = ""
     override val inflate: Inflate<FragmentResumePreviewBinding>
         get() = FragmentResumePreviewBinding::inflate
 
@@ -123,7 +123,8 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
             binding.bannerAd,
             placeholder = ""
         )
-        isResume = AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_RESUME, true)
+        isResume = AppsKitSDKPreferencesManager.getInstance()
+            .getBooleanPreferences(Constants.IS_RESUME, true)
         if (!isResume) {
             binding.editText.setText(getString(R.string.editcover))
         }
@@ -134,9 +135,13 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
     }
 
     private fun onApi() {
-         id = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.PROFILE_ID).toString()
-         templateId = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.TEMPLATE_ID).toString()
-        val isResume = AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_RESUME, false)
+        id = AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.PROFILE_ID)
+            .toString()
+        templateId =
+            AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.TEMPLATE_ID)
+                .toString()
+        val isResume = AppsKitSDKPreferencesManager.getInstance()
+            .getBooleanPreferences(Constants.IS_RESUME, false)
         if (isResume) {
             templateViewModel.getResumePreview(id, templateId)
         } else {
@@ -186,8 +191,8 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         }
         binding.editProfile.setOnClickListener {
             if (isResume) {
-                val intent=Intent(currentActivity(),AddDetailResume::class.java)
-                intent.putExtra(Constants.IS_EDIT,id)
+                val intent = Intent(currentActivity(), AddDetailResume::class.java)
+                intent.putExtra(Constants.IS_EDIT, id)
                 startActivity(intent)
             } else {
                 currentActivity().onBackPressedDispatcher.onBackPressed()
@@ -215,10 +220,11 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
                                             // Capture WebView content in a background thread
                                             val bitmap = captureWebView(view)
                                             val saveSuccessful =
-                                                if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(
-                                                        Constants.IS_RESUME,
-                                                        false
-                                                    )
+                                                if (AppsKitSDKPreferencesManager.getInstance()
+                                                        .getBooleanPreferences(
+                                                            Constants.IS_RESUME,
+                                                            false
+                                                        )
                                                 ) {
                                                     ImageFileUtils.getInstance()
                                                         .saveImageToHiddenStorage(
@@ -226,7 +232,7 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
                                                             false,
                                                             Constants.RESUME,
                                                             80,
-                                                           "USER_ID_HERE"
+                                                            "USER_ID_HERE"
                                                         )
                                                 } else {
                                                     ImageFileUtils.getInstance()
@@ -272,7 +278,10 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
 
         // Get the base directory
-        val directory = cw.getDir("USER_ID", Context.MODE_PRIVATE)
+        val directory = cw.getDir(
+            AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.USER_ID),
+            Context.MODE_PRIVATE
+        )
 
 
         // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)
@@ -293,7 +302,7 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         // Define the file name and path
         val fileName =
             SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(Calendar.getInstance().time);
-        val pdfFile: File = File(targetDirectory, "$fileName.pdf")
+        val pdfFile = File(targetDirectory, "$fileName.pdf")
         // Create a PdfDocument
         val pdfDocument = PdfDocument()
         val pageNumber = 1

@@ -327,19 +327,18 @@ class AddDetailResumeRepository @Inject constructor(
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editInterest(profileId, interest).enqueue(
+        chooseTemplateService.editInterest(profileId, interest.interest).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                        JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                                JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
-                            ) as String,
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
+                            ) as String, JSONManager.getInstance()
                             .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.DATA,
+                                JSONKeys.DATA,
                                 response.body(),
                                 object : TypeToken<List<String>>() {}.type
                             ) as List<String>
@@ -544,7 +543,7 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun getLookups(
         key: String,
-        query: String,
+        query: String?,
         s: String,
         s1: String,
         callback: ResponseCallback

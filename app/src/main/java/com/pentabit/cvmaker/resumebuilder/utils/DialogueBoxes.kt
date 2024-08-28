@@ -20,12 +20,14 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ChooseEditProfileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ChooseImageLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ChoosecreateprofileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ChoosedownloadLayoutBinding
+import com.pentabit.cvmaker.resumebuilder.databinding.CreationdialogueBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.DeleteAccountBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ImportProfileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.LogoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.PreviewdownloadBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.RatingLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplateSelectLayoutBinding
+import java.util.Calendar
 
 
 object DialogueBoxes {
@@ -154,16 +156,30 @@ object DialogueBoxes {
             param.onButtonClick(Constants.EDIT)
             dialogBuilder.dismiss()
         }
-        binding.rename.setOnClickListener {
-
-            dialogBuilder.dismiss()
-        }
-        binding.duplicate.setOnClickListener {
-
+        binding.cancelProfile.setOnClickListener {
             dialogBuilder.dismiss()
         }
         binding.deleteProfile.setOnClickListener {
             param.onButtonClick(Constants.DELETE)
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+        dialogBuilder.setCancelable(true)
+        dialogBuilder.show()
+    }
+    fun alertboxChooseCreation(curentactivity: Activity,param: StringValueDialogCallback) {
+        val binding= CreationdialogueBinding.inflate(curentactivity.layoutInflater)
+        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.template.setOnClickListener {
+            param.onButtonClick(Constants.TEMPLATE)
+            dialogBuilder.dismiss()
+        }
+        binding.cancelProfile.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+        binding.profile.setOnClickListener {
+            param.onButtonClick(Constants.PROFILE)
             dialogBuilder.dismiss()
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
@@ -218,6 +234,47 @@ object DialogueBoxes {
 
         // Set the maximum date to the current date to hide future dates
         dayPicker.maxDate = System.currentTimeMillis()
+
+        // Build the AlertDialog
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder.setView(datePickerView)
+        builder.setTitle("Select Date")
+
+        builder.setPositiveButton("OK") { dialog, which ->
+            param.onButtonClick("${dayPicker.month + 1}/${dayPicker.dayOfMonth}/${dayPicker.year}") // Set the date in your EditText
+        }
+
+        builder.setNegativeButton("Cancel", null)
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    fun showWheelDatePickerDialogDOB(
+        context: Activity,
+        param: StringDialogCallback
+    ) {
+        // Inflate the custom layout
+        val inflater = LayoutInflater.from(context)
+        val datePickerView: View = inflater.inflate(R.layout.wheelstyledatepicker, null)
+
+        val dayPicker = datePickerView.findViewById<DatePicker>(R.id.day_picker)
+
+        // Set the maximum date to the current date
+        val currentDate = Calendar.getInstance().apply {
+            add(Calendar.YEAR, -15)
+        }
+        // Set the minimum date to 15 years ago
+        val minDate = Calendar.getInstance().apply {
+            add(Calendar.YEAR, -100)
+        }
+        dayPicker.minDate = minDate.timeInMillis
+        dayPicker.maxDate=currentDate.timeInMillis
+        // Set the initial date to 15 years ago
+        val initialDate = Calendar.getInstance().apply {
+            add(Calendar.YEAR, -15)
+        }
+        dayPicker.updateDate(initialDate.get(Calendar.YEAR), initialDate.get(Calendar.MONTH), initialDate.get(Calendar.DAY_OF_MONTH))
 
         // Build the AlertDialog
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)

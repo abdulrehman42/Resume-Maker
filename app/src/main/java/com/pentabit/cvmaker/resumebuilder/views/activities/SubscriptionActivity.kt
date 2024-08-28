@@ -8,14 +8,18 @@ import androidx.core.view.WindowInsetsCompat
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivitySubscriptionBinding
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.galleryvault.utils.inapp.InAppPurchase
+import com.pentabit.pentabitessentials.firebase.AppsKitSDK
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 
 class SubscriptionActivity : BaseActivity() {
-    lateinit var binding:ActivitySubscriptionBinding
+    lateinit var binding: ActivitySubscriptionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding=ActivitySubscriptionBinding.inflate(layoutInflater)
+        binding = ActivitySubscriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -28,7 +32,19 @@ class SubscriptionActivity : BaseActivity() {
             finish()
         }
         binding.purchaseConstraint.setOnClickListener {
-            finish()
+            InAppPurchase.startBillingFlow(
+                this, Constants.REMOVE_ADS_ID, false
+            ) { removeAds, p1, p2, p3 ->
+                if (removeAds) {
+                    AppsKitSDK.getInstance().removeAdsStatus = true
+                    AppsKitSDKUtils.makeToast("Remove Ads Purchased Successfully")
+                }
+                finish()
+            }
+        }
+        binding.term.setOnClickListener {
+        AppsKitSDKUtils.actionOnTermsOfUse(this@SubscriptionActivity)
+        // link("https://www.pentabitapps.com/terms-of-use", this)
         }
 
     }

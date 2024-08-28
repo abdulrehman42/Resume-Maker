@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
+    implementation(libs.billing.ktx)
     annotationProcessor(libs.compiler)
 
     //SSP
@@ -212,8 +213,10 @@ dependencies {
     implementation("io.github.pilgr:paperdb:2.7.2")
     implementation("id.zelory:compressor:3.0.1")
 
-//    implementation ("com.itextpdf:itext7-core:7.2.3")
-//    implementation ("com.itextpdf:html2pdf:4.0.0")
+    //camera
+    implementation ("com.guolindev.permissionx:permissionx:1.6.4")
+
+
 
     /*//KProgressHud
     implementation ("com.kaopiz:kprogresshud:1.2.0")

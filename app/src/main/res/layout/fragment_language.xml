@@ -6,15 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.addDetailResume.LanguageFragment">
 
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_language"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/banner_add"
         android:layout_width="match_parent"
@@ -84,6 +76,26 @@
         app:layout_constraintBottom_toBottomOf="@+id/nextbtn"
         app:layout_constraintStart_toStartOf="@+id/recyclerview_skill"
         app:layout_constraintTop_toTopOf="@+id/nextbtn" />
+    <TextView
+        android:id="@+id/popup"
+        style="@style/regular"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Language Added"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_experience"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recyclerview_experience" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

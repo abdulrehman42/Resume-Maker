@@ -13,34 +13,35 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualification
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     lateinit var educationAdapter: EducationAdapter
     lateinit var addDetailResumeVM: AddDetailResumeVM
+
+    var qualifications = ArrayList<Qualification>()
     var list = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
     override val inflate: Inflate<FragmentEducationBinding>
         get() = FragmentEducationBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
             list =
                 it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>
-            setAdapter(list)
+            setAdapter()
         }
 
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it.loader) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
-            if (!it.msg.isNullOrBlank()) {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
 
@@ -62,7 +63,9 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
 
     override fun onResume() {
         super.onResume()
-        apiCall()
+        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
+            apiCall()
+        }
     }
 
     private fun apiCall() {
@@ -79,40 +82,40 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
             tabhost.getTabAt(3)!!.select()
         }
         binding.addeducationbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = false
-            addDetailResumeVM.fragment.value = AddEducation(null)
+            addDetailResumeVM.fragment.value = AddEducation(null, list, false)
         }
 
     }
 
-    private fun setAdapter(userQualifications: List<ProfileModelAddDetailResponse.UserQualification>) {
-        educationAdapter = EducationAdapter(currentActivity(), userQualifications, false, {
-            addDetailResumeVM.isHide.value = false
+    private fun setAdapter() {
+        educationAdapter = EducationAdapter(false, {
             addDetailResumeVM.fragment.value =
-                AddEducation(it)
+                AddEducation(it, list, true)
         }, {
             list.removeAt(it)
-            callSaveApi()
-            apiCall()
+            if (list.size != 0) {
+                callSaveApi()
+                apiCall()
+
+            }
         })
+        educationAdapter.submitList(list)
         binding.recyclerviewEducation.adapter = educationAdapter
     }
 
     private fun callSaveApi() {
-        var qualifications = ArrayList<Qualification>()
         for (i in 0 until list.size) {
-            qualifications = listOf(
+            qualifications.add(
                 Qualification(
-                    degree = list[i].degree,
+                    degree = "1__"+Helper.removeOneUnderscores(list[i].degree),
                     endDate = list[i].endDate,
-                    institute = list[i].institute,
+                    institute = "1__"+list[i].institute,
                     qualificationType = "degree",
                     startDate = list[i].startDate
                 )
-            ) as ArrayList<Qualification>
+            )
         }
         val qualificationModelRequest = QualificationModelRequest(qualifications = qualifications)
-
         addDetailResumeVM.editQualification(
             qualificationModelRequest
         )

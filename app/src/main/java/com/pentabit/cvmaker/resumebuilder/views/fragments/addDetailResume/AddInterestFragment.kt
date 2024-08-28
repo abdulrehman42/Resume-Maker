@@ -1,58 +1,61 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddInterestBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddInterestFragment(val userInterests: List<String>?, val interest_name: String?) : BaseFragment<FragmentAddInterestBinding>()
+class AddInterestFragment(val userInterests: List<String>?, val interest_name: String?,val isedit:Boolean) : BaseFragment<FragmentAddInterestBinding>()
 {
     lateinit var addDetailResumeVM : AddDetailResumeVM
-    var interest=ArrayList<String>()
+    var oldList = ArrayList<String>()
+    val updateList = ArrayList<String>()
+
     override val inflate: Inflate<FragmentAddInterestBinding>
         get() = FragmentAddInterestBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.interestResponse.observe(requireActivity()) {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+        addDetailResumeVM.interestResponse.observe(this) {
+            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
-            if (it.loader)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
-            }
-            if (!it.msg.isNullOrBlank())
-            {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM=ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM=ViewModelProvider(this)[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text=getString(R.string.add_interest)
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
-        if (userInterests!=null)
-        {
-            interest= userInterests as ArrayList<String>
+        userInterests?.let {
+            oldList= userInterests as ArrayList<String>
+            for (i in 0 until oldList.size)
+            {
+                updateList.add(oldList[i])
+            }
         }
-//        val data = sharePref.readString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA)
         if (interest_name!=null)
         {
             binding.interestEdittext.setText(interest_name)
@@ -78,7 +81,7 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                interest.add("-1__"+binding.interestEdittext.text.toString())
+                updateList.add("-1__"+binding.interestEdittext.text.toString())
                 apiCall()
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
@@ -86,11 +89,12 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value=true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
+        }
+        currentActivity().onBackPressedDispatcher.addCallback{
+            currentActivity().supportFragmentManager.popBackStackImmediate()
 
         }
-
 
     }
     fun isConditionMet(): Boolean {
@@ -99,7 +103,7 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
 
     private fun apiCall() {
         addDetailResumeVM.editInterest(
-            InterestRequestModel(interest)
+            InterestRequestModel(updateList)
         )
     }
 

@@ -112,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Job Title"
                     android:singleLine="true" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -175,6 +176,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Address (Optional)"
                     android:singleLine="true" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -192,25 +194,17 @@
                     android:id="@+id/dob_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Date of Birth"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/date_of_birth"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/lookid_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="@+id/dob_inputlayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
             <TextView
                 android:id="@+id/man"
                 style="@style/subheading_lighter"
-                android:layout_width="@dimen/_130sdp"
+                android:layout_width="@dimen/_138sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:textStyle="bold"
@@ -224,20 +218,32 @@
             <TextView
                 android:id="@+id/woman"
                 style="@style/subheading_lighter"
-                android:layout_width="@dimen/_130sdp"
+                android:layout_width="@dimen/_138sdp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_marginStart="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/greybgradius"
                 android:gravity="center"
                 android:text="Women"
-                android:textStyle="bold"
                 android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/man"
                 app:layout_constraintEnd_toEndOf="@+id/dob_inputlayout"
                 app:layout_constraintHorizontal_bias="0.89"
                 app:layout_constraintStart_toEndOf="@+id/man"
                 app:layout_constraintTop_toBottomOf="@+id/dob_inputlayout" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lookid_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/_10sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

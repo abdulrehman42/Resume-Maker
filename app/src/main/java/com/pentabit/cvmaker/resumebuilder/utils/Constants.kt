@@ -3,6 +3,7 @@ package com.pentabit.cvmaker.resumebuilder.utils
 object Constants {
 
 
+
     const val BASE_MEDIA_URL = "https://n0ngl4zx.tinifycdn.com/"
     const val BASE_URL_PRODUCTION = "http://35.164.228.120:9000/v1/"
     const val BASE_URL_DEVELOPMENT = "http://54.70.21.233:9001/v1/"
@@ -42,7 +43,8 @@ object Constants {
     const val Is_CoverLtter = "Is_CoverLtter"
     const val YES = "yes"
     const val NO = "no"
-
+    const val USER_ID="USER_ID"
+    const val VIEW_PROFILE="VIEW_PROFILE"
     //ads
     const val YOUR_IRON_SOURCE_APP_KEY = ""
     const val YOUR_HELIUM_APP_ID = ""
@@ -52,7 +54,8 @@ object Constants {
     const val isSubjectToGDPR = true
     const val userHasGivenConsent = true
     const val isCCPAConsent = true
-
+    const val REMOVE_ADS_ID = "remove_ads"
+    const val CAMERA_PERMISSION_CODE=100
 
     //lockup Keys
     const val education = "education"
@@ -70,6 +73,9 @@ object Constants {
     const val DELETE = "DELETE"
     const val EDIT = "EDIT"
 
+
+    const val TEMPLATE = "TEMPLATE"
+    const val REFRESH_DATA = "REFRESH_DATA"
     const val COVER_LETTER = "coverLetter"
     const val OBJECTIVE = "objective"
     const val RESUME = "resume"
@@ -82,8 +88,10 @@ object Constants {
     const val TITLE_DATA = "data"
     const val IMAGE_CODE = 100
     const val IS_RESUME = "IS_RESUME"
+    const val CREATION_TIME="CREATION_TIME"
     const val DOWNLOAD = "download"
     const val PROFILE = "profile"
+    const val PROFILE_ID_FOR_TEMPLATE="PROFILE_ID_FOR_TEMPLATE"
     const val FRAGMENT_CALLED = "FRAGMENT"
     const val PROFILE_ID = "PROFILE_ID"
     const val IS_INTRO_DONE = "IS_INTRO_DONE"

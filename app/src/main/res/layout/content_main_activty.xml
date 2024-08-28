@@ -178,6 +178,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:gravity="center"
         android:padding="10dp"
+        android:id="@+id/ads_contraint"
         android:layout_marginStart="@dimen/_15sdp"
         android:layout_marginEnd="@dimen/_15sdp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -125,6 +125,12 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="some_permission_denied">Few permissions were denied. Please note they will be required later</string>
+    <string name="allow_permissions_manually">Please manually allow necessary permissions through Settings</string>
+    <string name="detail_reason_for_to_access_read_write_permission">This permission is required to save your created images/videos in the gallery for sharing and edit any that are accessible through the app. The app is fully tested to comply with data privacy policies and ensure no data infringement</string>
+
+
+
 
     <string name="purchase1">Get Remove Ads to free yourself from interruptions.</string>
     <string name="purchase2">1. Create resumes and cover letters\n \t\twithout any disturbances.</string>
@@ -146,4 +152,7 @@
     <string name="resume">Resume</string>
     <string name="purchase_header">Let nobody come between\n you and your next job.</string>
     <string name="login">Login</string>
+    <string name="ok_text">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="date_of_birth">Date of Birth</string>
 </resources>

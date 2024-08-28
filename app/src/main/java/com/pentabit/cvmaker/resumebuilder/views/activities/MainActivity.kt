@@ -1,20 +1,24 @@
 package com.pentabit.cvmaker.resumebuilder.views.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.isGone
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdSize
@@ -37,7 +41,9 @@ import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProf
 import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -50,7 +56,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
     private var flagDrawer = false
     private val scaleFactor = 6f
-    var versionName = ""
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +68,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         onclick()
         refreshToken()
         onObserver()
-        onFcm()
-
+//        onFcm()
+        askNotificationPermission()
 
     }
 
@@ -85,8 +90,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         ) {
             templateViewModel.isLogin.value = true
         }
-
-
+        AppsKitSDKUtils.setVisibility(
+            !AppsKitSDK.getInstance().removeAdsStatus,
+            binding.appBarMainActivty.contentmain.adsContraint
+        )
+        if (AppsKitSDK.getInstance().removeAdsStatus) {
+            binding.appBarMainActivty.toolbar.menu.getItem(R.id.action_settings).isVisible = false
+        }
         AppsKitSDKAdsManager.showBanner(
             this,
             binding.appBarMainActivty.contentmain.bannerAdd,
@@ -188,11 +198,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         binding.appBarMainActivty.contentmain.profileBtn.setOnClickListener {
-            AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                Constants.FRAGMENT_CALLED,
-                Constants.PROFILE
-            )
-            startActivity(Intent(this, ProfileActivity::class.java))
+            if (AppsKitSDKPreferencesManager.getInstance()
+                    .getBooleanPreferences(Constants.IS_LOGGED, false)
+            ) {
+                AppsKitSDKPreferencesManager.getInstance()
+                    .addInPreferences(Constants.VIEW_PROFILE, true)
+                AppsKitSDKPreferencesManager.getInstance().addInPreferences(
+                    Constants.FRAGMENT_CALLED,
+                    Constants.PROFILE
+                )
+                startActivity(Intent(this, ProfileActivity::class.java))
+            } else {
+                startActivity(Intent(this, LoginActivity::class.java))
+
+            }
+
+
         }
         binding.appBarMainActivty.contentmain.removeAddbtn.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
@@ -338,5 +359,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         window.decorView.systemUiVisibility = flags
     }
+
+    private fun askNotificationPermission() {
+        if (SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (java.lang.Boolean.TRUE == isGranted) {
+            }
+        }
 
 }

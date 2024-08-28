@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.view.isGone
+import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
 import com.google.android.material.textfield.TextInputLayout
@@ -16,49 +16,65 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddProjectBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
+import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddProjectFragment(val data: ProfileModelAddDetailResponse.UserProject?) :
+class AddProjectFragment(
+    val data: ProfileModelAddDetailResponse.UserProject?,
+    val userProjectsList: List<ProfileModelAddDetailResponse.UserProject>?
+) :
     BaseFragment<FragmentAddProjectBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var oldList = ArrayList<ProfileModelAddDetailResponse.UserProject>()
+    val updateList = ArrayList<Project>()
     override val inflate: Inflate<FragmentAddProjectBinding>
         get() = FragmentAddProjectBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.projectResponse.observe(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+        addDetailResumeVM.projectResponse.observe(this) {
+            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
         addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            if (it.loader) {
-                binding.loader.isGone = false
-            } else {
-                binding.loader.isGone = true
-            }
-            if (!it.msg.isNullOrBlank()) {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_project)
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
+        userProjectsList?.let {
+            oldList = userProjectsList as ArrayList<ProfileModelAddDetailResponse.UserProject>
+            for (i in 0 until oldList.size) {
+                updateList.add(
+                    Project(
+                        oldList[i].description,
+                        oldList[i].title,
+                    )
+                )
+            }
+        }
         data?.let {
-            binding.projectedittext.setText(data.title)
-            binding.descriptionedittext.setText(data.description)
+            binding.projectedittext.setText(Helper.removeOneUnderscores(data.title))
+            binding.descriptionedittext.setText(Helper.removeOneUnderscores(data.description))
         }
         binding.projecttitleTextInputLayout.apply {
             // Adjust the layout parameters of the end icon
@@ -81,24 +97,18 @@ class AddProjectFragment(val data: ProfileModelAddDetailResponse.UserProject?) :
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
                 apiCall()
-                MainScope().launch {
-                    delay(2000)
-                    addDetailResumeVM.isHide.value = true
-                    currentActivity().onBackPressedDispatcher.onBackPressed()
-                }
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
 
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            addDetailResumeVM.isHide.value = true
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
 
         }
-        /*requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            addDetailResumeVM.isHide.value=true
-        }*/
+        requireActivity().onBackPressedDispatcher.addCallback {
+            currentActivity().supportFragmentManager.popBackStackImmediate()
+        }
 
     }
 
@@ -108,14 +118,14 @@ class AddProjectFragment(val data: ProfileModelAddDetailResponse.UserProject?) :
     }
 
     private fun apiCall() {
-        val project = listOf(
+        updateList.add(
             Project(
                 binding.descriptionedittext.text.toString(),
                 binding.projectedittext.text.toString()
             )
         )
 
-        val projectRequest = ProjectRequest(projects = project)
+        val projectRequest = ProjectRequest(projects = updateList)
 
         addDetailResumeVM.editProjects(
             projectRequest
