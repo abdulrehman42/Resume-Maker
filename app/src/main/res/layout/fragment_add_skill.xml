@@ -40,10 +40,10 @@
         app:endIconTint="@null"
         app:endIconCheckable="true"
         app:endIconMode="custom"
+        app:endIconDrawable="@drawable/tick_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/banner_add"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/skill_edittext"

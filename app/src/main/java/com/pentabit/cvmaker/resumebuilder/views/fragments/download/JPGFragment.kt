@@ -12,8 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.views.adapter.download.DownloadImgAdap
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 
 
-class JPGFragment : BaseFragment<FragmentJPGBinding>()
-{
+class JPGFragment : BaseFragment<FragmentJPGBinding>() {
     override val inflate: Inflate<FragmentJPGBinding>
         get() = FragmentJPGBinding::inflate
 
@@ -27,12 +26,13 @@ class JPGFragment : BaseFragment<FragmentJPGBinding>()
     }
 
     private fun setAdapter() {
-        var name=Constants.RESUME
-        if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_RESUME,false))
-        {
-            name=Constants.RESUME
-        }else{
-            name=Constants.COVER_LETTER
+        var name = Constants.RESUME
+        if (AppsKitSDKPreferencesManager.getInstance()
+                .getBooleanPreferences(Constants.IS_RESUME, false)
+        ) {
+            name = Constants.RESUME
+        } else {
+            name = Constants.COVER_LETTER
         }
 //        if (ImageFileUtils.getInstance().loadImageFromHiddenStorage(AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.PROFILE_ID),name).size!=0)
 //        {
