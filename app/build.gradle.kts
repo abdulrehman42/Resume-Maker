@@ -216,7 +216,9 @@ dependencies {
     //camera
     implementation ("com.guolindev.permissionx:permissionx:1.6.4")
 
+    implementation ("com.github.chrisbanes:PhotoView:2.3.0")
 
+    implementation ("com.github.mhiew:android-pdf-viewer:3.2.0-beta.1")
 
     /*//KProgressHud
     implementation ("com.kaopiz:kprogresshud:1.2.0")

@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
+    <external-path
+        name="external_files"
+        path="." />
 
-    <external-files-path name="external_files" path="." />
-<!--
-    <files-path name="pdfs" path="app_USER_ID/Resume/PDFs/" />
--->
+    <files-path
+        name="internal_files"
+        path="." />
+    <root-path
+        name="root"
+        path="." />
 
+    <files-path
+        name="files"
+        path="." />
+    <files-path
+        name="my_docs"
+        path="documents/" />
+    <cache-path
+        name="my_cache"
+        path="cache/" />
+
+    <files-path
+        name="allfiles"
+        path="/" />
+    <external-path
+        name="externalfiles"
+        path="/" />
+    <root-path
+        name="external_files"
+        path="." />
 </paths>

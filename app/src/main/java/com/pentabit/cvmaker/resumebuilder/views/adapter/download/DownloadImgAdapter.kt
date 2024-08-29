@@ -1,14 +1,11 @@
 package com.pentabit.cvmaker.resumebuilder.views.adapter.download
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,7 +16,8 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 import java.io.File
 
-class DownloadImgAdapter(val activity:Activity,val openPdf:(File)->Unit) : ListAdapter<File, AppsKitSDKRecyclerBaseViewBinding>(FileDiffCallback) {
+class DownloadImgAdapter(val openPdf: (File) -> Unit) :
+    ListAdapter<File, AppsKitSDKRecyclerBaseViewBinding>(FileDiffCallback) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -33,6 +31,7 @@ class DownloadImgAdapter(val activity:Activity,val openPdf:(File)->Unit) : ListA
             )
         )
     }
+
     override fun onBindViewHolder(holder: AppsKitSDKRecyclerBaseViewBinding, position: Int) {
         val binding1 = holder.binding as TemplatelayoutitemsBinding
         binding1.eyeIconId.visibility = View.GONE
@@ -40,10 +39,12 @@ class DownloadImgAdapter(val activity:Activity,val openPdf:(File)->Unit) : ListA
         Glide.with(ResumeMakerApplication.instance).load(currenytItem)
             .into(binding1.templateimage)
         binding1.templateimage.setOnClickListener {
-            openPdfFile(binding1.root.context,currenytItem)
+            openPdf(currenytItem)
+//            openPdfFile(binding1.root.context, currenytItem)
         }
     }
-    fun openPdfFile(context: Context,pdfFile: File) {
+
+    fun openPdfFile(context: Context, pdfFile: File) {
         try {
             val pdfUri: Uri = FileProvider.getUriForFile(
                 context,

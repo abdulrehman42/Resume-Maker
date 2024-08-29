@@ -7,10 +7,10 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".utils.ResumeMakerApplication"
@@ -25,6 +25,13 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:fullBackupContent"
         tools:targetApi="31">
+        <activity
+            android:name=".views.activities.PreviewPdfResumeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.activities.PreviewImageResumeActivity"
+            android:exported="false" />
+
         <property
             android:name="android.adservices.AD_SERVICES_CONFIG"
             android:resource="@xml/gma_ad_services_config"
@@ -33,8 +40,8 @@
         <activity
             android:name=".views.activities.AddDetailResume"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.ResumeMaker" />
+            android:theme="@style/Theme.ResumeMaker"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".views.activities.DownloadActivity"
             android:exported="false" />
@@ -58,39 +65,36 @@
             android:exported="false" />
         <activity
             android:name=".views.activities.SplachScreen"
-            android:theme="@style/Theme.ResumeMaker.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.ResumeMaker.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--<meta-data
+        <!--
+<meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6965793011515375~7799858493" />-->
+            android:value="ca-app-pub-6965793011515375~7799858493" />
+        -->
         <activity
             android:name="com.pentabit.pentabitessentials.ads_manager.activities.CPAdActivity"
             android:exported="false" />
-
         <activity
             android:name="com.ironsource.sdk.controller.ControllerActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true" />
-
         <activity
             android:name="com.ironsource.sdk.controller.InterstitialActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.Translucent" />
-
         <activity
             android:name="com.ironsource.sdk.controller.OpenUrlActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.Translucent" />
-
         <activity
             android:name="com.ironsource.mediationsdk.testSuite.TestSuiteActivity"
             android:configChanges="orientation|screenSize"
@@ -103,17 +107,26 @@
 
         <receiver
             android:name="com.adjust.sdk.AdjustReferrerReceiver"
-            android:permission="android.permission.INSTALL_PACKAGES"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.INSTALL_PACKAGES">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.pentabit.cvmaker.resumebuilder.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6965793011515375~7799858493" />
-
     </application>
-
 
 </manifest>

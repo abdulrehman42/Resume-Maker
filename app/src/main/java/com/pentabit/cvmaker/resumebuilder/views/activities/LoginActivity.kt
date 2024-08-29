@@ -6,9 +6,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
-import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
-import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,10 +15,14 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.gson.reflect.TypeToken
 import com.pentabit.cvmaker.resumebuilder.R
+import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLoginBinding
+import com.pentabit.cvmaker.resumebuilder.json.JSONManager
 import com.pentabit.cvmaker.resumebuilder.json.JWTUtils
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.AUTH_TOKEN
+import com.pentabit.cvmaker.resumebuilder.models.User
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -61,8 +62,13 @@ class LoginActivity : BaseActivity() {
         templateViewModel.loginResponse.observe(this) {
             AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, true)
             templateViewModel.isLogin.value = true
+            val user = JSONManager.getInstance()
+                .convertJsonToObject(
+                    JWTUtils.decoded(it),
+                    object : TypeToken<User>() {}.type
+                ) as User
             AppsKitSDKPreferencesManager.getInstance()
-                .addInPreferences(Constants.USER_ID, JWTUtils.decoded(it))
+                .addInPreferences(Constants.USER_ID, user.id)
             if (isResume) {
                 navigateToProfileActivity()
             } else if (isMain) {

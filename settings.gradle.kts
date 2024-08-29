@@ -4,6 +4,7 @@ pluginManagement {
         google()
         mavenCentral()
         maven(url = "https://jitpack.io")
+        maven(url = "https://jcenter.bintray.com")
         gradlePluginPortal()
     }
 }
@@ -13,6 +14,7 @@ dependencyResolutionManagement {
         jcenter()
         google()
         mavenCentral()
+        maven(url = "https://jcenter.bintray.com")
         maven(url = "https://jitpack.io")
         maven(url = "https://jcenter.bintray.com")
         maven(url = "https://android-sdk.is.com/")

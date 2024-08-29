@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintDocumentAdapter
 import android.print.PrintManager
-import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -25,7 +24,6 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentResumePreviewBindi
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseDownload
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
-import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
@@ -82,20 +80,20 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         }
     }
 
-    private fun captureWebView(view: WebView): Bitmap {
-        // Get the width and height of the WebView content
-        val width = view.width
-        val height = view.contentHeight
-
-        // Create a bitmap with the size of the WebView content
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-
-        // Draw the WebView content onto the canvas
-        view.draw(canvas)
-
-        return bitmap
-    }
+//    private fun captureWebView(view: WebView): Bitmap {
+//        // Get the width and height of the WebView content
+//        val width = view.width
+//        val height = view.contentHeight
+//
+//        // Create a bitmap with the size of the WebView content
+//        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+//        val canvas = Canvas(bitmap)
+//
+//        // Draw the WebView content onto the canvas
+//        view.draw(canvas)
+//
+//        return bitmap
+//    }
 
     fun convertWebViewToPdf(context: Context, webView: WebView, fileName: String) {
         // Create a PrintDocumentAdapter from the WebView
@@ -210,60 +208,8 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
                     com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringValueDialogCallback {
                     override fun onButtonClick(value: String) {
                         if (value == Constants.JPG) {
-                            binding.resumePreviewImage.setWebViewClient(object : WebViewClient() {
-                                override fun onPageFinished(view: WebView, url: String) {
-                                    super.onPageFinished(view, url)
-
-                                    // Delay to ensure content is fully loaded
-                                    view.postDelayed({
-                                        try {
-                                            // Capture WebView content in a background thread
-                                            val bitmap = captureWebView(view)
-                                            val saveSuccessful =
-                                                if (AppsKitSDKPreferencesManager.getInstance()
-                                                        .getBooleanPreferences(
-                                                            Constants.IS_RESUME,
-                                                            false
-                                                        )
-                                                ) {
-                                                    ImageFileUtils.getInstance()
-                                                        .saveImageToHiddenStorage(
-                                                            bitmap,
-                                                            false,
-                                                            Constants.RESUME,
-                                                            80,
-                                                            "USER_ID_HERE"
-                                                        )
-                                                } else {
-                                                    ImageFileUtils.getInstance()
-                                                        .saveImageToHiddenStorage(
-                                                            bitmap,
-                                                            false,
-                                                            Constants.COVER_LETTER,
-                                                            80,
-                                                            "USER_ID_HERE"
-                                                        )
-                                                }
-
-                                            if (!saveSuccessful) {
-                                                Log.e("WebViewCapture", "Failed to save the image")
-                                            }
-
-                                        } catch (e: Exception) {
-                                            Log.e(
-                                                "WebViewCapture",
-                                                "Error capturing WebView content: ${e.message}"
-                                            )
-                                        }
-                                    }, 500) // Adjust the delay as needed
-                                }
-                            })
+                            convertWebViewToImage()
                         } else {
-//                            convertWebViewToPdf(
-//                                currentActivity(),
-//                                binding.resumePreviewImage,
-//                                sharePref.readString(Constants.PROFILE_ID).toString()
-//                            )
                             saveWebViewAsPdf(binding.resumePreviewImage)
                         }
                     }
@@ -272,6 +218,85 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
         }
     }
+
+    private fun convertWebViewToImage() {
+        val cw = ContextWrapper(AppsKitSDK.getInstance().context)
+
+
+        // Get the base directory
+        val directory = cw.getDir(
+            AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.USER_ID),
+            Context.MODE_PRIVATE
+        )
+
+
+        // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)
+        val targetDirectory = File(directory, "Resume/JPGs")
+
+
+        // Ensure the target directory exists
+        if (!targetDirectory.exists()) {
+            targetDirectory.mkdirs()
+        }
+
+
+        // Create a directory to save the PDF
+//        val directory: File = File(Environment.getExternalStorageDirectory(), "PDFs")
+//        if (!directory.exists()) {
+//            directory.mkdirs()
+//        }
+        // Define the file name and path
+        val fileName =
+            SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(Calendar.getInstance().time);
+        val pdfFile = File(targetDirectory, "$fileName.jpg")
+        saveBitmapAsImage(captureWebView(binding.resumePreviewImage), pdfFile)
+    }
+
+    fun saveBitmapAsImage(bitmap: Bitmap?, file: File?) {
+        var outputStream: FileOutputStream? = null
+        if (bitmap == null) {
+            AppsKitSDKUtils.makeToast("Fail to  save")
+            return
+        }
+        try {
+            outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            try {
+                outputStream?.close()
+                AppsKitSDKUtils.makeToast("Successfully Saved")
+            } catch (e: IOException) {
+                AppsKitSDKUtils.makeToast("Fail to  save ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    fun captureWebView(webView: WebView): Bitmap? {
+        // Measure the webview's content size
+        webView.measure(
+            View.MeasureSpec.makeMeasureSpec(
+                View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED
+            ),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        webView.layout(0, 0, webView.measuredWidth, webView.measuredHeight)
+
+        // Create a bitmap with the same size as the WebView's content
+        val bitmap = Bitmap.createBitmap(
+            webView.measuredWidth,
+            webView.measuredHeight, Bitmap.Config.ARGB_8888
+        )
+
+        // Draw the WebView's content to the canvas
+        val canvas = Canvas(bitmap)
+        webView.draw(canvas)
+        return bitmap
+    }
+
 
     fun saveWebViewAsPdf(webView: WebView) {
         val cw = ContextWrapper(AppsKitSDK.getInstance().context)

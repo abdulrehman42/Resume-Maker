@@ -33,7 +33,7 @@ class PdfFragment : BaseFragment<FragmentPdfBinding>() {
     }
 
     private fun setAdapter() {
-        templateAdapter = DownloadImgAdapter(currentActivity()){
+        templateAdapter = DownloadImgAdapter{
             DialogueBoxes.alertboxPdf(
                 it.path,
                 currentActivity())
