@@ -18,14 +18,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityAddDetailResumeBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.AddmorealertdialogueBinding
-import com.pentabit.cvmaker.resumebuilder.utils.PermisionHElper
+import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper
+import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper.askForPermission
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.AchievementFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.EducationFragment
@@ -117,15 +117,12 @@ class AddDetailResume : BaseActivity() {
             @SuppressLint("ResourceAsColor")
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
+
                 if (currentFragment.csnMoveForward()) {
                     binding.viewPagerContainer.setCurrentItem(
                         binding.tabLayoutAdddetail.selectedTabPosition,
                         true
                     )
-                    /* binding.viewPagerContainer.currentItem =
-                         binding.tabLayoutAdddetail.selectedTabPosition*/
-                } else {
-                    showToast(getString(R.string.field_missing_error))
                 }
             }
 
@@ -138,6 +135,10 @@ class AddDetailResume : BaseActivity() {
                 // Handle tab reselection if needed
             }
         })
+    }
+    fun replaceByTabId(id:Int)
+    {
+        binding.tabLayoutAdddetail.getTabAt(id)!!.select()
     }
 
 
@@ -278,18 +279,18 @@ class AddDetailResume : BaseActivity() {
     }
 
     fun askReadWritePermission() {
-        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            permissionList.clear()
-            if (SDK_INT < Build.VERSION_CODES.TIRAMISU) permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-            if (SDK_INT < Build.VERSION_CODES.Q) permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            permissionList.add(Manifest.permission.CAMERA)
-            PermisionHElper.askForPermission(
-                permissionList,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            askForPermission(
+                listOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.CAMERA),
                 this,
-                "To enhance your experience, we kindly request access to your device's storage to retrieve necessary data."
+                "To enhance your experience, we kindly request access to your device's storage and camera."
             )
         } else {
-            askAbovePermission()
+            askForPermission(
+                listOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
+                this,
+                "To enhance your experience, we kindly request access to your device's storage and camera."
+            )
         }
     }
 
@@ -303,7 +304,7 @@ class AddDetailResume : BaseActivity() {
     fun askCameraPermission() {
         permissionList.clear()
         permissionList.add(Manifest.permission.CAMERA)
-        PermisionHElper.askForPermission(
+        PermisionHelper.askForPermission(
             permissionList,
             this,
             "For a more interactive and personalized experience, we seek permission to access your device's camera to enable features such as photo capture and augmented reality."

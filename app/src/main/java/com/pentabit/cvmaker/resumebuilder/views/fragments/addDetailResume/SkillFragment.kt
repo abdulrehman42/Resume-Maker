@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentSkillBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -19,22 +20,22 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
-    val skillAdapter= SingleStringAdapter()
+    val skillAdapter = SingleStringAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    var list=ArrayList<String>()
+    var list = ArrayList<String>()
 
     override val inflate: Inflate<FragmentSkillBinding>
         get() = FragmentSkillBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
-            list= it.userSkills as ArrayList<String>
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            list = it.userSkills as ArrayList<String>
             setadapter(list)
         }
 
 
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner){
+        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
             AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
             if (it.msg.isNotBlank()) {
                 AppsKitSDKUtils.makeToast(it.msg)
@@ -42,15 +43,27 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
         }
     }
 
+
     override fun csnMoveForward(): Boolean {
-        return true
+        return check()
     }
+
+    private fun check(): Boolean {
+        if (list.isNotEmpty()) {
+            return true
+        } else {
+            AppsKitSDKUtils.makeToast("please add at least one skill")
+            return false
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
             apiCall()
         }
     }
+
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
@@ -71,13 +84,12 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
         skillAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills,it)
+            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills, it)
         }
         skillAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
             setadapter(list)
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 callSaveApi()
                 apiCall()
 
@@ -96,13 +108,14 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     }
 
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(2)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(2)
+
 
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(4)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(4)
+
 
         }
         binding.addskill.setOnClickListener {

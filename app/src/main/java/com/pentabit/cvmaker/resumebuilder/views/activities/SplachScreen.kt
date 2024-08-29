@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplachScreen : BaseActivity() {
-    lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
     private lateinit var binding: ActivitySplashScreenBinding
     lateinit var templateViewModel: TemplateViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,9 +24,6 @@ class SplachScreen : BaseActivity() {
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-
-
         AppsKitSDKAdsManager.isUserConsentsProvided(true)
         if (AppsKitSDKPreferencesManager.getInstance()
                 .getBooleanPreferences(Constants.IS_INTRO_DONE, false)

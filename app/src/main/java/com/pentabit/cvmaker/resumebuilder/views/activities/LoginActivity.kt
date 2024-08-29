@@ -37,6 +37,7 @@ class LoginActivity : BaseActivity() {
     lateinit var googleclient: GoogleSignInClient
     var isResume = false
     var isMain = false
+    var isProfile=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class LoginActivity : BaseActivity() {
         setContentView(binding.root)
         isResume = intent.getBooleanExtra(Constants.IS_RESUME, false)
         isMain = intent.getBooleanExtra(Constants.IS_MAIN, false)
-
+        isProfile=intent.getBooleanExtra(Constants.IS_PROFILE,false)
         binding.loginbtnlinearbtn.setOnClickListener {
             sign_process()
         }
@@ -69,7 +70,10 @@ class LoginActivity : BaseActivity() {
                 ) as User
             AppsKitSDKPreferencesManager.getInstance()
                 .addInPreferences(Constants.USER_ID, user.id)
-            if (isResume) {
+            if (isProfile)
+            {
+                navigateToProfileActivitySimple()
+            }else if (isResume) {
                 navigateToProfileActivity()
             } else if (isMain) {
                 finish()
@@ -146,6 +150,12 @@ class LoginActivity : BaseActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
         AppsKitSDKPreferencesManager.getInstance()
             .addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
+        startActivity(intent)
+        finish()
+    }
+    private fun navigateToProfileActivitySimple() {
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,true)
+        val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
         finish()
     }

@@ -18,6 +18,8 @@ object Constants {
     const val TEMPLATE_API = "templates/list"
     const val CREATE_PROFILE_API = "profiles"
     const val LOGIN_API = "oauth/login"
+    const val IS_PROFILE="PROFILE_ID"
+    const val REQUEST_IMAGE_CAPTURE=100
     const val TOKEN_REFRESH = "oauth/refresh"
     const val UPDATE_PROFILE = "profiles/{profileId}"
     const val EDIT_OBJECTIVE = "profiles/{profileId}/objective"

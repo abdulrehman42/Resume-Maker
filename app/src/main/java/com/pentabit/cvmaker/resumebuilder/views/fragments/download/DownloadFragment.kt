@@ -14,7 +14,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 
 
-class DownloadFragment :BaseFragment<FragmentDownloadBinding>() {
+class DownloadFragment() :BaseFragment<FragmentDownloadBinding>() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
     override val inflate: Inflate<FragmentDownloadBinding>

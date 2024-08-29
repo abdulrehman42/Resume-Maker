@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_5sdp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -12,7 +10,7 @@
         android:layout_margin="@dimen/_9sdp"
         android:elevation="@dimen/_2sdp"
         app:cardCornerRadius="@dimen/_15sdp"
-        app:layout_constraintBottom_toTopOf="@id/banner_add"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,23 +22,14 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/templateimage"
                 android:layout_width="@dimen/_145sdp"
-                android:layout_height="@dimen/_200sdp"
+                android:layout_height="@dimen/_180sdp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/resume_placeholder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearance="@dimen/_40sdp" />
-
-            <ImageView
-                android:id="@+id/eye_iconId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/blue_eye"
-                app:layout_constraintBottom_toBottomOf="@+id/templateimage"
-                app:layout_constraintEnd_toEndOf="@+id/templateimage" />
 
             <ImageView
                 android:id="@+id/video_iconId"
@@ -56,14 +45,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <FrameLayout
-        android:id="@+id/banner_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

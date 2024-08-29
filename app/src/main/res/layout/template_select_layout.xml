@@ -5,20 +5,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/_10sdp">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_9sdp"
+        android:elevation="@dimen/_2sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:cardCornerRadius="@dimen/_20sdp">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/templateimage"
+            android:layout_width="@dimen/_240sdp"
+            android:layout_height="@dimen/_300sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/resume_placeholder"
 
-               <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/templateimage"
-                android:layout_width="@dimen/_240sdp"
-                android:layout_height="@dimen/_300sdp"
-                android:scaleType="fitXY"
-                android:layout_margin="@dimen/_5sdp"
-                android:src="@drawable/resume_placeholder"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                app:shapeAppearance="@dimen/_10sdp" />
+            app:shapeAppearance="@dimen/_40sdp" />
+    </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/linearbtn"
@@ -30,7 +37,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/templateimage">
+                app:layout_constraintTop_toBottomOf="@+id/card">
 
                 <ImageView
                     android:id="@+id/imageView6"

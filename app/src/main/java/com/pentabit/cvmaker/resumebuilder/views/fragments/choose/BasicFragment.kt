@@ -10,7 +10,6 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentBasicBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
-import com.pentabit.cvmaker.resumebuilder.utils.Helper.saveHtmlAsPdf
 import com.pentabit.cvmaker.resumebuilder.views.adapter.TempResListAdpter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.ads_manager.ads_callback.RewardedAdCallbacks

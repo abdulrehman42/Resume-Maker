@@ -59,7 +59,16 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return check()
+    }
+
+    private fun check(): Boolean {
+        if(list.isNotEmpty()){
+            return true
+        }else{
+            AppsKitSDKUtils.makeToast("please add at least one reference")
+            return false
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -121,12 +130,13 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     private fun onclick() {
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(5)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(5)
 
         }
         binding.nextbtn.setOnClickListener {
             if (tabhost.tabCount >= 7) {
-                tabhost.getTabAt(6)!!.select()
+                (requireActivity() as AddDetailResume).replaceByTabId(6)
+
             } else {
                 alertboxChooseCreation(requireActivity(),
                     object : DialogueBoxes.StringValueDialogCallback {

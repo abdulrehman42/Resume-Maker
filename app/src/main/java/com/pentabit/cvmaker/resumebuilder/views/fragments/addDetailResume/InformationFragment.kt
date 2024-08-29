@@ -31,6 +31,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
@@ -51,9 +52,10 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     val adapter = ""
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     lateinit var tabhost: TabLayout
+    var isAllRequiredFieldsComplete=false
 
     override fun csnMoveForward(): Boolean {
-        return isAllRequiredFieldsComplete()
+        return isAllRequiredFieldsComplete
     }
 
     override val inflate: Inflate<FragmentInformationBinding>
@@ -69,7 +71,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         {
             AppsKitSDKPreferencesManager.getInstance()
                 .addInPreferences(PROFILE_ID, it.id.toString())
-            tabhost.getTabAt(1)!!.select()
+            isAllRequiredFieldsComplete=true
+            (requireActivity() as AddDetailResume).replaceByTabId(1)
         }
         addDetailResumeVM.looksupResponse.observe(this) {
             looksAdapter.submitList(it)
@@ -131,9 +134,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             )
         }
         looksAdapter.setOnItemClickCallback {
+            isProgrammaticallySettingText=true
             binding.jobedittext.setText(Helper.removeOneUnderscores("1__" + it.text))
            // callLookUpApi(null)
-            isProgrammaticallySettingText=true
             binding.lookidRecyclerview.isGone = true
         }
 
@@ -195,7 +198,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         })
 
         binding.nextbtn.setOnClickListener {
-            if (isAllRequiredFieldsComplete()) {
+            if (Validations.validateFields(binding, gender, isEditProfile, getImage)) {
+
                 if (isEditProfile)
                     callApiUpdate()
                 else
@@ -207,7 +211,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     }
 
     private fun callLookUpApi(query: String?) {
-        addDetailResumeVM.getLookUp(Constants.position, query, "", "10")
+        addDetailResumeVM.getLookUp(Constants.position, query, "", "6")
     }
 
     private fun callApiUpdate() {
@@ -224,14 +228,19 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
     fun grtProfileModel(): CreateProfileRequestModel {
         var address: String? = null
+        var phone:String?=null
         address = binding.address.text.toString()
+        phone=binding.phoneedittext.text.toString()
         if (address.isEmpty()) {
             address = null
+        }
+        if (phone.isEmpty()) {
+            phone = null
         }
         return CreateProfileRequestModel(
             binding.nameedittext.text.toString(),
             binding.emailtext.text.toString(),
-            binding.phoneedittext.text.toString(),
+            phone,
             getImage,
             gender,
             binding.jobedittext.text.toString(),
@@ -240,22 +249,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         )
     }
 
-    private fun isAllRequiredFieldsComplete(): Boolean {
-        return isFieldNotNullOrEmpty(binding.nameedittext, binding.jobedittext, binding.dobEdit) &&
-                Helper.isValidEmail(binding.emailtext.text.toString())&&
-                !gender.isNullOrEmpty() &&
-                (isEditProfile || !getImage.isNullOrEmpty())
-    }
 
 
-    private fun isFieldNotNullOrEmpty(vararg views: TextView): Boolean {
-        for (v in views) {
-            if (v.text.toString().trim().isEmpty()) {
-                return false
-            }
-        }
-        return true
-    }
+
 
 
     private val galleryResultLauncher =

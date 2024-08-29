@@ -3,12 +3,12 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
+import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
-import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
+import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddEducationBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
@@ -17,6 +17,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualifi
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -30,8 +31,9 @@ class AddEducation(
     val isEdit: Boolean
 
 ) :
-    AddDetailsBaseFragment<FragmentAddEducationBinding>() {
+    BaseFragment<FragmentAddEducationBinding>() {
     private var isProgrammaticallySettingText = false
+
     private var isDegree = false
     var withWord = "-1__"
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
@@ -45,26 +47,16 @@ class AddEducation(
 
     override fun observeLiveData() {
         addDetailResumeVM.educationResponse.observe(this) {
+
             parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
             currentActivity().supportFragmentManager.popBackStackImmediate()
 
         }
         addDetailResumeVM.looksupResponse.observe(this) {
             looksAdapter.submitList(it)
-            if (it.size == 0) {
-                binding.lookidRecyclerview.isGone = true
-                binding.lookidRecyclerview.isGone = true
-            } else {
-                if (isDegree) {
-                    binding.lookidRecyclerviewdegree.isGone = false
-                } else {
-                    binding.lookidRecyclerview.isGone = false
-                }
-
-            }
         }
 
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
+        addDetailResumeVM.loadingState.observe(this) {
             addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
                 AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
                 if (it.msg.isNotBlank()) {
@@ -75,9 +67,7 @@ class AddEducation(
     }
 
 
-    override fun csnMoveForward(): Boolean {
-        return isConditionMet()
-    }
+
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
@@ -108,73 +98,8 @@ class AddEducation(
     }
 
     private fun onclick() {
-        binding.degreeName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApi(null) // Send null query if the text is erased
-                        binding.lookidRecyclerviewdegree.isGone = true
-                    } else {
-                        callLookUpApi(query)
-                        binding.lookidRecyclerviewdegree.isGone = false
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiInstitute(null) // Send null query if the text is erased
-                        binding.lookidRecyclerviewdegree.isGone = true
-                    } else {
-                        callLookUpApi(query)
-                        binding.lookidRecyclerviewdegree.isGone = false
-                    }
-                }
-                isProgrammaticallySettingText = false
-
-            }
-        })
-        binding.instituenameedittext.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApi(null) // Send null query if the text is erased
-                        binding.lookidRecyclerview.isGone = true
-                    } else {
-                        callLookUpApi(query)
-                        binding.lookidRecyclerview.isGone = false
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiInstitute(null) // Send null query if the text is erased
-                        binding.lookidRecyclerview.isGone = true
-                    } else {
-                        callLookUpApiInstitute(query)
-                        binding.lookidRecyclerview.isGone = false
-                    }
-                }
-                isProgrammaticallySettingText = false
-
-            }
-        })
-
-
-
+        setupTextWatcher(binding.degreeName, isDegree = true)
+        setupTextWatcher(binding.instituenameedittext, isDegree = false)
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
                 binding.enddateTextInputLayout2.isEnabled = false
@@ -184,15 +109,16 @@ class AddEducation(
             }
         }
         looksAdapter.setOnItemClickCallback {
+            isProgrammaticallySettingText = true
+            val text = Helper.removeOneUnderscores(it.text)
+            withWord = "-1__"
             if (isDegree) {
-                withWord = "1__"
-                binding.degreeName.setText(Helper.removeOneUnderscores(it.text))
+                binding.degreeName.setText(text)
                 binding.lookidRecyclerviewdegree.isGone = true
             } else {
-                binding.instituenameedittext.setText(Helper.removeOneUnderscores(it.text))
+                binding.instituenameedittext.setText(text)
                 binding.lookidRecyclerview.isGone = true
             }
-            isProgrammaticallySettingText = true
         }
         binding.startdateedittext.setOnClickListener {
             DialogueBoxes.showWheelDatePickerDialog(
@@ -204,6 +130,7 @@ class AddEducation(
                 }
             )
         }
+
         binding.enddateedittext.setOnClickListener {
             DialogueBoxes.showWheelDatePickerDialog(
                 currentActivity(),
@@ -217,18 +144,68 @@ class AddEducation(
 
 
         binding.savebtn.setOnClickListener {
-            if (isConditionMet()) {
+            if (Validations.isConditionMetEducation(binding)) {
                 CallApi()
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
+
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
+
         currentActivity().onBackPressedDispatcher.addCallback {
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
+    }
+
+
+
+    private fun setupTextWatcher(editText: EditText, isDegree: Boolean) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!isProgrammaticallySettingText) {
+                    val query = s.toString()
+                    if (query.isEmpty()) {
+                        handleEmptyQuery(isDegree)
+                    } else {
+                        handleNonEmptyQuery(query, isDegree)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                isProgrammaticallySettingText = false
+            }
+        })
+    }
+
+    private fun handleEmptyQuery(isDegree: Boolean) {
+        if (isDegree) {
+            binding.lookidRecyclerviewdegree.isGone = true
+        } else {
+            binding.lookidRecyclerview.isGone = true
+        }
+        callLookUpApi(null, isDegree)
+    }
+
+    private fun handleNonEmptyQuery(query: String, isDegree: Boolean) {
+        callLookUpApi(query, isDegree)
+        if (isDegree) {
+            binding.lookidRecyclerviewdegree.isGone = false
+        } else {
+            binding.lookidRecyclerview.isGone = false
+        }
+    }
+
+    private fun callLookUpApi(query: String?, isDegree: Boolean) {
+        this.isDegree = isDegree
+        val type = if (isDegree) Constants.degree else Constants.institute
+        addDetailResumeVM.getLookUp(type, query, "", "6")
+
     }
 
     private fun CallApi() {
@@ -264,13 +241,8 @@ class AddEducation(
     }
 
 
-    fun isConditionMet(): Boolean {
-        val isEndDateRequired = binding.checkItscontinue.isChecked
-        return !binding.instituenameedittext.text.toString().isNullOrEmpty() &&
-                !binding.degreeName.text.toString().isNullOrEmpty() &&
-                !binding.startdateedittext.text.toString().isNullOrEmpty() &&
-                (!isEndDateRequired || !binding.enddateedittext.text.toString().isNullOrEmpty())
-    }
+
+
 
     private fun updateQualificationList() {
         // Initialize the updated list with existing qualifications
@@ -304,13 +276,4 @@ class AddEducation(
         }
     }
 
-    private fun callLookUpApi(query: String?) {
-        isDegree = true
-        addDetailResumeVM.getLookUp(Constants.degree, query, "", "6")
-    }
-
-    private fun callLookUpApiInstitute(query: String?) {
-        isDegree = false
-        addDetailResumeVM.getLookUp(Constants.institute, query, "", "6")
-    }
 }

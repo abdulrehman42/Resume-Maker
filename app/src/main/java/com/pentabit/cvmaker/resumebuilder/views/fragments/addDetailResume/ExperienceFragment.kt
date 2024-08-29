@@ -13,6 +13,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experie
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -42,7 +43,16 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return check()
+    }
+
+    private fun check(): Boolean {
+        if(list.isNotEmpty()){
+            return true
+        }else{
+            AppsKitSDKUtils.makeToast("please add at least one experience")
+            return false
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -108,11 +118,13 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(3)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(3)
+
 
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(5)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(5)
+
         }
         binding.addexperiencebtn.setOnClickListener {
             addDetailResumeVM.fragment.value = AddExperienceFragment(null,list,true)

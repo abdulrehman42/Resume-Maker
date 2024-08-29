@@ -40,7 +40,6 @@
         app:endIconTint="@null"
         app:endIconCheckable="true"
         app:endIconMode="custom"
-        app:endIconDrawable="@drawable/tick_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/banner_add"
         app:layout_constraintStart_toStartOf="parent">

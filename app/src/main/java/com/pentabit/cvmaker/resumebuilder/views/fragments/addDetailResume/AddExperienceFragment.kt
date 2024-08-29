@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.addCallback
@@ -25,6 +24,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experie
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -45,6 +45,8 @@ class AddExperienceFragment(
     private var looksAdapter = LooksAdapter()
     var isCompany = false
     var isProgrammaticallySettingText = false
+    var isProgrammaticallySettingText1 = false
+
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
     val updateList = ArrayList<Experience>()
     override val inflate: Inflate<FragmentAddExperienceBinding>
@@ -143,7 +145,7 @@ class AddExperienceFragment(
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!isProgrammaticallySettingText) {
+                if (!isProgrammaticallySettingText1) {
                     val query = s.toString()
                     if (query.isEmpty()) {
                         callLookUpApiCompany(null.toString()) // Send null query if the text is erased
@@ -156,7 +158,7 @@ class AddExperienceFragment(
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText) {
+                if (!isProgrammaticallySettingText1) {
                     val query = s.toString()
                     if (query.isEmpty()) {
                         callLookUpApiCompany(null.toString()) // Send null query if the text is erased
@@ -235,7 +237,8 @@ class AddExperienceFragment(
             }
         }
         binding.savebtn.setOnClickListener {
-            if (isConditionMet()) {
+
+            if (Validations.isConditionMetExperience(binding)) {
                 apiCall()
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
@@ -253,13 +256,16 @@ class AddExperienceFragment(
         looksAdapter.setOnItemClickCallback {
             withWord = "1__"
             if (isCompany) {
+                isProgrammaticallySettingText1 = true
+
                 binding.companyName.setText(Helper.removeOneUnderscores(it.text))
                 binding.lookidRecyclerviewcompany.isGone = true
             } else {
+                isProgrammaticallySettingText = true
+
                 binding.jobName.setText(Helper.removeOneUnderscores(it.text))
                 binding.lookidRecyclerview.isGone = true
             }
-            isProgrammaticallySettingText = true
         }
 
     }
@@ -276,14 +282,6 @@ class AddExperienceFragment(
 
     }
 
-    fun isConditionMet(): Boolean {
-        val isEndDateRequired = binding.checkItscontinue.isChecked
-        return !binding.companyName.text.toString().isNullOrEmpty() &&
-                !binding.jobName.text.toString().isNullOrEmpty() &&
-                !binding.description.text.toString().trim().isNullOrEmpty() &&
-                !binding.startdateedittext.text.toString().isNullOrEmpty()&&
-                (!isEndDateRequired || !binding.enddateedittext.text.toString().isNullOrEmpty())
-    }
 
     private fun apiCall() {
         updateList()

@@ -21,10 +21,12 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,9 +34,7 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     val achievementAdapter= AchievementAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
     var list=ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
-    override fun csnMoveForward(): Boolean {
-        return true
-    }
+
 
     override val inflate: Inflate<FragmentAchievementBinding>
         get() = FragmentAchievementBinding::inflate
@@ -46,15 +46,9 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
         }
 
         addDetailResumeVM.loadingState.observe(this){
-            if (it.loader)
-            {
-                binding.loader.isGone=false
-            }else{
-                binding.loader.isGone=true
-            }
-            if (!it.msg.isNullOrBlank())
-            {
-                currentActivity().showToast(it.msg)
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
         }
     }
@@ -64,7 +58,18 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
             apiCall()
         }
     }
+    override fun csnMoveForward(): Boolean {
+        return check()
+    }
 
+    private fun check(): Boolean {
+        if(list.isNotEmpty()){
+            return true
+        }else{
+            AppsKitSDKUtils.makeToast("please add at least one achievement")
+            return false
+        }
+    }
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
@@ -81,9 +86,8 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(8)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(8)
 
         }
         binding.nextbtn.setOnClickListener {

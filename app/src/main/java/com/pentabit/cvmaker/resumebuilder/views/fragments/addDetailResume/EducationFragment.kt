@@ -15,6 +15,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualifi
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -48,7 +49,16 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return check()
+    }
+
+    private fun check(): Boolean {
+        if(list.isNotEmpty()){
+            return true
+        }else{
+            AppsKitSDKUtils.makeToast("please add at least one education")
+            return false
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -75,11 +85,13 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(1)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(2)
+
 
         }
         binding.nextbtn.setOnClickListener {
-            tabhost.getTabAt(3)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(3)
+
         }
         binding.addeducationbtn.setOnClickListener {
             addDetailResumeVM.fragment.value = AddEducation(null, list, false)

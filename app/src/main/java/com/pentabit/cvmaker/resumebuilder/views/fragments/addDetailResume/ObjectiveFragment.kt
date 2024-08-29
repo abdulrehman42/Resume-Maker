@@ -11,6 +11,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleItemRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -47,7 +48,8 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
             }
         }
         addDetailResumeVM.objectiveResponse.observe(viewLifecycleOwner) {
-            tabhost.getTabAt(2)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(2)
+
         }
     }
 
@@ -84,7 +86,8 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
         }
 
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(0)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(0)
+
         }
         binding.nextbtn.setOnClickListener {
             if (isConditionMet()) {
@@ -111,7 +114,13 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     fun isConditionMet(): Boolean {
-        return !binding.objectiveTextInput.text.toString().isNullOrEmpty()
+        if (binding.objectiveTextInput.text.toString().isNullOrEmpty())
+        {
+           AppsKitSDKUtils.makeToast("please add objectives")
+            return false
+        }else{
+            return true
+        }
     }
 
 

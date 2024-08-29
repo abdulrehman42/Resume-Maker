@@ -126,10 +126,9 @@ class AddSkillFragment(
 
         binding.savebtn.setOnClickListener {
             val skill = binding.skillEdittext.text.toString().trim()
-            if (skill.length > 3) {
+            if (skill.isNullOrEmpty()) {
                 list.add("-1__$skill")
                 binding.skillEdittext.setText("")
-
                 apiCall()
             } else {
                 currentActivity().showToast(getString(R.string.single_field_missing_error))

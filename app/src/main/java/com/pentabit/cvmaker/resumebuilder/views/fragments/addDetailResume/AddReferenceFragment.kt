@@ -15,6 +15,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -30,6 +31,7 @@ class AddReferenceFragment(
     var startWith = "1__"
     var isCompany = false
     var isProgrammaticallySettingText = false
+    var isProgrammaticallySettingText1 = false
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserReference>()
     val updateList = ArrayList<ReferenceRequest.Reference>()
     private var looksAdapter = LooksAdapter()
@@ -49,11 +51,10 @@ class AddReferenceFragment(
         }
         addDetailResumeVM.looksupResponse.observe(this) {
             looksAdapter.submitList(it)
-            if (it.size == 0)
-            { binding.recyclerviewLookup.isGone = true
-                binding.recyclerviewLookupcompany.isGone=true}
-            else
-            {
+            if (it.isEmpty()) {
+                binding.recyclerviewLookup.isGone = true
+                binding.recyclerviewLookupcompany.isGone = true
+            } else {
                 if (isCompany) {
                     binding.recyclerviewLookupcompany.isGone = false
                 } else {
@@ -97,115 +98,89 @@ class AddReferenceFragment(
             binding.recyclerviewLookupcompany.adapter = looksAdapter
         } else {
             binding.recyclerviewLookup.adapter = looksAdapter
-
         }
         onclick()
     }
 
     private fun onclick() {
-
         binding.companyName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!isProgrammaticallySettingText1) {
+                    val query = s.toString()
+                    if (query.isEmpty()) {
+                        binding.recyclerviewLookupcompany.isGone = true
+                    } else {
+                        callLookUpApiCompany(query)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                isProgrammaticallySettingText1 = false
+            }
+        })
+
+        binding.jobedittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!isProgrammaticallySettingText) {
                     val query = s.toString()
                     if (query.isEmpty()) {
-                        callLookUpApiPosition(null) // Send null query if the text is erased
                         binding.recyclerviewLookup.isGone = true
                     } else {
-                        callLookUpApiCompany(query)
-                        binding.recyclerviewLookupcompany.isGone = false
+                        callLookUpApiPosition(query)
                     }
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiPosition(null) // Send null query if the text is erased
-                        binding.recyclerviewLookup.isGone = true
-                    } else {
-                        callLookUpApiCompany(query)
-                        binding.recyclerviewLookupcompany.isGone = false
-                    }
-                }
                 isProgrammaticallySettingText = false
-
-            }
-        })
-        binding.jobedittext.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiPosition(null) // Send null query if the text is erased
-                        binding.recyclerviewLookup.isGone = true
-                    } else {
-                        callLookUpApiCompany(query)
-                        binding.recyclerviewLookupcompany.isGone = false
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiPosition(null) // Send null query if the text is erased
-                        binding.recyclerviewLookup.isGone = true
-                    } else {
-                        callLookUpApiCompany(query)
-                        binding.recyclerviewLookupcompany.isGone = false
-                    }
-                }
-                isProgrammaticallySettingText = false
-
             }
         })
 
         looksAdapter.setOnItemClickCallback {
             startWith = "1__"
             if (isCompany) {
+                isProgrammaticallySettingText1 = true
                 binding.companyName.setText(Helper.removeOneUnderscores(it.text))
                 binding.recyclerviewLookupcompany.isGone = true
             } else {
+                isProgrammaticallySettingText = true
                 binding.jobedittext.setText(Helper.removeOneUnderscores(it.text))
                 binding.recyclerviewLookup.isGone = true
             }
-            isProgrammaticallySettingText = true
         }
-
 
         binding.savebtn.setOnClickListener {
-            if (isConditionMet()) {
+            if (Validations.isConditionMetReference(binding)) {
                 apiCall()
-
             } else {
                 currentActivity().showToast(getString(R.string.field_missing_error))
-
             }
         }
+
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
+
         requireActivity().onBackPressedDispatcher.addCallback {
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
 
-    fun isConditionMet(): Boolean {
-        return !binding.jobedittext.text.toString().isNullOrEmpty() &&
-                !binding.referrencenameedit.text.toString().isNullOrEmpty() &&
-                Helper.isValidEmail(binding.emailedit.text.toString()) &&
-                !binding.phone.text.toString().isNullOrEmpty() &&
-                !binding.companyName.text.toString().isNullOrEmpty()
+    private fun callLookUpApiCompany(query: String) {
+        isCompany = true
+        addDetailResumeVM.getLookUp(Constants.company, query, "", "")
     }
+
+    private fun callLookUpApiPosition(query: String?) {
+        isCompany = false
+        addDetailResumeVM.getLookUp(Constants.position, query ?: "", "", "")
+    }
+
 
     private fun apiCall() {
         updateList.add(
@@ -220,20 +195,6 @@ class AddReferenceFragment(
 
         val referenceRequest = ReferenceRequest(references = updateList)
 
-        addDetailResumeVM.editReference(
-            referenceRequest
-        )
-    }
-
-    private fun callLookUpApiCompany(query: String) {
-        isCompany = true
-        addDetailResumeVM.getLookUp(Constants.company, query, "", "")
-
-    }
-
-    private fun callLookUpApiPosition(query: String?) {
-        isCompany = false
-        addDetailResumeVM.getLookUp(Constants.position, query, "", "")
-
+        addDetailResumeVM.editReference(referenceRequest)
     }
 }

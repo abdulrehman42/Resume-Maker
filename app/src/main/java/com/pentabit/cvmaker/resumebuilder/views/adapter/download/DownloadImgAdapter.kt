@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
+import com.pentabit.cvmaker.resumebuilder.databinding.DownloaditemBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplatelayoutitemsBinding
 import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -24,7 +25,7 @@ class DownloadImgAdapter(val openPdf: (File) -> Unit) :
         viewType: Int
     ): AppsKitSDKRecyclerBaseViewBinding {
         return AppsKitSDKRecyclerBaseViewBinding(
-            TemplatelayoutitemsBinding.inflate(
+            DownloaditemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -33,14 +34,12 @@ class DownloadImgAdapter(val openPdf: (File) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: AppsKitSDKRecyclerBaseViewBinding, position: Int) {
-        val binding1 = holder.binding as TemplatelayoutitemsBinding
-        binding1.eyeIconId.visibility = View.GONE
+        val binding1 = holder.binding as DownloaditemBinding
         val currenytItem = getItem(position)
         Glide.with(ResumeMakerApplication.instance).load(currenytItem)
             .into(binding1.templateimage)
         binding1.templateimage.setOnClickListener {
             openPdf(currenytItem)
-//            openPdfFile(binding1.root.context, currenytItem)
         }
     }
 

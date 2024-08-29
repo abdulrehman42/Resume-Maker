@@ -17,6 +17,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -48,7 +49,16 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return check()
+    }
+
+    private fun check(): Boolean {
+        if(list.isNotEmpty()){
+            return true
+        }else{
+            AppsKitSDKUtils.makeToast("please add at least one language")
+            return false
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -92,12 +102,12 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
-            tabhost.getTabAt(6)!!.select()
+            (requireActivity() as AddDetailResume).replaceByTabId(6)
 
         }
         binding.nextbtn.setOnClickListener {
             if (tabhost.tabCount >= 8) {
-                tabhost.getTabAt(8)!!.select()
+                (requireActivity() as AddDetailResume).replaceByTabId(8)
             } else {
                 alertboxChooseCreation(requireActivity(),
                     object : DialogueBoxes.StringValueDialogCallback {

@@ -98,7 +98,13 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
 
     }
     fun isConditionMet(): Boolean {
-        return !binding.interestEdittext.text.toString().isNullOrEmpty()
+        if (!binding.interestEdittext.text.toString().isNullOrEmpty())
+        {
+            return true
+        }else{
+            AppsKitSDKUtils.makeToast("please add interest")
+            return false
+        }
     }
 
     private fun apiCall() {

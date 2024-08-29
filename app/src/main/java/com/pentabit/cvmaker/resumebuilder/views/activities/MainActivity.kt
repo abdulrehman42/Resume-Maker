@@ -209,7 +209,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 )
                 startActivity(Intent(this, ProfileActivity::class.java))
             } else {
-                startActivity(Intent(this, LoginActivity::class.java))
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.putExtra(Constants.IS_PROFILE, true)
+
+                startActivity(intent)
 
             }
 

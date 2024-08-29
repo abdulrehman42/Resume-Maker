@@ -1,13 +1,17 @@
 package com.pentabit.cvmaker.resumebuilder.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.os.StrictMode
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.provider.MediaStore
@@ -27,6 +31,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ActivityBoardingScreenBind
 import com.pentabit.cvmaker.resumebuilder.models.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
 import com.google.android.material.tabs.TabLayout
+import com.pentabit.cvmaker.resumebuilder.views.activities.LoginActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.WebViewPrintAdapter
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -462,82 +467,29 @@ object Helper {
                 }
             }
         }
-    }
+}
 
-
-    fun saveHtmlAsPdf(
-        context: Context,
-        htmlContent: String,
-        fileName: String,
-        subFileName: String
-    ) {
-        val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val printAdapter = WebViewPrintAdapter(htmlContent, fileName, subFileName, context)
-
-        printManager.print("Document", printAdapter, PrintAttributes.Builder().build())
-    }
-
-    fun loadPdfFromHiddenStorage(
-        headerDir: String,
-        subheading: String,
-        context: Context
-    ): List<String> {
-        val list = mutableListOf<String>()
-
-        // Get the app's private storage directory using ContextWrapper
-        val cw = ContextWrapper(context)
-
-        // Get the main directory within the app's private storage
-        val mainDirectory = cw.getDir(headerDir, Context.MODE_PRIVATE)
-
-        // Construct the path to the target directory (subheading/IMAGES)
-        val targetDirectory = File(mainDirectory, "$subheading/IMAGES")
-
-        // Get the list of files in the target directory
-        val files = targetDirectory.listFiles()
-        if (files != null) {
-            for (file in files) {
-                list.add(file.absolutePath) // Add the absolute path of each file to the list
-            }
-        }
-
-        return list // Return the list of file paths
-    }
-
-
-    fun isDateAtLeast15YearsLater(dateString: String, dateFormat: String = "M/d/yyyy"): Boolean {
-        return try {
-            // Define the date formatter
-            val formatter = DateTimeFormatter.ofPattern(dateFormat)
-
-            // Parse the input date
-            val inputDate = LocalDate.parse(dateString, formatter)
-
-            // Get the current date
-            val currentDate = LocalDate.now()
-
-            // Print dates for debugging
-            println("Current Date: $currentDate")
-            println("Input Date: $inputDate")
-
-            // Calculate the difference in years
-            val yearsBetween = ChronoUnit.YEARS.between(inputDate,currentDate)
-
-            // Print the calculated difference for debugging
-            println("Years Between: $yearsBetween")
-
-            // Check if the input date is at least 15 years later than the current date
-            if (yearsBetween >= 15) {
-                true
-            } else {
-                // Show a Toast message
-                AppsKitSDKUtils.makeToast("The date is not at least 15 years later.")
-                false
-            }
-        } catch (e: DateTimeParseException) {
-            // Handle the exception, e.g., log the error or show an error message
-            e.printStackTrace()
-            false
+    fun share_Image(activity: Activity,getimage:String) {
+        val builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
+        val bundle: Bundle? = activity.intent.extras
+        val image = bundle!!.getString(getimage)
+        val im=activity.findViewById<ImageView>(R.id.share)
+        val bitmapdrawer: BitmapDrawable = im.drawable as BitmapDrawable
+        val bitmap: Bitmap = bitmapdrawer.bitmap
+        val dir=File(image)
+        try {
+            val filout = FileOutputStream(dir)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, filout)
+            filout.flush()
+            filout.close()
+            var shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "Image/*"
+            shareIntent.putExtra(Intent.EXTRA_STREAM, dir)
+            shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            activity.startActivity(Intent.createChooser(shareIntent,"share image"))
+        } catch (e: Exception) {
+            AppsKitSDKUtils.makeToast("$e")
         }
     }
 }

@@ -67,10 +67,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             intent.putExtra(Constants.IS_EDIT, true)
             startActivity(intent)
         }
-        binding.createBtn.setOnClickListener {
-            binding.createProfile.isGone=false
-            binding.createCoverletter.isGone=false
-        }
+
         binding.createProfile.setOnClickListener {
             startActivity(Intent(currentActivity(),AddDetailResume::class.java))
         }
@@ -84,12 +81,12 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
                 .alpha(0f) // Fade out to transparency
                 .setDuration(300) // Duration of the animation
                 .withEndAction {
-                    binding.createProfile.isGone = true // Make it gone after the animation
+                    binding.createProfile.isGone = false // Make it gone after the animation
                     binding.createCoverletter.animate()
                         .alpha(0f)
                         .setDuration(300)
                         .withEndAction {
-                            binding.createCoverletter.isGone = true
+                            binding.createCoverletter.isGone = false
                         }
                 }
         })
@@ -113,8 +110,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             userName.text = profileModelAddDetailResponse.name
             userIntro.text = profileModelAddDetailResponse.objective
             gender.text = profileModelAddDetailResponse.gender.replaceFirstChar { it.uppercase() }
-            location.text =
-                profileModelAddDetailResponse.address.replaceFirstChar { it.uppercase() }
+
             objexttext.text = profileModelAddDetailResponse.objective
             skillRecyclerview.apply {
                 layoutManager = GridLayoutManager(currentActivity(), 3)

@@ -12,10 +12,6 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.callbacks.ProfileItemCallbacks
 import com.pentabit.cvmaker.resumebuilder.databinding.CustomprofileitemBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
-import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
-import com.pentabit.cvmaker.resumebuilder.utils.Helper.saveHtmlAsPdf
 import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 import java.io.File
 
