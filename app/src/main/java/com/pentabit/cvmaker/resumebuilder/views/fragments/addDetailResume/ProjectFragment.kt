@@ -2,11 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
-import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProjectBinding
@@ -19,7 +15,6 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ProjectAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -42,15 +37,13 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
             list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
             setAdapter(list)
         }
-        addDetailResumeVM.loadingState.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
-        }
     }
 
     override fun csnMoveForward(): Boolean {
+        return true
+    }
+
+   override fun onMoveNextClicked(): Boolean  {
         return true
     }
 
@@ -82,36 +75,6 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
     }
 
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
-        binding.backbtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).replaceByTabId(7)
-
-        }
-        binding.nextbtn.setOnClickListener {
-            if (tabhost.tabCount >= 9) {
-                (requireActivity() as AddDetailResume).replaceByTabId(9)
-            } else {
-                alertboxChooseCreation(requireActivity(),
-                    object : DialogueBoxes.StringValueDialogCallback {
-                        override fun onButtonClick(value: String) {
-                            if (value == Constants.PROFILE) {
-                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                                    Constants.VIEW_PROFILE, true
-                                )
-                                currentActivity().finish()
-                            } else {
-                                val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
-                                intent.putExtra(IS_RESUME, true)
-                                intent.putExtra(CREATION_TIME, true)
-                                startActivity(intent)
-                                currentActivity().finish()
-                            }
-                        }
-
-                    })
-
-            }
-        }
         binding.addprojectbtn.setOnClickListener {
             addDetailResumeVM.fragment.value = AddProjectFragment(null, list)
         }

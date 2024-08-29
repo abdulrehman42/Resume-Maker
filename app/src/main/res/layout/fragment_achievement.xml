@@ -37,44 +37,11 @@
         android:textColor="@color/white"
         app:circularflow_defaultRadius="@dimen/_20sdp"
         app:cornerRadius="@dimen/_55sdp"
-        app:layout_constraintBottom_toTopOf="@+id/nextbtn"
-        app:layout_constraintEnd_toEndOf="@+id/nextbtn"
-        app:shapeAppearance="@style/CircularFloating" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/nextbtn"
-        style="@style/subheading"
-        android:layout_width="@dimen/_185sdp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
-        android:backgroundTint="@color/green_light"
-        android:drawableEnd="@drawable/next"
-        android:gravity="start|center"
-        android:text="@string/next"
-        android:textColor="@color/white"
-        app:circularflow_defaultRadius="@dimen/_20sdp"
-        app:cornerRadius="@dimen/_55sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/backbtn"
         app:shapeAppearance="@style/CircularFloating" />
 
-    <TextView
-        android:id="@+id/backbtn"
-        style="@style/regular"
-        android:layout_width="@dimen/_90sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:background="@drawable/circularbg"
-        android:backgroundTint="@color/grey_dim"
-        android:gravity="center"
-        android:padding="@dimen/_5sdp"
-        android:text="@string/back"
-        android:textSize="@dimen/_12ssp"
 
-        app:layout_constraintBottom_toBottomOf="@+id/nextbtn"
-        app:layout_constraintStart_toStartOf="@+id/recyclerview_achievements"
-        app:layout_constraintTop_toTopOf="@+id/nextbtn" />
     <TextView
         android:id="@+id/popup"
         style="@style/regular"
@@ -86,15 +53,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_experience"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recyclerview_experience" />
 
 
 

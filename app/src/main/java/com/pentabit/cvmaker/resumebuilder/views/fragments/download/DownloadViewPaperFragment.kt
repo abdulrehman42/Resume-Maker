@@ -94,7 +94,7 @@ class DownloadViewPaperFragment(val path: String) : BaseFragment<FragmentPdfBind
             intent.setDataAndType(
                 FileProvider.getUriForFile(
                     requireContext(),
-                    requireContext().getPackageName() + ".fileprovider",
+                    requireContext().packageName + ".provider",
                     it
                 ), "application/pdf"
             )

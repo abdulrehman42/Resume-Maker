@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.addDetailResume.EducationFragment">
+
     <FrameLayout
         android:id="@+id/banner_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_education"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_5sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/addeducationbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/banner_add" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -30,72 +31,27 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_10sdp"
         android:backgroundTint="@color/purple"
-        android:textSize="@dimen/_10ssp"
         android:drawableLeft="@drawable/baseline_add_24"
         android:gravity="end|center"
         android:text="@string/add_education"
         android:textColor="@color/white"
+        android:textSize="@dimen/_10ssp"
         app:circularflow_defaultRadius="@dimen/_20sdp"
         app:cornerRadius="@dimen/_55sdp"
-        app:layout_constraintBottom_toTopOf="@+id/nextbtn"
-        app:layout_constraintEnd_toEndOf="@+id/nextbtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearance="@style/CircularFloating" />
 
     <TextView
         android:id="@+id/popup"
         style="@style/regular"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No Education Added"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/addeducationbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recyclerview_education" />
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/nextbtn"
-        style="@style/subheading"
-        android:layout_width="@dimen/_185sdp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
-        android:backgroundTint="@color/green_light"
-        android:drawableEnd="@drawable/next"
-        android:gravity="start|center"
-        android:text="@string/next"
-        android:textColor="@color/white"
-        app:circularflow_defaultRadius="@dimen/_20sdp"
-        app:cornerRadius="@dimen/_55sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/backbtn"
-        app:shapeAppearance="@style/CircularFloating" />
-
-    <TextView
-        android:id="@+id/backbtn"
-        style="@style/regular"
-        android:layout_width="@dimen/_90sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:background="@drawable/circularbg"
-        android:backgroundTint="@color/grey_dim"
-        android:gravity="center"
-        android:padding="@dimen/_5sdp"
-        android:text="@string/back"
-        android:textSize="@dimen/_12ssp"
-
-        app:layout_constraintBottom_toBottomOf="@+id/nextbtn"
-        app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
-        app:layout_constraintTop_toTopOf="@+id/nextbtn" />
-
-
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_education"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recyclerview_education"
         app:layout_constraintTop_toTopOf="@+id/recyclerview_education" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

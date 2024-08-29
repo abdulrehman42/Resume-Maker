@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/_18sdp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@id/nextbtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -30,16 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ProgressBar
-                android:id="@+id/loader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -207,11 +197,11 @@
                 android:layout_width="@dimen/_138sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:textStyle="bold"
                 android:background="@drawable/greybgradius"
                 android:gravity="center"
                 android:text="Man"
                 android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/dob_inputlayout"
                 app:layout_constraintTop_toBottomOf="@+id/dob_inputlayout" />
 
@@ -236,9 +226,9 @@
                 android:id="@+id/lookid_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:background="@color/white"
                 android:visibility="gone"
-                android:layout_marginStart="@dimen/_10sdp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -246,16 +236,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <TextView
-        android:id="@+id/nextbtn"
-        style="@style/button_style_round"
-        android:layout_width="@dimen/_280sdp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_15sdp"
-        android:text="@string/next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

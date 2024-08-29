@@ -1,11 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
-import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentSkillBinding
@@ -33,19 +29,15 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
             list = it.userSkills as ArrayList<String>
             setadapter(list)
         }
-
-
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
-        }
     }
 
 
     override fun csnMoveForward(): Boolean {
         return true
+    }
+
+   override fun onMoveNextClicked(): Boolean  {
+       return true
     }
 
     private fun check(): Boolean {
@@ -108,16 +100,6 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     }
 
     private fun onclick() {
-        binding.backbtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).replaceByTabId(2)
-
-
-        }
-        binding.nextbtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).replaceByTabId(4)
-
-
-        }
         binding.addskill.setOnClickListener {
             addDetailResumeVM.fragment.value = AddSkillFragment(list, null)
         }

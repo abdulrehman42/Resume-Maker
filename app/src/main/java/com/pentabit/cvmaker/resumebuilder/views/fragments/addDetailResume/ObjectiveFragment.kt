@@ -2,7 +2,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -21,7 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     lateinit var objSampleAdapter: ObjSampleAdapter
-    lateinit var tabhost: TabLayout
+
+    //    lateinit var tabhost: TabLayout
     var list = ArrayList<SampleResponseModel>()
     private var isEditProfile = false
 
@@ -41,15 +41,8 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
         addDetailResumeVM.data.observe(this) {
             binding.objectiveTextInput.setText(it.toString())
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
-        }
         addDetailResumeVM.objectiveResponse.observe(viewLifecycleOwner) {
-            (requireActivity() as AddDetailResume).replaceByTabId(2)
-
+            (currentActivity() as AddDetailResume).moveNext()
         }
     }
 
@@ -57,9 +50,18 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
         return true
     }
 
+    override fun onMoveNextClicked(): Boolean {
+        if (isConditionMet()) {
+            callEditAPi()
+        } else {
+            AppsKitSDKUtils.makeToast(getString(R.string.field_missing_error))
+        }
+        return false
+    }
+
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
+//        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
@@ -84,18 +86,6 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
         binding.viewall.setOnClickListener {
             addDetailResumeVM.fragment.value = ObjectiveSample(list)
         }
-
-        binding.backbtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).replaceByTabId(0)
-
-        }
-        binding.nextbtn.setOnClickListener {
-            if (isConditionMet()) {
-                callEditAPi()
-            } else {
-                AppsKitSDKUtils.makeToast(getString(R.string.field_missing_error))
-            }
-        }
     }
 
     private fun callEditAPi() {
@@ -114,11 +104,10 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     fun isConditionMet(): Boolean {
-        if (binding.objectiveTextInput.text.toString().isNullOrEmpty())
-        {
-           AppsKitSDKUtils.makeToast("please add objectives")
+        if (binding.objectiveTextInput.text.toString().isNullOrEmpty()) {
+            AppsKitSDKUtils.makeToast("please add objectives")
             return false
-        }else{
+        } else {
             return true
         }
     }

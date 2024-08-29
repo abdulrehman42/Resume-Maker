@@ -1,14 +1,17 @@
 package com.pentabit.cvmaker.resumebuilder.views.activities;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityPreviewImageResumeBinding;
-import com.pentabit.cvmaker.resumebuilder.utils.Helper;
+import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils;
 
 import java.io.File;
 
@@ -22,30 +25,35 @@ public class PreviewImageResumeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityPreviewImageResumeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.toolbarcontainer.textView.setText("Preview");
+
         file = new File(getIntent().getStringExtra("path"));
         Glide.with(this).load(file).into(binding.image);
-        binding.delete.setOnClickListener(v -> {
-            if (file.exists()) {
-                if (file.delete()) {
-                    Toast.makeText(this, "File deleted successfully", Toast.LENGTH_SHORT).show();
-
-                    finish();
-                } else {
-                    Toast.makeText(this, "Failed to delete the file", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        binding.share.setOnClickListener(v -> {
-            Helper.INSTANCE.share_Image(this,file.getAbsolutePath());
-        });
         handleClicks();
     }
 
     private void handleClicks() {
+        binding.delete.setOnClickListener(v -> {
+            ImageFileUtils.getInstance().deleteDirectory(file);
+            Toast.makeText(this, "File deleted successfully", Toast.LENGTH_SHORT).show();
+            finish();
+        });
 
+        binding.share.setOnClickListener(v -> {
+            if (file.exists()) {
+                Uri fileUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", file);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/jpg"); // Adjust the MIME type according to your file type
+                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                startActivity(Intent.createChooser(intent, "Share file using"));
+            } else {
+                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        binding.toolbarcontainer.backbtn.setOnClickListener(v -> finish());
     }
 
 

@@ -14,9 +14,8 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityDownloadBinding
 import com.pentabit.cvmaker.resumebuilder.views.fragments.download.DownloadViewPaperFragment
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 class DownloadActivity : BaseActivity() {
     lateinit var binding: ActivityDownloadBinding
     override fun onCreate(savedInstanceState: Bundle?) {

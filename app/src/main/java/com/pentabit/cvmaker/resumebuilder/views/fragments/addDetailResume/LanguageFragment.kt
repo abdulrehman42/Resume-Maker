@@ -1,27 +1,15 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
-import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLanguageBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
-import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,27 +23,26 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
             list = it.userLanguages as ArrayList<String>
             setadapter(list)
         }
 
-        addDetailResumeVM.loadingState.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
-        }
     }
 
     override fun csnMoveForward(): Boolean {
         return true
     }
 
+
+    override fun onMoveNextClicked(): Boolean {
+        return true
+    }
+
     private fun check(): Boolean {
-        if(list.isNotEmpty()){
+        if (list.isNotEmpty()) {
             return true
-        }else{
+        } else {
             AppsKitSDKUtils.makeToast("please add at least one language")
             return false
         }
@@ -100,33 +87,6 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     }
 
     private fun onclick() {
-        val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
-        binding.backbtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).replaceByTabId(6)
-
-        }
-        binding.nextbtn.setOnClickListener {
-            if (tabhost.tabCount >= 8) {
-                (requireActivity() as AddDetailResume).replaceByTabId(8)
-            } else {
-                alertboxChooseCreation(requireActivity(),
-                    object : DialogueBoxes.StringValueDialogCallback {
-                        override fun onButtonClick(value: String) {
-                            if (value == Constants.PROFILE) {
-                                AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,true)
-                                currentActivity().finish()
-                            } else {
-                                val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
-                                intent.putExtra(IS_RESUME,true)
-                                intent.putExtra(CREATION_TIME, true)
-                                startActivity(intent)
-                                currentActivity().finish()
-                            }
-                        }
-
-                    })            }
-
-        }
         binding.addlanguage.setOnClickListener {
             addDetailResumeVM.fragment.value = AddLanguageFragment(list, null)
         }

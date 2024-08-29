@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/nextbtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,12 +24,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
             <FrameLayout
                 android:id="@+id/banner_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/objective_textInputLayout"
                 android:layout_width="match_parent"
@@ -71,13 +73,14 @@
                 android:text="@string/view_all"
                 app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
                 app:layout_constraintTop_toTopOf="@id/samplehearder" />
+
             <TextView
                 android:id="@+id/viewLess"
                 style="@style/regular"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="View Less"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/objective_textInputLayout"
                 app:layout_constraintTop_toTopOf="@id/samplehearder" />
 
@@ -92,51 +95,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/samplehearder"
                 tools:itemCount="2"
                 tools:listitem="@layout/sampleitems" />
-            <ProgressBar
-                android:id="@+id/loader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/sample_recyclerview"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/samplehearder" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-    <TextView
-        style="@style/regular"
-        android:id="@+id/backbtn"
-        android:layout_width="@dimen/_90sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/circularbg"
-        android:backgroundTint="@color/grey_dim"
-        android:text="@string/back"
-        android:textSize="@dimen/_12ssp"
-        android:layout_margin="@dimen/_18sdp"
-        android:padding="@dimen/_5sdp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-/>
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/nextbtn"
-        style="@style/subheading"
-        android:layout_width="@dimen/_185sdp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_18sdp"
-        android:backgroundTint="@color/green_light"
-        android:drawableEnd="@drawable/next"
-        android:gravity="start|center"
-        android:text="@string/next"
-        android:textColor="@color/white"
-        app:circularflow_defaultRadius="@dimen/_20sdp"
-        app:cornerRadius="@dimen/_55sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/backbtn"
-        app:shapeAppearance="@style/CircularFloating" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

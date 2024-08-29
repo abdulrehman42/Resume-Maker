@@ -3,11 +3,11 @@ package com.pentabit.cvmaker.resumebuilder.views.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
@@ -24,6 +24,8 @@ import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityAddDetailResumeBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.AddmorealertdialogueBinding
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper
 import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper.askForPermission
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
@@ -37,16 +39,20 @@ import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.Object
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ProjectFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ReferrenceFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.SkillFragment
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddDetailResume : BaseActivity() {
     lateinit var currentFragment: AddDetailsBaseFragment<ViewBinding>
+    private var currentTabPosition = 0
     private lateinit var binding: ActivityAddDetailResumeBinding
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    var permissionList=ArrayList<String>()
+    private val fragmentsMap = HashMap<Int, AddDetailsBaseFragment<ViewBinding>>()
+    var permissionList = ArrayList<String>()
 
     data class TabModel(
         val id: Int,
@@ -64,8 +70,6 @@ class AddDetailResume : BaseActivity() {
         setUpTablayout()
         onclick()
         observeLiveData()
-
-
     }
 
     private fun observeLiveData() {
@@ -84,15 +88,33 @@ class AddDetailResume : BaseActivity() {
 
 
         }
+
+        addDetailResumeVM.loadingState.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
+            }
+        }
     }
 
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
-//            sharePref.deleteItemSharePref(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE)
             finish()
         }
+        binding.back.setOnClickListener {
+            moveBack()
+        }
+        binding.btnNxt.setOnClickListener {
+            if (currentFragment.onMoveNextClicked()) {
+                moveNext()
+            }
+        }
+        binding.nextbtn.setOnClickListener {
+            if (currentFragment.onMoveNextClicked()) {
+                moveNext()
+            }
+        }
         onBackPressedDispatcher.addCallback {
-//            sharePref.deleteItemSharePref(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA_PROFILE)
             finish()
         }
         binding.addTabs.setOnClickListener { alertbox() }
@@ -118,17 +140,18 @@ class AddDetailResume : BaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
 
+                currentFragment = fragmentsMap.get(currentTabPosition)!!
                 if (currentFragment.csnMoveForward()) {
                     binding.viewPagerContainer.setCurrentItem(
                         binding.tabLayoutAdddetail.selectedTabPosition,
                         true
                     )
+                    currentTabPosition = binding.tabLayoutAdddetail.selectedTabPosition
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.grey))
-
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -136,9 +159,42 @@ class AddDetailResume : BaseActivity() {
             }
         })
     }
-    fun replaceByTabId(id:Int)
-    {
-        binding.tabLayoutAdddetail.getTabAt(id)!!.select()
+
+    fun moveBack() {
+        if (currentTabPosition >= 0) {
+            if (currentTabPosition == 1) {
+                binding.btnContainer.visibility = View.INVISIBLE
+                binding.btnNxt.visibility = View.VISIBLE
+            }
+            binding.tabLayoutAdddetail.getTabAt(currentTabPosition - 1)!!.select()
+        }
+    }
+
+    fun moveNext() {
+        binding.btnContainer.visibility = View.VISIBLE
+        binding.btnNxt.visibility = View.INVISIBLE
+        if (currentTabPosition < allTabs.size - 1) {
+            binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
+        } else {
+
+            DialogueBoxes.alertboxChooseCreation(this,
+                object : DialogueBoxes.StringValueDialogCallback {
+                    override fun onButtonClick(value: String) {
+                        if (value == Constants.PROFILE) {
+                            AppsKitSDKPreferencesManager.getInstance()
+                                .addInPreferences(Constants.VIEW_PROFILE, true)
+                            finish()
+                        } else {
+                            val intent = Intent(this@AddDetailResume, ChoiceTemplate::class.java)
+                            intent.putExtra(Constants.IS_RESUME, true)
+                            intent.putExtra(Constants.CREATION_TIME, true)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                })
+
+        }
     }
 
 
@@ -181,10 +237,6 @@ class AddDetailResume : BaseActivity() {
         tab.text = tabModel.name
         tab.icon = tabModel.icon
         binding.tabLayoutAdddetail.addTab(tab)
-        /*for (i in 0 until allTabs.size) {
-            binding.tabLayoutAdddetail.getTabAt(binding.viewPagerContainer.currentItem)?.view?.isClickable =
-                false
-        }*/
         binding.viewPagerContainer.adapter?.notifyDataSetChanged()
 
     }
@@ -224,6 +276,7 @@ class AddDetailResume : BaseActivity() {
         }
 
         override fun createFragment(position: Int): Fragment {
+
             val tab = when (allTabs[position].id) {
                 0 -> InformationFragment()
                 1 -> ObjectiveFragment()
@@ -237,7 +290,11 @@ class AddDetailResume : BaseActivity() {
                 9 -> AchievementFragment()
                 else -> InformationFragment()
             }
-            currentFragment = tab as AddDetailsBaseFragment<ViewBinding>
+
+            if (position == 0) {
+                currentFragment = tab as AddDetailsBaseFragment<ViewBinding>
+            }
+            fragmentsMap[position] = tab as AddDetailsBaseFragment<ViewBinding>
             return tab
         }
 
@@ -254,7 +311,7 @@ class AddDetailResume : BaseActivity() {
         }
 
         // Set system bars to be transparent
-        window.statusBarColor = ContextCompat.getColor(this,R.color.navy_blue)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
         window.navigationBarColor = Color.TRANSPARENT
 
         // Optionally, handle light or dark mode for the status bar icons
@@ -266,8 +323,6 @@ class AddDetailResume : BaseActivity() {
         }
         window.decorView.systemUiVisibility = flags
     }
-
-
 
 
     fun checkReadPermission(): Boolean {
@@ -287,7 +342,11 @@ class AddDetailResume : BaseActivity() {
             )
         } else {
             askForPermission(
-                listOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
+                listOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+                ),
                 this,
                 "To enhance your experience, we kindly request access to your device's storage and camera."
             )
@@ -301,6 +360,7 @@ class AddDetailResume : BaseActivity() {
             )
         }
     }
+
     fun askCameraPermission() {
         permissionList.clear()
         permissionList.add(Manifest.permission.CAMERA)

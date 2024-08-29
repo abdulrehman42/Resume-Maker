@@ -18,8 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseImage
-import com.pentabit.cvmaker.resumebuilder.utils.Helper.getFileFromUri
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
@@ -30,13 +28,14 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateP
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseImage
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Helper.getFileFromUri
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
-import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
@@ -52,10 +51,21 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
     val adapter = ""
     val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     lateinit var tabhost: TabLayout
-    var isAllRequiredFieldsComplete=false
 
     override fun csnMoveForward(): Boolean {
-        return isAllRequiredFieldsComplete
+        return Validations.validateFields(binding, gender, isEditProfile, getImage)
+    }
+
+    override fun onMoveNextClicked(): Boolean {
+        if (csnMoveForward()) {
+            if (isEditProfile)
+                callApiUpdate()
+            else
+                callApi()
+        } else {
+            currentActivity().showToast(getString(R.string.field_missing_error))
+        }
+        return false
     }
 
     override val inflate: Inflate<FragmentInformationBinding>
@@ -71,8 +81,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         {
             AppsKitSDKPreferencesManager.getInstance()
                 .addInPreferences(PROFILE_ID, it.id.toString())
-            isAllRequiredFieldsComplete=true
-            (requireActivity() as AddDetailResume).replaceByTabId(1)
+
+            ( currentActivity() as AddDetailResume).moveNext()
         }
         addDetailResumeVM.looksupResponse.observe(this) {
             looksAdapter.submitList(it)
@@ -80,12 +90,6 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                 binding.lookidRecyclerview.isGone = true
             else
                 binding.lookidRecyclerview.isGone = false
-        }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
         }
     }
 
@@ -134,9 +138,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             )
         }
         looksAdapter.setOnItemClickCallback {
-            isProgrammaticallySettingText=true
+            isProgrammaticallySettingText = true
             binding.jobedittext.setText(Helper.removeOneUnderscores("1__" + it.text))
-           // callLookUpApi(null)
+            // callLookUpApi(null)
             binding.lookidRecyclerview.isGone = true
         }
 
@@ -192,22 +196,10 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                         binding.lookidRecyclerview.isGone = true
                     }
                 }
-                isProgrammaticallySettingText=false
+                isProgrammaticallySettingText = false
 
             }
         })
-
-        binding.nextbtn.setOnClickListener {
-            if (Validations.validateFields(binding, gender, isEditProfile, getImage)) {
-
-                if (isEditProfile)
-                    callApiUpdate()
-                else
-                    callApi()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
-            }
-        }
     }
 
     private fun callLookUpApi(query: String?) {
@@ -228,9 +220,9 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
     fun grtProfileModel(): CreateProfileRequestModel {
         var address: String? = null
-        var phone:String?=null
+        var phone: String? = null
         address = binding.address.text.toString()
-        phone=binding.phoneedittext.text.toString()
+        phone = binding.phoneedittext.text.toString()
         if (address.isEmpty()) {
             address = null
         }
@@ -248,10 +240,6 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             address
         )
     }
-
-
-
-
 
 
     private val galleryResultLauncher =

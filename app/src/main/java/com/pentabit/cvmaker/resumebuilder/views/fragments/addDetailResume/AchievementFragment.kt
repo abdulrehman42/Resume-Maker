@@ -2,26 +2,19 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
-import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAchievementBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -31,9 +24,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
-    val achievementAdapter= AchievementAdapter()
+    val achievementAdapter = AchievementAdapter()
     lateinit var addDetailResumeVM: AddDetailResumeVM
-    var list=ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
+    var list = ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
 
 
     override val inflate: Inflate<FragmentAchievementBinding>
@@ -41,35 +34,36 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            list= it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>
+            list = it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>
             setAdapter()
         }
-
-        addDetailResumeVM.loadingState.observe(this){
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
-        }
     }
+
     override fun onResume() {
         super.onResume()
         parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
             apiCall()
         }
     }
+
     override fun csnMoveForward(): Boolean {
         return true
     }
 
+
+   override fun onMoveNextClicked(): Boolean  {
+       return true
+    }
+
     private fun check(): Boolean {
-        if(list.isNotEmpty()){
+        if (list.isNotEmpty()) {
             return true
-        }else{
+        } else {
             AppsKitSDKUtils.makeToast("please add at least one achievement")
             return false
         }
     }
+
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
@@ -86,29 +80,6 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
     private fun onclick() {
-        binding.backbtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).replaceByTabId(8)
-
-        }
-        binding.nextbtn.setOnClickListener {
-            alertboxChooseCreation(requireActivity(),
-                object : DialogueBoxes.StringValueDialogCallback {
-                    override fun onButtonClick(value: String) {
-                        if (value == Constants.PROFILE) {
-                            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,true)
-                            currentActivity().finish()
-                        } else {
-                            val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
-                            intent.putExtra(IS_RESUME,true)
-                            intent.putExtra(CREATION_TIME, true)
-                            startActivity(intent)
-                            currentActivity().finish()
-                        }
-                    }
-
-                })
-
-        }
         binding.addachievementbtn.setOnClickListener {
             addDetailResumeVM.fragment.value = AddAchievementsFRagment(null, list)
         }
@@ -117,13 +88,12 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     private fun setAdapter() {
         achievementAdapter.submitList(list)
         achievementAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment(it,list)
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment(it, list)
         }
         achievementAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
             setAdapter()
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 callSaveApi()
                 apiCall()
 
@@ -136,7 +106,7 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
         var achievement = ArrayList<Achievement>()
         for (i in 0 until list.size) {
             achievement.add(
-                Achievement(list[i].description, list[i].issueDate,list[0].title)
+                Achievement(list[i].description, list[i].issueDate, list[0].title)
             )
         }
         val achievementRequest = AchievementRequest(achievements = achievement)
