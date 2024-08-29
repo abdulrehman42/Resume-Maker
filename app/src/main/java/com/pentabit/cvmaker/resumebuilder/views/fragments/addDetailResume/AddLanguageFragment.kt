@@ -18,10 +18,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFragment<FragmentAddLanguageBinding>()
-{
-    lateinit var addDetailResumeVM : AddDetailResumeVM
-    var list=ArrayList<String>()
+class AddLanguageFragment(val data: List<String>?, val language: String?) :
+    BaseFragment<FragmentAddLanguageBinding>() {
+    lateinit var addDetailResumeVM: AddDetailResumeVM
+    var list = ArrayList<String>()
     override val inflate: Inflate<FragmentAddLanguageBinding>
         get() = FragmentAddLanguageBinding::inflate
 
@@ -30,7 +30,7 @@ class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFr
             parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
-        addDetailResumeVM.loadingState.observe(this){
+        addDetailResumeVM.loadingState.observe(this) {
             AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
             if (it.msg.isNotBlank()) {
                 AppsKitSDKUtils.makeToast(it.msg)
@@ -40,34 +40,22 @@ class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFr
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM= ViewModelProvider(this)[AddDetailResumeVM::class.java]
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
 //        val data_list=sharePref.readProfileData()
-        binding.includeTool.textView.text=getString(R.string.add_language)
+        binding.includeTool.textView.text = getString(R.string.add_language)
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
             placeholder = ""
         )
-        if (data!=null)
-        {
-            list= data as ArrayList<String>
+        if (data != null) {
+            list = data as ArrayList<String>
         }
-        language?.let{
+        language?.let {
             binding.languageEdittext.setText(language)
         }
-       // onAdapter()
+        // onAdapter()
         onclick()
-    }
-
-    private fun onAdapter() {
-       /* suggestionAdapter= SuggestionAdapter(currentActivity(), list)
-        {
-
-        }
-        binding.recyclerviewLanguage.apply {
-            layoutManager= GridLayoutManager(currentActivity(),3)
-            adapter=suggestionAdapter
-        }*/
 
 
     }
@@ -77,10 +65,10 @@ class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFr
 
         binding.savebtn.setOnClickListener {
             if (isConditionMet()) {
-                list.add("-1__"+binding.languageEdittext.text.toString())
+                list.add("-1__" + binding.languageEdittext.text.toString())
 
                 apiCall()
-            }else{
+            } else {
                 currentActivity().showToast(getString(R.string.single_field_missing_error))
             }
         }
@@ -93,9 +81,16 @@ class AddLanguageFragment(val data: List<String>?,val language:String?) : BaseFr
         }
 
     }
+
     fun isConditionMet(): Boolean {
-        return !binding.languageEdittext.text.toString().isNullOrEmpty()
+        if (!binding.languageEdittext.text.toString().isNullOrEmpty()) {
+            return true
+        } else {
+            AppsKitSDKUtils.makeToast("please add language")
+            return false
+        }
     }
+
     private fun apiCall() {
         addDetailResumeVM.editLanguage(
             LanguageRequestModel(list)

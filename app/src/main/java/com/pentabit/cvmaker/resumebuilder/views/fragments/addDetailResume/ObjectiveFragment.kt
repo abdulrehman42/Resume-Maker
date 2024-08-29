@@ -54,7 +54,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return isConditionMet()
+        return true
     }
 
     override fun init(savedInstanceState: Bundle?) {

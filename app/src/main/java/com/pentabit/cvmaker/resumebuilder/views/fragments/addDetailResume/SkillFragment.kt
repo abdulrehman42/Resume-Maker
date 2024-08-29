@@ -45,7 +45,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
 
     override fun csnMoveForward(): Boolean {
-        return check()
+        return true
     }
 
     private fun check(): Boolean {

@@ -49,7 +49,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return check()
+        return true
     }
 
     private fun check(): Boolean {

@@ -49,7 +49,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return check()
+        return true
     }
 
     private fun check(): Boolean {

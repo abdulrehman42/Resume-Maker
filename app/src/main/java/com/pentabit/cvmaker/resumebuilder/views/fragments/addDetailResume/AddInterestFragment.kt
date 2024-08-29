@@ -80,7 +80,7 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
 
     private fun onclick() {
         binding.savebtn.setOnClickListener {
-            if (isConditionMet()) {
+            if (isCondtionMet()) {
                 updateList.add("-1__"+binding.interestEdittext.text.toString())
                 apiCall()
             }else{
@@ -97,7 +97,7 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
         }
 
     }
-    fun isConditionMet(): Boolean {
+    fun isCondtionMet(): Boolean {
         if (!binding.interestEdittext.text.toString().isNullOrEmpty())
         {
             return true

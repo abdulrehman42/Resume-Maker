@@ -38,7 +38,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(),binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
             list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
             setAdapter(list)
         }
@@ -51,13 +51,13 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
     }
 
     override fun csnMoveForward(): Boolean {
-        return check()
+        return true
     }
 
     private fun check(): Boolean {
-        if(list.isNotEmpty()){
+        if (list.isNotEmpty()) {
             return true
-        }else{
+        } else {
             AppsKitSDKUtils.makeToast("please add at least one project")
             return false
         }
@@ -73,12 +73,14 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         apiCall()
         onclick()
     }
+
     override fun onResume() {
         super.onResume()
         parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
             apiCall()
         }
     }
+
     private fun onclick() {
         val tabhost = currentActivity().findViewById<View>(R.id.tab_layout_adddetail) as TabLayout
         binding.backbtn.setOnClickListener {
@@ -94,11 +96,12 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
                         override fun onButtonClick(value: String) {
                             if (value == Constants.PROFILE) {
                                 AppsKitSDKPreferencesManager.getInstance().addInPreferences(
-                                    Constants.VIEW_PROFILE,true)
+                                    Constants.VIEW_PROFILE, true
+                                )
                                 currentActivity().finish()
                             } else {
                                 val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
-                                intent.putExtra(IS_RESUME,true)
+                                intent.putExtra(IS_RESUME, true)
                                 intent.putExtra(CREATION_TIME, true)
                                 startActivity(intent)
                                 currentActivity().finish()
@@ -121,13 +124,12 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
     private fun setAdapter(userProjects: List<ProfileModelAddDetailResponse.UserProject>) {
         projectAdapter.submitList(userProjects)
         projectAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddProjectFragment(it,list)
+            addDetailResumeVM.fragment.value = AddProjectFragment(it, list)
         }
         projectAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
             setAdapter(list)
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 callSaveApi()
                 apiCall()
 
