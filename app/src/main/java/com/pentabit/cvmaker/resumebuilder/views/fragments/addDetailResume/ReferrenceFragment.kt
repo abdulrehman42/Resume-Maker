@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Referen
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ReferenceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
@@ -68,6 +69,11 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
             binding.bannerAdd,
             placeholder = ""
         )
+
+        /*if ((currentActivity() as AddDetailResume).isLast())
+        {
+            binding.addreferrenebtn
+        }*/
         AppsKitSDKPreferencesManager.getInstance().addInPreferences(IS_RESUME, true)
         apiCall()
         onclick()

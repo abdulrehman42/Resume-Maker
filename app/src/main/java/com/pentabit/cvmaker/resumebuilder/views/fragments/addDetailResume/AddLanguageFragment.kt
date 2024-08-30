@@ -67,6 +67,7 @@ class AddLanguageFragment(val data: List<String>?, val language: String?, val is
         language?.let {
             binding.languageEdittext.setText(Helper.removeOneUnderscores(language))
         }
+
         binding.recyclerviewLanguage.adapter=userlanguasAdapter
         binding.lookidRecyclerview.adapter = looksAdapter
         looksAdapter.setOnItemClickCallback {

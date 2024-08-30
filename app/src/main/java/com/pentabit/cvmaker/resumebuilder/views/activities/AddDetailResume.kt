@@ -72,6 +72,12 @@ class AddDetailResume : BaseActivity() {
         setUpTablayout()
         onclick()
         observeLiveData()
+        if (currentTabPosition==allTabs.size)
+        {
+           runOnUiThread {
+               binding.btnNxt.setText("Done")
+           }
+        }
 
     }
 
@@ -179,12 +185,10 @@ class AddDetailResume : BaseActivity() {
     fun moveNext() {
         binding.btnContainer.visibility = View.VISIBLE
         binding.btnNxt.visibility = View.INVISIBLE
-        val b=allTabs.size-2
-
         if (currentTabPosition < allTabs.size - 1) {
             binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
         } else {
-            if (!iseditProfile) {
+        //    if (!iseditProfile) {
                 DialogueBoxes.alertboxChooseCreation(this,
                     object : DialogueBoxes.StringValueDialogCallback {
                         override fun onButtonClick(value: String) {
@@ -202,12 +206,11 @@ class AddDetailResume : BaseActivity() {
                             }
                         }
                     })
-            }else{
+            /*}else{
                 finish()
-            }
+            }*/
         }
     }
-
 
     override fun attachViewMode() {
 
@@ -251,6 +254,9 @@ class AddDetailResume : BaseActivity() {
         binding.viewPagerContainer.adapter?.notifyDataSetChanged()
 
     }
+
+
+
 
 
     fun alertbox() {
