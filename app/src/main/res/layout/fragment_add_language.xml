@@ -22,17 +22,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/include_tool"
         app:layout_constraintEnd_toEndOf="parent" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_15sdp"
-        android:src="@drawable/tick_green"
-        android:visibility="gone"
-        android:id="@+id/tick_btn"
-        app:layout_constraintBottom_toBottomOf="@+id/language_textInputLayout"
-        app:layout_constraintEnd_toEndOf="@+id/language_textInputLayout"
-        app:layout_constraintTop_toTopOf="@+id/language_textInputLayout" />
-    <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/language_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_5sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/savebtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +77,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/language_textInputLayout" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:src="@drawable/tick_green"
+        android:visibility="gone"
+        android:id="@+id/tick_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/language_textInputLayout"
+        app:layout_constraintEnd_toEndOf="@+id/language_textInputLayout"
+        app:layout_constraintTop_toTopOf="@+id/language_textInputLayout" />
+
     <ProgressBar
         android:id="@+id/loader"
         android:layout_width="wrap_content"

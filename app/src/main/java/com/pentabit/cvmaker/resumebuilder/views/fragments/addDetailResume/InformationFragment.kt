@@ -62,8 +62,6 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                 callApiUpdate()
             else
                 callApi()
-        } else {
-            currentActivity().showToast(getString(R.string.field_missing_error))
         }
         return false
     }

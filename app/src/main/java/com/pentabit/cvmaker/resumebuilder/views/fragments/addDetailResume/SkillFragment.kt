@@ -24,7 +24,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userSkills.isNullOrEmpty(), binding.popup)
             list = it.userSkills as ArrayList<String>
             setadapter(list)
         }

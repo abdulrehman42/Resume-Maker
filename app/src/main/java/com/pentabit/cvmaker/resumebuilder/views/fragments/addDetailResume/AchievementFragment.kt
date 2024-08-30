@@ -27,6 +27,8 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userAchievement.isNullOrEmpty(),binding.popup)
+            list.clear()
             list = it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>
             setAdapter()
         }

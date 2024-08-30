@@ -40,9 +40,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         profileVM.dataResponse.observe(currentActivity()) {
             if (it.isNullOrEmpty()) {
                 startActivity(Intent(currentActivity(),AddDetailResume::class.java))
+                binding.addTabshide.isGone=false
                 binding.popupmsg.isGone = false
+                binding.addTabs.isGone=true
             } else {
                 binding.popupmsg.isGone = true
+                binding.addTabshide.isGone=true
+                binding.addTabs.isGone=false
                 profileAdapter.submitList(it)
             }
         }
@@ -79,6 +83,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             )
         }
 
+        binding.addTabshide.setOnClickListener {
+            startActivity(
+                Intent(
+                    currentActivity(),
+                    AddDetailResume::class.java
+                )
+            )
+        }
     }
 
     private fun setadapter() {

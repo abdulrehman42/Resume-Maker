@@ -26,7 +26,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userInterests.isEmpty(), binding.popup)
             list = it.userInterests as ArrayList<String>
             setadapter()
         }

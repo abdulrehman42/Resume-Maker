@@ -92,6 +92,8 @@ class AddReferenceFragment(
         userReference?.let {
             binding.referrencenameedit.setText(Helper.removeOneUnderscores(userReference.name))
             binding.companyName.setText(Helper.removeOneUnderscores(userReference.company))
+            binding.jobedittext.setText(Helper.removeOneUnderscores(userReference.position))
+            binding.phone.setText(Helper.removeOneUnderscores(userReference.phone))
             binding.emailedit.setText(Helper.removeOneUnderscores(userReference.email))
             binding.phone.setText(Helper.removeOneUnderscores(userReference.phone))
         }

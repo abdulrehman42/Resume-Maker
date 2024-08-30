@@ -29,7 +29,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userReferences.isEmpty(), binding.popup)
             list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
             setadapter(list)
         }

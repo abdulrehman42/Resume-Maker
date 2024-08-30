@@ -65,7 +65,7 @@ class AddLanguageFragment(val data: List<String>?, val language: String?, val is
             list = data as ArrayList<String>
         }
         language?.let {
-            binding.languageEdittext.setText(language)
+            binding.languageEdittext.setText(Helper.removeOneUnderscores(language))
         }
         binding.recyclerviewLanguage.adapter=userlanguasAdapter
         binding.lookidRecyclerview.adapter = looksAdapter
@@ -86,7 +86,6 @@ class AddLanguageFragment(val data: List<String>?, val language: String?, val is
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                     // No action needed here
                 }
-
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val textLength = s?.length ?: 0
                     if (textLength > 2) {

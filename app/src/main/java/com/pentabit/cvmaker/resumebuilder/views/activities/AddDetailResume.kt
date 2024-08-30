@@ -72,6 +72,7 @@ class AddDetailResume : BaseActivity() {
         setUpTablayout()
         onclick()
         observeLiveData()
+
     }
 
     private fun observeLiveData() {
@@ -120,6 +121,7 @@ class AddDetailResume : BaseActivity() {
             finish()
         }
         binding.addTabs.setOnClickListener { alertbox() }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -177,6 +179,8 @@ class AddDetailResume : BaseActivity() {
     fun moveNext() {
         binding.btnContainer.visibility = View.VISIBLE
         binding.btnNxt.visibility = View.INVISIBLE
+        val b=allTabs.size-2
+
         if (currentTabPosition < allTabs.size - 1) {
             binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
         } else {

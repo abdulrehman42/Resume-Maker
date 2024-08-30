@@ -24,6 +24,7 @@
         app:headerLayout="@layout/nav_header_main_activty"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
+        app:itemTextAppearance="@style/NavigationDrawerTextStyle"
         app:menu="@menu/activity_main_activty_drawer">
 
         <LinearLayout

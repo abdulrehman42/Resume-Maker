@@ -8,15 +8,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pentabit.cvmaker.resumebuilder.databinding.EducationitemsBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 
 class AchievementAdapter : ListAdapter<ProfileModelAddDetailResponse.UserAchievement, AchievementAdapter.ViewHolder>(TemplateDiffCallback) {
     inner class ViewHolder(private val binding: EducationitemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model: ProfileModelAddDetailResponse.UserAchievement) {
-            binding.universityname.text=model.title
-            binding.degreeName.text=model.description
-            binding.degreeYears.text=model.issueDate
+            binding.universityname.text=Helper.removeOneUnderscores(model.title)
+            binding.degreeName.text=Helper.removeOneUnderscores(model.description)
+            binding.degreeYears.text=Helper.removeOneUnderscores(model.issueDate)
             binding.editEdu.setOnClickListener {
                 editItemClickCallback?.invoke(model,position)
             }

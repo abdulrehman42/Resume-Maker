@@ -25,7 +25,7 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userExperiences.isEmpty(), binding.popup)
 
             list = it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>
             setadapter()
@@ -78,7 +78,7 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
         experienceAdapter.setOnEditItemClickCallback {item,position->
 
-            addDetailResumeVM.fragment.value = AddExperienceFragment(item, list, false,position)
+            addDetailResumeVM.fragment.value = AddExperienceFragment(item, list, true,position)
 
         }
         experienceAdapter.setOnItemDeleteClickCallback {

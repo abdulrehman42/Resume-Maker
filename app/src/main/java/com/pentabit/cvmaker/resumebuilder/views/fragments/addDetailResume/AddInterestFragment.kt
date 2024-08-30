@@ -116,6 +116,7 @@ class AddInterestFragment(
     }
 
     private fun apiCall() {
+        binding.interestEdittext.setText("")
         addDetailResumeVM.editInterest(
             InterestRequestModel(updateList)
         )

@@ -179,17 +179,16 @@ object Validations {
             }
 
             binding.phone.text.toString().length > 16 -> {
-                AppsKitSDKUtils.makeToast("Enter phone no less than 16 digits")
+                AppsKitSDKUtils.makeToast("enter phone no less than 16 digits")
                 return false
             }
 
             binding.phone.text.toString().length <= 6 -> {
-                AppsKitSDKUtils.makeToast("Company name cannot be empty.")
+                AppsKitSDKUtils.makeToast("enter phone no more than 6 digits")
                 return false
             }
 
             else -> {
-                AppsKitSDKUtils.makeToast("All conditions are met.")
                 return true
             }
         }

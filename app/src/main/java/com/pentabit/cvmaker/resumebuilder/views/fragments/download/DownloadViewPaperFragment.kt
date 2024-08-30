@@ -46,6 +46,7 @@ class DownloadViewPaperFragment(val path: String) : BaseFragment<FragmentPdfBind
 
     private fun handleClicks() {
         binding.jpg.setOnClickListener {
+            jpgAdapter.isPdf=false
             handleButtonsClicks(binding.jpg, binding.pdf)
             setAdapterToRecyclerView(jpgAdapter)
         }

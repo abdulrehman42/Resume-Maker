@@ -23,7 +23,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userLanguages.isEmpty(), binding.popup)
             list = it.userLanguages as ArrayList<String>
             setadapter(list)
         }
