@@ -5,19 +5,18 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.pentabit.cvmaker.resumebuilder.R
-import com.pentabit.cvmaker.resumebuilder.utils.SharePref
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AdBaseActivity() {
 
-   // var progressBar: KProgressHUD? = null
+    // var progressBar: KProgressHUD? = null
 //   lateinit var sharePref: SharePref
-     lateinit var options: NavOptions
+    lateinit var options: NavOptions
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,12 +38,15 @@ abstract class BaseActivity : AppCompatActivity() {
     fun replaceAddDetailFragment(action: Int) {
         Navigation.findNavController(this, R.id.viewPager_container).navigate(action, null, options)
     }
+
     fun replaceChoiceFragment(action: Int) {
 //        Navigation.findNavController(this, R.id.choiceHostFragment).navigate(action, null, options)
     }
-    fun replaceChoiceFragment(action: Int,bundle: Bundle) {
+
+    fun replaceChoiceFragment(action: Int, bundle: Bundle) {
 //        Navigation.findNavController(this, R.id.choiceHostFragment).navigate(action,bundle , options)
     }
+
     fun replaceProfileFragment(action: Int) {
         Navigation.findNavController(this, R.id.profileHostFragment).navigate(action, null, options)
     }
@@ -58,9 +60,9 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
     }
-  fun bottomNavigationColor()
-    {
-        window.navigationBarColor = ContextCompat.getColor(this,R.color.navy_blue)
+
+    fun bottomNavigationColor() {
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.navy_blue)
     }
 
     fun showSnackbar(view: View, message: String?) {
@@ -72,6 +74,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
     }
+
     private fun enableEdgeToEdge() {
         val window = window
 
@@ -92,6 +95,10 @@ abstract class BaseActivity : AppCompatActivity() {
                 flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
         }
         window.decorView.systemUiVisibility = flags
+    }
+
+    override fun isPortrait(): Boolean {
+        return true
     }
 
 

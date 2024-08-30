@@ -19,11 +19,13 @@ import com.pentabit.cvmaker.resumebuilder.callbacks.OnTemplateSelected
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityChoiceTemplateBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.choose.BasicFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.AddDetailCoverLetterFragment
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.HashMap
 
@@ -212,6 +214,14 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             .replace(R.id.choice_template_container, ResumePreviewFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return ScreenIDs.TEMPLATES_SCREEN
     }
 
 }

@@ -28,6 +28,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper
 import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper.askForPermission
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.AchievementFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.EducationFragment
@@ -53,6 +54,7 @@ class AddDetailResume : BaseActivity() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     private val fragmentsMap = HashMap<Int, AddDetailsBaseFragment<ViewBinding>>()
     var permissionList = ArrayList<String>()
+    val screen = ScreenIDs.ADD_BASIC_INFO
 
     data class TabModel(
         val id: Int,
@@ -124,6 +126,14 @@ class AddDetailResume : BaseActivity() {
     override fun onStart() {
         super.onStart()
         binding.includeTool.textView.text = getString(R.string.add_detail)
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return screen
     }
 
     private fun setUpTablayout() {

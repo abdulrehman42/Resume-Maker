@@ -23,6 +23,7 @@ import com.pentabit.cvmaker.resumebuilder.json.JSONManager
 import com.pentabit.cvmaker.resumebuilder.json.JWTUtils
 import com.pentabit.cvmaker.resumebuilder.models.User
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -181,5 +182,13 @@ class LoginActivity : BaseActivity() {
 
     override fun attachViewMode() {
 
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return ScreenIDs.LOGIN
     }
 }

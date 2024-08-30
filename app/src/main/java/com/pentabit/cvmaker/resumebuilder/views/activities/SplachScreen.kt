@@ -8,9 +8,11 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivitySplashScreenBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,5 +39,13 @@ class SplachScreen : BaseActivity() {
 
 
     override fun attachViewMode() {
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        TODO("Not yet implemented")
     }
 }

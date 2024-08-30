@@ -17,5 +17,6 @@
     <color name="grey_less_dark">#EAEAEA</color>
     <color name="grey_light">#0D00003D</color>
     <color name="grey_dim">#F2F2F2</color>
+    <color name="shallow_transparent">#80000000</color>
 
 </resources>

@@ -9,6 +9,7 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivitySubscriptionBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.galleryvault.utils.inapp.InAppPurchase
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -43,13 +44,21 @@ class SubscriptionActivity : BaseActivity() {
             }
         }
         binding.term.setOnClickListener {
-        AppsKitSDKUtils.actionOnTermsOfUse(this@SubscriptionActivity)
-        // link("https://www.pentabitapps.com/terms-of-use", this)
+            AppsKitSDKUtils.actionOnTermsOfUse(this@SubscriptionActivity)
+            // link("https://www.pentabitapps.com/terms-of-use", this)
         }
 
     }
 
     override fun attachViewMode() {
 
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return ScreenIDs.SUBSCRIPTION
     }
 }

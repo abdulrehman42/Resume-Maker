@@ -15,6 +15,7 @@ object Constants {
     const val DATA_BODY = "data"
     const val IS_MAIN = "main"
     const val IS_EDIT = "IS_EDIT"
+    const val SHOW_LOADING_BEFORE_INTERSTITIAL = "SHOW_LOADING_BEFORE_INTERSTITIAL"
 
     //api
     const val TEMPLATE_API = "templates/list"

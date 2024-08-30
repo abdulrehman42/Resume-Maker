@@ -39,6 +39,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
 import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
@@ -376,5 +377,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (java.lang.Boolean.TRUE == isGranted) {
             }
         }
+
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return ScreenIDs.HOME
+    }
 
 }

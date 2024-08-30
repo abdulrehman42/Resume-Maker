@@ -2,12 +2,14 @@ package com.pentabit.cvmaker.resumebuilder.views.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
+import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication;
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs;
+import com.pentabit.cvmaker.resumebuilder.utils.Utils;
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager;
 import com.pentabit.pentabitessentials.ads_manager.ads_callback.AdsCallback;
 import com.pentabit.pentabitessentials.views.AppsKitSDKBaseActivity;
@@ -15,7 +17,7 @@ import com.pentabit.pentabitessentials.views.AppsKitSDKBaseActivity;
 public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
 
     private boolean isVisible = false;
-    protected ScreenIDs currentFragment = null;
+    protected ScreenIDs currentFragmentId = null;
     protected String placeHolder;
     protected ScreenIDs screen;
 
@@ -24,22 +26,20 @@ public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
         super.onCreate(savedInstanceState);
         placeHolder = getAdsKey();
         screen = getScreenId();
-        MyApplication.getInstance().setInterstitialShownState(false);
+        ResumeMakerApplication.Companion.getInstance().setInterstitialShownState(false);
         if (isPortrait())
             restrictPortraitOnly();
-        if (!FirebaseConfigManager.getInstance().isScreenSharingEnabled())
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     }
 
-    public void setCurrentFragment(ScreenIDs currentFragment) {
-        this.currentFragment = currentFragment;
+    public void setCurrentFragmentId(ScreenIDs currentFragment) {
+        this.currentFragmentId = currentFragment;
     }
 
     public void askAdOnFragment(ScreenIDs currentFragment) {
-        setCurrentFragment(currentFragment);
+        setCurrentFragmentId(currentFragment);
         requestInterstitial();
-        MyApplication.getInstance().setFragInterstitialShownState(true);
-        MyApplication.getInstance().setInterstitialShownState(true);
+        ResumeMakerApplication.Companion.getInstance().setFragInterstitialShownState(true);
+        ResumeMakerApplication.Companion.getInstance().setInterstitialShownState(true);
     }
 
     @Override
@@ -47,7 +47,7 @@ public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
         super.onResume();
         isVisible = true;
         View rootView = getWindow().getDecorView().getRootView();
-        AppsKitSDKAdsManager.INSTANCE.loadInterstitial(this, Utils.createAdKeyFromScreenId(currentFragment != null ? currentFragment : getScreenId()), new AdsCallback() {
+        AppsKitSDKAdsManager.INSTANCE.loadInterstitial(this, Utils.createAdKeyFromScreenId(currentFragmentId != null ? currentFragmentId : getScreenId()), new AdsCallback() {
             @Override
             public void onFailedToLoad() {
 
@@ -75,10 +75,10 @@ public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
         });
         rootView.postDelayed(() -> {
             if (isVisible) {
-                if (!MyApplication.getInstance().isInterstitialShown() || !MyApplication.getInstance().isFragInterstitialShown())
+                if (!ResumeMakerApplication.Companion.getInstance().isInterstitialShown() || !ResumeMakerApplication.Companion.getInstance().isFragInterstitialShown())
                     requestInterstitial();
-                MyApplication.getInstance().setFragInterstitialShownState(true);
-                MyApplication.getInstance().setInterstitialShownState(true);
+                ResumeMakerApplication.Companion.getInstance().setFragInterstitialShownState(true);
+                ResumeMakerApplication.Companion.getInstance().setInterstitialShownState(true);
             }
         }, 500);
     }
@@ -98,7 +98,7 @@ public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
 
     @Override
     protected void onDestroy() {
-        MyApplication.getInstance().setInterstitialShownState(false);
+        ResumeMakerApplication.Companion.getInstance().setInterstitialShownState(false);
         super.onDestroy();
     }
 
@@ -113,7 +113,7 @@ public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
     }
 
     protected void requestInterstitial() {
-        AppsKitSDKAdsManager.INSTANCE.showInterstitial(this, Utils.createAdKeyFromScreenId(currentFragment != null ? currentFragment : getScreenId()), null, Utils.isInterstitialLoadingEnabled());
+        AppsKitSDKAdsManager.INSTANCE.showInterstitial(this, Utils.createAdKeyFromScreenId(currentFragmentId != null ? currentFragmentId : getScreenId()), null, Utils.isInterstitialLoadingEnabled());
     }
 
     protected abstract @NonNull ScreenIDs getScreenId();

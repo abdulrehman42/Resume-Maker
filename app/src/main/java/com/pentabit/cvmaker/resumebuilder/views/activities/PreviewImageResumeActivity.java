@@ -6,16 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityPreviewImageResumeBinding;
 import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils;
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs;
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils;
 
 import java.io.File;
 
-public class PreviewImageResumeActivity extends AppCompatActivity {
+public class PreviewImageResumeActivity extends AdBaseActivity {
 
     ActivityPreviewImageResumeBinding binding;
     private File file;
@@ -30,6 +32,22 @@ public class PreviewImageResumeActivity extends AppCompatActivity {
         file = new File(getIntent().getStringExtra("path"));
         Glide.with(this).load(file).into(binding.image);
         handleClicks();
+    }
+
+    @Override
+    protected void onInternetConnectivityChange(Boolean isInternetAvailable) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout);
+    }
+
+    @NonNull
+    @Override
+    protected ScreenIDs getScreenId() {
+        return null;
+    }
+
+    @Override
+    protected boolean isPortrait() {
+        return true;
     }
 
     private void handleClicks() {

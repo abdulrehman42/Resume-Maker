@@ -13,7 +13,9 @@ import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityDownloadBinding
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.views.fragments.download.DownloadViewPaperFragment
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 
 class DownloadActivity : BaseActivity() {
@@ -98,5 +100,13 @@ class DownloadActivity : BaseActivity() {
                 flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
         }
         window.decorView.systemUiVisibility = flags
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return ScreenIDs.DOWNLOADS
     }
 }

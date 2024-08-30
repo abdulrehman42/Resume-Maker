@@ -7,6 +7,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,7 +33,7 @@ class ProfileActivity : BaseActivity() {
         }
 
         // Set system bars to be transparent
-        window.statusBarColor = ContextCompat.getColor(this,R.color.navy_blue)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
         window.navigationBarColor = Color.TRANSPARENT
 
         // Optionally, handle light or dark mode for the status bar icons
@@ -42,5 +44,16 @@ class ProfileActivity : BaseActivity() {
                 flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
         }
         window.decorView.systemUiVisibility = flags
+    }
+
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(
+            !isInternetAvailable,
+            findViewById<View>(R.id.myCoordinatorLayout)
+        )
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return ScreenIDs.PROFILE_LISTING
     }
 }

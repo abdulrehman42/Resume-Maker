@@ -6,6 +6,7 @@ import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.AKS_CONFIGS
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.GUEST_TOKEN
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.SHOW_LOADING_BEFORE_INTERSTITIAL
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.views.AppsKitSDKApplication
 import dagger.hilt.android.HiltAndroidApp
@@ -47,9 +48,12 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
 
     override fun onConfigsReadyToUse(firebaseRemoteConfig: FirebaseRemoteConfig) {
         val token: String = firebaseRemoteConfig.getString(GUEST_TOKEN)
-//        Constants.TOKEN = token
         AppsKitSDKPreferencesManager.getInstance()
             .addInPreferences(GUEST_TOKEN, token)
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(
+            SHOW_LOADING_BEFORE_INTERSTITIAL,
+            firebaseRemoteConfig.getBoolean(SHOW_LOADING_BEFORE_INTERSTITIAL)
+        )
     }
 
     private fun initialize() {
