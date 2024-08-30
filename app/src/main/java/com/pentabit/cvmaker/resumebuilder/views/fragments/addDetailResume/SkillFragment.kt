@@ -78,8 +78,11 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
             addDetailResumeVM.fragment.value = AddSkillFragment(userSkills,item,position,true)
         }
         skillAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setadapter(list)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+         //   setadapter(list)
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()

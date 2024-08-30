@@ -73,6 +73,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/interest_textInputLayout" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:src="@drawable/tick_green"
+        android:visibility="gone"
+        android:id="@+id/tick_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/interest_textInputLayout"
+        app:layout_constraintEnd_toEndOf="@+id/interest_textInputLayout"
+        app:layout_constraintTop_toTopOf="@+id/interest_textInputLayout" />
+
     <TextView
         android:id="@+id/savebtn"
         style="@style/button_style_round"

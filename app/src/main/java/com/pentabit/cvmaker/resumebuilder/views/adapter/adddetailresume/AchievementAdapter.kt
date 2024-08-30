@@ -17,7 +17,7 @@ class AchievementAdapter : ListAdapter<ProfileModelAddDetailResponse.UserAchieve
         fun setData(model: ProfileModelAddDetailResponse.UserAchievement) {
             binding.universityname.text=Helper.removeOneUnderscores(model.title)
             binding.degreeName.text=Helper.removeOneUnderscores(model.description)
-            binding.degreeYears.text=Helper.removeOneUnderscores(model.issueDate)
+            binding.degreeYears.text=Helper.convertIsoToCustomFormat(model.issueDate)
             binding.editEdu.setOnClickListener {
                 editItemClickCallback?.invoke(model,position)
             }

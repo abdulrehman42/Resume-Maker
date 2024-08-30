@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
@@ -23,45 +24,44 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
 
     //    lateinit var tabhost: TabLayout
     var list = ArrayList<SampleResponseModel>()
+
+    //val addDetailResumeVM by viewModels<AddDetailResumeVM>()
     private var isEditProfile = false
 
     override val inflate: Inflate<FragmentObjectiveBinding>
         get() = FragmentObjectiveBinding::inflate
 
     override fun observeLiveData() {
-        addDetailResumeVM.getSamples.observe(this) {
+        addDetailResumeVM.getSamples.observe(requireActivity()) {
             list = it as ArrayList<SampleResponseModel>
             setAdapter(it)
         }
 
-        addDetailResumeVM.dataResponse.observe(this) {
+        addDetailResumeVM.dataResponse.observe(requireActivity()) {
             binding.objectiveTextInput.setText(it.objective)
         }
 
-        addDetailResumeVM.data.observe(this) {
+        addDetailResumeVM.data.observe(requireActivity()) {
             binding.objectiveTextInput.setText(it.toString())
         }
-        addDetailResumeVM.objectiveResponse.observe(viewLifecycleOwner) {
+        addDetailResumeVM.objectiveResponse.observe(requireActivity()) {
             (currentActivity() as AddDetailResume).moveNext()
         }
     }
 
     override fun csnMoveForward(): Boolean {
-        return true
+        return isConditionMet()
     }
 
     override fun onMoveNextClicked(): Boolean {
         if (isConditionMet()) {
             callEditAPi()
-        } else {
-            AppsKitSDKUtils.makeToast(getString(R.string.field_missing_error))
         }
         return false
     }
 
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-//        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
@@ -104,7 +104,7 @@ class ObjectiveFragment : AddDetailsBaseFragment<FragmentObjectiveBinding>() {
     }
 
     fun isConditionMet(): Boolean {
-        if (binding.objectiveTextInput.text.toString().isNullOrEmpty()) {
+        if (binding.objectiveTextInput.text.toString().isEmpty()) {
             AppsKitSDKUtils.makeToast("please add objectives")
             return false
         } else {

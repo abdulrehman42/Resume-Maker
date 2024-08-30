@@ -57,17 +57,14 @@ class AddEducation(
             looksAdapter.submitList(it)
         }
 
-        addDetailResumeVM.loadingState.observe(this) {
-            addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-                AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-                if (it.msg.isNotBlank()) {
-                    AppsKitSDKUtils.makeToast(it.msg)
-                }
+        /*addDetailResumeVM.loadingState.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
-        }
+
+        }*/
     }
-
-
 
 
     override fun init(savedInstanceState: Bundle?) {
@@ -88,6 +85,10 @@ class AddEducation(
                 Helper.convertIsoToCustomFormat(data.startDate)
             )
             binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(data.endDate))
+            if (data.endDate.isEmpty())
+            {
+                binding.checkItscontinue.isChecked=true
+            }
         }
         onclick()
         if (isDegree) {
@@ -161,7 +162,6 @@ class AddEducation(
     }
 
 
-
     private fun setupTextWatcher(editText: EditText, isDegree: Boolean) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -221,9 +221,9 @@ class AddEducation(
 
         // Add or update the qualification based on edit mode
         val newQualification = Qualification(
-            degree = withWord + binding.degreeName.text.toString(),
+            degree = withWord + Helper.removeOneUnderscores(binding.degreeName.text.toString()),
             endDate = endDate,
-            institute = withWord + binding.instituenameedittext.text.toString(),
+            institute = withWord + Helper.removeOneUnderscores(binding.instituenameedittext.text.toString()),
             qualificationType = "degree",
             startDate = binding.startdateedittext.text.toString()
         )
@@ -232,7 +232,7 @@ class AddEducation(
         if (!isEdit) {
             updatedList.add(newQualification)
         } else {
-            updatedList[position]=newQualification
+            updatedList[position] = newQualification
             //replaceQualificationInList(newQualification)
         }
 
@@ -242,18 +242,15 @@ class AddEducation(
     }
 
 
-
-
-
     private fun updateQualificationList() {
         // Initialize the updated list with existing qualifications
-        updatedList.clear()
+        //updatedList.clear()
         oldList.forEach { oldQualification ->
             updatedList.add(
                 Qualification(
-                    degree = oldQualification.degree,
+                    degree = withWord + Helper.removeOneUnderscores(oldQualification.degree),
                     endDate = oldQualification.endDate,
-                    institute = oldQualification.institute,
+                    institute = withWord + Helper.removeOneUnderscores(oldQualification.institute),
                     qualificationType = oldQualification.qualificationType,
                     startDate = oldQualification.startDate
                 )

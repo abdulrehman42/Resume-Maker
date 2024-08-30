@@ -9,6 +9,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ProjectAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -83,8 +84,12 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
             addDetailResumeVM.fragment.value = AddProjectFragment(item, list,true,position)
         }
         projectAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setAdapter(list)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+
+            }
+           //setAdapter(list)
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -99,7 +104,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         val project = ArrayList<Project>()
         for (i in 0 until list.size) {
             project.add(
-                Project(list[i].description, list[i].title)
+                Project(list[i].description, Helper.removeOneUnderscores( list[i].title))
             )
         }
         projectRequest = ProjectRequest(projects = project)

@@ -91,7 +91,13 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
                     AddEducation(item, list, true,position)
             },
             onDelete = { position ->
-                list.removeAt(position)
+                if (list.size!=0)
+                {
+                    list.removeAt(position)
+
+                }
+                //setAdapter()
+
                 if (list.isNotEmpty()) {
                     callSaveApi()
                     apiCall()
@@ -108,7 +114,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
                 Qualification(
                     degree = "1__" + Helper.removeOneUnderscores(list[i].degree),
                     endDate = list[i].endDate,
-                    institute = "1__" + list[i].institute,
+                    institute = "1__" + Helper.removeOneUnderscores(list[i].institute),
                     qualificationType = "degree",
                     startDate = list[i].startDate
                 )

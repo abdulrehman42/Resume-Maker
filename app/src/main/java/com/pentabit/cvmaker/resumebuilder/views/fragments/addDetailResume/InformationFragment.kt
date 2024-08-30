@@ -17,6 +17,7 @@ import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
@@ -36,35 +37,42 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
 @AndroidEntryPoint
-class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>() {
+class InformationFragment(var isEdit: Boolean) :
+    AddDetailsBaseFragment<FragmentInformationBinding>() {
     private var image = ""
     private var getImage = ""
     private var gender = ""
     private lateinit var selectedImageBitmap: Bitmap
     private var looksAdapter = LooksAdapter()
-    private var isEditProfile = false
     private var isProgrammaticallySettingText = false
     val adapter = ""
-    val addDetailResumeVM by viewModels<AddDetailResumeVM>()
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     lateinit var tabhost: TabLayout
 
     override fun csnMoveForward(): Boolean {
-        return Validations.validateFields(binding, gender, isEditProfile, getImage)
+        return Validations.validateFields(binding, gender, isEdit, getImage)
     }
+
 
     override fun onMoveNextClicked(): Boolean {
         if (csnMoveForward()) {
-            if (isEditProfile)
+            if (isEdit) {
                 callApiUpdate()
-            else
+            } else {
                 callApi()
+            }
         }
         return false
     }
+    /*else if (!AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.PROFILE_ID).isNullOrEmpty())
+               {
+                   callApiUpdate()
+               }*/
 
     override val inflate: Inflate<FragmentInformationBinding>
         get() = FragmentInformationBinding::inflate
@@ -75,30 +83,30 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             setValue(it)
         }
 
-        addDetailResumeVM.informationResponse.observe(viewLifecycleOwner)
+        addDetailResumeVM.informationResponse.observe(currentActivity())
         {
             AppsKitSDKPreferencesManager.getInstance()
                 .addInPreferences(PROFILE_ID, it.id.toString())
-
-            ( currentActivity() as AddDetailResume).moveNext()
+            isEdit = true
+            (currentActivity() as AddDetailResume).moveNext()
         }
-        addDetailResumeVM.looksupResponse.observe(this) {
+        addDetailResumeVM.looksupResponse.observe(currentActivity()) {
             looksAdapter.submitList(it)
             if (it.size == 0)
                 binding.lookidRecyclerview.isGone = true
             else
                 binding.lookidRecyclerview.isGone = false
         }
+
     }
 
 
     override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
-        isEditProfile = requireActivity().intent.getBooleanExtra(Constants.IS_EDIT, false)
-        if (isEditProfile) {
+        if (isEdit) {
             addDetailResumeVM.getProfileDetail()
         }
-
         binding.lookidRecyclerview.apply {
             adapter = looksAdapter
         }
@@ -108,6 +116,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
 
     private fun setValue(data: ProfileModelAddDetailResponse) {
         binding.apply {
+            isProgrammaticallySettingText = true
             nameedittext.setText(data.name)
             jobedittext.setText(data.jobTitle)
             emailtext.setText(data.email)
@@ -122,6 +131,8 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
         }
         Glide.with(currentActivity()).load(Constants.BASE_MEDIA_URL + data.path)
             .placeholder(R.drawable.imgplaceholder).into(binding.shapeableImageView)
+        // (currentActivity() as AddDetailResume).addExtraItems(data)
+
     }
 
     private fun onclick() {
@@ -178,7 +189,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
                 if (!isProgrammaticallySettingText) {
                     val query = s.toString()
                     if (query.isEmpty()) {
-                        callLookUpApi(null) // Send null query if the text is erased
+                        //callLookUpApi(null) // Send null query if the text is erased
                         binding.lookidRecyclerview.isGone = true
                     } else {
                         callLookUpApi(query)
@@ -190,7 +201,7 @@ class InformationFragment : AddDetailsBaseFragment<FragmentInformationBinding>()
             override fun afterTextChanged(s: Editable?) {
                 if (!isProgrammaticallySettingText) {
                     if (s.isNullOrEmpty()) {
-                        callLookUpApi(null) // Send null query when text is erased
+                        //callLookUpApi(null) // Send null query when text is erased
                         binding.lookidRecyclerview.isGone = true
                     }
                 }

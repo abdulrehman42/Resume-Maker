@@ -95,7 +95,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             binding.appBarMainActivty.contentmain.adsContraint
         )
         if (AppsKitSDK.getInstance().removeAdsStatus) {
-            binding.appBarMainActivty.toolbar.menu.getItem(R.id.action_settings).isVisible = false
+            binding.appBarMainActivty.toolbar.menu.getItem(R.id.premium).isVisible = false
+            binding.appBarMainActivty.toolbar.menu.getItem(R.id.ads_remove).isVisible = false
+
         }
         AppsKitSDKAdsManager.showBanner(
             this,
@@ -134,6 +136,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     binding.logout.text = "Login"
                 }
             }
+        }
+        if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED))
+        {
+            binding.logout.setText("Logout")
+        }else{
+            binding.logout.setText("Login")
         }
     }
 
@@ -193,7 +201,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ) {
                 startActivity(Intent(this, DownloadActivity::class.java))
             } else {
-                startActivity(Intent(this, LoginActivity::class.java))
+                val intent=Intent(this,LoginActivity::class.java)
+                intent.putExtra(Constants.IS_MAIN,true)
+                startActivity(intent)
             }
         }
 
@@ -321,7 +331,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.ads_remove -> {
                 alertboxPurchase(this,
                     object : DialogueBoxes.DialogCallback {
                         override fun onButtonClick(isConfirmed: Boolean) {

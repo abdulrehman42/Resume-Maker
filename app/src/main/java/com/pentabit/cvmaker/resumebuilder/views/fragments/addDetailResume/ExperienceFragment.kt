@@ -9,6 +9,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -82,7 +83,11 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
         }
         experienceAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+            setadapter()
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -98,10 +103,10 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
         for (i in 0 until list.size) {
             experience.add(
                 Experience(
-                    list[i].company,
+                    "1__"+Helper.removeOneUnderscores(list[i].company),
                     list[i].description,
                     "fullTime",
-                    list[i].endDate, list[i].startDate, list[i].title
+                    list[i].endDate, list[i].startDate, "1__"+Helper.removeOneUnderscores(list[i].title)
                 )
             )
         }

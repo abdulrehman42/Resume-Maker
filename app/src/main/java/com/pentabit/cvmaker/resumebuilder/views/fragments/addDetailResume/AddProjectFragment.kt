@@ -66,7 +66,7 @@ class AddProjectFragment(
                 updateList.add(
                     Project(
                         oldList[i].description,
-                        oldList[i].title,
+                        Helper.removeOneUnderscores(oldList[i].title),
                     )
                 )
             }

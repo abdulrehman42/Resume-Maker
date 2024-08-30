@@ -86,8 +86,11 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
             addDetailResumeVM.fragment.value = AddAchievementsFRagment(item, list,position,true)
         }
         achievementAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setAdapter()
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+          // setAdapter()
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()

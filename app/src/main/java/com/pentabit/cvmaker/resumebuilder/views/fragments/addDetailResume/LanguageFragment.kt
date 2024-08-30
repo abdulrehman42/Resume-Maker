@@ -68,7 +68,11 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
             addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, item,true,position)
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+            //setadapter(list)
             if (list.size != 0) {
                 saveCallApi()
                 apiCall()

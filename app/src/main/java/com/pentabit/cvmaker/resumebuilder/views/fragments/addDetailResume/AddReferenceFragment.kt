@@ -80,11 +80,11 @@ class AddReferenceFragment(
             for (i in 0 until oldList.size) {
                 updateList.add(
                     ReferenceRequest.Reference(
-                        oldList[i].company,
-                        oldList[i].email,
-                        oldList[i].name,
+                        startWith+Helper.removeOneUnderscores(oldList[i].company),
+                        Helper.removeOneUnderscores(oldList[i].email),
+                        Helper.removeOneUnderscores(oldList[i].name),
                         oldList[i].phone,
-                        oldList[i].position,
+                        startWith+Helper.removeOneUnderscores(oldList[i].position),
                     )
                 )
             }
@@ -95,7 +95,7 @@ class AddReferenceFragment(
             binding.jobedittext.setText(Helper.removeOneUnderscores(userReference.position))
             binding.phone.setText(Helper.removeOneUnderscores(userReference.phone))
             binding.emailedit.setText(Helper.removeOneUnderscores(userReference.email))
-            binding.phone.setText(Helper.removeOneUnderscores(userReference.phone))
+            binding.phone.setText(userReference.phone)
         }
 
         if (isCompany) {
@@ -185,8 +185,7 @@ class AddReferenceFragment(
 
 
     private fun apiCall() {
-        if (!isedit)
-        {
+        if (!isedit) {
             updateList.add(
                 ReferenceRequest.Reference(
                     startWith + binding.companyName.text.toString(),
@@ -196,12 +195,14 @@ class AddReferenceFragment(
                     startWith + binding.jobedittext.text.toString()
                 )
             )
-        }else{
-            updateList[position]=ReferenceRequest.Reference(startWith + binding.companyName.text.toString(),
+        } else {
+            updateList[position] = ReferenceRequest.Reference(
+                startWith + binding.companyName.text.toString(),
                 binding.emailedit.text.toString(),
                 binding.referrencenameedit.text.toString(),
                 binding.phone.text.toString(),
-                startWith + binding.jobedittext.text.toString())
+                startWith + binding.jobedittext.text.toString()
+            )
         }
 
 

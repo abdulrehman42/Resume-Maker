@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_5sdp"
         android:singleLine="true"
-        android:text="Android Developer"
+        android:textColor="@color/grey_light_dim"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +22,8 @@
         style="@style/regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lahore-Full Time"
+        android:textColor="@color/grey_light_dim"
+
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="@+id/experiencename"
         app:layout_constraintTop_toBottomOf="@id/experiencename" />
@@ -31,7 +32,8 @@
         style="@style/regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="May2019-July2023"
+        android:textColor="@color/grey_light_dim"
+
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="@+id/office_name"
         app:layout_constraintTop_toBottomOf="@id/office_name" />
@@ -40,7 +42,7 @@
         style="@style/regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lahore"
+        android:textColor="@color/grey_light_dim"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="@+id/experience_time"
         app:layout_constraintTop_toBottomOf="@id/experience_time"/>

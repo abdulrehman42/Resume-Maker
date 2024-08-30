@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.databinding.ProfileexperienceitemBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
@@ -17,7 +18,7 @@ class ExperienceProfAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         @RequiresApi(Build.VERSION_CODES.O)
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun setData(model: ProfileModelAddDetailResponse.UserExperience) {
             binding.experiencename.text=Helper.removeOneUnderscores(model.title)
             binding.officeName.text=Helper.removeOneUnderscores(model.company)+" - "+model.employmentType

@@ -32,6 +32,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleI
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.ImageCompressorHelper
+import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -96,6 +97,7 @@ class AddDetailResumeRepository @Inject constructor(
                             }
 
                             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+
                                 callback.onFailure(t.message)
                             }
                         })
@@ -327,7 +329,7 @@ class AddDetailResumeRepository @Inject constructor(
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editInterest(profileId, interest.interest).enqueue(
+        chooseTemplateService.editInterest(profileId, interest).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(

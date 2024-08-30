@@ -11,6 +11,7 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ReferenceAdapter
@@ -90,8 +91,12 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
         }
         referenceAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setadapter(list)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+
+            }
+           //setadapter(list)
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -106,11 +111,11 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
         for (i in 0 until list.size) {
             reference.add(
                 ReferenceRequest.Reference(
-                    list[i].company,
+                    Helper.removeOneUnderscores(list[i].company),
                     list[i].email,
                     list[i].name,
                     list[i].phone,
-                    list[i].position
+                    Helper.removeOneUnderscores(list[i].position)
                 )
             )
         }

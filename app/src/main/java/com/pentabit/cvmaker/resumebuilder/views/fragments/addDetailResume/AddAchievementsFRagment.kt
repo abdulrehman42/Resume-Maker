@@ -62,7 +62,7 @@ class AddAchievementsFRagment(
                 Helper.removeOneUnderscores(Helper.removeOneUnderscores(data.title))
             )
             binding.descriptionedittext.setText(Helper.removeOneUnderscores(data.description))
-            binding.issueDateeedittext.setText(Helper.removeOneUnderscores(data.issueDate))
+            binding.issueDateeedittext.setText(Helper.convertIsoToCustomFormat(data.issueDate))
         }
         listAchievement?.let {
             oldList = listAchievement

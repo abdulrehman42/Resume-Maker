@@ -95,12 +95,12 @@ class AddExperienceFragment(
             for (i in 0 until oldList.size) {
                 updateList.add(
                     Experience(
-                        oldList[i].company,
-                        oldList[i].description,
-                        oldList[i].employmentType,
-                        oldList[i].endDate,
-                        oldList[i].startDate,
-                        oldList[i].title
+                       withWord+ Helper.removeOneUnderscores(oldList[i].company),
+                        Helper.removeOneUnderscores(oldList[i].description),
+                        Helper.removeOneUnderscores(oldList[i].employmentType),
+                        Helper.convertIsoToCustomFormat(oldList[i].endDate),
+                        Helper.convertIsoToCustomFormat(oldList[i].startDate),
+                       withWord+Helper.removeOneUnderscores( oldList[i].title)
                     )
                 )
             }
@@ -118,6 +118,10 @@ class AddExperienceFragment(
                     data.endDate
                 )
             )
+            if (data.endDate.isEmpty())
+            {
+                binding.checkItscontinue.isChecked=true
+            }
         }
 
         binding.descriptionTextInputLayout2.apply {

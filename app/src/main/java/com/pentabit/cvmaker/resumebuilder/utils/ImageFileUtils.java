@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +45,7 @@ public class ImageFileUtils {
     private String appDirectoryName;
     String imagePath;
     String headerDir;
+
     private ImageFileUtils() {
     }
 
@@ -94,7 +96,7 @@ public class ImageFileUtils {
     }
 
     public boolean saveImageToHidden(byte[] image, boolean temp) {
-        return saveImageToHiddenStorage(BitmapFactory.decodeByteArray(image, 0, image.length), temp, null, (5 * 1024 * 1024),null);
+        return saveImageToHiddenStorage(BitmapFactory.decodeByteArray(image, 0, image.length), temp, null, (5 * 1024 * 1024), null);
     }
 
     public boolean saveImageToHiddenStorage(Bitmap bitmap, boolean temp, String name, int maxSizeInBytes, String headerDir) {
@@ -195,7 +197,7 @@ public class ImageFileUtils {
         }
     }
 
-//    public  File copyFileUsingStreams(Context context, String name, boolean temp, File sourceFile) {
+    //    public  File copyFileUsingStreams(Context context, String name, boolean temp, File sourceFile) {
 //        ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
 //        File directory;
 //        if (!temp)
@@ -244,7 +246,7 @@ public class ImageFileUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             image = saveBitmapBelowQ(bitmap, name);
         } else {
-            image = saveBitmapAboveQ(bitmap, AppsKitSDK.getInstance().getContext(), headerDir+"/"+appDirectorySubName+"/IMAGES", name);
+            image = saveBitmapAboveQ(bitmap, AppsKitSDK.getInstance().getContext(), headerDir + "/" + appDirectorySubName + "/IMAGES", name);
         }
         return image != null;
     }
@@ -338,5 +340,9 @@ public class ImageFileUtils {
             for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                 deleteDirectory(child);
         fileOrDirectory.delete();
+    }
+
+    public String[] convertListToArray(List<String> lst) {
+        return ((String[]) lst.toArray());
     }
 }

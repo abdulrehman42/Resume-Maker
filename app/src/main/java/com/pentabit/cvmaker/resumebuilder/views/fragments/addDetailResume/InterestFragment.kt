@@ -9,6 +9,7 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentInterestBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -21,6 +22,10 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     var list = ArrayList<String>()
     lateinit var addDetailResumeVM: AddDetailResumeVM
     lateinit var tabhost: TabLayout
+
+//    val interests = Array(30) { "" }
+
+
     override val inflate: Inflate<FragmentInterestBinding>
         get() = FragmentInterestBinding::inflate
 
@@ -71,7 +76,12 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
         }
         interestAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+
+            }
+         //   setadapter()
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -82,7 +92,11 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     }
 
     private fun callSaveApi() {
-
+//        for (i in 0 until list.size)
+//        {
+//            interests[i]="-1__"+Helper.removeOneUnderscores(list[i])
+//
+//        }
         addDetailResumeVM.editInterest(
             InterestRequestModel(list)
         )

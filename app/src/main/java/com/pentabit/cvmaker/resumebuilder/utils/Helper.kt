@@ -59,6 +59,7 @@ object Helper {
                 binding.dot2.setImageResource(R.drawable.grey_dot)
                 binding.dot3.setImageResource(R.drawable.grey_dot)
                 binding.dot4.setImageResource(R.drawable.grey_dot)
+                binding.skipbtn.setText(R.string.skip)
                 binding.nextbtn.setText("Next")
                 binding.skipbtn.isGone = false
             }
@@ -68,6 +69,8 @@ object Helper {
                 binding.dot2.setImageResource(R.drawable.blue_dot)
                 binding.dot3.setImageResource(R.drawable.grey_dot)
                 binding.dot4.setImageResource(R.drawable.grey_dot)
+                binding.skipbtn.setText(R.string.skip)
+
                 binding.nextbtn.setText("Next")
                 binding.skipbtn.isGone = false
             }
@@ -77,6 +80,8 @@ object Helper {
                 binding.dot2.setImageResource(R.drawable.grey_dot)
                 binding.dot3.setImageResource(R.drawable.blue_dot)
                 binding.dot4.setImageResource(R.drawable.grey_dot)
+                binding.skipbtn.setText(R.string.skip)
+
                 binding.nextbtn.setText("Next")
                 binding.skipbtn.isGone = false
             }
@@ -86,8 +91,8 @@ object Helper {
                 binding.dot2.setImageResource(R.drawable.grey_dot)
                 binding.dot3.setImageResource(R.drawable.grey_dot)
                 binding.dot4.setImageResource(R.drawable.blue_dot)
+                binding.skipbtn.setText("")
                 binding.nextbtn.setText("Done")
-                binding.skipbtn.isGone = true
 
             }
         }
@@ -246,10 +251,8 @@ object Helper {
 
 
     fun removeOneUnderscores(input: String): String {
-        var result = input.replace("1__", "")
-        result = input.replace("__", "")
-        result = result.replace(Regex("\\d"), "")
-        return result
+        return input.replace(Regex("[\\d_+\\-*/]"), "")
+
     }
 
 

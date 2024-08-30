@@ -143,7 +143,7 @@ class AddSkillFragment(
             {
                 apiCall()
             }else{
-                AppsKitSDKUtils.makeToast("please add skill")
+                binding.skillTextInputLayout.error=("please add skill")
             }
 
         }
