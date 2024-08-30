@@ -20,7 +20,7 @@ class ReferenceAdapter:
             binding.degreeName.text=Helper.removeOneUnderscores(model.position)
             binding.degreeYears.text=model.email
             binding.editEdu.setOnClickListener {
-                editItemClickCallback?.invoke(model)
+                editItemClickCallback?.invoke(model,position)
             }
             binding.deleteEdu.setOnClickListener {
                 deleteitemClickCallback?.invoke(position)
@@ -28,11 +28,11 @@ class ReferenceAdapter:
         }
     }
 
-    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserReference) -> Unit)? = null
+    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserReference,Int) -> Unit)? = null
     var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
-    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserReference) -> Unit) {
+    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserReference,Int) -> Unit) {
         this.editItemClickCallback = callback
     }
 

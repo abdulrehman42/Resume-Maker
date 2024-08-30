@@ -48,6 +48,9 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
     var isResume = false
     var id = ""
     var templateId = ""
+
+    lateinit var targetDirectoryPdf:File
+    lateinit var targetDirectoryImage:File
     override val inflate: Inflate<FragmentResumePreviewBinding>
         get() = FragmentResumePreviewBinding::inflate
 
@@ -231,12 +234,19 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
 
         // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)
-        val targetDirectory = File(directory, "Resume/JPGs")
+        if (isResume)
+        {
+            targetDirectoryImage= File(directory, "Resume/JPGs")
+
+        }else{
+            targetDirectoryImage= File(directory, "CoverLetter/JPGs")
+
+        }
 
 
         // Ensure the target directory exists
-        if (!targetDirectory.exists()) {
-            targetDirectory.mkdirs()
+        if (!targetDirectoryImage.exists()) {
+            targetDirectoryImage.mkdirs()
         }
 
 
@@ -248,7 +258,7 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         // Define the file name and path
         val fileName =
             SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(Calendar.getInstance().time);
-        val pdfFile = File(targetDirectory, "$fileName.jpg")
+        val pdfFile = File(targetDirectoryImage, "$fileName.jpg")
         saveBitmapAsImage(captureWebView(binding.resumePreviewImage), pdfFile)
     }
 
@@ -310,12 +320,17 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
 
         // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)
-        val targetDirectory = File(directory, "Resume/PDFs")
-
+      //  val targetDirectory = File(directory, "Resume/PDFs")
+        if (isResume)
+        {
+            targetDirectoryPdf = File(directory, "Resume/PDFs")
+        }else{
+            targetDirectoryPdf=File(directory,"CoverLetter/PDFs")
+        }
 
         // Ensure the target directory exists
-        if (!targetDirectory.exists()) {
-            targetDirectory.mkdirs()
+        if (!targetDirectoryPdf.exists()) {
+            targetDirectoryPdf.mkdirs()
         }
 
 
@@ -327,7 +342,7 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         // Define the file name and path
         val fileName =
             SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(Calendar.getInstance().time);
-        val pdfFile = File(targetDirectory, "$fileName.pdf")
+        val pdfFile = File(targetDirectoryPdf, "$fileName.pdf")
         // Create a PdfDocument
         val pdfDocument = PdfDocument()
         val pageNumber = 1

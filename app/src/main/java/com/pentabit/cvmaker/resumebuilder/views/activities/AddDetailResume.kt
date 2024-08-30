@@ -51,6 +51,7 @@ class AddDetailResume : BaseActivity() {
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    var iseditProfile=false
     private val fragmentsMap = HashMap<Int, AddDetailsBaseFragment<ViewBinding>>()
     var permissionList = ArrayList<String>()
 
@@ -67,6 +68,7 @@ class AddDetailResume : BaseActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
         addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
+        iseditProfile=intent.getBooleanExtra(Constants.IS_EDIT,false)
         setUpTablayout()
         onclick()
         observeLiveData()
@@ -133,6 +135,8 @@ class AddDetailResume : BaseActivity() {
             binding.tabLayoutAdddetail.getTabAt(i)?.view?.isClickable = false
 
         }
+        binding.tabLayoutAdddetail.getTabAt(0)?.icon?.setTint(ContextCompat.getColor(this, R.color.white))
+
 
         binding.tabLayoutAdddetail.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
@@ -176,24 +180,27 @@ class AddDetailResume : BaseActivity() {
         if (currentTabPosition < allTabs.size - 1) {
             binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
         } else {
-
-            DialogueBoxes.alertboxChooseCreation(this,
-                object : DialogueBoxes.StringValueDialogCallback {
-                    override fun onButtonClick(value: String) {
-                        if (value == Constants.PROFILE) {
-                            AppsKitSDKPreferencesManager.getInstance()
-                                .addInPreferences(Constants.VIEW_PROFILE, true)
-                            finish()
-                        } else {
-                            val intent = Intent(this@AddDetailResume, ChoiceTemplate::class.java)
-                            intent.putExtra(Constants.IS_RESUME, true)
-                            intent.putExtra(Constants.CREATION_TIME, true)
-                            startActivity(intent)
-                            finish()
+            if (!iseditProfile) {
+                DialogueBoxes.alertboxChooseCreation(this,
+                    object : DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.PROFILE) {
+                                AppsKitSDKPreferencesManager.getInstance()
+                                    .addInPreferences(Constants.VIEW_PROFILE, true)
+                                finish()
+                            } else {
+                                val intent =
+                                    Intent(this@AddDetailResume, ChoiceTemplate::class.java)
+                                intent.putExtra(Constants.IS_RESUME, true)
+                                intent.putExtra(Constants.CREATION_TIME, true)
+                                startActivity(intent)
+                                finish()
+                            }
                         }
-                    }
-                })
-
+                    })
+            }else{
+                finish()
+            }
         }
     }
 

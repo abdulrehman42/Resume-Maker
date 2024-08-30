@@ -25,7 +25,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddReferenceFragment(
     val userReference: ProfileModelAddDetailResponse.UserReference?,
-    val list: ArrayList<ProfileModelAddDetailResponse.UserReference>?
+    val list: ArrayList<ProfileModelAddDetailResponse.UserReference>?,
+    val isedit: Boolean,
+    val position: Int
 ) : BaseFragment<FragmentAddReferenceBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     var startWith = "1__"
@@ -157,8 +159,6 @@ class AddReferenceFragment(
         binding.savebtn.setOnClickListener {
             if (Validations.isConditionMetReference(binding)) {
                 apiCall()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
 
@@ -183,15 +183,25 @@ class AddReferenceFragment(
 
 
     private fun apiCall() {
-        updateList.add(
-            ReferenceRequest.Reference(
-                startWith + binding.companyName.text.toString(),
+        if (!isedit)
+        {
+            updateList.add(
+                ReferenceRequest.Reference(
+                    startWith + binding.companyName.text.toString(),
+                    binding.emailedit.text.toString(),
+                    binding.referrencenameedit.text.toString(),
+                    binding.phone.text.toString(),
+                    startWith + binding.jobedittext.text.toString()
+                )
+            )
+        }else{
+            updateList[position]=ReferenceRequest.Reference(startWith + binding.companyName.text.toString(),
                 binding.emailedit.text.toString(),
                 binding.referrencenameedit.text.toString(),
                 binding.phone.text.toString(),
-                startWith + binding.jobedittext.text.toString()
-            )
-        )
+                startWith + binding.jobedittext.text.toString())
+        }
+
 
         val referenceRequest = ReferenceRequest(references = updateList)
 

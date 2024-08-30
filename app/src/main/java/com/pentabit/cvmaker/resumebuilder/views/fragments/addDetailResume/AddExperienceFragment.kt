@@ -35,7 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddExperienceFragment(
     val data: ProfileModelAddDetailResponse.UserExperience?,
     val experienceList: ArrayList<ProfileModelAddDetailResponse.UserExperience>?,
-    val isEdit: Boolean
+    val isEdit: Boolean,
+    val position: Int
 ) :
     BaseFragment<FragmentAddExperienceBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
@@ -231,6 +232,7 @@ class AddExperienceFragment(
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
                 binding.enddateTextInputLayout2.isEnabled = false
+                binding.enddateedittext.setText("")
                 endDate = null
             } else {
                 binding.enddateTextInputLayout2.isEnabled = true
@@ -240,8 +242,6 @@ class AddExperienceFragment(
 
             if (Validations.isConditionMetExperience(binding)) {
                 apiCall()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
@@ -295,7 +295,7 @@ class AddExperienceFragment(
         if (!isEdit) {
             updateList.add(experience)
         } else {
-            replaceExperienceInList(experience)
+            updateList[position]=experience
         }
         /*updateList.add(
             Experience(

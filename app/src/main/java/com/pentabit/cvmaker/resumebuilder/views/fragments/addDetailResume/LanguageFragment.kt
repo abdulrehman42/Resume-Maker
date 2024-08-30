@@ -64,8 +64,8 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun setadapter(userLanguages: List<String>) {
         singleStringAdapter.submitList(userLanguages)
-        singleStringAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, it)
+        singleStringAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, item,true,position)
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
@@ -88,7 +88,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun onclick() {
         binding.addlanguage.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddLanguageFragment(list, null)
+            addDetailResumeVM.fragment.value = AddLanguageFragment(list, null, false, 0)
         }
     }
 

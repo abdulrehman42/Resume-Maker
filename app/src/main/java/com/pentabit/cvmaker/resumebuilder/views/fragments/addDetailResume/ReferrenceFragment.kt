@@ -79,8 +79,8 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
         referenceAdapter.submitList(userReferences)
-        referenceAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddReferenceFragment(it, list)
+        referenceAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddReferenceFragment(item, list,true,position)
 
         }
         referenceAdapter.setOnItemDeleteClickCallback {
@@ -117,7 +117,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     private fun onclick() {
         binding.addreferrenebtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddReferenceFragment(null, list)
+            addDetailResumeVM.fragment.value = AddReferenceFragment(null, list, false, 0)
         }
     }
 }

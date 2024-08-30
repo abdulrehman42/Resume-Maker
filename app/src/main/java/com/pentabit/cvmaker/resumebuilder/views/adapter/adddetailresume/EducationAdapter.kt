@@ -8,18 +8,14 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.pentabit.cvmaker.resumebuilder.databinding.CustomprofileitemBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.EducationitemsBinding
-import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 
 class EducationAdapter(
     val check:Boolean,
-    val onclick:(ProfileModelAddDetailResponse.UserQualification)->Unit,val onDelete:(Int)->Unit): ListAdapter<ProfileModelAddDetailResponse.UserQualification, AppsKitSDKRecyclerBaseViewBinding>(AddEducationDiffCallback){
+    val onclick:(ProfileModelAddDetailResponse.UserQualification,Int)->Unit,val onDelete:(Int)->Unit): ListAdapter<ProfileModelAddDetailResponse.UserQualification, AppsKitSDKRecyclerBaseViewBinding>(AddEducationDiffCallback){
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,7 +37,7 @@ class EducationAdapter(
         binding.degreeName.text= Helper.removeOneUnderscores(model.degree)
         binding.degreeYears.text= Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
         binding.editEdu.setOnClickListener {
-            onclick(model)
+            onclick(model,position)
         }
         binding.deleteEdu.setOnClickListener {
             onDelete(position)

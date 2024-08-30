@@ -98,8 +98,13 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         val experienceAdapter =
             ExperienceProfAdapter(currentActivity(), profileModelAddDetailResponse.userExperiences)
         val eduAdapter = EducationAdapter(
-            true,
-            {}, {},
+            check = true,
+            onclick = { _, _ ->
+                // No-op: This lambda takes two parameters but does nothing
+            },
+            onDelete = { _ ->
+                // No-op: This lambda takes one parameter but does nothing
+            }
         )
         eduAdapter.submitList(profileModelAddDetailResponse.userQualifications)
         Glide.with(currentActivity())

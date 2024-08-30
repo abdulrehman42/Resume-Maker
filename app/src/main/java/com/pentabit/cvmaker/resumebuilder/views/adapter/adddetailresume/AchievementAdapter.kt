@@ -18,7 +18,7 @@ class AchievementAdapter : ListAdapter<ProfileModelAddDetailResponse.UserAchieve
             binding.degreeName.text=model.description
             binding.degreeYears.text=model.issueDate
             binding.editEdu.setOnClickListener {
-                editItemClickCallback?.invoke(model)
+                editItemClickCallback?.invoke(model,position)
             }
             binding.deleteEdu.setOnClickListener {
                 deleteitemClickCallback?.invoke(position)
@@ -26,11 +26,11 @@ class AchievementAdapter : ListAdapter<ProfileModelAddDetailResponse.UserAchieve
         }
     }
 
-    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserAchievement) -> Unit)? = null
+    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserAchievement,Int) -> Unit)? = null
     var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
-    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserAchievement) -> Unit) {
+    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserAchievement,Int) -> Unit) {
         this.editItemClickCallback = callback
     }
 

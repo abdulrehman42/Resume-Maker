@@ -16,7 +16,7 @@ class SingleStringAdapter : ListAdapter<String, SingleStringAdapter.ViewHolder>(
         fun setData(model: String) {
             binding.skillname.text= Helper.removeOneUnderscores(model)
             binding.editSkill.setOnClickListener {
-                editItemClickCallback?.invoke(model)
+                editItemClickCallback?.invoke(model,position)
             }
             binding.deleteSkill.setOnClickListener {
                 deleteitemClickCallback?.invoke(position)
@@ -24,11 +24,11 @@ class SingleStringAdapter : ListAdapter<String, SingleStringAdapter.ViewHolder>(
         }
     }
 
-    var editItemClickCallback: ((String) -> Unit)? = null
+    var editItemClickCallback: ((String,Int) -> Unit)? = null
     var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
-    fun setOnEditItemClickCallback(callback: (String) -> Unit) {
+    fun setOnEditItemClickCallback(callback: (String,Int) -> Unit) {
         this.editItemClickCallback = callback
     }
 

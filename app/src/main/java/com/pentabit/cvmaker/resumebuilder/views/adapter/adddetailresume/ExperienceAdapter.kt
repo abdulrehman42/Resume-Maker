@@ -22,7 +22,7 @@ class ExperienceAdapter: ListAdapter<ProfileModelAddDetailResponse.UserExperienc
             binding.degreeName.text=model.description
             binding.degreeYears.text=Helper.formatDateRange(model.startDate,model.endDate)
             binding.editEdu.setOnClickListener {
-                editItemClickCallback?.invoke(model)
+                editItemClickCallback?.invoke(model,position)
             }
             binding.deleteEdu.setOnClickListener {
                 deleteitemClickCallback?.invoke(position)
@@ -30,11 +30,11 @@ class ExperienceAdapter: ListAdapter<ProfileModelAddDetailResponse.UserExperienc
         }
     }
 
-    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserExperience) -> Unit)? = null
+    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserExperience,Int) -> Unit)? = null
     var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
-    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserExperience) -> Unit) {
+    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserExperience,Int) -> Unit) {
         this.editItemClickCallback = callback
     }
 

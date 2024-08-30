@@ -3,7 +3,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 import android.os.Bundle
 import android.view.View.OnFocusChangeListener
 import androidx.activity.addCallback
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
@@ -12,10 +11,10 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddAchievementsFRa
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -24,7 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddAchievementsFRagment(
     val data: ProfileModelAddDetailResponse.UserAchievement?,
-    val listAchievement: ArrayList<ProfileModelAddDetailResponse.UserAchievement>?
+    val listAchievement: ArrayList<ProfileModelAddDetailResponse.UserAchievement>?,
+    val position: Int,
+    val isedit: Boolean
 ) : BaseFragment<FragmentAddAchievementsFRagmentBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     val list = ArrayList<AchievementRequest>()
@@ -81,8 +82,11 @@ class AddAchievementsFRagment(
 
     private fun onclick() {
         binding.savebtn.setOnClickListener {
+            if (Validations.conditionAchievemnet(binding))
+            {
+                apiCall()
+            }
 
-            apiCall()
 
         }
         binding.includeTool.backbtn.setOnClickListener {
@@ -119,13 +123,23 @@ class AddAchievementsFRagment(
     }
 
     private fun apiCall() {
-        updateList.add(
-            Achievement(
+        if (isedit)
+        {
+            updateList[position]=Achievement(
                 description = binding.descriptionedittext.text.toString(),
                 issueDate = binding.issueDateeedittext.text.toString(),
                 title = "-1__" + binding.achieveedittext.text.toString(),
             )
-        )
+
+        }else {
+            updateList.add(
+                Achievement(
+                    description = binding.descriptionedittext.text.toString(),
+                    issueDate = binding.issueDateeedittext.text.toString(),
+                    title = "-1__" + binding.achieveedittext.text.toString(),
+                )
+            )
+        }
 
 
         val achievementRequest = AchievementRequest(achievements = updateList)

@@ -2,14 +2,11 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.activity.addCallback
-import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddInterestBinding
-import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
@@ -19,7 +16,12 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddInterestFragment(val userInterests: List<String>?, val interest_name: String?,val isedit:Boolean) : BaseFragment<FragmentAddInterestBinding>()
+class AddInterestFragment(
+    val userInterests: List<String>?,
+    val interest_name: String?,
+    val isedit: Boolean,
+    val position: Int
+) : BaseFragment<FragmentAddInterestBinding>()
 {
     lateinit var addDetailResumeVM : AddDetailResumeVM
     var oldList = ArrayList<String>()
@@ -81,8 +83,14 @@ class AddInterestFragment(val userInterests: List<String>?, val interest_name: S
     private fun onclick() {
         binding.savebtn.setOnClickListener {
             if (isCondtionMet()) {
-                updateList.add("-1__"+binding.interestEdittext.text.toString())
-                apiCall()
+                if (!isedit)
+                {
+                    updateList.add("-1__"+binding.interestEdittext.text.toString())
+                    apiCall()
+                }else{
+                    updateList[position]="-1__"+binding.interestEdittext.text.toString()
+                }
+
             }else{
                 currentActivity().showToast(getString(R.string.field_missing_error))
 

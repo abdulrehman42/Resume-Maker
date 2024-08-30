@@ -76,8 +76,9 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     private fun setadapter() {
         experienceAdapter.submitList(list)
 
-        experienceAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddExperienceFragment(it, list, false)
+        experienceAdapter.setOnEditItemClickCallback {item,position->
+
+            addDetailResumeVM.fragment.value = AddExperienceFragment(item, list, false,position)
 
         }
         experienceAdapter.setOnItemDeleteClickCallback {
@@ -113,7 +114,7 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     private fun onclick() {
 
         binding.addexperiencebtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddExperienceFragment(null, list, true)
+            addDetailResumeVM.fragment.value = AddExperienceFragment(null, list, false, 0)
 
         }
     }

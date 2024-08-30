@@ -8,7 +8,6 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentSkillBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -75,8 +74,8 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
-        skillAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills, it)
+        skillAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills,item,position,true)
         }
         skillAdapter.setOnItemDeleteClickCallback {
             list.removeAt(it)
@@ -101,7 +100,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     private fun onclick() {
         binding.addskill.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddSkillFragment(list, null)
+            addDetailResumeVM.fragment.value = AddSkillFragment(list, null, 0, false)
         }
     }
 }

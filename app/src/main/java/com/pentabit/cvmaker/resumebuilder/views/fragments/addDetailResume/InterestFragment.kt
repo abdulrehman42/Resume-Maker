@@ -66,8 +66,8 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     private fun setadapter() {
         interestAdapter.submitList(list)
-        interestAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddInterestFragment(list, it, true)
+        interestAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddInterestFragment(list, item, true,position)
 
         }
         interestAdapter.setOnItemDeleteClickCallback {
@@ -90,7 +90,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     private fun onclick() {
         binding.addinterestbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddInterestFragment(list, null, false)
+            addDetailResumeVM.fragment.value = AddInterestFragment(list, null, false, 0)
         }
     }
 

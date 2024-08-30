@@ -28,7 +28,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddEducation(
     val data: ProfileModelAddDetailResponse.UserQualification?,
     val userQualificationsList: List<ProfileModelAddDetailResponse.UserQualification>?,
-    val isEdit: Boolean
+    val isEdit: Boolean,
+    val position: Int
 
 ) :
     BaseFragment<FragmentAddEducationBinding>() {
@@ -103,6 +104,7 @@ class AddEducation(
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
                 binding.enddateTextInputLayout2.isEnabled = false
+                binding.enddateedittext.setText("")
 
             } else {
                 binding.enddateTextInputLayout2.isEnabled = true
@@ -146,8 +148,6 @@ class AddEducation(
         binding.savebtn.setOnClickListener {
             if (Validations.isConditionMetEducation(binding)) {
                 CallApi()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
 
@@ -232,7 +232,8 @@ class AddEducation(
         if (!isEdit) {
             updatedList.add(newQualification)
         } else {
-            replaceQualificationInList(newQualification)
+            updatedList[position]=newQualification
+            //replaceQualificationInList(newQualification)
         }
 
         // Create and send the API request

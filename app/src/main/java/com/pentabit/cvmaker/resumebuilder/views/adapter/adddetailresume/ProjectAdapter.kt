@@ -17,7 +17,7 @@ class ProjectAdapter : ListAdapter<ProfileModelAddDetailResponse.UserProject, Pr
             binding.degreeName.text=model.description
             binding.universityname.text=model.title
             binding.editEdu.setOnClickListener {
-                editItemClickCallback?.invoke(model)
+                editItemClickCallback?.invoke(model,position)
             }
             binding.deleteEdu.setOnClickListener {
                 deleteitemClickCallback?.invoke(position)
@@ -25,11 +25,11 @@ class ProjectAdapter : ListAdapter<ProfileModelAddDetailResponse.UserProject, Pr
         }
     }
 
-    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserProject) -> Unit)? = null
+    var editItemClickCallback: ((ProfileModelAddDetailResponse.UserProject,Int) -> Unit)? = null
     var deleteitemClickCallback: ((Int) -> Unit)? = null
 
 
-    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserProject) -> Unit) {
+    fun setOnEditItemClickCallback(callback: (ProfileModelAddDetailResponse.UserProject,Int) -> Unit) {
         this.editItemClickCallback = callback
     }
 
