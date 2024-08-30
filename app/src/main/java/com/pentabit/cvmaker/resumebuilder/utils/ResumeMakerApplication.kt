@@ -1,8 +1,10 @@
 package com.pentabit.cvmaker.resumebuilder.utils
 
 import androidx.appcompat.app.AppCompatDelegate
-import com.pentabit.cvmaker.resumebuilder.R
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.pentabit.cvmaker.resumebuilder.BuildConfig
+import com.pentabit.cvmaker.resumebuilder.R
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.AKS_CONFIGS
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.GUEST_TOKEN
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.views.AppsKitSDKApplication
@@ -11,12 +13,13 @@ import io.paperdb.Paper
 
 @HiltAndroidApp
 class ResumeMakerApplication : AppsKitSDKApplication() {
-//    var sharePref: SharePref? = null
 
     companion object {
         lateinit var instance: ResumeMakerApplication
     }
 
+    private var isInterstitialShown = false
+    private var isFragInterstitialShown = false
 
 
     override fun onCreate() {
@@ -27,7 +30,7 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
     }
 
     override fun setAKSDefaultConfigs(): String {
-        return ""
+        return AKS_CONFIGS
     }
 
     override fun fetchFirebaseDefaults(): Int {
@@ -35,11 +38,11 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
     }
 
     override fun isTestMode(): Boolean {
-        return true
+        return BuildConfig.DEBUG
     }
 
     override fun isDevMode(): Boolean {
-        return true
+        return BuildConfig.DEBUG
     }
 
     override fun onConfigsReadyToUse(firebaseRemoteConfig: FirebaseRemoteConfig) {
@@ -54,4 +57,23 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
 //        sharePref = SharePref.getInstance()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
+
+
+    fun isInterstitialShown(): Boolean {
+        return isInterstitialShown
+    }
+
+    fun setInterstitialShownState(shown: Boolean) {
+        isInterstitialShown = shown
+    }
+
+    fun isFragInterstitialShown(): Boolean {
+        return isFragInterstitialShown
+    }
+
+    fun setFragInterstitialShownState(shown: Boolean) {
+        isFragInterstitialShown = shown
+    }
+
+
 }
