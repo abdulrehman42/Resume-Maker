@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
@@ -72,10 +71,10 @@ class AddDetailResume : BaseActivity() {
         setContentView(binding.root)
         addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         iseditProfile = intent.getBooleanExtra(Constants.IS_EDIT, false)
-//        currentFragment = InformationFragment(iseditProfile) as AddDetailsBaseFragment<ViewBinding>
         setUpTablayout()
         onclick()
         observeLiveData()
+        openFragment(0)
         if (currentTabPosition == allTabs.size) {
             runOnUiThread {
                 binding.btnNxt.setText("Done")
@@ -182,7 +181,7 @@ class AddDetailResume : BaseActivity() {
                 // Handle tab reselection if needed
             }
         })
-        binding.tabLayoutAdddetail.selectTab(binding.tabLayoutAdddetail.getTabAt(0))
+//        binding.tabLayoutAdddetail.selectTab(binding.tabLayoutAdddetail.getTabAt(0))
     }
 
 
@@ -194,6 +193,9 @@ class AddDetailResume : BaseActivity() {
     }
 
     fun moveBack() {
+        if (!currentFragment!!.csnMoveForward()) {
+            return
+        }
         if (currentTabPosition >= 0) {
             if (currentTabPosition == 1) {
                 binding.btnContainer.visibility = View.INVISIBLE
@@ -204,6 +206,9 @@ class AddDetailResume : BaseActivity() {
     }
 
     fun moveNext() {
+        if (!currentFragment!!.csnMoveForward()) {
+            return
+        }
         binding.btnContainer.visibility = View.VISIBLE
         binding.btnNxt.visibility = View.INVISIBLE
         if (currentTabPosition < allTabs.size - 1) {
@@ -339,19 +344,75 @@ class AddDetailResume : BaseActivity() {
     fun createFragment(position: Int): Fragment {
 
         val tab = when (allTabs[position].id) {
-            0 -> InformationFragment(iseditProfile)
-            1 -> ObjectiveFragment()
-            2 -> EducationFragment()
-            3 -> SkillFragment()
-            4 -> ExperienceFragment()
-            5 -> ReferrenceFragment()
-            6 -> InterestFragment()
-            7 -> LanguageFragment()
-            8 -> ProjectFragment()
-            9 -> AchievementFragment()
-            else -> InformationFragment(iseditProfile)
-        }
+            0 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else InformationFragment(iseditProfile)
+            }
 
+            1 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else ObjectiveFragment()
+            }
+
+            2 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else EducationFragment()
+            }
+
+            3 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else SkillFragment()
+            }
+
+            4 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else ExperienceFragment()
+            }
+
+            5 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else ReferrenceFragment()
+            }
+
+            6 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else InterestFragment()
+            }
+
+            7 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else LanguageFragment()
+            }
+
+            8 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else ProjectFragment()
+            }
+
+            9 -> {
+                if (fragmentsMap[position] != null)
+                    fragmentsMap[position]
+                else AchievementFragment()
+            }
+
+            else -> {
+                if (fragmentsMap[0] != null)
+                    fragmentsMap[0]
+                else InformationFragment(iseditProfile)
+            }
+        }
+        if (position == 0) {
+            currentFragment = tab as AddDetailsBaseFragment<ViewBinding>
+        }
         fragmentsMap[position] = tab as AddDetailsBaseFragment<ViewBinding>
         return tab
     }
