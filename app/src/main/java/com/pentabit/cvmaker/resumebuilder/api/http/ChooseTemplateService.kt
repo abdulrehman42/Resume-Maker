@@ -10,6 +10,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Referen
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleItemRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.google.gson.JsonElement
+import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -122,14 +123,14 @@ interface ChooseTemplateService {
         @Body skills: SkillRequestModel
     ): Call<JsonElement>
 
-    @FormUrlEncoded
+
     @PUT(Constants.EDIT_INTERESTS)
     fun editInterest(
         @Path("profileId") profileId: String,
-        @Field("interests") interests: List<String>
+        @Body interests: InterestRequestModel
     ): Call<JsonElement>
 
-    @PUT(com.pentabit.cvmaker.resumebuilder.utils.Constants.EDIT_LANGUAGE)
+    @PUT(Constants.EDIT_LANGUAGE)
     fun editLanguage(
         @Path("profileId") profileId: String,
         @Body languages: LanguageRequestModel

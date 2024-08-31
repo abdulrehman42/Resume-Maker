@@ -53,7 +53,16 @@
 
 
     </com.google.android.material.textfield.TextInputLayout>
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:src="@drawable/tick_green"
+        android:visibility="gone"
+        android:id="@+id/tick_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/skill_textInputLayout"
+        app:layout_constraintEnd_toEndOf="@+id/skill_textInputLayout"
+        app:layout_constraintTop_toTopOf="@+id/skill_textInputLayout" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_skill"
         android:layout_width="match_parent"

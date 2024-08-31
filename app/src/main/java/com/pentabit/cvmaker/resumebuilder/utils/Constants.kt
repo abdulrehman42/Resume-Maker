@@ -3,7 +3,7 @@ package com.pentabit.cvmaker.resumebuilder.utils
 object Constants {
 
 
-
+    const val EDIT_PROFILE="EDIT_PROFILE"
     const val BASE_MEDIA_URL = "https://n0ngl4zx.tinifycdn.com/"
     const val BASE_URL_PRODUCTION = "http://35.164.228.120:9000/v1/"
     const val BASE_URL_DEVELOPMENT = "http://54.70.21.233:9001/v1/"

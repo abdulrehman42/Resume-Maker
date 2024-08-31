@@ -8,7 +8,6 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentSkillBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -25,7 +24,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userSkills.isNullOrEmpty(), binding.popup)
             list = it.userSkills as ArrayList<String>
             setadapter(list)
         }
@@ -75,12 +74,15 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     private fun setadapter(userSkills: List<String>) {
         skillAdapter.submitList(userSkills)
-        skillAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills, it)
+        skillAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddSkillFragment(userSkills,item,position,true)
         }
         skillAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setadapter(list)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+         //   setadapter(list)
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -101,7 +103,7 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
 
     private fun onclick() {
         binding.addskill.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddSkillFragment(list, null)
+            addDetailResumeVM.fragment.value = AddSkillFragment(list, null, 0, false)
         }
     }
 }

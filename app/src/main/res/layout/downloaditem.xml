@@ -21,9 +21,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/templateimage"
-                android:layout_width="@dimen/_145sdp"
-                android:layout_height="@dimen/_180sdp"
-                android:scaleType="centerCrop"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="@dimen/_160sdp"
                 android:src="@drawable/resume_placeholder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

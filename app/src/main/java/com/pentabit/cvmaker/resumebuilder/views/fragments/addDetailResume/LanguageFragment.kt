@@ -23,7 +23,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userLanguages.isEmpty(), binding.popup)
             list = it.userLanguages as ArrayList<String>
             setadapter(list)
         }
@@ -64,11 +64,15 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun setadapter(userLanguages: List<String>) {
         singleStringAdapter.submitList(userLanguages)
-        singleStringAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, it)
+        singleStringAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, item,true,position)
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+            //setadapter(list)
             if (list.size != 0) {
                 saveCallApi()
                 apiCall()
@@ -88,7 +92,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun onclick() {
         binding.addlanguage.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddLanguageFragment(list, null)
+            addDetailResumeVM.fragment.value = AddLanguageFragment(list, null, false, 0)
         }
     }
 

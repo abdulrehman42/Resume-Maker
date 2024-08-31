@@ -1,6 +1,5 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
@@ -10,15 +9,10 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ProjectAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,7 +27,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userProjects.isEmpty(), binding.popup)
             list = it.userProjects as ArrayList<ProfileModelAddDetailResponse.UserProject>
             setAdapter(list)
         }
@@ -76,7 +70,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
 
     private fun onclick() {
         binding.addprojectbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddProjectFragment(null, list)
+            addDetailResumeVM.fragment.value = AddProjectFragment(null, list, false, 0)
         }
     }
 
@@ -86,12 +80,16 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
 
     private fun setAdapter(userProjects: List<ProfileModelAddDetailResponse.UserProject>) {
         projectAdapter.submitList(userProjects)
-        projectAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddProjectFragment(it, list)
+        projectAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddProjectFragment(item, list,true,position)
         }
         projectAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setAdapter(list)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+
+            }
+           //setAdapter(list)
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -106,7 +104,7 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>() {
         val project = ArrayList<Project>()
         for (i in 0 until list.size) {
             project.add(
-                Project(list[i].description, list[i].title)
+                Project(list[i].description, Helper.removeOneUnderscores( list[i].title))
             )
         }
         projectRequest = ProjectRequest(projects = project)

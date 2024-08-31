@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pentabit.cvmaker.resumebuilder.databinding.SuggestionitemBinding
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 
 class UserSkillAdapter:
 ListAdapter<String, UserSkillAdapter.ViewHolder>(TemplateDiffCallback) {
@@ -14,7 +15,7 @@ ListAdapter<String, UserSkillAdapter.ViewHolder>(TemplateDiffCallback) {
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun setData(model:String) {
-            binding.name.text=model
+            binding.name.text=Helper.removeOneUnderscores(model)
         }
     }
 

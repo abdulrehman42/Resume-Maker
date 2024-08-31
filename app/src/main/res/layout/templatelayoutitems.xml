@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_5sdp">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_9sdp"
+        android:layout_margin="@dimen/_8sdp"
         android:elevation="@dimen/_2sdp"
         app:cardCornerRadius="@dimen/_15sdp"
         app:layout_constraintBottom_toTopOf="@id/banner_add"
@@ -23,8 +21,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/templateimage"
-                android:layout_width="@dimen/_145sdp"
-                android:layout_height="@dimen/_200sdp"
+                android:layout_width="@dimen/_143sdp"
+                android:layout_height="@dimen/_190sdp"
                 android:src="@drawable/resume_placeholder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

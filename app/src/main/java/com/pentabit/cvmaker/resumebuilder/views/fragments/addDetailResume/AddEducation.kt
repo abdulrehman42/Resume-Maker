@@ -28,7 +28,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddEducation(
     val data: ProfileModelAddDetailResponse.UserQualification?,
     val userQualificationsList: List<ProfileModelAddDetailResponse.UserQualification>?,
-    val isEdit: Boolean
+    val isEdit: Boolean,
+    val position: Int
 
 ) :
     BaseFragment<FragmentAddEducationBinding>() {
@@ -56,17 +57,14 @@ class AddEducation(
             looksAdapter.submitList(it)
         }
 
-        addDetailResumeVM.loadingState.observe(this) {
-            addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-                AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-                if (it.msg.isNotBlank()) {
-                    AppsKitSDKUtils.makeToast(it.msg)
-                }
+        /*addDetailResumeVM.loadingState.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
+            if (it.msg.isNotBlank()) {
+                AppsKitSDKUtils.makeToast(it.msg)
             }
-        }
+
+        }*/
     }
-
-
 
 
     override fun init(savedInstanceState: Bundle?) {
@@ -87,6 +85,10 @@ class AddEducation(
                 Helper.convertIsoToCustomFormat(data.startDate)
             )
             binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(data.endDate))
+            if (data.endDate.isEmpty())
+            {
+                binding.checkItscontinue.isChecked=true
+            }
         }
         onclick()
         if (isDegree) {
@@ -103,6 +105,7 @@ class AddEducation(
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
                 binding.enddateTextInputLayout2.isEnabled = false
+                binding.enddateedittext.setText("")
 
             } else {
                 binding.enddateTextInputLayout2.isEnabled = true
@@ -146,8 +149,6 @@ class AddEducation(
         binding.savebtn.setOnClickListener {
             if (Validations.isConditionMetEducation(binding)) {
                 CallApi()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
 
@@ -159,7 +160,6 @@ class AddEducation(
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
-
 
 
     private fun setupTextWatcher(editText: EditText, isDegree: Boolean) {
@@ -221,9 +221,9 @@ class AddEducation(
 
         // Add or update the qualification based on edit mode
         val newQualification = Qualification(
-            degree = withWord + binding.degreeName.text.toString(),
+            degree = withWord + Helper.removeOneUnderscores(binding.degreeName.text.toString()),
             endDate = endDate,
-            institute = withWord + binding.instituenameedittext.text.toString(),
+            institute = withWord + Helper.removeOneUnderscores(binding.instituenameedittext.text.toString()),
             qualificationType = "degree",
             startDate = binding.startdateedittext.text.toString()
         )
@@ -232,7 +232,8 @@ class AddEducation(
         if (!isEdit) {
             updatedList.add(newQualification)
         } else {
-            replaceQualificationInList(newQualification)
+            updatedList[position] = newQualification
+            //replaceQualificationInList(newQualification)
         }
 
         // Create and send the API request
@@ -241,18 +242,15 @@ class AddEducation(
     }
 
 
-
-
-
     private fun updateQualificationList() {
         // Initialize the updated list with existing qualifications
-        updatedList.clear()
+        //updatedList.clear()
         oldList.forEach { oldQualification ->
             updatedList.add(
                 Qualification(
-                    degree = oldQualification.degree,
+                    degree = withWord + Helper.removeOneUnderscores(oldQualification.degree),
                     endDate = oldQualification.endDate,
-                    institute = oldQualification.institute,
+                    institute = withWord + Helper.removeOneUnderscores(oldQualification.institute),
                     qualificationType = oldQualification.qualificationType,
                     startDate = oldQualification.startDate
                 )

@@ -11,7 +11,9 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ReferenceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
@@ -29,7 +31,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userReferences.isEmpty(), binding.popup)
             list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
             setadapter(list)
         }
@@ -68,6 +70,11 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
             binding.bannerAdd,
             placeholder = ""
         )
+
+        /*if ((currentActivity() as AddDetailResume).isLast())
+        {
+            binding.addreferrenebtn
+        }*/
         AppsKitSDKPreferencesManager.getInstance().addInPreferences(IS_RESUME, true)
         apiCall()
         onclick()
@@ -79,13 +86,17 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
         referenceAdapter.submitList(userReferences)
-        referenceAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddReferenceFragment(it, list)
+        referenceAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddReferenceFragment(item, list,true,position)
 
         }
         referenceAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setadapter(list)
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+
+            }
+           //setadapter(list)
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -100,11 +111,11 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
         for (i in 0 until list.size) {
             reference.add(
                 ReferenceRequest.Reference(
-                    list[i].company,
+                    Helper.removeOneUnderscores(list[i].company),
                     list[i].email,
                     list[i].name,
                     list[i].phone,
-                    list[i].position
+                    Helper.removeOneUnderscores(list[i].position)
                 )
             )
         }
@@ -117,7 +128,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     private fun onclick() {
         binding.addreferrenebtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddReferenceFragment(null, list)
+            addDetailResumeVM.fragment.value = AddReferenceFragment(null, list, false, 0)
         }
     }
 }

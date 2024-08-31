@@ -12,6 +12,7 @@
         android:textSize="@dimen/_10ssp"
         android:layout_margin="@dimen/_5sdp"
         android:gravity="center"
+        android:textColor="@color/black"
         android:background="@drawable/greyripple_roundbtn"
         android:padding="@dimen/_5sdp"
         android:text="UI/UX"

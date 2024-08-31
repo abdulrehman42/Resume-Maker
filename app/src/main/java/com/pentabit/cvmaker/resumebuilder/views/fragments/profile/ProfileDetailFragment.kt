@@ -3,7 +3,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,10 +13,10 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileDetailBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.OnDoubleClickListener
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
+import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileEduAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceProfAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SkillProfAdapter
@@ -29,6 +28,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     override val inflate: Inflate<FragmentProfileDetailBinding>
         get() = FragmentProfileDetailBinding::inflate
+    var isclick = false
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(currentActivity()) {
@@ -69,38 +69,41 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         }
 
         binding.createProfile.setOnClickListener {
-            startActivity(Intent(currentActivity(),AddDetailResume::class.java))
+            startActivity(Intent(currentActivity(), AddDetailResume::class.java))
         }
         binding.createCoverletter.setOnClickListener {
-            val intent =Intent(currentActivity(),ChoiceTemplate::class.java)
-            intent.putExtra(Constants.IS_RESUME,false)
-            startActivity(Intent(currentActivity(),AddDetailResume::class.java))
+            val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.IS_RESUME, false)
+            startActivity(intent)
         }
-        binding.createBtn.setOnClickListener(OnDoubleClickListener { v ->
-            binding.createProfile.animate()
-                .alpha(0f) // Fade out to transparency
-                .setDuration(300) // Duration of the animation
-                .withEndAction {
-                    binding.createProfile.isGone = false // Make it gone after the animation
-                    binding.createCoverletter.animate()
-                        .alpha(0f)
-                        .setDuration(300)
-                        .withEndAction {
-                            binding.createCoverletter.isGone = false
-                        }
-                }
-        })
+        binding.createBtn.setOnClickListener {
+            binding.createProfile.isGone = false
+            binding.createCoverletter.isGone = false
+        }
+        binding.createBtn.setOnClickListener {
+            if (isclick) {
+                openButton(isclick)
+            } else {
+                openButton(isclick)
+
+            }
+        }
     }
+
+    fun openButton(isclick: Boolean) {
+
+        binding.createProfile.isGone = isclick
+        binding.createCoverletter.isGone = isclick
+        this.isclick = !isclick
+    }
+
 
     private fun setValues(profileModelAddDetailResponse: ProfileModelAddDetailResponse) {
         val skillAdapter =
             SkillProfAdapter(currentActivity(), profileModelAddDetailResponse.userSkills)
         val experienceAdapter =
             ExperienceProfAdapter(currentActivity(), profileModelAddDetailResponse.userExperiences)
-        val eduAdapter = EducationAdapter(
-            true,
-            {}, {},
-        )
+        val eduAdapter = ProfileEduAdapter()
         eduAdapter.submitList(profileModelAddDetailResponse.userQualifications)
         Glide.with(currentActivity())
             .load(Constants.BASE_MEDIA_URL + profileModelAddDetailResponse.path)
@@ -108,7 +111,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         binding.scrollview.isSmoothScrollingEnabled = true
         binding.apply {
             userName.text = profileModelAddDetailResponse.name
-            userIntro.text = profileModelAddDetailResponse.objective
+            binding.userIntro.setText(profileModelAddDetailResponse.jobTitle)
             gender.text = profileModelAddDetailResponse.gender.replaceFirstChar { it.uppercase() }
 
             objexttext.text = profileModelAddDetailResponse.objective

@@ -77,23 +77,33 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
     private fun onclick() {
 
         binding.addeducationbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddEducation(null, list, false)
+            addDetailResumeVM.fragment.value = AddEducation(null, list, false, 0)
         }
 
     }
 
     private fun setAdapter() {
-        educationAdapter = EducationAdapter(false, {
-            addDetailResumeVM.fragment.value =
-                AddEducation(it, list, true)
-        }, {
-            list.removeAt(it)
-            if (list.size != 0) {
-                callSaveApi()
-                apiCall()
+        educationAdapter = EducationAdapter(
+            check = false,
+            onclick = { item, position ->
+                // Assuming `AddEducation` takes `item`, `list`, and a boolean as parameters
+                addDetailResumeVM.fragment.value =
+                    AddEducation(item, list, true,position)
+            },
+            onDelete = { position ->
+                if (list.size!=0)
+                {
+                    list.removeAt(position)
 
+                }
+                //setAdapter()
+
+                if (list.isNotEmpty()) {
+                    callSaveApi()
+                    apiCall()
+                }
             }
-        })
+        )
         educationAdapter.submitList(list)
         binding.recyclerviewEducation.adapter = educationAdapter
     }
@@ -104,7 +114,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
                 Qualification(
                     degree = "1__" + Helper.removeOneUnderscores(list[i].degree),
                     endDate = list[i].endDate,
-                    institute = "1__" + list[i].institute,
+                    institute = "1__" + Helper.removeOneUnderscores(list[i].institute),
                     qualificationType = "degree",
                     startDate = list[i].startDate
                 )

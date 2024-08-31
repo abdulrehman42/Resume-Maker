@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.addCallback
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.textfield.TextInputLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -25,12 +25,15 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddSkillFragment(
     val userSkills: List<String>?,
-    val skillName: String?
+    val skillName: String?,
+    val position: Int,
+    val isedit: Boolean
 ) : BaseFragment<FragmentAddSkillBinding>() {
     private lateinit var suggestionAdapter: SuggestionAdapter
     private val userSkillAdapter = UserSkillAdapter()
     private lateinit var addDetailResumeVM: AddDetailResumeVM
     private val list = mutableListOf<String>()
+    var startWord = "-1__"
     private var alreadyUserSkills = mutableListOf<String>()
 
     override val inflate: Inflate<FragmentAddSkillBinding>
@@ -75,12 +78,10 @@ class AddSkillFragment(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val textLength = s?.length ?: 0
-                binding.skillTextInputLayout.setEndIconMode(
-                    if (textLength > 2) TextInputLayout.END_ICON_CUSTOM
-                    else TextInputLayout.END_ICON_NONE
-                )
                 if (textLength > 2) {
-                    binding.skillTextInputLayout.setEndIconDrawable(R.drawable.tick_green)
+                    binding.tickBtn.isGone = false
+                } else {
+                    binding.tickBtn.isGone = true
                 }
                 val query = s.toString()
                 callLookUpApi(query)
@@ -92,12 +93,18 @@ class AddSkillFragment(
             }
 
         })
+        userSkillAdapter.submitList(userSkills)
 
+        binding.recyclerviewSkill.apply {
+            layoutManager = GridLayoutManager(requireContext(), 3)
+            adapter = userSkillAdapter
+        }
         setupClickListeners()
     }
 
+
     private fun callLookUpApi(query: String) {
-        addDetailResumeVM.getLookUp(Constants.skills, query, "", "")
+        addDetailResumeVM.getLookUp(Constants.skills, query, "", "6")
     }
 
     private fun setupAdapters(lookUpResponses: List<LookUpResponse>) {
@@ -115,24 +122,30 @@ class AddSkillFragment(
     }
 
     private fun setupClickListeners() {
-        binding.skillTextInputLayout.setEndIconOnClickListener {
+        binding.tickBtn.setOnClickListener {
             val skill = binding.skillEdittext.text.toString().trim()
             if (skill.isNotEmpty()) {
-                list.add(skill)
+                if (isedit)
+                {
+                    list[position]=startWord+skill
+                }else{
+                    list.add(startWord + skill)
+                }
+                binding.skillEdittext.setText("")
+
                 userSkillAdapter.submitList(list.toList())
             }
         }
 
 
         binding.savebtn.setOnClickListener {
-            val skill = binding.skillEdittext.text.toString().trim()
-            if (skill.isNullOrEmpty()) {
-                list.add("-1__$skill")
-                binding.skillEdittext.setText("")
+            if (!list.isEmpty())
+            {
                 apiCall()
-            } else {
-                currentActivity().showToast(getString(R.string.single_field_missing_error))
+            }else{
+                binding.skillTextInputLayout.error=("please add skill")
             }
+
         }
 
         binding.includeTool.backbtn.setOnClickListener {
@@ -145,6 +158,7 @@ class AddSkillFragment(
     }
 
     private fun apiCall() {
+
         addDetailResumeVM.editSkill(SkillRequestModel(list))
     }
 }

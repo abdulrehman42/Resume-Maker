@@ -47,7 +47,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/coverletter_textInput"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
+            android:layout_height="360dp"
             android:gravity="start"
             android:inputType="textMultiLine"
             android:hint="@string/cover_letter" />

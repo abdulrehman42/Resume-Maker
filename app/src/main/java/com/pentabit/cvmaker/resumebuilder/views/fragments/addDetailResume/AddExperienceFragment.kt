@@ -35,7 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddExperienceFragment(
     val data: ProfileModelAddDetailResponse.UserExperience?,
     val experienceList: ArrayList<ProfileModelAddDetailResponse.UserExperience>?,
-    val isEdit: Boolean
+    val isEdit: Boolean,
+    val position: Int
 ) :
     BaseFragment<FragmentAddExperienceBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
@@ -94,12 +95,12 @@ class AddExperienceFragment(
             for (i in 0 until oldList.size) {
                 updateList.add(
                     Experience(
-                        oldList[i].company,
-                        oldList[i].description,
-                        oldList[i].employmentType,
-                        oldList[i].endDate,
-                        oldList[i].startDate,
-                        oldList[i].title
+                       withWord+ Helper.removeOneUnderscores(oldList[i].company),
+                        Helper.removeOneUnderscores(oldList[i].description),
+                        Helper.removeOneUnderscores(oldList[i].employmentType),
+                        Helper.convertIsoToCustomFormat(oldList[i].endDate),
+                        Helper.convertIsoToCustomFormat(oldList[i].startDate),
+                       withWord+Helper.removeOneUnderscores( oldList[i].title)
                     )
                 )
             }
@@ -117,6 +118,10 @@ class AddExperienceFragment(
                     data.endDate
                 )
             )
+            if (data.endDate.isEmpty())
+            {
+                binding.checkItscontinue.isChecked=true
+            }
         }
 
         binding.descriptionTextInputLayout2.apply {
@@ -231,6 +236,7 @@ class AddExperienceFragment(
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
                 binding.enddateTextInputLayout2.isEnabled = false
+                binding.enddateedittext.setText("")
                 endDate = null
             } else {
                 binding.enddateTextInputLayout2.isEnabled = true
@@ -240,8 +246,6 @@ class AddExperienceFragment(
 
             if (Validations.isConditionMetExperience(binding)) {
                 apiCall()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
@@ -295,7 +299,7 @@ class AddExperienceFragment(
         if (!isEdit) {
             updateList.add(experience)
         } else {
-            replaceExperienceInList(experience)
+            updateList[position]=experience
         }
         /*updateList.add(
             Experience(

@@ -29,9 +29,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_30sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -50,8 +50,8 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/cv" />
 
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 style="@style/subheading"
                 android:textSize="@dimen/_10ssp"
                 android:text="CV or Resume" />
@@ -79,8 +79,8 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 android:src="@drawable/coverletter" />
@@ -91,7 +91,7 @@
                 style="@style/subheading"
                 android:textSize="@dimen/_10ssp"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:text="@string/cover_letter" />
         </LinearLayout>
 
@@ -102,9 +102,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="10dp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_13sdp"
+        android:layout_marginEnd="@dimen/_13sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/linearLayout5"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
@@ -124,8 +124,8 @@
             app:layout_constraintTop_toBottomOf="@+id/cvResume_btn">
 
             <ImageView
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_65sdp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 android:src="@drawable/download" />
@@ -136,7 +136,7 @@
                 style="@style/subheading"
                 android:textSize="@dimen/_10ssp"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:text="@string/downloads" />
         </LinearLayout>
 
@@ -153,8 +153,8 @@
             app:layout_constraintTop_toBottomOf="@+id/coverletter_btn">
 
             <ImageView
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:src="@drawable/profilebg" />
@@ -165,7 +165,7 @@
                 android:layout_gravity="center"
                 style="@style/subheading"
                 android:textSize="@dimen/_10ssp"
-                android:layout_margin="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:text="My Profile" />
         </LinearLayout>
     </LinearLayout>

@@ -195,7 +195,7 @@
                 android:id="@+id/man"
                 style="@style/subheading_lighter"
                 android:layout_width="@dimen/_138sdp"
-                android:layout_height="@dimen/_45sdp"
+                android:layout_height="@dimen/_38sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/greybgradius"
                 android:gravity="center"
@@ -209,11 +209,11 @@
                 android:id="@+id/woman"
                 style="@style/subheading_lighter"
                 android:layout_width="@dimen/_138sdp"
-                android:layout_height="@dimen/_45sdp"
+                android:layout_height="@dimen/_38sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/greybgradius"
                 android:gravity="center"
-                android:text="Women"
+                android:text="Woman"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/man"
@@ -236,5 +236,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

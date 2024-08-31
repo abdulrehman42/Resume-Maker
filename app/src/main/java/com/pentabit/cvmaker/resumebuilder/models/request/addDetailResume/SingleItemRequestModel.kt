@@ -7,7 +7,7 @@ data class SkillRequestModel(
     val skills:List<String>
 )
 data class InterestRequestModel(
-    val interest:List<String>
+    val interests:List<String>
 )
 data class LanguageRequestModel(
     val languages:List<String>

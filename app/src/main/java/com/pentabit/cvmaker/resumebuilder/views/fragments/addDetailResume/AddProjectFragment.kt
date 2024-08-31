@@ -16,21 +16,20 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddProjectBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddProjectFragment(
     val data: ProfileModelAddDetailResponse.UserProject?,
-    val userProjectsList: List<ProfileModelAddDetailResponse.UserProject>?
+    val userProjectsList: List<ProfileModelAddDetailResponse.UserProject>?,
+    val isedit: Boolean,
+    val position: Int
 ) :
     BaseFragment<FragmentAddProjectBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
@@ -67,7 +66,7 @@ class AddProjectFragment(
                 updateList.add(
                     Project(
                         oldList[i].description,
-                        oldList[i].title,
+                        Helper.removeOneUnderscores(oldList[i].title),
                     )
                 )
             }
@@ -95,11 +94,8 @@ class AddProjectFragment(
 
     private fun onclick() {
         binding.savebtn.setOnClickListener {
-            if (isConditionMet()) {
+            if (Validations.isConditionMetProject(binding)) {
                 apiCall()
-            } else {
-                currentActivity().showToast(getString(R.string.field_missing_error))
-
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
@@ -112,18 +108,23 @@ class AddProjectFragment(
 
     }
 
-    fun isConditionMet(): Boolean {
-        return !binding.projectedittext.text.toString().isNullOrEmpty() &&
-                !binding.descriptionedittext.text.toString().isNullOrEmpty()
-    }
 
     private fun apiCall() {
-        updateList.add(
-            Project(
+        if (!isedit)
+        {
+            updateList.add(
+                Project(
+                    binding.descriptionedittext.text.toString(),
+                    binding.projectedittext.text.toString()
+                )
+            )
+        }else{
+            updateList[position]= Project(
                 binding.descriptionedittext.text.toString(),
                 binding.projectedittext.text.toString()
             )
-        )
+        }
+
 
         val projectRequest = ProjectRequest(projects = updateList)
 

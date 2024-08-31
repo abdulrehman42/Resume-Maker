@@ -1,6 +1,5 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
@@ -10,15 +9,9 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.CREATION_TIME
-import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseCreation
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,6 +27,8 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userAchievement.isNullOrEmpty(),binding.popup)
+            list.clear()
             list = it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>
             setAdapter()
         }
@@ -81,18 +76,21 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
     private fun onclick() {
         binding.addachievementbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment(null, list)
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment(null, list, 0, false)
         }
     }
 
     private fun setAdapter() {
         achievementAdapter.submitList(list)
-        achievementAdapter.setOnEditItemClickCallback {
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment(it, list)
+        achievementAdapter.setOnEditItemClickCallback {item,position->
+            addDetailResumeVM.fragment.value = AddAchievementsFRagment(item, list,position,true)
         }
         achievementAdapter.setOnItemDeleteClickCallback {
-            list.removeAt(it)
-            setAdapter()
+            if (list.size!=0)
+            {
+                list.removeAt(it)
+            }
+          // setAdapter()
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
