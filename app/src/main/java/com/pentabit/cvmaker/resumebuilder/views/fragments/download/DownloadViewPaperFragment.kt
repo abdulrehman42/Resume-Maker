@@ -14,9 +14,8 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentPdfBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
+import com.pentabit.cvmaker.resumebuilder.application.ResumeMakerApplication
 import com.pentabit.cvmaker.resumebuilder.views.activities.PreviewImageResumeActivity
-import com.pentabit.cvmaker.resumebuilder.views.activities.PreviewPdfResumeActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.download.DownloadImgAdapter
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils

@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/_10sdp"
-    android:gravity="center">
-    <ImageView
-        android:id="@+id/camerbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_10sdp"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/_2sdp"
-        android:src="@drawable/camera"/>
-    <View
-        android:layout_width="@dimen/_1sdp"
-        android:layout_height="match_parent"
-        android:background="@color/grey_less_dark"
-        android:layout_marginEnd="@dimen/_2sdp"/>
-    <ImageView
-        android:id="@+id/gallerybtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_10sdp"
-        android:layout_weight="1"
-        android:src="@drawable/gallery"/>
+    android:layout_marginHorizontal="10dp"
+    android:background="@color/white"
+    android:elevation="10dp"
+    app:cardCornerRadius="17dp">
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp">
+
+        <ImageView
+            android:id="@+id/camerbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_weight="1"
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/camera" />
+
+        <View
+            android:layout_width="@dimen/_1sdp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:background="@color/grey_less_dark" />
+
+        <ImageView
+            android:id="@+id/gallerybtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/gallery" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -36,11 +35,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/banner_add">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <AutoCompleteTextView
             android:id="@+id/instituenameedittext"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="@string/institue_name"
+            android:paddingStart="13dp"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,7 +48,6 @@
         android:id="@+id/degree_textInputLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_margin="@dimen/_10sdp"
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
@@ -56,11 +55,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instituate_textInputLayout">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <AutoCompleteTextView
             android:id="@+id/degree_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="@string/degree"
+            android:paddingStart="13dp"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +69,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
-
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,9 +79,9 @@
             android:id="@+id/startdateedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/start_date"
-            android:focusableInTouchMode="false"
             android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="@string/start_date"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,7 +90,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
-
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
@@ -113,16 +111,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/currently_enrolled"
         app:layout_constraintStart_toStartOf="@+id/enddate_textInputLayout2"
         app:layout_constraintTop_toBottomOf="@+id/enddate_textInputLayout2" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/currently_enrolled"
-        app:layout_constraintBottom_toBottomOf="@+id/check_itscontinue"
-        app:layout_constraintStart_toEndOf="@+id/check_itscontinue"
-        app:layout_constraintTop_toTopOf="@+id/check_itscontinue" />
 
     <TextView
         android:id="@+id/savebtn"
@@ -137,36 +129,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/savebtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lookid_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:visibility="gone"
-        android:layout_marginStart="@dimen/_10sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/instituate_textInputLayout" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lookid_recyclerviewdegree"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:visibility="gone"
-        android:layout_marginStart="@dimen/_10sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/degree_textInputLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

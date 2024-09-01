@@ -3,7 +3,6 @@ package com.pentabit.cvmaker.resumebuilder.views.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
@@ -18,10 +17,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.isGone
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.ads.AdSize
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxDelete
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxLogout
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxPurchase
@@ -37,8 +34,6 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityMainActivtyBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
-import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -46,8 +41,6 @@ import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {

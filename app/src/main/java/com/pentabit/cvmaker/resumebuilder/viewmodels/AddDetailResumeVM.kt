@@ -1,14 +1,14 @@
 package com.pentabit.cvmaker.resumebuilder.viewmodels
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pentabit.cvmaker.resumebuilder.api.http.ResponseCallback
 import com.pentabit.cvmaker.resumebuilder.api.repository.AddDetailResumeRepository
+import com.pentabit.cvmaker.resumebuilder.callbacks.OnLookUpResult
 import com.pentabit.cvmaker.resumebuilder.models.LoaderModel
-import com.pentabit.cvmaker.resumebuilder.models.api.Profile
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
+import com.pentabit.cvmaker.resumebuilder.models.api.Profile
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.AchievementResponse
@@ -22,7 +22,6 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experie
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleItemRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
@@ -37,11 +36,9 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
     ViewModel() {
     val loadingState = MutableLiveData<LoaderModel>()
     val data = MutableLiveData<String>()
-    var fragment = SingleLiveEvent<Fragment>()
     var looksupResponse = MutableLiveData<List<LookUpResponse>>()
     val dataResponse = MutableLiveData<ProfileModelAddDetailResponse>()
     val objectiveResponse = MutableLiveData<ProfileModelAddDetailResponse>()
-
     val informationResponse = MutableLiveData<Profile>()
     val projectResponse = MutableLiveData<List<ProjectResponse>>()
     val referenceResponse = MutableLiveData<List<ReferrenceResponseModel>>()
@@ -51,6 +48,8 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
     val skillResponse = MutableLiveData<List<String>>()
     val interestResponse = MutableLiveData<List<String>>()
     val languageResponse = MutableLiveData<List<String>>()
+
+    var isInEditMode = false
 
 
     val getSamples = MutableLiveData<List<SampleResponseModel>>()
@@ -68,6 +67,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             informationResponse.postValue(data as Profile)
+                            isInEditMode = true
                             loadingState.postValue(LoaderModel(false, ""))
                         }
 
@@ -133,7 +133,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun editQualification(qualification: QualificationModelRequest) {
+    fun editQualification(qualification: List<ProfileModelAddDetailResponse.UserQualification>) {
         viewModelScope.launch {
             loadingState.postValue(LoaderModel(true, ""))
 
@@ -392,24 +392,24 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun getLookUp(key: String, query: String?, s: String, s1: String) {
+    fun getLookUp(
+        key: String,
+        text: String,
+        page: Int,
+        size: Int,
+        callback: OnLookUpResult
+    ) {
         viewModelScope.launch {
-            loadingState.postValue(LoaderModel(true, ""))
-
             try {
-                addDetailResumeRepository.getLookups(
-                    key,
-                    query, s, s1,
+                addDetailResumeRepository.getLookups(key, text, page, size,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             looksupResponse.postValue(data as List<LookUpResponse>)
-                            loadingState.postValue(LoaderModel(false, ""))
-
+                            callback.onLookUpResult(data)
                         }
 
                         override fun onFailure(errorMessage: String?) {
-                            loadingState.postValue(LoaderModel(false, errorMessage.toString()))
-
+                            // do nothing
                         }
                     })
             } catch (e: Exception) {

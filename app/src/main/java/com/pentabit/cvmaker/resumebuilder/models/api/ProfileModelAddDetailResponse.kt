@@ -1,27 +1,26 @@
 package com.pentabit.cvmaker.resumebuilder.models.api
 
 data class ProfileModelAddDetailResponse(
-    val address: String,
-    val baseUrl: String,
-    val dob: String,
-    val email: String,
-    val gender: String,
+    val address: String?,
+    val baseUrl: String?,
+    val dob: String?,
+    val email: String?,
+    val gender: String?,
     val id: Int,
-    val jobTitle: String,
-    val name: String,
-    val objective: String,
-    val path: String,
-    val phone: String,
-    val userAchievement: List<UserAchievement>,
-    val userExperiences: List<UserExperience>,
-    val userInterests: List<String>,
-    val userLanguages: List<String>,
-    val userProjects: List<UserProject>,
-    val userQualifications: List<UserQualification>,
-    val userReferences: List<UserReference>,
-    val userSkills: List<String>
-)
-{
+    val jobTitle: String?,
+    val name: String?,
+    val objective: String?,
+    val path: String?,
+    val phone: String?,
+    val userAchievement: List<UserAchievement>?,
+    val userExperiences: List<UserExperience>?,
+    val userInterests: List<String>?,
+    val userLanguages: List<String>?,
+    val userProjects: List<UserProject>?,
+    val userQualifications: List<UserQualification>?,
+    val userReferences: List<UserReference>?,
+    val userSkills: List<String>?
+) {
     data class UserAchievement(
         val createdAt: String,
         val description: String,
@@ -30,6 +29,7 @@ data class ProfileModelAddDetailResponse(
         val title: String,
         val updatedAt: String
     )
+
     data class UserExperience(
         val company: String,
         val createdAt: String,
@@ -41,6 +41,7 @@ data class ProfileModelAddDetailResponse(
         val title: String,
         val updatedAt: String
     )
+
     data class UserProject(
         val createdAt: String,
         val description: String,
@@ -48,16 +49,16 @@ data class ProfileModelAddDetailResponse(
         val title: String,
         val updatedAt: String
     )
+
     data class UserQualification(
-        val createdAt: String,
         val degree: String,
-        val endDate: String,
-        val id: Int,
         val institute: String,
-        val qualificationType: String,
         val startDate: String,
-        val updatedAt: String
+        val endDate: String?,
+        val qualificationType: String,
+
     )
+
     data class UserReference(
         val company: String,
         val createdAt: String,

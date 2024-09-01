@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
@@ -9,8 +10,8 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentInterestBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -20,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
     val interestAdapter = SingleStringAdapter()
     var list = ArrayList<String>()
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     lateinit var tabhost: TabLayout
 
 //    val interests = Array(30) { "" }
@@ -31,7 +32,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userInterests.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userInterests.isNullOrEmpty(), binding.popup)
             list = it.userInterests as ArrayList<String>
             setadapter()
         }
@@ -56,7 +57,6 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showNative(
             currentActivity(), binding.bannerAdd, ""
 
@@ -71,17 +71,23 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     private fun setadapter() {
         interestAdapter.submitList(list)
-        interestAdapter.setOnEditItemClickCallback {item,position->
-            addDetailResumeVM.fragment.value = AddInterestFragment(list, item, true,position)
+        interestAdapter.setOnEditItemClickCallback { item, position ->
+            (requireActivity() as AddDetailResume).openFragment(
+                AddInterestFragment(
+                    list,
+                    item,
+                    true,
+                    position
+                )
+            )
 
         }
         interestAdapter.setOnItemDeleteClickCallback {
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 list.removeAt(it)
 
             }
-         //   setadapter()
+            //   setadapter()
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()
@@ -104,7 +110,14 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>() {
 
     private fun onclick() {
         binding.addinterestbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddInterestFragment(list, null, false, 0)
+            (requireActivity() as AddDetailResume).openFragment(
+                AddInterestFragment(
+                    list,
+                    null,
+                    false,
+                    0
+                )
+            )
         }
     }
 

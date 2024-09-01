@@ -11,11 +11,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
@@ -26,6 +25,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.AddmorealertdialogueBindin
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.ImageSourceSelectionHelper
 import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper
 import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper.askForPermission
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
@@ -52,10 +52,9 @@ class AddDetailResume : BaseActivity() {
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
     var getdataResponse: ProfileModelAddDetailResponse? = null
+    lateinit var imageSourceSelectionHelper: ImageSourceSelectionHelper
 
-    lateinit var addDetailResumeVM: AddDetailResumeVM
-    var iseditProfile = false
-    private val fragmentsMap = HashMap<Int, AddDetailsBaseFragment<ViewBinding>>()
+    private val addDetailResumeVM: AddDetailResumeVM by viewModels()
     var permissionList = ArrayList<String>()
     val screen = ScreenIDs.ADD_BASIC_INFO
 
@@ -71,46 +70,50 @@ class AddDetailResume : BaseActivity() {
         bottomNavigationColor()
         enableEdgeToEdge()
         setContentView(binding.root)
-        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
-        iseditProfile = intent.getBooleanExtra(Constants.IS_EDIT, false)
+        addDetailResumeVM.isInEditMode = intent.getBooleanExtra(Constants.IS_EDIT, false)
+        imageSourceSelectionHelper = ImageSourceSelectionHelper(this)
         setUpTablayout()
-        onclick()
+        handleClicks()
         observeLiveData()
         openFragment(0)
-        if (currentTabPosition == allTabs.size) {
-            runOnUiThread {
-                binding.btnNxt.setText("Done")
-            }
-        }
-
     }
 
     private fun observeLiveData() {
-        addDetailResumeVM.fragment.observe(this) {
-            this.runOnUiThread {
-                supportFragmentManager.beginTransaction().setCustomAnimations(
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out,
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out
-                )
-                    .add(R.id.add_detail_container, it)
-                    .addToBackStack(null)
-                    .commitAllowingStateLoss()
-            }
-
-
-        }
-
         addDetailResumeVM.loadingState.observe(this) {
             AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
             if (it.msg.isNotBlank()) {
                 AppsKitSDKUtils.makeToast(it.msg)
             }
         }
+
+        addDetailResumeVM.informationResponse.observe(this) {
+            AppsKitSDKPreferencesManager.getInstance()
+                .addInPreferences(Constants.PROFILE_ID, it.id.toString())
+            moveNext()
+        }
+
+        addDetailResumeVM.objectiveResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.educationResponse.observe(this) {
+            moveNext()
+        }
     }
 
-    private fun onclick() {
+    fun openFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            )
+            .add(R.id.add_detail_container, fragment)
+            .addToBackStack(null)
+            .commitAllowingStateLoss()
+    }
+
+    private fun handleClicks() {
         binding.includeTool.backbtn.setOnClickListener {
             finish()
         }
@@ -127,11 +130,14 @@ class AddDetailResume : BaseActivity() {
                 moveNext()
             }
         }
-        onBackPressedDispatcher.addCallback {
-            finish()
-        }
         binding.addTabs.setOnClickListener { alertbox() }
 
+    }
+
+    override fun onBackPressed() {
+        if (!supportFragmentManager.popBackStackImmediate()) {
+            finish()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -169,17 +175,16 @@ class AddDetailResume : BaseActivity() {
             @SuppressLint("ResourceAsColor")
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.icon?.setTint(getColor(R.color.white))
+                if (tab.position < currentTabPosition || currentFragment!!.csnMoveForward()) {
+                    openFragment(
+                        binding.tabLayoutAdddetail.selectedTabPosition
+                    )
+                    currentTabPosition = tab.position
 
-                currentFragment = fragmentsMap.get(currentTabPosition)
-                if (currentFragment == null) {
-                    openFragment(
-                        binding.tabLayoutAdddetail.selectedTabPosition
-                    )
-                } else if (currentFragment!!.csnMoveForward()) {
-                    openFragment(
-                        binding.tabLayoutAdddetail.selectedTabPosition
-                    )
-                    currentTabPosition = binding.tabLayoutAdddetail.selectedTabPosition
+                    binding.nextbtn.text =
+                        if (currentTabPosition == allTabs.size - 1) getString(R.string.done)
+                        else getString(R.string.next)
+
                 }
             }
 
@@ -191,21 +196,16 @@ class AddDetailResume : BaseActivity() {
                 // Handle tab reselection if needed
             }
         })
-//        binding.tabLayoutAdddetail.selectTab(binding.tabLayoutAdddetail.getTabAt(0))
     }
 
 
     private fun openFragment(index: Int) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.viewPager_container, createFragment(index))
-        transaction.addToBackStack(null) // Optional: Adds the transaction to the back stack
         transaction.commit()
     }
 
     fun moveBack() {
-        if (!currentFragment!!.csnMoveForward()) {
-            return
-        }
         if (currentTabPosition >= 0) {
             if (currentTabPosition == 1) {
                 binding.btnContainer.visibility = View.INVISIBLE
@@ -253,7 +253,6 @@ class AddDetailResume : BaseActivity() {
     }
 
     fun addItems() {
-//        binding.viewPagerContainer.adapter = MyViewPagerAdapter()
         val tabTitle = resources.getStringArray(R.array.add_details_tab)
         val tabIcons = resources.obtainTypedArray(R.array.add_details_tab_icons)
 
@@ -288,27 +287,29 @@ class AddDetailResume : BaseActivity() {
         tab.text = tabModel.name
         tab.icon = tabModel.icon
         binding.tabLayoutAdddetail.addTab(tab)
-//        binding.viewPagerContainer.adapter?.notifyDataSetChanged()
-//        binding.viewPagerContainer.offscreenPageLimit = allTabs.size
+
+        binding.nextbtn.text =
+            if (currentTabPosition == allTabs.size - 1) getString(R.string.done)
+            else getString(R.string.next)
     }
 
     fun addExtraItems(profileModelAddDetailResponse: ProfileModelAddDetailResponse) {
         getdataResponse = profileModelAddDetailResponse
         getdataResponse?.let {
-            if (it.userInterests.isNotEmpty()) {
+            if (!it.userInterests.isNullOrEmpty()) {
                 addOrRemoveTab(extraTabs[0])
 
             }
-            if (it.userLanguages.isNotEmpty()) {
+            if (!it.userLanguages.isNullOrEmpty()) {
 
                 addOrRemoveTab(extraTabs[1])
 
             }
-            if (it.userAchievement.isNotEmpty()) {
+            if (!it.userAchievement.isNullOrEmpty()) {
                 addOrRemoveTab(extraTabs[2])
 
             }
-            if (it.userProjects.isNotEmpty()) {
+            if (!it.userProjects.isNullOrEmpty()) {
                 addOrRemoveTab(extraTabs[3])
 
             }
@@ -355,75 +356,51 @@ class AddDetailResume : BaseActivity() {
 
         val tab = when (allTabs[position].id) {
             0 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else InformationFragment(iseditProfile)
+                InformationFragment()
             }
 
             1 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else ObjectiveFragment()
+                ObjectiveFragment()
             }
 
             2 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else EducationFragment()
+                EducationFragment()
             }
 
             3 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else SkillFragment()
+                SkillFragment()
             }
 
             4 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else ExperienceFragment()
+                ExperienceFragment()
             }
 
             5 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else ReferrenceFragment()
+                ReferrenceFragment()
             }
 
             6 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else InterestFragment()
+                InterestFragment()
             }
 
             7 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else LanguageFragment()
+                LanguageFragment()
             }
 
             8 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else ProjectFragment()
+                ProjectFragment()
             }
 
             9 -> {
-                if (fragmentsMap[position] != null)
-                    fragmentsMap[position]
-                else AchievementFragment()
+                AchievementFragment()
             }
 
             else -> {
-                if (fragmentsMap[0] != null)
-                    fragmentsMap[0]
-                else InformationFragment(iseditProfile)
+                InformationFragment()
             }
         }
-        if (position == 0) {
-            currentFragment = tab as AddDetailsBaseFragment<ViewBinding>
-        }
-        fragmentsMap[position] = tab as AddDetailsBaseFragment<ViewBinding>
+
+        currentFragment = tab as AddDetailsBaseFragment<ViewBinding>
         return tab
     }
 

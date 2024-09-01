@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
-import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication;
+import com.pentabit.cvmaker.resumebuilder.application.ResumeMakerApplication;
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs;
 import com.pentabit.cvmaker.resumebuilder.utils.Utils;
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager;

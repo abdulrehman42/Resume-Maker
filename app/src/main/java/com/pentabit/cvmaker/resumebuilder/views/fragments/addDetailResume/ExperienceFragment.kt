@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -11,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experie
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -18,7 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+
+    val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     var list = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
     val experienceAdapter = ExperienceAdapter()
     override val inflate: Inflate<FragmentExperienceBinding>
@@ -26,7 +29,7 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userExperiences.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userExperiences.isNullOrEmpty(), binding.popup)
 
             list = it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>
             setadapter()
@@ -51,7 +54,6 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
@@ -79,7 +81,7 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
 
         experienceAdapter.setOnEditItemClickCallback {item,position->
 
-            addDetailResumeVM.fragment.value = AddExperienceFragment(item, list, true,position)
+            (requireActivity() as AddDetailResume).openFragment( AddExperienceFragment(item, list, true,position))
 
         }
         experienceAdapter.setOnItemDeleteClickCallback {
@@ -119,7 +121,13 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
     private fun onclick() {
 
         binding.addexperiencebtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddExperienceFragment(null, list, false, 0)
+            (requireActivity() as AddDetailResume).openFragment(
+                AddExperienceFragment(
+                    null,
+                    list,
+                    false,
+                    0
+                ))
 
         }
     }

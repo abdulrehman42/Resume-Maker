@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
+import com.pentabit.cvmaker.resumebuilder.callbacks.OnLookUpResult
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddSkillBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
@@ -19,7 +20,6 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SuggestionAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,12 +46,6 @@ class AddSkillFragment(
         }
         addDetailResumeVM.looksupResponse.observe(this) {
             setupAdapters(it)
-        }
-        addDetailResumeVM.loadingState.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
         }
     }
 
@@ -104,7 +98,11 @@ class AddSkillFragment(
 
 
     private fun callLookUpApi(query: String) {
-        addDetailResumeVM.getLookUp(Constants.skills, query, "", "6")
+        addDetailResumeVM.getLookUp(Constants.skills, query, 0, 20, object : OnLookUpResult {
+            override fun onLookUpResult(list: MutableList<LookUpResponse>?) {
+
+            }
+        })
     }
 
     private fun setupAdapters(lookUpResponses: List<LookUpResponse>) {
@@ -125,10 +123,9 @@ class AddSkillFragment(
         binding.tickBtn.setOnClickListener {
             val skill = binding.skillEdittext.text.toString().trim()
             if (skill.isNotEmpty()) {
-                if (isedit)
-                {
-                    list[position]=startWord+skill
-                }else{
+                if (isedit) {
+                    list[position] = startWord + skill
+                } else {
                     list.add(startWord + skill)
                 }
                 binding.skillEdittext.setText("")
@@ -139,11 +136,10 @@ class AddSkillFragment(
 
 
         binding.savebtn.setOnClickListener {
-            if (!list.isEmpty())
-            {
+            if (!list.isEmpty()) {
                 apiCall()
-            }else{
-                binding.skillTextInputLayout.error=("please add skill")
+            } else {
+                binding.skillTextInputLayout.error = ("please add skill")
             }
 
         }

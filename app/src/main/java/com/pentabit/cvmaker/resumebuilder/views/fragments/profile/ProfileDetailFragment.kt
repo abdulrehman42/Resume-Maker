@@ -17,9 +17,8 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileEduAdapter
-import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
-import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceProfAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SkillProfAdapter
+import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceProfAdapter
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -100,9 +99,12 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
 
     private fun setValues(profileModelAddDetailResponse: ProfileModelAddDetailResponse) {
         val skillAdapter =
-            SkillProfAdapter(currentActivity(), profileModelAddDetailResponse.userSkills)
+            SkillProfAdapter(currentActivity(), profileModelAddDetailResponse.userSkills!!)
         val experienceAdapter =
-            ExperienceProfAdapter(currentActivity(), profileModelAddDetailResponse.userExperiences)
+            ExperienceProfAdapter(
+                currentActivity(),
+                profileModelAddDetailResponse.userExperiences!!
+            )
         val eduAdapter = ProfileEduAdapter()
         eduAdapter.submitList(profileModelAddDetailResponse.userQualifications)
         Glide.with(currentActivity())
@@ -112,7 +114,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         binding.apply {
             userName.text = profileModelAddDetailResponse.name
             binding.userIntro.setText(profileModelAddDetailResponse.jobTitle)
-            gender.text = profileModelAddDetailResponse.gender.replaceFirstChar { it.uppercase() }
+            gender.text = profileModelAddDetailResponse.gender!!.replaceFirstChar { it.uppercase() }
 
             objexttext.text = profileModelAddDetailResponse.objective
             skillRecyclerview.apply {

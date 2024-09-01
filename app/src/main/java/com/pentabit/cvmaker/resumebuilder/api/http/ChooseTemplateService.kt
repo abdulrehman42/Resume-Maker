@@ -180,9 +180,9 @@ interface ChooseTemplateService {
     @GET(Constants.LOOKUP_API)
     fun onGetLookup(
         @Query("key") key: String,
-        @Query("text") query: String?,
-        @Query("page") s: String,
-        @Query("size") s1: String
+        @Query("text") text: String?,
+        @Query("page") page: Int,
+        @Query("size") size: Int
     ): Call<JsonElement>
 
     @POST(Constants.FCM_API)

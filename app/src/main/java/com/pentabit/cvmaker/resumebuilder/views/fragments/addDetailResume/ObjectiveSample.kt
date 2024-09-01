@@ -7,7 +7,6 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentObjectiveSampleBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
-import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +25,7 @@ class ObjectiveSample(val list: ArrayList<SampleResponseModel>?) :
 
     private fun setAdapter() {
         val objSampleAdapter = list?.let {
-            ObjSampleAdapter(currentActivity(), it) {
+            ObjSampleAdapter(it) {
                 addDetailResumeVM.data.value = it
                 currentActivity().onBackPressedDispatcher.onBackPressed()
             }

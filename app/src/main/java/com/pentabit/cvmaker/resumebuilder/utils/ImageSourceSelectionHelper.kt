@@ -17,9 +17,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.google.android.gms.ads.AdSize
-import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.ads_manager.ad_utils.CollapsibleOrientation
+import com.pentabit.cvmaker.resumebuilder.R
+import com.pentabit.cvmaker.resumebuilder.databinding.ChooseImageLayoutBinding
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.pentabitessentials.databinding.GeneralDialogLayoutBinding
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import com.permissionx.guolindev.PermissionX
@@ -28,22 +28,24 @@ import com.permissionx.guolindev.request.ForwardScope
 
 class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
 
+    lateinit var callback: OnImageSelected
+
     private interface OnPermissionProvided {
         fun onPermissionProvided()
+    }
+
+    interface OnImageSelected {
+        fun onImageSelected(uri: Uri)
     }
 
     private var cameraPhotoUri: Uri? = null
 
     private val pickMedia =
-        activity.registerForActivityResult<PickVisualMediaRequest, Uri>(
+        activity.registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
         ) { uri: Uri? ->
             if (uri != null) {
-                val intent = Intent(activity, MainCutOutActivity::class.java)
-                intent.putExtra("path", uri.toString())
-                activity.startActivity(intent)
-            } else {
-                AppsKitSDKUtils.makeToast(activity.getString(R.string.no_image_selected))
+                callback.onImageSelected(uri)
             }
         }
 
@@ -52,9 +54,7 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
     ) { result ->
         if (java.lang.Boolean.TRUE == result) {
             if (cameraPhotoUri != null) {
-                val intent = Intent(activity, MainCutOutActivity::class.java)
-                intent.putExtra("path", cameraPhotoUri.toString())
-                activity.startActivity(intent)
+                callback.onImageSelected(cameraPhotoUri!!)
             }
         }
     }
@@ -62,7 +62,7 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
     private val requestPermissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (java.lang.Boolean.TRUE == isGranted) {
-                createdialog()
+                imageSourceSelection()
             } else {
                 askReadPermissionOnReject()
             }
@@ -98,11 +98,12 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues()
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraPhotoUri)
-        takePhotoLauncher.launch(cameraPhotoUri)
+        takePhotoLauncher.launch(cameraPhotoUri!!)
     }
 
 
-    fun onCreateWallpaperClicked() {
+    fun onCreateWallpaperClicked(callback: OnImageSelected) {
+        this.callback = callback
         setPermissionList()
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
                 activity,
@@ -114,13 +115,13 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
             )
             == PackageManager.PERMISSION_GRANTED
         ) {
-            createdialog()
+            imageSourceSelection()
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 askAbovePermission()
             } else askForPermission(object : OnPermissionProvided {
                 override fun onPermissionProvided() {
-                    createdialog()
+                    imageSourceSelection()
                 }
             })
         }
@@ -150,10 +151,10 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
             val dialogBinding: GeneralDialogLayoutBinding = GeneralDialogLayoutBinding.inflate(
                 activity.layoutInflater
             )
-            dialogBinding.yes.setBackgroundColor(activity.resources.getColor(R.color.background_bottom))
+            dialogBinding.yes.setBackgroundColor(activity.resources.getColor(R.color.dark_navy_blue))
             alertDialog.window!!.setContentView(dialogBinding.getRoot())
             dialogBinding.title.setText("Permission Required")
-            dialogBinding.descriptionTxt.setText(R.string.read_permission_required_msg)
+            dialogBinding.descriptionTxt.setText(R.string.detail_reason_for_to_access_read_write_permission)
             dialogBinding.yes.setOnClickListener {
                 alertDialog.dismiss()
                 val intent =
@@ -192,74 +193,18 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
             }
     }
 
-    private fun createdialog() {
-        val dialogBinding = MainDialogChooserBinding.inflate(activity.layoutInflater)
-        val dialog = AppsKitSDKUtils.showAlertDialog(
-            activity,
-            dialogBinding,
-            false,
-            dialogBinding.close,
-            null
-        )
-
-        dialog.setOnDismissListener {
-            AppsKitSDKAdsManager.loadBanner(
-                activity,
-                Utils.createAdKeyFromScreenId(ScreenIDs.BIG_BANNER_DIALOG),
-                false,
-                CollapsibleOrientation.BOTTOM,
-                AdSize.MEDIUM_RECTANGLE
-            )
-        }
-        AppsKitSDKAdsManager.showBanner(
-            activity,
-            dialogBinding.bannerContainer,
-            null,
-            Utils.createAdKeyFromScreenId(ScreenIDs.BIG_BANNER_DIALOG),
-            false,
-            null,
-            AdSize.MEDIUM_RECTANGLE
-        )
-        dialogBinding.createFromGallery.setOnClickListener {
-            imageSourceSelection()
-            dialog.dismiss()
-        }
-        dialogBinding.createFromAi.setOnClickListener {
-            AppsKitSDKUtils.makeToast(activity.getString(R.string.this_feature_is_coming_soon))
-            dialog.dismiss()
-        }
-    }
-
     private fun imageSourceSelection() {
         val dialogBinding =
-            ImageSelectionSourceSelectionDialogBinding.inflate(activity.layoutInflater)
+            ChooseImageLayoutBinding.inflate(activity.layoutInflater)
         val dialog = AppsKitSDKUtils.showAlertDialog(
             activity,
             dialogBinding,
             false,
-            dialogBinding.close,
+            null,
             null
         )
 
-        dialog.setOnDismissListener {
-            AppsKitSDKAdsManager.loadBanner(
-                activity,
-                Utils.createAdKeyFromScreenId(ScreenIDs.BIG_BANNER_DIALOG),
-                false,
-                CollapsibleOrientation.BOTTOM,
-                AdSize.MEDIUM_RECTANGLE
-            )
-        }
-        AppsKitSDKAdsManager.showBanner(
-            activity,
-            dialogBinding.bannerContainer,
-            null,
-            Utils.createAdKeyFromScreenId(ScreenIDs.BIG_BANNER_DIALOG),
-            false,
-            null,
-            AdSize.MEDIUM_RECTANGLE
-        )
-        dialogBinding.gallery.setOnClickListener(object :
+        dialogBinding.gallerybtn.setOnClickListener(object :
             DebounceClickListener("SelectFromGallery") {
             override fun onDebouncedClick(v: View?) {
                 pickMedia.launch(
@@ -271,7 +216,8 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
             }
         })
 
-        dialogBinding.camera.setOnClickListener(object : DebounceClickListener("SelectFromCamera") {
+        dialogBinding.camerbtn.setOnClickListener(object :
+            DebounceClickListener("SelectFromCamera") {
             override fun onDebouncedClick(v: View?) {
                 takeImageThroughCamera()
                 dialog.dismiss()

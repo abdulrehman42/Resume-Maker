@@ -1,68 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:clickable="true"
-    android:focusable="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
->
+    android:focusable="true">
+
     <include
+        android:id="@+id/include_tool"
+        layout="@layout/toolbars"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
-        layout="@layout/toolbars"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:id="@+id/include_tool"/>
-    <ProgressBar
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/savebtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/banner_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/include_tool"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/include_tool" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/skill_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="true"
         android:layout_margin="@dimen/_10sdp"
-        app:endIconTint="@null"
+        android:enabled="true"
         app:endIconCheckable="true"
         app:endIconMode="custom"
+        app:endIconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner_add"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/banner_add">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/skill_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:hint="@string/skill" />
+            android:hint="@string/skill"
+            android:singleLine="true" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
+
     <ImageView
+        android:id="@+id/tick_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_15sdp"
         android:src="@drawable/tick_green"
         android:visibility="gone"
-        android:id="@+id/tick_btn"
         app:layout_constraintBottom_toBottomOf="@+id/skill_textInputLayout"
         app:layout_constraintEnd_toEndOf="@+id/skill_textInputLayout"
         app:layout_constraintTop_toTopOf="@+id/skill_textInputLayout" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_skill"
         android:layout_width="match_parent"

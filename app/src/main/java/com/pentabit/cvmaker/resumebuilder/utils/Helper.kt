@@ -2,7 +2,6 @@ package com.pentabit.cvmaker.resumebuilder.utils
 
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -12,8 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.print.PrintAttributes
-import android.print.PrintManager
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Patterns
@@ -26,27 +23,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
+import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityBoardingScreenBinding
 import com.pentabit.cvmaker.resumebuilder.models.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
-import com.google.android.material.tabs.TabLayout
-import com.pentabit.cvmaker.resumebuilder.views.activities.LoginActivity
-import com.pentabit.cvmaker.resumebuilder.views.adapter.WebViewPrintAdapter
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.SIMPLE_TIME_FORMAT
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.UTC_TIME_FORMAT
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.time.temporal.ChronoUnit
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
@@ -250,54 +246,56 @@ object Helper {
     }
 
 
-    fun removeOneUnderscores(input: String): String {
-        return input.replace(Regex("[\\d_+\\-*/]"), "")
-
+    fun removeOneUnderscores(input: String?): String {
+        return if (input === null) ""
+        else input.replace(Regex("[\\d_+\\-*/]"), "")
     }
 
 
     fun convertIsoToCustomFormat(isoDateTime: String?): String {
         // Check if the input string is null or blank
         if (isoDateTime.isNullOrBlank()) return ""
+        return try {
+            // Define the ISO 8601 date format
+            val isoFormatter = SimpleDateFormat(UTC_TIME_FORMAT, Locale.getDefault())
+            isoFormatter.timeZone = TimeZone.getTimeZone("UTC")
 
+            // Parse the ISO 8601 date string into a Date object
+            val date = isoFormatter.parse(isoDateTime) ?: return ""
 
-        // Define the ISO 8601 date format
-        val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        isoFormatter.timeZone = TimeZone.getTimeZone("UTC")
+            // Get the current time
+            val now = Calendar.getInstance().time
 
-        // Parse the ISO 8601 date string into a Date object
-        val date = isoFormatter.parse(isoDateTime) ?: return ""
+            // Check if the parsed date is in the future
+            if (date.after(now)) {
+                return "" // or throw IllegalArgumentException("Future dates are not allowed.")
+            }
 
-        // Get the current time
-        val now = Calendar.getInstance().time
+            // Define the desired output format
+            val customFormatter = SimpleDateFormat(SIMPLE_TIME_FORMAT, Locale.getDefault())
 
-        // Check if the parsed date is in the future
-        if (date.after(now)) {
-            return "" // or throw IllegalArgumentException("Future dates are not allowed.")
+            // Format the Date object to the desired format
+            customFormatter.format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
         }
-
-        // Define the desired output format
-        val customFormatter = SimpleDateFormat("M/d/yyyy", Locale.getDefault())
-
-        // Format the Date object to the desired format
-        return customFormatter.format(date)
+    }
 
 
-        // Parse the ISO_DATE_TIME string to a LocalDateTime object
-//        val dateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+    fun convertToUTCTimeForma(inputDate: String?): String {
+        if (inputDate.isNullOrBlank()) return ""
+        val inputFormat = SimpleDateFormat(SIMPLE_TIME_FORMAT, Locale.getDefault())
+        val outputFormat = SimpleDateFormat(UTC_TIME_FORMAT, Locale.getDefault())
 
-        // Check if the parsed dateTime is in the future
-//        if (dateTime.isAfter(LocalDateTime.now())) {
-//            // Handle future date according to your needs
-//            // For example, return an empty string or throw an exception
-//            return "" // or throw IllegalArgumentException("Future dates are not allowed.")
-//        }
-//
-//        // Define the desired format
-//        val customFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
-//
-//        // Format the LocalDateTime to the desired format
-//        return dateTime.format(customFormatter)
+        outputFormat.timeZone = TimeZone.getTimeZone("UTC")
+        return try {
+            val date: Date = inputFormat.parse(inputDate)
+            outputFormat.format(date)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
     }
 
     fun formatDateRangeYearOnly(startDate: String?, endDate: String?): String {
@@ -470,17 +468,17 @@ object Helper {
                 }
             }
         }
-}
+    }
 
-    fun share_Image(activity: Activity,getimage:String) {
+    fun share_Image(activity: Activity, getimage: String) {
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val bundle: Bundle? = activity.intent.extras
         val image = bundle!!.getString(getimage)
-        val im=activity.findViewById<ImageView>(R.id.share)
+        val im = activity.findViewById<ImageView>(R.id.share)
         val bitmapdrawer: BitmapDrawable = im.drawable as BitmapDrawable
         val bitmap: Bitmap = bitmapdrawer.bitmap
-        val dir=File(image)
+        val dir = File(image)
         try {
             val filout = FileOutputStream(dir)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, filout)
@@ -490,7 +488,7 @@ object Helper {
             shareIntent.type = "Image/*"
             shareIntent.putExtra(Intent.EXTRA_STREAM, dir)
             shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            activity.startActivity(Intent.createChooser(shareIntent,"share image"))
+            activity.startActivity(Intent.createChooser(shareIntent, "share image"))
         } catch (e: Exception) {
             AppsKitSDKUtils.makeToast("$e")
         }

@@ -1,18 +1,17 @@
 package com.pentabit.cvmaker.resumebuilder.api.repository
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import com.pentabit.cvmaker.resumebuilder.api.SinglePointOfResponse
 import com.pentabit.cvmaker.resumebuilder.api.http.ChooseTemplateService
 import com.pentabit.cvmaker.resumebuilder.api.http.NetworkResult
 import com.pentabit.cvmaker.resumebuilder.api.http.ResponseCallback
+import com.pentabit.cvmaker.resumebuilder.callbacks.OnImageCompressed
 import com.pentabit.cvmaker.resumebuilder.json.JSONKeys
 import com.pentabit.cvmaker.resumebuilder.json.JSONManager
-import com.pentabit.cvmaker.resumebuilder.utils.Helper.prepareMultipartRequest
-import com.google.gson.JsonElement
-import com.google.gson.reflect.TypeToken
-import com.pentabit.cvmaker.resumebuilder.callbacks.OnImageCompressed
-import com.pentabit.cvmaker.resumebuilder.models.api.Profile
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
+import com.pentabit.cvmaker.resumebuilder.models.api.Profile
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.AchievementResponse
@@ -31,8 +30,8 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Referen
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleItemRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper.prepareMultipartRequest
 import com.pentabit.cvmaker.resumebuilder.utils.ImageCompressorHelper
-import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -230,34 +229,38 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun editEducation(
         profileId: String,
-        qualification: QualificationModelRequest,
+        qualification: List<ProfileModelAddDetailResponse.UserQualification>,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editEducation(profileId, qualification).enqueue(
-            SinglePointOfResponse(object : Callback<JsonElement> {
-                override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                    callback.onSuccess(
-                        JSONManager.getInstance()
-                            .getFormattedResponse(
-                                JSONKeys.MESSAGE,
-                                response.body(),
-                                object : TypeToken<String>() {}.type
-                            ) as String,
-                        JSONManager.getInstance()
-                            .getFormattedResponse(
-                                JSONKeys.DATA,
-                                response.body(),
-                                object : TypeToken<List<EducationResponse>>() {}.type
-                            ) as List<EducationResponse>
-                    )
-                }
+        chooseTemplateService.editEducation(profileId, QualificationModelRequest(qualification))
+            .enqueue(
+                SinglePointOfResponse(object : Callback<JsonElement> {
+                    override fun onResponse(
+                        call: Call<JsonElement>,
+                        response: Response<JsonElement>
+                    ) {
+                        callback.onSuccess(
+                            JSONManager.getInstance()
+                                .getFormattedResponse(
+                                    JSONKeys.MESSAGE,
+                                    response.body(),
+                                    object : TypeToken<String>() {}.type
+                                ) as String,
+                            JSONManager.getInstance()
+                                .getFormattedResponse(
+                                    JSONKeys.DATA,
+                                    response.body(),
+                                    object : TypeToken<List<EducationResponse>>() {}.type
+                                ) as List<EducationResponse>
+                        )
+                    }
 
-                override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                    callback.onFailure(t.message)
-                }
-            })
-        )
+                    override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                        callback.onFailure(t.message)
+                    }
+                })
+            )
     }
 
     fun getsample(
@@ -545,13 +548,13 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun getLookups(
         key: String,
-        query: String?,
-        s: String,
-        s1: String,
+        text: String,
+        page: Int,
+        size: Int,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.onGetLookup(key, query, s, s1).enqueue(
+        chooseTemplateService.onGetLookup(key, text, page, size).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(

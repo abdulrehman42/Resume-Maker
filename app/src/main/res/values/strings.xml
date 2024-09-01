@@ -156,4 +156,5 @@
     <string name="jpg">JPG</string>
     <string name="pdf">PDF</string>
     <string name="share_txt">Share</string>
+    <string name="done">Done</string>
 </resources>

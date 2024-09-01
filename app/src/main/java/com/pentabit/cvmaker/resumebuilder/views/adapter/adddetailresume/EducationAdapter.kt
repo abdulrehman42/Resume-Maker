@@ -1,10 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume
 
-import android.content.Context
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,9 +10,26 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 
-class EducationAdapter(
-    val check:Boolean,
-    val onclick:(ProfileModelAddDetailResponse.UserQualification,Int)->Unit,val onDelete:(Int)->Unit): ListAdapter<ProfileModelAddDetailResponse.UserQualification, AppsKitSDKRecyclerBaseViewBinding>(AddEducationDiffCallback){
+class EducationAdapter :
+    ListAdapter<ProfileModelAddDetailResponse.UserQualification, AppsKitSDKRecyclerBaseViewBinding>(
+        AddEducationDiffCallback
+    ) {
+
+    private var disableEditing = false
+    private lateinit var onclick: (ProfileModelAddDetailResponse.UserQualification, Int) -> Unit
+    private lateinit var onDelete: (Int) -> Unit
+
+    fun setOnClick(onclick: (ProfileModelAddDetailResponse.UserQualification, Int) -> Unit) {
+        this.onclick = onclick
+    }
+
+    fun onDelete(onDelete: (Int) -> Unit) {
+        this.onDelete = onDelete
+    }
+
+    fun disableEditing(disableEditing: Boolean) {
+        this.disableEditing = disableEditing
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -33,22 +47,23 @@ class EducationAdapter(
     override fun onBindViewHolder(holder: AppsKitSDKRecyclerBaseViewBinding, position: Int) {
         val binding = holder.binding as EducationitemsBinding
         val model = getItem(position)
-        binding.universityname.text= Helper.removeOneUnderscores(model.institute)
-        binding.degreeName.text= Helper.removeOneUnderscores(model.degree)
-        binding.degreeYears.text= Helper.formatDateRangeYearOnly(model.startDate,model.endDate)
+        binding.universityname.text = Helper.removeOneUnderscores(model.institute)
+        binding.degreeName.text = Helper.removeOneUnderscores(model.degree)
+        binding.degreeYears.text = Helper.formatDateRangeYearOnly(model.startDate, model.endDate)
         binding.editEdu.setOnClickListener {
-            onclick(model,position)
+            onclick(model, position)
         }
         binding.deleteEdu.setOnClickListener {
             onDelete(position)
         }
-        if (check)
-        {
-            binding.editEdu.isGone=true
-            binding.deleteEdu.isGone=true
+        if (disableEditing) {
+            binding.editEdu.isGone = true
+            binding.deleteEdu.isGone = true
         }
     }
-    object AddEducationDiffCallback : DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserQualification>() {
+
+    object AddEducationDiffCallback :
+        DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserQualification>() {
         override fun areItemsTheSame(
             oldItem: ProfileModelAddDetailResponse.UserQualification,
             newItem: ProfileModelAddDetailResponse.UserQualification

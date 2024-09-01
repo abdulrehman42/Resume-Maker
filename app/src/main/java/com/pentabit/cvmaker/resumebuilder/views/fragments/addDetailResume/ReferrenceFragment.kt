@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
@@ -23,7 +24,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     val referenceAdapter = ReferenceAdapter()
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+
+    val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     lateinit var tabhost: TabLayout
     var list = ArrayList<ProfileModelAddDetailResponse.UserReference>()
     override val inflate: Inflate<FragmentReferrenceBinding>
@@ -31,7 +33,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userReferences.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userReferences.isNullOrEmpty(), binding.popup)
             list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
             setadapter(list)
         }
@@ -62,7 +64,6 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
 
         AppsKitSDKAdsManager.showBanner(
@@ -87,7 +88,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
         referenceAdapter.submitList(userReferences)
         referenceAdapter.setOnEditItemClickCallback {item,position->
-            addDetailResumeVM.fragment.value = AddReferenceFragment(item, list,true,position)
+            (requireActivity() as AddDetailResume).openFragment( AddReferenceFragment(item, list,true,position))
 
         }
         referenceAdapter.setOnItemDeleteClickCallback {
@@ -128,7 +129,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
 
     private fun onclick() {
         binding.addreferrenebtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddReferenceFragment(null, list, false, 0)
+            (requireActivity() as AddDetailResume).openFragment( AddReferenceFragment(null, list, false, 0))
         }
     }
 }

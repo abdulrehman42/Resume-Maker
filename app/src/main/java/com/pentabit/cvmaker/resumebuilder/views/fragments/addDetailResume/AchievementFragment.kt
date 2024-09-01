@@ -1,7 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAchievementBinding
@@ -10,6 +10,7 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achieve
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
     val achievementAdapter = AchievementAdapter()
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     var list = ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
 
 
@@ -27,7 +28,7 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userAchievement.isNullOrEmpty(),binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userAchievement.isNullOrEmpty(), binding.popup)
             list.clear()
             list = it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>
             setAdapter()
@@ -46,8 +47,8 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
 
-   override fun onMoveNextClicked(): Boolean  {
-       return true
+    override fun onMoveNextClicked(): Boolean {
+        return true
     }
 
     private fun check(): Boolean {
@@ -60,7 +61,6 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
             binding.bannerAdd,
@@ -76,21 +76,34 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
     private fun onclick() {
         binding.addachievementbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment(null, list, 0, false)
+            (requireActivity() as AddDetailResume).openFragment(
+                AddAchievementsFRagment(
+                    null,
+                    list,
+                    0,
+                    false
+                )
+            )
         }
     }
 
     private fun setAdapter() {
         achievementAdapter.submitList(list)
-        achievementAdapter.setOnEditItemClickCallback {item,position->
-            addDetailResumeVM.fragment.value = AddAchievementsFRagment(item, list,position,true)
+        achievementAdapter.setOnEditItemClickCallback { item, position ->
+            (requireActivity() as AddDetailResume).openFragment(
+                AddAchievementsFRagment(
+                    item,
+                    list,
+                    position,
+                    true
+                )
+            )
         }
         achievementAdapter.setOnItemDeleteClickCallback {
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 list.removeAt(it)
             }
-          // setAdapter()
+            // setAdapter()
             if (list.size != 0) {
                 callSaveApi()
                 apiCall()

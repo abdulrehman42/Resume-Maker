@@ -1,10 +1,11 @@
 package com.pentabit.cvmaker.resumebuilder.utils
 
 import android.content.Context
+import com.pentabit.cvmaker.resumebuilder.application.ResumeMakerApplication
 import com.pentabit.cvmaker.resumebuilder.callbacks.OnImageCompressed
-import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.pentabitessentials.logs_manager.AppsKitSDKLogManager
 import com.pentabit.pentabitessentials.logs_manager.AppsKitSDKLogType
+import com.pentabit.pentabitessentials.utils.FILE_NAME_PATTERN
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.Compression
 import id.zelory.compressor.constraint.default
@@ -15,66 +16,41 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class ImageCompressorHelper {
+
     fun compressInBackground(file: File?, callback: OnImageCompressed) {
         if (file.toString().isNullOrBlank()) {
             callback.onCompressFailed()
             return
         } else {
+            var compress: File?
             GlobalScope.launch(Dispatchers.IO) {
+                compress =
+                    ImageFileUtils.getInstance().copyFileUsingStreams(
+                        ResumeMakerApplication.instance,
+                        SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(
+                            Calendar.getInstance().time
+                        ), true, runCompressor(file!!, ResumeMakerApplication.instance)
+                    )
                 val requestBody: RequestBody = RequestBody.create(
                     "image/png".toMediaTypeOrNull(),
-                    runCompressor(file!!, ResumeMakerApplication.instance)
+                    runCompressor(compress!!, ResumeMakerApplication.instance)
                 )
                 AppsKitSDKLogManager.getInstance().log(
                     AppsKitSDKLogType.WARNING,
-                    "Compressed File Size in MBs : " + file.length()
+                    "Compressed File Size in MBs : " + compress!!.length()
                 )
                 callback.pmImageCompressed(
                     MultipartBody.Part.createFormData(
                         "image",
-                        file.name,
+                        compress!!.name,
                         requestBody
                     )
                 )
-            }
-
-
-            GlobalScope.launch(Dispatchers.IO) {
-                try {
-                    val compressedFile = runCompressor(file!!, ResumeMakerApplication.instance)
-
-                    // Ensure the compressed file is not null or empty
-                    if (compressedFile == null || compressedFile.isEmpty()) {
-                        AppsKitSDKLogManager.getInstance().log(
-                            AppsKitSDKLogType.ERROR,
-                            "Compression failed: Compressed file is null or empty."
-                        )
-                        return@launch
-                    }
-
-                    val requestBody: RequestBody = RequestBody.create(
-                        "image/png".toMediaTypeOrNull(),
-                        compressedFile
-                    )
-                    AppsKitSDKLogManager.getInstance().log(
-                        AppsKitSDKLogType.WARNING,
-                        "Compressed File Size in MBs : ${file.length() / (1024 * 1024)} MB"
-                    )
-                    callback.pmImageCompressed(
-                        MultipartBody.Part.createFormData(
-                            "image",
-                            file.name,
-                            requestBody
-                        )
-                    )
-                } catch (e: Exception) {
-                    AppsKitSDKLogManager.getInstance().log(
-                        AppsKitSDKLogType.ERROR,
-                        "Error during compression: ${e.message}"
-                    )
-                }
             }
         }
     }

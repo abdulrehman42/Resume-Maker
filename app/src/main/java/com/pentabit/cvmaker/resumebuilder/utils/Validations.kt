@@ -17,7 +17,7 @@ object Validations {
 
     fun infoScreenValidations(
         binding: FragmentInformationBinding,
-        gender: String,
+        gender: Genders?,
         isEditProfile: Boolean,
         getImage: String
     ): Boolean {
@@ -25,16 +25,27 @@ object Validations {
             AppsKitSDKUtils.makeToast("Please select an image.")
             return false
         }
+
         if (binding.nameedittext.toString().isEmpty()) {
             binding.nameTextInputLayout.error = ("Name is required.")
             return false
         }
+
+        if (binding.jobedittext.toString().isEmpty()) {
+            binding.textInputLayout2.error = ("Job Title is required.")
+            return false
+        }
+
 
         if (binding.emailtext.toString().isEmpty()) {
             binding.textInputLayout3.error = ("Email is required")
             return false
         }
 
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(binding.emailtext.toString()).matches()) {
+            binding.textInputLayout3.error = ("Email must be valid")
+            return false
+        }
 
         if (binding.phoneedittext.text.toString().length <= 6) {
             binding.textInputLayout4.error = ("Enter a valid number")
@@ -43,7 +54,7 @@ object Validations {
 
 
         // Check if gender is selected
-        if (gender.isEmpty()) {
+        if (gender == null) {
             AppsKitSDKUtils.makeToast("Please select a gender.")
             return false
         }
@@ -64,24 +75,24 @@ object Validations {
         val isEndDateRequired = binding.checkItscontinue.isChecked
 
         return when {
-            binding.instituenameedittext.text.toString().isNullOrEmpty() -> {
-                binding.instituateTextInputLayout.error = ("Institution name is required.")
+            binding.instituenameedittext.text.toString().isEmpty() -> {
+                binding.instituateTextInputLayout.error = ("Institution is required.")
                 false
             }
 
-            binding.degreeName.text.toString().isNullOrEmpty() -> {
-                binding.degreeTextInputLayout2.error = ("Degree name is required.")
+            binding.degreeName.text.toString().isEmpty() -> {
+                binding.degreeTextInputLayout2.error = ("Degree is required.")
                 false
             }
 
-            startDate.isNullOrEmpty() -> {
+            startDate.isEmpty() -> {
                 binding.startdateTextInputLayout2.error = ("Start date is required.")
                 false
             }
 
-            !isEndDateRequired && endDate.isNullOrEmpty() -> {
+            !isEndDateRequired && endDate.isEmpty() -> {
                 binding.enddateTextInputLayout2.error =
-                    ("End date is required if the 'Continue' checkbox is unchecked.")
+                    ("End date is required")
                 false
             }
 
@@ -91,7 +102,7 @@ object Validations {
                 false
             }
 
-            !endDate.isNullOrEmpty() && startDate > endDate -> {
+            endDate.isNotEmpty() && startDate > endDate -> {
                 binding.enddateTextInputLayout2.error =
                     ("Start date should not be greater than End date.")
                 false

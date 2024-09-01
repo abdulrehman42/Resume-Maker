@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivitySplashScreenBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
@@ -46,6 +45,6 @@ class SplachScreen : BaseActivity() {
     }
 
     override fun getScreenId(): ScreenIDs {
-        TODO("Not yet implemented")
+        return ScreenIDs.SPLASH
     }
 }

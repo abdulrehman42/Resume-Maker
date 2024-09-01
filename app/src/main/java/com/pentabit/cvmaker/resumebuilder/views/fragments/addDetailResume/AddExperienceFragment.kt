@@ -2,17 +2,11 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
-import androidx.core.view.isGone
-import androidx.lifecycle.ViewModelProvider
-
-import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
@@ -24,11 +18,10 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experie
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
+import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.LooksAdapter
-import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,15 +32,10 @@ class AddExperienceFragment(
     val position: Int
 ) :
     BaseFragment<FragmentAddExperienceBinding>() {
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private lateinit var companyPredictiveSearchHandler: PredictiveSearchHandler
+    private lateinit var titlePredictiveSearchHandler: PredictiveSearchHandler
     var endDate: String? = null
-    var withWord = "-1__"
-
-    private var looksAdapter = LooksAdapter()
-    var isCompany = false
-    var isProgrammaticallySettingText = false
-    var isProgrammaticallySettingText1 = false
-
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
     val updateList = ArrayList<Experience>()
     override val inflate: Inflate<FragmentAddExperienceBinding>
@@ -58,49 +46,43 @@ class AddExperienceFragment(
             parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
-        addDetailResumeVM.loadingState.observe(viewLifecycleOwner) {
-            AppsKitSDKUtils.setVisibility(it.loader, binding.loader)
-            if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }
-
-        }
-        addDetailResumeVM.looksupResponse.observe(this) {
-            looksAdapter.submitList(it)
-            if (it.size == 0) {
-                binding.lookidRecyclerview.isGone = true
-                binding.lookidRecyclerviewcompany.isGone = true
-            } else {
-                if (isCompany) {
-                    binding.lookidRecyclerviewcompany.isGone = false
-                } else {
-                    binding.lookidRecyclerview.isGone = false
-                }
-            }
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
-
         binding.includeTool.textView.text = getString(R.string.add_experience)
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
+        populateDataIfRequired()
+        managePredictiveSearch()
+        handleUI()
+        handleClicks()
+    }
+
+    private fun handleUI() {
+        binding.descriptionTextInputLayout2.apply {
+            endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set
+            val endIconView =
+                findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
+
+            val params = endIconView.layoutParams as FrameLayout.LayoutParams
+            params.gravity = Gravity.BOTTOM or Gravity.END
+            params.marginEnd = 8.dpToPx(context) // Adjust margin to your needs
+            params.bottomMargin = 8.dpToPx(context)
+            endIconView.layoutParams = params
+        }
+    }
+
+    private fun populateDataIfRequired() {
         experienceList?.let {
             oldList = experienceList
             for (i in 0 until oldList.size) {
                 updateList.add(
                     Experience(
-                       withWord+ Helper.removeOneUnderscores(oldList[i].company),
+                        "1__" + Helper.removeOneUnderscores(oldList[i].company),
                         Helper.removeOneUnderscores(oldList[i].description),
                         Helper.removeOneUnderscores(oldList[i].employmentType),
                         Helper.convertIsoToCustomFormat(oldList[i].endDate),
                         Helper.convertIsoToCustomFormat(oldList[i].startDate),
-                       withWord+Helper.removeOneUnderscores( oldList[i].title)
+                        "1__" + Helper.removeOneUnderscores(oldList[i].title)
                     )
                 )
             }
@@ -118,101 +100,28 @@ class AddExperienceFragment(
                     data.endDate
                 )
             )
-            if (data.endDate.isEmpty())
-            {
-                binding.checkItscontinue.isChecked=true
+            if (data.endDate.isEmpty()) {
+                binding.checkItscontinue.isChecked = true
             }
         }
-
-        binding.descriptionTextInputLayout2.apply {
-            endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set
-            val endIconView =
-                findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
-
-            val params = endIconView.layoutParams as FrameLayout.LayoutParams
-            params.gravity = Gravity.BOTTOM or Gravity.END
-            params.marginEnd = 8.dpToPx(context) // Adjust margin to your needs
-            params.bottomMargin = 8.dpToPx(context)
-            endIconView.layoutParams = params
-        }
-        if (isCompany) {
-            binding.lookidRecyclerviewcompany.adapter = looksAdapter
-        } else {
-            binding.lookidRecyclerview.adapter = looksAdapter
-
-        }
-        onclick()
-
     }
 
-    private fun onclick() {
-        binding.companyName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    private fun managePredictiveSearch() {
+        companyPredictiveSearchHandler = PredictiveSearchHandler(
+            key = Constants.company,
+            isAlreadyInDB = isEdit,
+            autoCompleteTextView = binding.companyName,
+            viewModel = addDetailResumeVM
+        )
+        titlePredictiveSearchHandler = PredictiveSearchHandler(
+            key = Constants.jobTitle,
+            isAlreadyInDB = isEdit,
+            autoCompleteTextView = binding.jobName,
+            viewModel = addDetailResumeVM
+        )
+    }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!isProgrammaticallySettingText1) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiCompany(null.toString()) // Send null query if the text is erased
-                        binding.lookidRecyclerviewcompany.isGone = true
-                    } else {
-                        callLookUpApiCompany(query)
-                        binding.lookidRecyclerviewcompany.isGone = false
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText1) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiCompany(null.toString()) // Send null query if the text is erased
-                        binding.lookidRecyclerviewcompany.isGone = true
-                    } else {
-                        callLookUpApiCompany(query)
-                        binding.lookidRecyclerviewcompany.isGone = false
-                    }
-                }
-                isProgrammaticallySettingText = false
-
-            }
-        })
-        binding.jobName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiJob(null) // Send null query if the text is erased
-                        binding.lookidRecyclerview.isGone = true
-                    } else {
-                        callLookUpApiJob(query)
-                        binding.lookidRecyclerview.isGone = false
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (!isProgrammaticallySettingText) {
-                    val query = s.toString()
-                    if (query.isEmpty()) {
-                        callLookUpApiJob(null) // Send null query if the text is erased
-                        binding.lookidRecyclerview.isGone = true
-                    } else {
-                        callLookUpApiJob(query)
-                        binding.lookidRecyclerview.isGone = false
-                    }
-                }
-                isProgrammaticallySettingText = false
-
-            }
-        })
-
-
-
+    private fun handleClicks() {
         binding.startdateedittext.setOnClickListener {
             DialogueBoxes.showWheelDatePickerDialog(
                 currentActivity(),
@@ -243,72 +152,31 @@ class AddExperienceFragment(
             }
         }
         binding.savebtn.setOnClickListener {
-
             if (Validations.isConditionMetExperience(binding)) {
-                apiCall()
+                saveExperience()
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-
-
+            currentActivity().onBackPressed()
         }
-        currentActivity().onBackPressedDispatcher.addCallback {
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-
-        }
-        looksAdapter.setOnItemClickCallback {
-            withWord = "1__"
-            if (isCompany) {
-                isProgrammaticallySettingText1 = true
-
-                binding.companyName.setText(Helper.removeOneUnderscores(it.text))
-                binding.lookidRecyclerviewcompany.isGone = true
-            } else {
-                isProgrammaticallySettingText = true
-
-                binding.jobName.setText(Helper.removeOneUnderscores(it.text))
-                binding.lookidRecyclerview.isGone = true
-            }
-        }
-
-    }
-
-    private fun callLookUpApiCompany(query: String?) {
-        isCompany = true
-        addDetailResumeVM.getLookUp(Constants.company, query, "", "6")
-
-    }
-
-    private fun callLookUpApiJob(query: String?) {
-        isCompany = false
-        addDetailResumeVM.getLookUp(Constants.jobTitle, query, "", "6")
-
     }
 
 
-    private fun apiCall() {
+    private fun saveExperience() {
         updateList()
         val experience =
             Experience(
-                withWord + binding.companyName.text.toString(),
+                companyPredictiveSearchHandler.getText(),
                 binding.description.text.toString(),
-                employmentType = "fullTime", endDate, binding.startdateedittext.text.toString(),
-                withWord + binding.jobName.text.toString()
+                employmentType = "fullTime",
+                endDate, binding.startdateedittext.text.toString(),
+                titlePredictiveSearchHandler.getText()
             )
         if (!isEdit) {
             updateList.add(experience)
         } else {
-            updateList[position]=experience
+            updateList[position] = experience
         }
-        /*updateList.add(
-            Experience(
-                "-1__" + binding.companyName.text.toString(),
-                binding.description.text.toString(),
-                employmentType = "fullTime", endDate, binding.startdateedittext.text.toString(),
-                "-1__" + binding.jobName.text.toString()
-            )
-        )*/
         val experienceRequest = ExperienceRequest(experiences = updateList)
         endDate = if (binding.checkItscontinue.isChecked) {
             null
@@ -318,22 +186,6 @@ class AddExperienceFragment(
         addDetailResumeVM.editExperience(
             experienceRequest
         )
-
-    }
-
-    private fun replaceExperienceInList(experience: Experience) {
-        val indexToUpdate = updateList.indexOfFirst {
-            it.title == experience.title ||
-                    it.company == experience.company ||
-                    it.startDate == experience.startDate ||
-                    it.endDate == experience.endDate ||
-                    it.description == experience.description
-        }
-        if (indexToUpdate != -1) {
-            updateList[indexToUpdate] = experience
-        } else {
-            updateList.add(experience)
-        }
     }
 
     private fun updateList() {

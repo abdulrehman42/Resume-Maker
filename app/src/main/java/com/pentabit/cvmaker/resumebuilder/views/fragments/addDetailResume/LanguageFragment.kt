@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -8,6 +9,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLanguageBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -16,14 +18,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     val singleStringAdapter = SingleStringAdapter()
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+    val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     var list = ArrayList<String>()
     override val inflate: Inflate<FragmentLanguageBinding>
         get() = FragmentLanguageBinding::inflate
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userLanguages.isEmpty(), binding.popup)
+            AppsKitSDKUtils.setVisibility(it.userLanguages.isNullOrEmpty(), binding.popup)
             list = it.userLanguages as ArrayList<String>
             setadapter(list)
         }
@@ -49,7 +51,6 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
         AppsKitSDKAdsManager.showNative(
             currentActivity(), binding.bannerAdd, ""
 
@@ -64,12 +65,18 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun setadapter(userLanguages: List<String>) {
         singleStringAdapter.submitList(userLanguages)
-        singleStringAdapter.setOnEditItemClickCallback {item,position->
-            addDetailResumeVM.fragment.value = AddLanguageFragment(userLanguages, item,true,position)
+        singleStringAdapter.setOnEditItemClickCallback { item, position ->
+            (requireActivity() as AddDetailResume).openFragment(
+                AddLanguageFragment(
+                    userLanguages,
+                    item,
+                    true,
+                    position
+                )
+            )
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
-            if (list.size!=0)
-            {
+            if (list.size != 0) {
                 list.removeAt(it)
             }
             //setadapter(list)
@@ -92,7 +99,14 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
     private fun onclick() {
         binding.addlanguage.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddLanguageFragment(list, null, false, 0)
+            (requireActivity() as AddDetailResume).openFragment(
+                AddLanguageFragment(
+                    list,
+                    null,
+                    false,
+                    0
+                )
+            )
         }
     }
 

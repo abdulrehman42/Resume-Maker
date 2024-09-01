@@ -1,129 +1,116 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
+import com.pentabit.cvmaker.resumebuilder.callbacks.OnEducationUpdate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentEducationBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Qualification
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.QualificationModelRequest
-import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.EducationAdapter
-import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>() {
-    lateinit var educationAdapter: EducationAdapter
-    lateinit var addDetailResumeVM: AddDetailResumeVM
+class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), OnEducationUpdate {
 
-    var qualifications = ArrayList<Qualification>()
-    var list = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
+    private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private val educationAdapter = EducationAdapter()
+    private var list = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
+
     override val inflate: Inflate<FragmentEducationBinding>
         get() = FragmentEducationBinding::inflate
 
-    override fun observeLiveData() {
-        addDetailResumeVM.dataResponse.observe(this) {
-            AppsKitSDKUtils.setVisibility(it.userQualifications.isEmpty(), binding.popup)
-            list =
-                it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>
-            setAdapter()
+    override fun init(savedInstanceState: Bundle?) {
+        handleAdapter()
+        handleClicks()
+    }
+
+    private fun handleAdapter() {
+        educationAdapter.disableEditing(false)
+
+        educationAdapter.onDelete {
+            if (list.isNotEmpty()) {
+                list.removeAt(it)
+                educationAdapter.notifyDataSetChanged()
+            }
         }
 
+        educationAdapter.setOnClick { _, position ->
+            (requireActivity() as AddDetailResume).openFragment(
+                AddEducation(
+                    list, position, this
+                )
+            )
+        }
+
+        binding.recyclerviewEducation.adapter = educationAdapter
+    }
+
+    override fun observeLiveData() {
+        addDetailResumeVM.dataResponse.observe(this) {
+            AppsKitSDKUtils.setVisibility(it.userQualifications.isNullOrEmpty(), binding.popup)
+            populateAdapter(it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchProfileInfo()
+//        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
+//            fetchProfileInfo()
+//        }
+    }
+
+    private fun fetchProfileInfo() {
+        addDetailResumeVM.getProfileDetail()
+    }
+
+    private fun handleClicks() {
+        binding.addeducationbtn.setOnClickListener {
+            (requireActivity() as AddDetailResume).openFragment(AddEducation(list, null, this))
+        }
+    }
+
+    private fun populateAdapter(qualificationList: List<ProfileModelAddDetailResponse.UserQualification>) {
+        saveInListWithRequiredFormat(qualificationList)
+        educationAdapter.submitList(list)
+    }
+
+    private fun saveInListWithRequiredFormat(qualificationList: List<ProfileModelAddDetailResponse.UserQualification>) {
+        for (qualification in qualificationList) {
+            val model = ProfileModelAddDetailResponse.UserQualification(
+                degree = "1__" + Helper.removeOneUnderscores(qualification.degree),
+                institute = "1__" + Helper.removeOneUnderscores(qualification.institute),
+                startDate = qualification.startDate,
+                endDate = qualification.endDate,
+                qualificationType = qualification.qualificationType
+            )
+            list.add(model)
+        }
+    }
+
+    private fun saveEducationData() {
+        addDetailResumeVM.editQualification(
+            list
+        )
     }
 
     override fun csnMoveForward(): Boolean {
         return true
     }
 
-   override fun onMoveNextClicked(): Boolean  {
-       return true
+    override fun onMoveNextClicked(): Boolean {
+        saveEducationData()
+        return false
     }
 
-    private fun check(): Boolean {
-        if (list.isNotEmpty()) {
-            return true
-        } else {
-            AppsKitSDKUtils.makeToast("please add at least one education")
-            return false
-        }
-    }
-
-    override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(requireActivity())[AddDetailResumeVM::class.java]
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
-        onclick()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-            apiCall()
-        }
-    }
-
-    private fun apiCall() {
-        addDetailResumeVM.getProfileDetail()
-    }
-
-    private fun onclick() {
-
-        binding.addeducationbtn.setOnClickListener {
-            addDetailResumeVM.fragment.value = AddEducation(null, list, false, 0)
-        }
-
-    }
-
-    private fun setAdapter() {
-        educationAdapter = EducationAdapter(
-            check = false,
-            onclick = { item, position ->
-                // Assuming `AddEducation` takes `item`, `list`, and a boolean as parameters
-                addDetailResumeVM.fragment.value =
-                    AddEducation(item, list, true,position)
-            },
-            onDelete = { position ->
-                if (list.size!=0)
-                {
-                    list.removeAt(position)
-
-                }
-                //setAdapter()
-
-                if (list.isNotEmpty()) {
-                    callSaveApi()
-                    apiCall()
-                }
-            }
-        )
-        educationAdapter.submitList(list)
-        binding.recyclerviewEducation.adapter = educationAdapter
-    }
-
-    private fun callSaveApi() {
-        for (i in 0 until list.size) {
-            qualifications.add(
-                Qualification(
-                    degree = "1__" + Helper.removeOneUnderscores(list[i].degree),
-                    endDate = list[i].endDate,
-                    institute = "1__" + Helper.removeOneUnderscores(list[i].institute),
-                    qualificationType = "degree",
-                    startDate = list[i].startDate
-                )
-            )
-        }
-        val qualificationModelRequest = QualificationModelRequest(qualifications = qualifications)
-        addDetailResumeVM.editQualification(
-            qualificationModelRequest
-        )
+    override fun onEducationUpdated(userQualificationsList: MutableList<ProfileModelAddDetailResponse.UserQualification>) {
+        list = ArrayList(userQualificationsList)
+        educationAdapter.submitList(userQualificationsList)
     }
 
 }

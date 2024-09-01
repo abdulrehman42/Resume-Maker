@@ -5,6 +5,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity;
 import com.pentabit.pentabitessentials.logs_manager.AppsKitSDKEventType;
 
 public abstract class DebounceClickListener implements View.OnClickListener {
@@ -15,15 +16,12 @@ public abstract class DebounceClickListener implements View.OnClickListener {
 
     private final String buttonName;
 
-    public DebounceClickListener(@NonNull ScreenIDs screenId, @NonNull String btnName) {
-        this(DEFAULT_DEBOUNCE_INTERVAL, screenId, btnName);
-    }
 
     public DebounceClickListener(@NonNull String btnName) {
-        this(null, btnName);
+        this(DEFAULT_DEBOUNCE_INTERVAL, btnName);
     }
 
-    public DebounceClickListener(int debounceIntervalInSeconds, ScreenIDs screenId, @NonNull String btnName) {
+    public DebounceClickListener(int debounceIntervalInSeconds, @NonNull String btnName) {
         this.debounceInterval = debounceIntervalInSeconds * 1000L;
         this.buttonName = btnName;
     }

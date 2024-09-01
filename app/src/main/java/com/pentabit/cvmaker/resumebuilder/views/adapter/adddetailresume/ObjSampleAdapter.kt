@@ -9,7 +9,6 @@ import com.pentabit.cvmaker.resumebuilder.databinding.SampleitemsBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
 
 class ObjSampleAdapter(
-    val context: Context,
     val list: List<SampleResponseModel>,
     val onclick:(String)->Unit,
     ): RecyclerView.Adapter<ObjSampleAdapter.ViewHolder>() {
@@ -28,7 +27,7 @@ class ObjSampleAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = SampleitemsBinding.inflate(
-            LayoutInflater.from(context),
+            LayoutInflater.from(parent.context),
             parent,
             false
         )

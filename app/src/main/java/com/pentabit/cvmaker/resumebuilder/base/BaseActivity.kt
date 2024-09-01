@@ -31,7 +31,7 @@ abstract class BaseActivity : AdBaseActivity() {
             .setPopEnterAnim(R.anim.fade_in)
             .setPopExitAnim(R.anim.fade_out)
             .build()
-
+        showInternetConnectivity(true)
     }
 
     abstract fun attachViewMode()

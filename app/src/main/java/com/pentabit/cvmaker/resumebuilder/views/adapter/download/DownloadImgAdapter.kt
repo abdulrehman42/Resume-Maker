@@ -7,15 +7,13 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.pentabit.cvmaker.resumebuilder.databinding.DownloaditemBinding
-import com.pentabit.cvmaker.resumebuilder.databinding.TemplatelayoutitemsBinding
-import com.pentabit.cvmaker.resumebuilder.utils.ResumeMakerApplication
+import com.pentabit.cvmaker.resumebuilder.application.ResumeMakerApplication
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 import java.io.File
