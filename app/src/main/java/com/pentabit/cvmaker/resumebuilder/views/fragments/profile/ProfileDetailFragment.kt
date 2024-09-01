@@ -13,18 +13,23 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileDetailBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileEduAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SkillProfAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceProfAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    private val screeId = ScreenIDs.PROFILE_PREVIEW
     override val inflate: Inflate<FragmentProfileDetailBinding>
         get() = FragmentProfileDetailBinding::inflate
     var isclick = false
@@ -42,6 +47,11 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screeId)
+    }
+
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         addDetailResumeVM = ViewModelProvider(currentActivity())[AddDetailResumeVM::class.java]
@@ -49,7 +59,15 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         binding.includeTool.share.setImageResource(R.drawable.baseline_edit_24)
         apiCAll()
         onclick()
+        handleAds()
+    }
 
+    private fun handleAds() {
+        AppsKitSDKAdsManager.showBanner(
+            requireActivity(),
+            binding.banner,
+            Utils.createAdKeyFromScreenId(screeId)
+        )
     }
 
     private fun apiCAll() {

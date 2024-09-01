@@ -11,7 +11,9 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Interes
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +26,7 @@ class AddInterestFragment(
 ) : BaseFragment<FragmentAddInterestBinding>() {
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private lateinit var addInterestPredictiveSearchHandler: PredictiveSearchHandler
+    private val screenId = ScreenIDs.ADD_INTERESTS
     private val userlanguasAdapter = UserSkillAdapter()
     var oldList = ArrayList<String>()
     val updateList = ArrayList<String>()
@@ -36,6 +39,11 @@ class AddInterestFragment(
             parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     override fun init(savedInstanceState: Bundle?) {

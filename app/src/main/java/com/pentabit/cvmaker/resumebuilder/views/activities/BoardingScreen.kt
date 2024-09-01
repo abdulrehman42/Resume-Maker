@@ -11,7 +11,9 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ActivityBoardingScreenBind
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.views.adapter.ImagePagerAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
@@ -30,8 +32,15 @@ class BoardingScreen : BaseActivity() {
         setContentView(binding.root)
         initview()
         onclick()
+        handleAds()
+    }
 
-
+    private fun handleAds() {
+        AppsKitSDKAdsManager.showBanner(
+            this,
+            binding.banner,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     override fun attachViewMode() {

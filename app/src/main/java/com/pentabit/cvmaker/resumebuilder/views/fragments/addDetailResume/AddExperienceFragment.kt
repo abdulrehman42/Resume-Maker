@@ -20,8 +20,10 @@ import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +35,7 @@ class AddExperienceFragment(
 ) :
     BaseFragment<FragmentAddExperienceBinding>() {
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private val screenId = ScreenIDs.ADD_EXPERIENCE
     private lateinit var companyPredictiveSearchHandler: PredictiveSearchHandler
     private lateinit var titlePredictiveSearchHandler: PredictiveSearchHandler
     var endDate: String? = null
@@ -46,6 +49,11 @@ class AddExperienceFragment(
             parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

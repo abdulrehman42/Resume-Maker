@@ -1,17 +1,14 @@
 package com.pentabit.cvmaker.resumebuilder.views.activities
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,9 +23,8 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.ImageSourceSelectionHelper
-import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper
-import com.pentabit.cvmaker.resumebuilder.utils.PermisionHelper.askForPermission
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.AchievementFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.EducationFragment
@@ -40,6 +36,7 @@ import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.Object
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ProjectFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ReferrenceFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.SkillFragment
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,13 +52,10 @@ class AddDetailResume : BaseActivity() {
     lateinit var imageSourceSelectionHelper: ImageSourceSelectionHelper
 
     private val addDetailResumeVM: AddDetailResumeVM by viewModels()
-    var permissionList = ArrayList<String>()
-    val screen = ScreenIDs.ADD_BASIC_INFO
+    private var screenId = ScreenIDs.ADD_BASIC_INFO
 
     data class TabModel(
-        val id: Int,
-        val name: String,
-        val icon: Drawable?
+        val id: Int, val name: String, val icon: Drawable?
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,10 +66,17 @@ class AddDetailResume : BaseActivity() {
         setContentView(binding.root)
         addDetailResumeVM.isInEditMode = intent.getBooleanExtra(Constants.IS_EDIT, false)
         imageSourceSelectionHelper = ImageSourceSelectionHelper(this)
+        handleAds()
         setUpTablayout()
         handleClicks()
         observeLiveData()
         openFragment(0)
+    }
+
+    private fun handleAds() {
+        AppsKitSDKAdsManager.showBanner(
+            this, binding.banner, Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     private fun observeLiveData() {
@@ -101,15 +102,12 @@ class AddDetailResume : BaseActivity() {
     }
 
     fun openFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out,
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-            )
-            .add(R.id.add_detail_container, fragment)
-            .addToBackStack(null)
+        supportFragmentManager.beginTransaction().setCustomAnimations(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out,
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        ).add(R.id.add_detail_container, fragment).addToBackStack(null)
             .commitAllowingStateLoss()
     }
 
@@ -151,7 +149,7 @@ class AddDetailResume : BaseActivity() {
     }
 
     override fun getScreenId(): ScreenIDs {
-        return screen
+        return screenId
     }
 
     private fun setUpTablayout() {
@@ -164,8 +162,7 @@ class AddDetailResume : BaseActivity() {
         }
         binding.tabLayoutAdddetail.getTabAt(0)?.icon?.setTint(
             ContextCompat.getColor(
-                this,
-                R.color.white
+                this, R.color.white
             )
         )
 
@@ -225,7 +222,8 @@ class AddDetailResume : BaseActivity() {
             binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
         } else {
             //    if (!iseditProfile) {
-            DialogueBoxes.alertboxChooseCreation(this,
+            DialogueBoxes.alertboxChooseCreation(
+                this,
                 object : DialogueBoxes.StringValueDialogCallback {
                     override fun onButtonClick(value: String) {
                         if (value == Constants.PROFILE) {
@@ -233,16 +231,14 @@ class AddDetailResume : BaseActivity() {
                                 .addInPreferences(Constants.VIEW_PROFILE, true)
                             finish()
                         } else {
-                            val intent =
-                                Intent(this@AddDetailResume, ChoiceTemplate::class.java)
+                            val intent = Intent(this@AddDetailResume, ChoiceTemplate::class.java)
                             intent.putExtra(Constants.IS_RESUME, true)
                             intent.putExtra(Constants.CREATION_TIME, true)
                             startActivity(intent)
                             finish()
                         }
                     }
-                })
-            /*}else{
+                })/*}else{
                 finish()
             }*/
         }
@@ -288,37 +284,11 @@ class AddDetailResume : BaseActivity() {
         tab.icon = tabModel.icon
         binding.tabLayoutAdddetail.addTab(tab)
 
-        binding.nextbtn.text =
-            if (currentTabPosition == allTabs.size - 1) getString(R.string.done)
-            else getString(R.string.next)
+        binding.nextbtn.text = if (currentTabPosition == allTabs.size - 1) getString(R.string.done)
+        else getString(R.string.next)
     }
 
-    fun addExtraItems(profileModelAddDetailResponse: ProfileModelAddDetailResponse) {
-        getdataResponse = profileModelAddDetailResponse
-        getdataResponse?.let {
-            if (!it.userInterests.isNullOrEmpty()) {
-                addOrRemoveTab(extraTabs[0])
-
-            }
-            if (!it.userLanguages.isNullOrEmpty()) {
-
-                addOrRemoveTab(extraTabs[1])
-
-            }
-            if (!it.userAchievement.isNullOrEmpty()) {
-                addOrRemoveTab(extraTabs[2])
-
-            }
-            if (!it.userProjects.isNullOrEmpty()) {
-                addOrRemoveTab(extraTabs[3])
-
-            }
-        }
-
-    }
-
-
-    fun alertbox() {
+    private fun alertbox() {
         val binding1 = AddmorealertdialogueBinding.inflate(layoutInflater)
         val dialogBuilder = Dialog(this, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding1.root)
@@ -347,12 +317,7 @@ class AddDetailResume : BaseActivity() {
     }
 
 
-//    inner class MyViewPagerAdapter : FragmentStateAdapter(supportFragmentManager, lifecycle) {
-//        override fun getItemCount(): Int {
-//            return allTabs.size
-//        }
-
-    fun createFragment(position: Int): Fragment {
+    private fun createFragment(position: Int): Fragment {
 
         val tab = when (allTabs[position].id) {
             0 -> {
@@ -404,8 +369,6 @@ class AddDetailResume : BaseActivity() {
         return tab
     }
 
-//    }
-
 
     private fun enableEdgeToEdge() {
         // Set the decor view to enable full-screen layout
@@ -430,56 +393,4 @@ class AddDetailResume : BaseActivity() {
         window.decorView.systemUiVisibility = flags
     }
 
-
-    fun checkReadPermission(): Boolean {
-        return ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
-            this, Manifest.permission.READ_MEDIA_IMAGES
-        ) == PackageManager.PERMISSION_GRANTED)) || (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
-            this, Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED)
-    }
-
-    fun askReadWritePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            askForPermission(
-                listOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.CAMERA),
-                this,
-                "To enhance your experience, we kindly request access to your device's storage and camera."
-            )
-        } else {
-            askForPermission(
-                listOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                ),
-                this,
-                "To enhance your experience, we kindly request access to your device's storage and camera."
-            )
-        }
-    }
-
-    private fun askAbovePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(
-                Manifest.permission.READ_MEDIA_IMAGES
-            )
-        }
-    }
-
-    fun askCameraPermission() {
-        permissionList.clear()
-        permissionList.add(Manifest.permission.CAMERA)
-        PermisionHelper.askForPermission(
-            permissionList,
-            this,
-            "For a more interactive and personalized experience, we seek permission to access your device's camera to enable features such as photo capture and augmented reality."
-        )
-    }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (java.lang.Boolean.TRUE == isGranted) {
-            }
-        }
 }

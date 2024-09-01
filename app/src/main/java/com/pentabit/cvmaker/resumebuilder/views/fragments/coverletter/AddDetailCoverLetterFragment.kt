@@ -9,7 +9,9 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddDetailCoverLetterBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBinding>() {
     lateinit var templateViewModel: TemplateViewModel
     lateinit var title: String
+    val screenId= ScreenIDs.CREATE_COVER_LETTER
     lateinit var coverletter: String
     override val inflate: Inflate<FragmentAddDetailCoverLetterBinding>
         get() = FragmentAddDetailCoverLetterBinding::inflate
@@ -27,10 +30,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
             AppsKitSDKPreferencesManager.getInstance().addInPreferences(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID, it.id.toString())
             moveToFragment()
         }
-
-
     }
-
 
     @SuppressLint("ResourceType")
     override fun init(savedInstanceState: Bundle?) {
@@ -81,6 +81,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
 
     override fun onResume() {
         super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
         coverletter = arguments?.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA).toString()
         if (coverletter != "null") {
             binding.coverletterTextInput.setText(coverletter)

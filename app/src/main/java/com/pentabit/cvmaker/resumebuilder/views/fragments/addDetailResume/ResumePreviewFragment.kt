@@ -8,9 +8,6 @@ import android.graphics.Canvas
 import android.graphics.pdf.PdfDocument
 import android.graphics.pdf.PdfDocument.PageInfo
 import android.os.Bundle
-import android.print.PrintAttributes
-import android.print.PrintDocumentAdapter
-import android.print.PrintManager
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -24,7 +21,10 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentResumePreviewBindi
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseDownload
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -48,9 +48,10 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
     var isResume = false
     var id = ""
     var templateId = ""
+    private var screenId = ScreenIDs.PREVIEW_RESUME
 
-    lateinit var targetDirectoryPdf:File
-    lateinit var targetDirectoryImage:File
+    lateinit var targetDirectoryPdf: File
+    lateinit var targetDirectoryImage: File
     override val inflate: Inflate<FragmentResumePreviewBinding>
         get() = FragmentResumePreviewBinding::inflate
 
@@ -83,56 +84,33 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         }
     }
 
-//    private fun captureWebView(view: WebView): Bitmap {
-//        // Get the width and height of the WebView content
-//        val width = view.width
-//        val height = view.contentHeight
-//
-//        // Create a bitmap with the size of the WebView content
-//        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//        val canvas = Canvas(bitmap)
-//
-//        // Draw the WebView content onto the canvas
-//        view.draw(canvas)
-//
-//        return bitmap
-//    }
-
-    fun convertWebViewToPdf(context: Context, webView: WebView, fileName: String) {
-        // Create a PrintDocumentAdapter from the WebView
-        val printAdapter: PrintDocumentAdapter = webView.createPrintDocumentAdapter(fileName)
-
-        // Create a PrintManager instance
-        val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
-
-        // Set up print attributes
-        val printAttributes = PrintAttributes.Builder()
-            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
-            .setMediaSize(PrintAttributes.MediaSize.NA_LETTER) // Use A4 or other sizes if needed
-            .setResolution(PrintAttributes.Resolution("default", "default", 300, 300))
-            .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
-            .build()
-
-        // Create a PrintJob with the provided name and attributes
-        printManager.print(fileName, printAdapter, printAttributes)
-    }
-
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text = getString(R.string.preview)
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAd,
-            placeholder = ""
-        )
+
         isResume = AppsKitSDKPreferencesManager.getInstance()
             .getBooleanPreferences(Constants.IS_RESUME, true)
         if (!isResume) {
             binding.editText.setText(getString(R.string.editcover))
+            screenId = ScreenIDs.PREVIEW_COVER_LETTER
         }
         templateViewModel = ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
         binding.resumePreviewImage.webViewClient = WebViewClient()
         onApi()
         onclick()
+        manageAds()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
+    }
+
+    private fun manageAds() {
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAd,
+            placeholder = Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     private fun onApi() {
@@ -151,32 +129,13 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         }
     }
 
-    /* fun captureWebView(webView: WebView): Bitmap {
-         // Measure the WebView's content height
-         // Create a bitmap with the WebView's content width and height
-         val bitmap = Bitmap.createBitmap(
-             webView.getWidth(),
-             (webView.getContentHeight() * webView.getScale()).toInt(), Bitmap.Config.ARGB_8888
-         )
-         // Create a canvas to draw the WebView's content on the bitmap
-         val canvas = Canvas(bitmap)
-         webView.draw(canvas)
-         return bitmap
-     }*/
-
     private fun onclick() {
 
         binding.includeTool.backbtn.setOnClickListener {
-            /*sharePref.deleteItemSharePref(Constants.TEMPLATE_ID)
-            sharePref.deleteItemSharePref(Constants.PROFILE_ID)
-*/
             currentActivity().finish()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            /*sharePref.deleteItemSharePref(Constants.TEMPLATE_ID)
-            sharePref.deleteItemSharePref(Constants.PROFILE_ID)
-*/
             currentActivity().finish()
         }
 
@@ -234,12 +193,11 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
 
         // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)
-        if (isResume)
-        {
-            targetDirectoryImage= File(directory, "Resume/JPGs")
+        if (isResume) {
+            targetDirectoryImage = File(directory, "Resume/JPGs")
 
-        }else{
-            targetDirectoryImage= File(directory, "CoverLetter/JPGs")
+        } else {
+            targetDirectoryImage = File(directory, "CoverLetter/JPGs")
 
         }
 
@@ -249,12 +207,6 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
             targetDirectoryImage.mkdirs()
         }
 
-
-        // Create a directory to save the PDF
-//        val directory: File = File(Environment.getExternalStorageDirectory(), "PDFs")
-//        if (!directory.exists()) {
-//            directory.mkdirs()
-//        }
         // Define the file name and path
         val fileName =
             SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(Calendar.getInstance().time);
@@ -320,12 +272,11 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
 
         // Navigate to the subdirectory (headerDir/appDirectorySubName/IMAGES)
-      //  val targetDirectory = File(directory, "Resume/PDFs")
-        if (isResume)
-        {
+        //  val targetDirectory = File(directory, "Resume/PDFs")
+        if (isResume) {
             targetDirectoryPdf = File(directory, "Resume/PDFs")
-        }else{
-            targetDirectoryPdf=File(directory,"CoverLetter/PDFs")
+        } else {
+            targetDirectoryPdf = File(directory, "CoverLetter/PDFs")
         }
 
         // Ensure the target directory exists
@@ -334,11 +285,6 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         }
 
 
-        // Create a directory to save the PDF
-//        val directory: File = File(Environment.getExternalStorageDirectory(), "PDFs")
-//        if (!directory.exists()) {
-//            directory.mkdirs()
-//        }
         // Define the file name and path
         val fileName =
             SimpleDateFormat(FILE_NAME_PATTERN, Locale.US).format(Calendar.getInstance().time);

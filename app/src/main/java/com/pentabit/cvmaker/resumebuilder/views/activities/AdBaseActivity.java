@@ -31,7 +31,7 @@ public abstract class AdBaseActivity extends AppsKitSDKBaseActivity {
             restrictPortraitOnly();
     }
 
-    public void setCurrentFragmentId(ScreenIDs currentFragment) {
+    private void setCurrentFragmentId(ScreenIDs currentFragment) {
         this.currentFragmentId = currentFragment;
     }
 

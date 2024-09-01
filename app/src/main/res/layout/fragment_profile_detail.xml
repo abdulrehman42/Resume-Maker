@@ -13,10 +13,9 @@
         layout="@layout/toolbarwithedit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollview"
@@ -60,9 +59,9 @@
                 android:id="@+id/user_Intro"
                 style="@style/regular"
                 android:layout_width="0dp"
-                android:textColor="@color/grey_light_dim"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_12sdp"
+                android:textColor="@color/grey_light_dim"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userName" />
@@ -81,9 +80,9 @@
                 style="@style/regular"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Male"
                 android:layout_marginStart="@dimen/_5sdp"
+                android:text="Male"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView8"
                 app:layout_constraintEnd_toEndOf="@+id/user_Intro"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
@@ -137,8 +136,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
-                android:maxLines="3"
                 android:ellipsize="end"
+                android:maxLines="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -151,7 +150,7 @@
                 android:background="@color/grey_dim"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/objexttext"/>
+                app:layout_constraintTop_toBottomOf="@id/objexttext" />
 
 
             <TextView
@@ -181,7 +180,8 @@
                 android:background="@color/grey_dim"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/skill_recyclerview"/>
+                app:layout_constraintTop_toBottomOf="@+id/skill_recyclerview" />
+
             <TextView
                 android:id="@+id/textView12"
                 style="@style/heading"
@@ -190,16 +190,18 @@
                 android:layout_margin="@dimen/_10sdp"
                 android:text="@string/experience"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view2"/>
+                app:layout_constraintTop_toBottomOf="@id/view2" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/experience_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/textView12"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textView12" />
+
             <View
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
@@ -208,7 +210,8 @@
                 android:background="@color/grey_dim"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/experience_recyclerview"/>
+                app:layout_constraintTop_toBottomOf="@id/experience_recyclerview" />
+
             <TextView
                 android:id="@+id/textView13"
                 style="@style/heading"
@@ -219,6 +222,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view3"
                 tools:ignore="HardcodedText" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/education_recyclerview"
                 android:layout_width="match_parent"
@@ -226,9 +230,10 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/textView13"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textView13" />
+
             <View
                 android:id="@+id/view4"
                 android:layout_width="match_parent"
@@ -237,28 +242,27 @@
                 android:background="@color/grey_dim"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/education_recyclerview"/>
-           <!-- <TextView
-                android:id="@+id/textView14"
-                style="@style/heading"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
-                android:text="@string/certificate"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view4"/>
+                app:layout_constraintTop_toBottomOf="@id/education_recyclerview" />
+            <!-- <TextView
+                 android:id="@+id/textView14"
+                 style="@style/heading"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:layout_margin="@dimen/_10sdp"
+                 android:text="@string/certificate"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toBottomOf="@id/view4"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/certificate_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/textView14" />-->
-
+             <androidx.recyclerview.widget.RecyclerView
+                 android:id="@+id/certificate_recyclerview"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_margin="@dimen/_10sdp"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                 app:layout_constraintTop_toBottomOf="@id/textView14" />-->
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -266,25 +270,25 @@
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
+        android:id="@+id/create_btn"
         android:layout_width="@dimen/_85sdp"
         android:layout_height="@dimen/_35sdp"
-        android:id="@+id/create_btn"
-        android:backgroundTint="@color/purple"
-        android:background="@drawable/greyripple_roundbtn"
-        android:padding="@dimen/_10sdp"
-        android:gravity="center"
-        android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/greyripple_roundbtn"
+        android:backgroundTint="@color/purple"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@+id/banner"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:padding="@dimen/_2sdp"
             android:src="@drawable/plus_grey"
-            android:layout_marginEnd="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -295,8 +299,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create"
-            android:textSize="@dimen/_9ssp"
             android:textColor="@color/white"
+            android:textSize="@dimen/_9ssp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
@@ -309,15 +313,14 @@
         android:layout_width="@dimen/_78sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:background="@drawable/greyripple_roundbtn"
         android:backgroundTint="@color/navy_blue"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginBottom="@dimen/_10sdp"
         android:padding="@dimen/_10sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/create_btn"
         app:layout_constraintEnd_toEndOf="parent">
-
 
 
         <TextView
@@ -333,20 +336,20 @@
             app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/create_coverletter"
         android:layout_width="@dimen/_78sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:background="@drawable/greyripple_roundbtn"
         android:backgroundTint="@color/navy_blue"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginBottom="@dimen/_10sdp"
         android:padding="@dimen/_10sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/create_profile"
         app:layout_constraintEnd_toEndOf="parent">
-
 
 
         <TextView
@@ -355,7 +358,6 @@
             android:layout_height="wrap_content"
             android:text="Cover Letter"
             android:textColor="@color/white"
-
             android:textSize="@dimen/_9ssp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -363,6 +365,13 @@
             app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <ProgressBar
         android:id="@+id/loader"
         android:layout_width="wrap_content"

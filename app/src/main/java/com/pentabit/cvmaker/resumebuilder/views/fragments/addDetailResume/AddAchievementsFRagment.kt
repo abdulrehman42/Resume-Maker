@@ -14,8 +14,10 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achieve
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +30,7 @@ class AddAchievementsFRagment(
     val isedit: Boolean
 ) : BaseFragment<FragmentAddAchievementsFRagmentBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    private val screenId = ScreenIDs.ADD_ACHIEVEMENT
     val list = ArrayList<AchievementRequest>()
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
     val updateList = ArrayList<Achievement>()
@@ -45,6 +48,11 @@ class AddAchievementsFRagment(
                 AppsKitSDKUtils.makeToast(it.msg)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -82,8 +90,7 @@ class AddAchievementsFRagment(
 
     private fun onclick() {
         binding.savebtn.setOnClickListener {
-            if (Validations.conditionAchievemnet(binding))
-            {
+            if (Validations.conditionAchievemnet(binding)) {
                 apiCall()
             }
 
@@ -123,15 +130,14 @@ class AddAchievementsFRagment(
     }
 
     private fun apiCall() {
-        if (isedit)
-        {
-            updateList[position]=Achievement(
+        if (isedit) {
+            updateList[position] = Achievement(
                 description = binding.descriptionedittext.text.toString(),
                 issueDate = binding.issueDateeedittext.text.toString(),
                 title = "-1__" + binding.achieveedittext.text.toString(),
             )
 
-        }else {
+        } else {
             updateList.add(
                 Achievement(
                     description = binding.descriptionedittext.text.toString(),

@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,6 +20,8 @@ class ProfileActivity : BaseActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
     }
+
+
 
     override fun attachViewMode() {
 

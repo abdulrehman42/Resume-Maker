@@ -15,7 +15,7 @@ import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 
-class SubscriptionActivity : BaseActivity() {
+class BuyRemoveAdsActivity : BaseActivity() {
     lateinit var binding: ActivitySubscriptionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +44,7 @@ class SubscriptionActivity : BaseActivity() {
             }
         }
         binding.term.setOnClickListener {
-            AppsKitSDKUtils.actionOnTermsOfUse(this@SubscriptionActivity)
-            // link("https://www.pentabitapps.com/terms-of-use", this)
+            AppsKitSDKUtils.actionOnTermsOfUse(this@BuyRemoveAdsActivity)
         }
 
     }
@@ -59,6 +58,6 @@ class SubscriptionActivity : BaseActivity() {
     }
 
     override fun getScreenId(): ScreenIDs {
-        return ScreenIDs.SUBSCRIPTION
+        return ScreenIDs.REMOVE_ADS_SCREEN
     }
 }

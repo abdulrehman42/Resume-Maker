@@ -7,7 +7,9 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentObjectiveSampleBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,12 +17,18 @@ import dagger.hilt.android.AndroidEntryPoint
 class ObjectiveSample(val list: ArrayList<SampleResponseModel>?) :
     BaseFragment<FragmentObjectiveSampleBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    val screenId = ScreenIDs.ADD_OBJECTIVE
 
     override val inflate: Inflate<FragmentObjectiveSampleBinding>
         get() = FragmentObjectiveSampleBinding::inflate
 
     override fun observeLiveData() {
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     private fun setAdapter() {

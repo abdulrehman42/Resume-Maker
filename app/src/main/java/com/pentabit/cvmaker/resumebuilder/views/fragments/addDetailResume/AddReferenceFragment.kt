@@ -11,8 +11,10 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Referen
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +25,7 @@ class AddReferenceFragment(
     val position: Int
 ) : BaseFragment<FragmentAddReferenceBinding>() {
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private val screenId = ScreenIDs.ADD_REFERENCE
     private lateinit var companyPredictiveSearchAdapter: PredictiveSearchHandler
     private lateinit var titlePredictiveSearchAdapter: PredictiveSearchHandler
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserReference>()
@@ -36,6 +39,11 @@ class AddReferenceFragment(
         populateDataIfRequired()
         handlePredictiveSearch()
         handleClicks()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     override fun observeLiveData() {

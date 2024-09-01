@@ -14,7 +14,9 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityDownloadBinding
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.views.fragments.download.DownloadViewPaperFragment
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 
@@ -27,11 +29,20 @@ class DownloadActivity : BaseActivity() {
         setContentView(binding.root)
         init()
         setUpTabs()
+        handleAds()
     }
 
     private fun init() {
         binding.includeTool.textView.setText(getString(R.string.downloads))
         binding.includeTool.backbtn.setOnClickListener { finish() }
+    }
+
+    private fun handleAds() {
+        AppsKitSDKAdsManager.showBanner(
+            this,
+            binding.banner,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     private fun setUpTabs() {

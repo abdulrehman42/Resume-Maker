@@ -12,8 +12,10 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +28,7 @@ class AddEducation(
 ) : BaseFragment<FragmentAddEducationBinding>() {
 
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private val screenId=ScreenIDs.ADD_EDUCATION
     var endDate: String? = null
     private lateinit var degreePredictiveSearchHandler: PredictiveSearchHandler
     private lateinit var institutePredictiveSearchHandler: PredictiveSearchHandler
@@ -41,6 +44,11 @@ class AddEducation(
         populateInfoIfRequired()
         handleClicks()
         managePredictiveSearchAdapter()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     private fun manageAds() {

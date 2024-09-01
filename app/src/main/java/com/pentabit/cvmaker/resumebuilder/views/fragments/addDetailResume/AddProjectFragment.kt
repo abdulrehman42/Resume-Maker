@@ -7,7 +7,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
-import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
 import com.google.android.material.textfield.TextInputLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
@@ -18,8 +17,11 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +35,7 @@ class AddProjectFragment(
 ) :
     BaseFragment<FragmentAddProjectBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
+    val screenId = ScreenIDs.ADD_PROJECT
     var oldList = ArrayList<ProfileModelAddDetailResponse.UserProject>()
     val updateList = ArrayList<Project>()
     override val inflate: Inflate<FragmentAddProjectBinding>
@@ -49,6 +52,11 @@ class AddProjectFragment(
                 AppsKitSDKUtils.makeToast(it.msg)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     @SuppressLint("SetTextI18n")
@@ -110,16 +118,15 @@ class AddProjectFragment(
 
 
     private fun apiCall() {
-        if (!isedit)
-        {
+        if (!isedit) {
             updateList.add(
                 Project(
                     binding.descriptionedittext.text.toString(),
                     binding.projectedittext.text.toString()
                 )
             )
-        }else{
-            updateList[position]= Project(
+        } else {
+            updateList[position] = Project(
                 binding.descriptionedittext.text.toString(),
                 binding.projectedittext.text.toString()
             )

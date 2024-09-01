@@ -6,16 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.activities.ChoiceTemplate">
+
     <include
         android:id="@+id/include_tool"
         layout="@layout/toolbars"
-        android:layout_marginTop="@dimen/_15sdp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/loader"
@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/viewPager"
         app:layout_constraintTop_toBottomOf="@+id/Tab_layout" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/Tab_layout"
         android:layout_width="0dp"
@@ -38,10 +39,10 @@
         app:tabGravity="fill"
         app:tabIndicatorHeight="0dp"
         app:tabMode="fixed"
-        app:tabTextColor="@color/off_white"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/white"
-        app:tabTextAppearance="@style/MyTabTextCustom" />
+        app:tabTextAppearance="@style/MyTabTextCustom"
+        app:tabTextColor="@color/off_white" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
@@ -49,10 +50,16 @@
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/banner"
         app:layout_constraintEnd_toEndOf="@+id/Tab_layout"
         app:layout_constraintStart_toStartOf="@+id/Tab_layout"
         app:layout_constraintTop_toBottomOf="@+id/Tab_layout" />
+
+    <FrameLayout
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <FrameLayout
         android:id="@+id/choice_template_container"

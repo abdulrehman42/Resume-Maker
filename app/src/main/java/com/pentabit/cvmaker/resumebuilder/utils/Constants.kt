@@ -10,8 +10,14 @@ object Constants {
     const val GUEST_TOKEN = "guestToken"
     const val AUTH_TOKEN = "AUTH_TOKEN"
 
+    const val SKU_SUBS_1 = "SKU_SUBS_1"
+    const val SKU_SUBS_2 = "SKU_SUBS_2"
+    const val SKU_SUBS = "SKU_SUBS"
+
+    const val IS_PRO_SUBSCRIBED = "IS_PRO_SUBSCRIBED"
+
     const val UTC_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-    const val SIMPLE_TIME_FORMAT="M/d/yyyy"
+    const val SIMPLE_TIME_FORMAT = "M/d/yyyy"
 
     const val IRON_SOURCE_APP_KEY = "1f7d28b9d"
     const val MAX_SDK_KEY =

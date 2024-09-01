@@ -6,7 +6,7 @@
     android:background="@color/navy_blue"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.activities.SplachScreen">
+    tools:context=".views.activities.SplashScreen">
 
 
     <ImageView

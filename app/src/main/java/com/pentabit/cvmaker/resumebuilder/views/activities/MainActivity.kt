@@ -19,22 +19,34 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.QueryPurchasesParams
+import com.google.android.material.internal.ContextUtils.getActivity
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.pentabit.cvmaker.resumebuilder.BuildConfig
+import com.pentabit.cvmaker.resumebuilder.R
+import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
+import com.pentabit.cvmaker.resumebuilder.databinding.ActivityMainActivtyBinding
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.REMOVE_ADS_ID
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.SKU_SUBS
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.SKU_SUBS_1
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.SKU_SUBS_2
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxDelete
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxLogout
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxPurchase
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxRate
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.link
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
-import com.google.android.material.internal.ContextUtils.getActivity
-import com.google.android.material.navigation.NavigationView
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.pentabit.cvmaker.resumebuilder.R
-import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
-import com.pentabit.cvmaker.resumebuilder.databinding.ActivityMainActivtyBinding
-import com.pentabit.cvmaker.resumebuilder.utils.Constants
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
@@ -62,23 +74,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         onclick()
         refreshToken()
         onObserver()
+        onRestorePurchase(false)
 //        onFcm()
         askNotificationPermission()
+        handleAds()
+    }
 
+    private fun handleAds() {
+        AppsKitSDKAdsManager.showBanner(
+            this,
+            binding.appBarMainActivty.contentmain.bannerAdd,
+            placeholder = Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     private fun initView() {
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
-        AppsKitSDKAdsManager.initializeAds(
-            Constants.YOUR_IRON_SOURCE_APP_KEY,
-            Constants.YOUR_MAX_SDK_KEY,
-            Constants.YOUR_HELIUM_APP_ID,
-            Constants.YOUR_HELIUM_SIGNATURES,
-            Constants.isChildDirected,
-            Constants.isSubjectToGDPR,
-            Constants.userHasGivenConsent,
-            Constants.isCCPAConsent
-        )
         if (AppsKitSDKPreferencesManager.getInstance()
                 .getBooleanPreferences(Constants.IS_LOGGED, false)
         ) {
@@ -93,11 +104,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             binding.appBarMainActivty.toolbar.menu.getItem(R.id.ads_remove).isVisible = false
 
         }
-        AppsKitSDKAdsManager.showBanner(
-            this,
-            binding.appBarMainActivty.contentmain.bannerAdd,
-            placeholder = ""
-        )
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
     }
 
@@ -131,10 +137,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
         }
-        if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED))
-        {
+        if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED)) {
             binding.logout.setText("Logout")
-        }else{
+        } else {
             binding.logout.setText("Login")
         }
     }
@@ -195,8 +200,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ) {
                 startActivity(Intent(this, DownloadActivity::class.java))
             } else {
-                val intent=Intent(this,LoginActivity::class.java)
-                intent.putExtra(Constants.IS_MAIN,true)
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.putExtra(Constants.IS_MAIN, true)
                 startActivity(intent)
             }
         }
@@ -223,7 +228,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         }
         binding.appBarMainActivty.contentmain.removeAddbtn.setOnClickListener {
-            startActivity(Intent(this, SubscriptionActivity::class.java))
+            startActivity(Intent(this, BuyRemoveAdsActivity::class.java))
         }
     }
 
@@ -291,7 +296,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 })
 
             R.id.nav_retore -> {
-                startActivity(Intent(this, SubscriptionActivity::class.java))
+                onRestorePurchase(true)
             }
 
             R.id.nav_privacy -> link("https://www.pentabitapps.com/privacy-policy", this)
@@ -333,12 +338,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
-                                        SubscriptionActivity::class.java
+                                        BuyRemoveAdsActivity::class.java
                                     )
                                 )
                             }
                         }
                     })
+            }
+
+            R.id.premium -> {
+                startActivity(
+                    Intent(
+                        this@MainActivity,
+                        SubscriptionActivity::class.java
+                    )
+                )
             }
         }
         return super.onOptionsItemSelected(item)
@@ -380,6 +394,90 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (java.lang.Boolean.TRUE == isGranted) {
             }
         }
+
+
+    private fun onRestorePurchase(showToast: Boolean) {
+        val billingClient = BillingClient.newBuilder(this).enablePendingPurchases()
+            .setListener { billingResult: BillingResult?, list: List<Purchase?>? -> }
+            .build()
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    billingClient.queryPurchasesAsync(
+                        QueryPurchasesParams.newBuilder()
+                            .setProductType(BillingClient.ProductType.SUBS).build()
+                    ) { billingResult1: BillingResult?, purchases: List<Purchase> ->
+                        if (!purchases.isEmpty()) {
+                            var isRestored = false
+                            for (p in purchases) {
+                                if (p.skus.contains(SKU_SUBS) || p.skus
+                                        .contains(SKU_SUBS_1) || p.skus.contains(SKU_SUBS_2)
+                                ) {
+                                    isRestored =
+                                        if (p.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                                            FreeTaskManager.getInstance().proPurchased()
+                                            true
+                                        } else {
+                                            FreeTaskManager.getInstance().unSubscribeProSub()
+                                            false
+                                        }
+                                }
+                            }
+                            if (showToast && isRestored) AppsKitSDKUtils.makeToast(getString(R.string.pro_subscription_restored_successfully))
+                            if (!isRestored) {
+                                runOnUiThread {
+                                    checkForRemoveAds(
+                                        billingClient,
+                                        showToast
+                                    )
+                                }
+                            }
+                        } else {
+                            FreeTaskManager.getInstance().unSubscribeProSub()
+                            runOnUiThread {
+                                checkForRemoveAds(
+                                    billingClient,
+                                    showToast
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // do nothing
+            }
+        })
+    }
+
+    private fun checkForRemoveAds(billingClient: BillingClient, showToast: Boolean) {
+        billingClient.queryPurchasesAsync(
+            QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        ) { billingResult1: BillingResult?, purchases: List<Purchase> ->
+            if (!purchases.isEmpty()) {
+                var restored = false
+                for (p in purchases) {
+                    for (id in p.skus) {
+                        if (id == REMOVE_ADS_ID) {
+                            restored =
+                                p.purchaseState == Purchase.PurchaseState.PURCHASED && !BuildConfig.DEBUG
+                            FreeTaskManager.getInstance().removeAdPurchased(restored)
+                            AppsKitSDK.getInstance().setRemoveAdsStatus(restored)
+                        }
+                    }
+                }
+                if (showToast && restored) AppsKitSDKUtils.makeToast(getString(R.string.remove_ads_restored_successfully)) else if (showToast) AppsKitSDKUtils.makeToast(
+                    getString(R.string.no_purchases_to_restore)
+                )
+            } else {
+                FreeTaskManager.getInstance().removeAdPurchased(false)
+                AppsKitSDK.getInstance().setRemoveAdsStatus(false)
+                if (showToast) AppsKitSDKUtils.makeToast(getString(R.string.no_purchases_to_restore))
+            }
+        }
+    }
 
 
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {

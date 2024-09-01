@@ -16,7 +16,9 @@ import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.SuggestionAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -30,6 +32,7 @@ class AddSkillFragment(
     val isedit: Boolean
 ) : BaseFragment<FragmentAddSkillBinding>() {
     private lateinit var suggestionAdapter: SuggestionAdapter
+    private val screenId = ScreenIDs.ADD_SKILLS
     private val userSkillAdapter = UserSkillAdapter()
     private lateinit var addDetailResumeVM: AddDetailResumeVM
     private val list = mutableListOf<String>()
@@ -38,6 +41,11 @@ class AddSkillFragment(
 
     override val inflate: Inflate<FragmentAddSkillBinding>
         get() = FragmentAddSkillBinding::inflate
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
+    }
 
     override fun observeLiveData() {
         addDetailResumeVM.skillResponse.observe(this) {

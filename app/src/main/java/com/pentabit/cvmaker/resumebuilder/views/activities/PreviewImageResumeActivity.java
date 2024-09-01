@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide;
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityPreviewImageResumeBinding;
 import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils;
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs;
+import com.pentabit.cvmaker.resumebuilder.utils.Utils;
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager;
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils;
 
 import java.io.File;
@@ -32,6 +34,15 @@ public class PreviewImageResumeActivity extends AdBaseActivity {
         file = new File(getIntent().getStringExtra("path"));
         Glide.with(this).load(file).into(binding.image);
         handleClicks();
+        handleAds();
+    }
+
+    private void handleAds() {
+        AppsKitSDKAdsManager.INSTANCE.showBanner(
+                this,
+                binding.banner,
+                Utils.createAdKeyFromScreenId(getScreenId())
+        );
     }
 
     @Override

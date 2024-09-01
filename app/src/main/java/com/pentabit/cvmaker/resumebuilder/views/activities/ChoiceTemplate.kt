@@ -20,14 +20,15 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ActivityChoiceTemplateBind
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.choose.BasicFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.AddDetailCoverLetterFragment
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.HashMap
 
 
 @AndroidEntryPoint
@@ -37,8 +38,8 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     private val templatesTitle = ArrayList<String>()
     private var dataMap: Map<String, List<TemplateModel>> = HashMap<String, List<TemplateModel>>()
     private var isResume = false
-    private var isCreation=false
-
+    private var isCreation = false
+    private var screenId = ScreenIDs.CHOOSE_RESUME_TEMPLATES
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,10 +53,22 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             Constants.IS_RESUME,
             false
         )
-        isCreation=intent.getBooleanExtra(Constants.CREATION_TIME,false)
+        isCreation = intent.getBooleanExtra(Constants.CREATION_TIME, false)
+        if (!isResume) {
+            screenId = ScreenIDs.CHOOSE_COVER_LETTER_TEMPELATES
+        }
         handleLiveData()
-        makeApiCall()
+        fetchTemplates()
         onclick()
+        handleAds()
+    }
+
+    private fun handleAds() {
+        AppsKitSDKAdsManager.showBanner(
+            this,
+            binding.banner,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     private fun handleLiveData() {
@@ -76,7 +89,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         }
     }
 
-    fun makeApiCall() {
+    private fun fetchTemplates() {
         templateViewModel.fetchTemplates(if (isResume) Constants.RESUME else Constants.COVER_LETTER)
     }
 
@@ -123,7 +136,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         override fun getItemCount(): Int = templatesTitle.size
 
         override fun createFragment(position: Int): Fragment {
-            return BasicFragment(dataMap.get(templatesTitle[position]))
+            return BasicFragment(dataMap.get(templatesTitle[position]), screenId)
         }
     }
 
@@ -147,11 +160,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     override fun onTemplateSelected(model: TemplateModel) {
-        val check = AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED, false)
+        val check = AppsKitSDKPreferencesManager.getInstance()
+            .getBooleanPreferences(Constants.IS_LOGGED, false)
         if (check) {
-            if(isCreation){
+            if (isCreation) {
                 navigateToPreviewScreen()
-            }else if (isResume) {
+            } else if (isResume) {
                 navigateToProfileActivity()
             } else {
                 navigateToCoverLetterResumeActivity()
@@ -165,8 +179,6 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.putExtra(Constants.IS_RESUME, false)
                 startActivity(intent)
-
-
             }
 
         }
@@ -192,7 +204,8 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
 
     private fun navigateToProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
+        AppsKitSDKPreferencesManager.getInstance()
+            .addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
         startActivity(intent)
         finish()
     }
@@ -209,6 +222,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             .addToBackStack(null)
             .commit()
     }
+
     private fun navigateToPreviewScreen() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.choice_template_container, ResumePreviewFragment())
@@ -221,7 +235,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     override fun getScreenId(): ScreenIDs {
-        return ScreenIDs.TEMPLATES_SCREEN
+        return screenId
     }
 
 }

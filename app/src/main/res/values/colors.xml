@@ -19,5 +19,7 @@
     <color name="grey_light">#0D00003D</color>
     <color name="grey_dim">#F2F2F2</color>
     <color name="shallow_transparent">#80000000</color>
+    <color name="trans_white">#80FFFFFF</color>
+    <color name="sky_blue">#00A3FF</color>
 
 </resources>

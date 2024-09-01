@@ -8,9 +8,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -45,46 +45,39 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".views.activities.DownloadActivity"
-            android:screenOrientation="portrait"
-        android:exported="false" />
+            android:exported="false" />
         <activity
             android:name=".views.activities.ProfileActivity"
-            android:screenOrientation="portrait"
-        android:exported="false" />
+            android:exported="false" />
         <activity
             android:name=".views.activities.ChoiceTemplate"
-            android:screenOrientation="portrait"
-
-        android:exported="false" />
+            android:exported="false" />
         <activity
             android:name=".views.activities.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".views.activities.MainActivity"
-            android:screenOrientation="portrait"
-        android:exported="false" />
+            android:exported="false" />
         <activity
             android:name=".views.activities.BoardingScreen"
+            android:exported="false" />
+        <activity
+            android:name=".views.activities.BuyRemoveAdsActivity"
             android:exported="false" />
         <activity
             android:name=".views.activities.SubscriptionActivity"
             android:exported="false" />
         <activity
-            android:name=".views.activities.SplachScreen"
+            android:name=".views.activities.SplashScreen"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.App.SplashScreen"
-            android:screenOrientation="portrait">
+            android:launchMode="singleInstance"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
-<meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6965793011515375~7799858493" />
-        -->
+
         <activity
             android:name="com.pentabit.pentabitessentials.ads_manager.activities.CPAdActivity"
             android:exported="false" />
@@ -120,16 +113,6 @@
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
-
-<!--        <provider-->
-<!--            android:name="androidx.core.content.FileProvider"-->
-<!--            android:authorities="com.pentabit.cvmaker.resumebuilder.fileprovider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/file_paths" />-->
-<!--        </provider>-->
 
         <provider
             android:name="androidx.core.content.FileProvider"

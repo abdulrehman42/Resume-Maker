@@ -26,7 +26,7 @@ public enum ScreenIDs {
     DOWNLOADS(21), // Use on all Dialogs
     PROFILE_LISTING(22), // Use on all Dialogs
     PROFILE_PREVIEW(23),
-    TEMPLATES_SCREEN(24),
+    REMOVE_ADS_SCREEN(24),
     SUBSCRIPTION(25);
 
     public static ScreenIDs getPair(String value) {

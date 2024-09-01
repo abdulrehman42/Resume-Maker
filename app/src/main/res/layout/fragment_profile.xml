@@ -18,17 +18,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_tool"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/banner"
+        app:layout_constraintTop_toBottomOf="@id/include_tool"
         app:spanCount="2"
         tools:listitem="@layout/customprofileitem" />
 
@@ -60,10 +58,11 @@
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_45sdp"
         android:layout_marginEnd="@dimen/_25sdp"
-        android:layout_marginBottom="@dimen/_45sdp"
+        android:layout_marginBottom="20dp"
         android:src="@drawable/add_tab"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/banner"
         app:layout_constraintEnd_toEndOf="parent" />
+
     <ProgressBar
         android:id="@+id/loader"
         android:layout_width="wrap_content"
@@ -73,4 +72,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

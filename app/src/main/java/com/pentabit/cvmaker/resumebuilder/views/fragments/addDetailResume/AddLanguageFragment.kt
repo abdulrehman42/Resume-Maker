@@ -10,7 +10,9 @@ import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Languag
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
+import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,7 @@ class AddLanguageFragment(
 ) :
     BaseFragment<FragmentAddLanguageBinding>() {
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private val screenId=ScreenIDs.ADD_LANGUAGE
     private lateinit var languagePredictiveSearchHandler: PredictiveSearchHandler
     private val languagesAdapter = UserSkillAdapter()
     var list = ArrayList<String>()
@@ -32,6 +35,11 @@ class AddLanguageFragment(
     override val inflate: Inflate<FragmentAddLanguageBinding>
         get() = FragmentAddLanguageBinding::inflate
 
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
+    }
 
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text = getString(R.string.add_language)
