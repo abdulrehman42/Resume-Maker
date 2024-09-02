@@ -2,11 +2,11 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddLanguageBinding
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
@@ -20,15 +20,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddLanguageFragment(
-    val data: List<String>?,
-    val language: String?,
-    val isedit: Boolean,
-    val position: Int
+    val data: List<String>,
+    val position: Int?,
+    val callback: OnLanguageUpdate
+
 ) :
     BaseFragment<FragmentAddLanguageBinding>() {
-    private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
-    private val screenId=ScreenIDs.ADD_LANGUAGE
+    val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    private val screenId = ScreenIDs.ADD_LANGUAGE
     private lateinit var languagePredictiveSearchHandler: PredictiveSearchHandler
+    var isLanguage = false
     private val languagesAdapter = UserSkillAdapter()
     var list = ArrayList<String>()
 
@@ -49,16 +50,12 @@ class AddLanguageFragment(
     }
 
     override fun observeLiveData() {
-        addDetailResumeVM.languageResponse.observe(this) {
-            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-        }
     }
 
     private fun handlePredictiveSearch() {
         languagePredictiveSearchHandler = PredictiveSearchHandler(
             key = Constants.languages,
-            isAlreadyInDB = isedit,
+            isAlreadyInDB = isLanguage,
             autoCompleteTextView = binding.languageEdittext,
             viewModel = addDetailResumeVM,
             enableBtn = binding.tickBtn
@@ -66,26 +63,35 @@ class AddLanguageFragment(
     }
 
     private fun populateDataIfRequired() {
-        if (data != null) {
-            list = data as ArrayList<String>
+        list = data as ArrayList<String>
+        if (position != null) {
+            val model = data[position]
+            isLanguage = model.startsWith("1_")
+            binding.languageEdittext.setText(Helper.removeOneUnderscores(model))
+
         }
-        language?.let {
-            binding.languageEdittext.setText(Helper.removeOneUnderscores(language))
-        }
+
+
+        languagesAdapter.submitList(data)
         binding.recyclerviewLanguage.adapter = languagesAdapter
     }
 
     private fun handleClicks() {
         binding.tickBtn.setOnClickListener {
-            val skill = binding.languageEdittext.text.toString().trim()
-            if (skill.isNotEmpty()) {
-                if (!isedit) {
-                    list.add(languagePredictiveSearchHandler.getText())
-                } else {
+            val language = binding.languageEdittext.text.toString().trim()
+            if (language.isNotEmpty()) {
+                if (position != null) {
                     list[position] = languagePredictiveSearchHandler.getText()
+                } else {
+                    list.add(languagePredictiveSearchHandler.getText())
                 }
                 binding.languageEdittext.setText("")
+
                 languagesAdapter.submitList(list.toList())
+                binding.recyclerviewLanguage.apply {
+                    layoutManager = GridLayoutManager(requireContext(), 3)
+                    adapter = languagesAdapter
+                }
             }
         }
 
@@ -98,14 +104,17 @@ class AddLanguageFragment(
         }
 
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
 
     private fun saveLanguages() {
-        addDetailResumeVM.editLanguage(
-            LanguageRequestModel(list)
-        )
+        callback.languageUpdate(list)
+        currentActivity().onBackPressedDispatcher.onBackPressed()
+    }
+
+    interface OnLanguageUpdate {
+        fun languageUpdate(list: List<String>)
     }
 
 }

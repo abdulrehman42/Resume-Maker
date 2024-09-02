@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.callbacks.ProfileItemCallbacks
 import com.pentabit.cvmaker.resumebuilder.databinding.CustomprofileitemBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.pentabitessentials.views.AppsKitSDKRecyclerBaseViewBinding
 import java.io.File
 
@@ -45,7 +46,7 @@ class ProfileAdapter : ListAdapter<ProfileListingModel, AppsKitSDKRecyclerBaseVi
             binding.textView4.setText("View Profile")
         }
         binding.name.text = model.name.replaceFirstChar { it.uppercase() }
-        binding.profession.text = model.jobTitle
+        binding.profession.text = Helper.removeOneUnderscores(model.jobTitle)
         Glide.with(binding.imageProfile.context)
             .load(com.pentabit.cvmaker.resumebuilder.utils.Constants.BASE_MEDIA_URL + model.path)
             .into(binding.imageProfile)

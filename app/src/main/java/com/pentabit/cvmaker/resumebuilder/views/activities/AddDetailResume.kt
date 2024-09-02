@@ -99,6 +99,27 @@ class AddDetailResume : BaseActivity() {
         addDetailResumeVM.educationResponse.observe(this) {
             moveNext()
         }
+        addDetailResumeVM.skillResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.experienceResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.referenceResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.interestResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.languageResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.projectResponse.observe(this) {
+            moveNext()
+        }
+        addDetailResumeVM.achievementResponse.observe(this) {
+            moveNext()
+        }
     }
 
     fun openFragment(fragment: Fragment) {
@@ -133,6 +154,7 @@ class AddDetailResume : BaseActivity() {
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
         if (!supportFragmentManager.popBackStackImmediate()) {
             finish()
         }
@@ -193,6 +215,25 @@ class AddDetailResume : BaseActivity() {
                 // Handle tab reselection if needed
             }
         })
+    }
+
+    fun requiredItemsAddInTab(profileModelAddDetailResponse: ProfileModelAddDetailResponse?) {
+        profileModelAddDetailResponse?.let {
+            if (profileModelAddDetailResponse.userInterests?.size != 0) {
+                addOrRemoveTab(extraTabs[0])
+            }
+            if (profileModelAddDetailResponse.userLanguages?.size != 0) {
+                addOrRemoveTab(extraTabs[1])
+            }
+            if (profileModelAddDetailResponse.userProjects?.size != 0) {
+                addOrRemoveTab(extraTabs[2])
+            }
+            if (profileModelAddDetailResponse.userAchievement?.size != 0) {
+                addOrRemoveTab(extraTabs[3])
+
+            }
+        }
+
     }
 
 
@@ -292,20 +333,22 @@ class AddDetailResume : BaseActivity() {
         val binding1 = AddmorealertdialogueBinding.inflate(layoutInflater)
         val dialogBuilder = Dialog(this, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding1.root)
-
         binding1.switchid.isChecked = allTabs.contains(extraTabs[0])
         binding1.switchid1.isChecked = allTabs.contains(extraTabs[1])
         binding1.switchid2.isChecked = allTabs.contains(extraTabs[2])
         binding1.switchid3.isChecked = allTabs.contains(extraTabs[3])
-
-
         binding1.switchid.setOnCheckedChangeListener(TabCheckListener(0))
         binding1.switchid1.setOnCheckedChangeListener(TabCheckListener(1))
         binding1.switchid2.setOnCheckedChangeListener(TabCheckListener(2))
         binding1.switchid3.setOnCheckedChangeListener(TabCheckListener(3))
 
+        binding1.done.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+
+
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
-        dialogBuilder.setCancelable(true)
+        dialogBuilder.setCancelable(false)
         dialogBuilder.show()
     }
 

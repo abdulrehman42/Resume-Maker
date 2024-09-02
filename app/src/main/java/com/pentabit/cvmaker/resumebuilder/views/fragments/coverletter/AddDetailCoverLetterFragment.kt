@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
@@ -9,10 +10,11 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddDetailCoverLetterBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
-import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
+import com.pentabit.cvmaker.resumebuilder.views.activities.ResumePreviewActivity
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -89,9 +91,13 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
     }
 
     private fun moveToFragment() {
-        val bundle = Bundle()
+        val intent =Intent(currentActivity(), ResumePreviewActivity::class.java)
+        intent.putExtra(Constants.IS_RESUME,false)
+        intent.putExtra(Constants.CREATION_TIME,true)
+        startActivity(intent)
+        /*val bundle = Bundle()
         val fragment = ResumePreviewFragment()
-        bundle.putBoolean(com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME, false)
+        bundle.putBoolean(Constants.IS_RESUME, false)
 
         fragment.arguments = bundle
         currentActivity().supportFragmentManager.beginTransaction().setCustomAnimations(
@@ -102,7 +108,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
         )
             .replace(R.id.choice_template_container, fragment)
             .addToBackStack(null)
-            .commit()
+            .commit()*/
     }
 
 }

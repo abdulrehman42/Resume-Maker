@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:background="@color/navy_blue"
-    tools:context=".views.fragments.addDetailResume.ResumePreviewFragment">
+    tools:context=".views.activities.ResumePreviewActivity">
     <include
         android:layout_width="0dp"
         android:layout_height="wrap_content"

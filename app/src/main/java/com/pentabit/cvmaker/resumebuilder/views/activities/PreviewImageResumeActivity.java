@@ -23,6 +23,7 @@ public class PreviewImageResumeActivity extends AdBaseActivity {
 
     ActivityPreviewImageResumeBinding binding;
     private File file;
+    private final ScreenIDs screenid= ScreenIDs.PREVIEW_IMAGES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class PreviewImageResumeActivity extends AdBaseActivity {
     @NonNull
     @Override
     protected ScreenIDs getScreenId() {
-        return null;
+        return screenid;
     }
 
     @Override

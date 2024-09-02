@@ -16,13 +16,9 @@ import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.EducationRe
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.ExperienceResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.ProjectResponse
 import com.pentabit.cvmaker.resumebuilder.models.api.adddetailresume.ReferrenceResponseModel
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CreateProfileRequestModel
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.InterestRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SingleItemRequestModel
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
@@ -262,7 +258,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun editExperience(experience: ExperienceRequest) {
+    fun editExperience(experience: ArrayList<ProfileModelAddDetailResponse.UserExperience>) {
         viewModelScope.launch {
             loadingState.postValue(LoaderModel(true, ""))
 
@@ -288,7 +284,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun editReference(referenceRequestModel: ReferenceRequest) {
+    fun editReference(referenceRequestModel: ArrayList<ProfileModelAddDetailResponse.UserReference>) {
         viewModelScope.launch {
             loadingState.postValue(LoaderModel(true, ""))
 
@@ -314,7 +310,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun editAchievement(achievRequestModel: AchievementRequest) {
+    fun editAchievement(achievRequestModel: ArrayList<ProfileModelAddDetailResponse.UserAchievement>) {
         viewModelScope.launch {
             loadingState.postValue(LoaderModel(true, ""))
 
@@ -340,7 +336,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
         }
     }
 
-    fun editProjects(projectRequestModel: ProjectRequest) {
+    fun editProjects(projectRequestModel: ArrayList<ProfileModelAddDetailResponse.UserProject>) {
         viewModelScope.launch {
             loadingState.postValue(LoaderModel(true, ""))
 

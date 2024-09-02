@@ -57,7 +57,6 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 navigation-fragment-ktx = { module = "android.arch.navigation:navigation-fragment-ktx", version.ref = "navigationUiKtx" }
 navigation-ui-ktx = { module = "android.arch.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
-paperonboarding-paper-onboarding = { module = "com.ramotion.paperonboarding:paper-onboarding", version.ref = "paperOnboardingVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }

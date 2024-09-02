@@ -3,6 +3,10 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ClickableSpan
+import android.view.View
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,6 +17,7 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileDetailBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
@@ -33,6 +38,8 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
     override val inflate: Inflate<FragmentProfileDetailBinding>
         get() = FragmentProfileDetailBinding::inflate
     var isclick = false
+    val maxLines = 3
+
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(currentActivity()) {
@@ -76,6 +83,8 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
     }
 
     private fun onclick() {
+
+
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -129,12 +138,43 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             .load(Constants.BASE_MEDIA_URL + profileModelAddDetailResponse.path)
             .placeholder(R.drawable.placeholder_image).into(binding.shapeableImageView)
         binding.scrollview.isSmoothScrollingEnabled = true
+
+
+//more see
+        binding.objexttext.text = profileModelAddDetailResponse.objective
+        binding.objexttext.post {
+            if (binding.objexttext.lineCount > maxLines) {
+                val endIndex = binding.objexttext.layout.getLineEnd(maxLines - 1)
+                val truncatedText = profileModelAddDetailResponse.objective?.substring(
+                    0,
+                    endIndex - " See More".length
+                ) + "..."
+
+                val spannableString = SpannableString("$truncatedText See More")
+                val clickableSpan = object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        binding.objexttext.text = profileModelAddDetailResponse.objective
+                        binding.objexttext.maxLines = Integer.MAX_VALUE
+                        binding.objexttext.ellipsize = null
+                    }
+                }
+
+                spannableString.setSpan(
+                    clickableSpan,
+                    spannableString.length - "See More".length,
+                    spannableString.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                binding.objexttext.text = spannableString
+                binding.objexttext.movementMethod =
+                    android.text.method.LinkMovementMethod.getInstance()
+            }
+        }
+
         binding.apply {
             userName.text = profileModelAddDetailResponse.name
-            binding.userIntro.setText(profileModelAddDetailResponse.jobTitle)
+            binding.userIntro.setText(Helper.removeOneUnderscores(profileModelAddDetailResponse.jobTitle))
             gender.text = profileModelAddDetailResponse.gender!!.replaceFirstChar { it.uppercase() }
-
-            objexttext.text = profileModelAddDetailResponse.objective
             skillRecyclerview.apply {
                 layoutManager = GridLayoutManager(currentActivity(), 3)
             }

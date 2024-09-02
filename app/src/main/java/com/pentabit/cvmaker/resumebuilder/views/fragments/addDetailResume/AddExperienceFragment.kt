@@ -28,41 +28,40 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddExperienceFragment(
-    val data: ProfileModelAddDetailResponse.UserExperience?,
-    val experienceList: ArrayList<ProfileModelAddDetailResponse.UserExperience>?,
-    val isEdit: Boolean,
-    val position: Int
+    val experienceList: ArrayList<ProfileModelAddDetailResponse.UserExperience>,
+    val position: Int?,
+    val callback: OnExperienceUpdate
 ) :
     BaseFragment<FragmentAddExperienceBinding>() {
+
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private val screenId = ScreenIDs.ADD_EXPERIENCE
     private lateinit var companyPredictiveSearchHandler: PredictiveSearchHandler
     private lateinit var titlePredictiveSearchHandler: PredictiveSearchHandler
+    private var isCompanyInDB = false
+    private var isTileInDB = false
     var endDate: String? = null
-    var oldList = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
-    val updateList = ArrayList<Experience>()
+
+
     override val inflate: Inflate<FragmentAddExperienceBinding>
         get() = FragmentAddExperienceBinding::inflate
 
-    override fun observeLiveData() {
-        addDetailResumeVM.experienceResponse.observe(this) {
-            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text = getString(R.string.add_experience)
         populateDataIfRequired()
         managePredictiveSearch()
         handleUI()
         handleClicks()
+    }
+
+
+    override fun observeLiveData() {
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
     private fun handleUI() {
@@ -80,50 +79,34 @@ class AddExperienceFragment(
     }
 
     private fun populateDataIfRequired() {
-        experienceList?.let {
-            oldList = experienceList
-            for (i in 0 until oldList.size) {
-                updateList.add(
-                    Experience(
-                        "1__" + Helper.removeOneUnderscores(oldList[i].company),
-                        Helper.removeOneUnderscores(oldList[i].description),
-                        Helper.removeOneUnderscores(oldList[i].employmentType),
-                        Helper.convertIsoToCustomFormat(oldList[i].endDate),
-                        Helper.convertIsoToCustomFormat(oldList[i].startDate),
-                        "1__" + Helper.removeOneUnderscores(oldList[i].title)
-                    )
-                )
-            }
-        }
+        // TODO Need to Edit
+        if (position != null) {
+            val model = experienceList[position]
+            isCompanyInDB = model.company.startsWith("1_")
+            isTileInDB = model.title.startsWith("1_")
 
-        data?.let {
-            binding.jobName.setText(Helper.removeOneUnderscores(data.title))
-            binding.description.setText(data.description)
-            binding.companyName.setText(Helper.removeOneUnderscores(data.company))
+            binding.jobName.setText(Helper.removeOneUnderscores(model.title))
+            binding.companyName.setText(Helper.removeOneUnderscores(model.company))
             binding.startdateedittext.setText(
-                Helper.convertIsoToCustomFormat(data.startDate)
+                Helper.convertIsoToCustomFormat(model.startDate)
             )
-            binding.enddateedittext.setText(
-                Helper.convertIsoToCustomFormat(
-                    data.endDate
-                )
-            )
-            if (data.endDate.isEmpty()) {
-                binding.checkItscontinue.isChecked = true
-            }
+            binding.description.setText(Helper.removeOneUnderscores(model.description))
+            binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(model.endDate))
+            binding.checkItscontinue.isChecked = model.endDate.isNullOrEmpty()
         }
     }
 
     private fun managePredictiveSearch() {
+        // TODO Need to edit
         companyPredictiveSearchHandler = PredictiveSearchHandler(
             key = Constants.company,
-            isAlreadyInDB = isEdit,
+            isAlreadyInDB = isCompanyInDB,
             autoCompleteTextView = binding.companyName,
             viewModel = addDetailResumeVM
         )
         titlePredictiveSearchHandler = PredictiveSearchHandler(
             key = Constants.jobTitle,
-            isAlreadyInDB = isEdit,
+            isAlreadyInDB = isTileInDB,
             autoCompleteTextView = binding.jobName,
             viewModel = addDetailResumeVM
         )
@@ -152,11 +135,10 @@ class AddExperienceFragment(
         }
         binding.checkItscontinue.setOnClickListener {
             if (binding.checkItscontinue.isChecked) {
-                binding.enddateTextInputLayout2.isEnabled = false
-                binding.enddateedittext.setText("")
-                endDate = null
-            } else {
-                binding.enddateTextInputLayout2.isEnabled = true
+                binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
+                if (binding.checkItscontinue.isChecked) {
+                    binding.enddateedittext.setText("")
+                }
             }
         }
         binding.savebtn.setOnClickListener {
@@ -165,51 +147,44 @@ class AddExperienceFragment(
             }
         }
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
 
 
     private fun saveExperience() {
-        updateList()
-        val experience =
-            Experience(
-                companyPredictiveSearchHandler.getText(),
-                binding.description.text.toString(),
-                employmentType = "fullTime",
-                endDate, binding.startdateedittext.text.toString(),
-                titlePredictiveSearchHandler.getText()
-            )
-        if (!isEdit) {
-            updateList.add(experience)
-        } else {
-            updateList[position] = experience
-        }
-        val experienceRequest = ExperienceRequest(experiences = updateList)
+        //updateList()
         endDate = if (binding.checkItscontinue.isChecked) {
             null
         } else {
-            binding.enddateedittext.text.toString()
+            Helper.convertToUTCTimeForma(binding.enddateedittext.text.toString().trim())
         }
-        addDetailResumeVM.editExperience(
-            experienceRequest
+
+        val experienceupdate = ProfileModelAddDetailResponse.UserExperience(
+            companyPredictiveSearchHandler.getText(),
+            binding.description.text.toString(),
+            "fullTime",
+            endDate = endDate.toString(),
+            Helper.convertToUTCTimeForma(binding.startdateedittext.text.toString()),
+            titlePredictiveSearchHandler.getText(),
         )
+
+        val updatedListExperience =
+            ArrayList<ProfileModelAddDetailResponse.UserExperience>(experienceList)
+
+        if (position != null) {
+            updatedListExperience[position] = experienceupdate
+
+        } else {
+            updatedListExperience.add(experienceupdate)
+        }
+        callback.onExperience(updatedListExperience)
+        currentActivity().onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun updateList() {
-        updateList.clear()
-        oldList.forEach { old ->
-            updateList.add(
-                Experience(
-                    company = old.company,
-                    description = old.description,
-                    employmentType = old.employmentType,
-                    endDate = old.endDate,
-                    startDate = old.startDate,
-                    title = old.title
-                )
-            )
-        }
+
+    interface OnExperienceUpdate {
+        fun onExperience(experiencelist: ArrayList<ProfileModelAddDetailResponse.UserExperience>?)
     }
 
 }

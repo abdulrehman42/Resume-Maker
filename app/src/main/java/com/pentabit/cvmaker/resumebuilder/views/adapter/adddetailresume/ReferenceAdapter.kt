@@ -42,7 +42,7 @@ class ReferenceAdapter:
 
     object TemplateDiffCallback : DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserReference>() {
         override fun areItemsTheSame(oldItem: ProfileModelAddDetailResponse.UserReference, newItem: ProfileModelAddDetailResponse.UserReference): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(oldItem: ProfileModelAddDetailResponse.UserReference, newItem: ProfileModelAddDetailResponse.UserReference): Boolean {

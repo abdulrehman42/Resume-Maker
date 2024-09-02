@@ -219,8 +219,8 @@ dependencies {
     implementation ("com.github.chrisbanes:PhotoView:2.3.0")
 
     implementation ("com.github.mhiew:android-pdf-viewer:3.2.0-beta.1")
-    implementation ("com.chenlittleping:recyclercoverflow:1.0.6")
-
+//    implementation ("com.chenlittleping:recyclercoverflow:1.0.6")
+    implementation(files("libs/recyclercoverflow-1.0.6.aar"))
     /*//KProgressHud
     implementation ("com.kaopiz:kprogresshud:1.2.0")
 */

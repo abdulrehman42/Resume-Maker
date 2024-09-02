@@ -44,7 +44,7 @@ class ExperienceAdapter: ListAdapter<ProfileModelAddDetailResponse.UserExperienc
 
     object TemplateDiffCallback : DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserExperience>() {
         override fun areItemsTheSame(oldItem: ProfileModelAddDetailResponse.UserExperience, newItem: ProfileModelAddDetailResponse.UserExperience): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: ProfileModelAddDetailResponse.UserExperience, newItem: ProfileModelAddDetailResponse.UserExperience): Boolean {

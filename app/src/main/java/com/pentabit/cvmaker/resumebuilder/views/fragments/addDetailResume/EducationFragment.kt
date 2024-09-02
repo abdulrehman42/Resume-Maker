@@ -1,12 +1,15 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
+import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.callbacks.OnEducationUpdate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentEducationBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.deleteItemPopup
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
@@ -20,6 +23,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private val educationAdapter = EducationAdapter()
     private var list = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
+    var iscalled = false
 
     override val inflate: Inflate<FragmentEducationBinding>
         get() = FragmentEducationBinding::inflate
@@ -33,10 +37,19 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
         educationAdapter.disableEditing(false)
 
         educationAdapter.onDelete {
-            if (list.isNotEmpty()) {
-                list.removeAt(it)
-                educationAdapter.notifyDataSetChanged()
-            }
+            deleteItemPopup(currentActivity(), "Do you want to delete this education record",
+                object : DialogueBoxes.DialogCallback {
+                    override fun onButtonClick(isConfirmed: Boolean) {
+                        if (isConfirmed) {
+                            if (list.isNotEmpty()) {
+                                list.removeAt(it)
+                                educationAdapter.submitList(list)
+                                educationAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                })
+
         }
 
         educationAdapter.setOnClick { _, position ->
@@ -54,15 +67,15 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userQualifications.isNullOrEmpty(), binding.popup)
             populateAdapter(it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>)
+            iscalled = true
         }
     }
 
     override fun onResume() {
         super.onResume()
-        fetchProfileInfo()
-//        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-//            fetchProfileInfo()
-//        }
+        if (!iscalled) {
+            fetchProfileInfo()
+        }
     }
 
     private fun fetchProfileInfo() {
@@ -110,6 +123,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
 
     override fun onEducationUpdated(userQualificationsList: MutableList<ProfileModelAddDetailResponse.UserQualification>) {
         list = ArrayList(userQualificationsList)
+        AppsKitSDKUtils.setVisibility(userQualificationsList.isEmpty(), binding.popup)
         educationAdapter.submitList(userQualificationsList)
     }
 

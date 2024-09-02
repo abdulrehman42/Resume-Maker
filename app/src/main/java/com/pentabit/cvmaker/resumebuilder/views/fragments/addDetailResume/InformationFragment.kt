@@ -53,6 +53,7 @@ class InformationFragment() :
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             populateProfileInfo(it)
+            (currentActivity() as AddDetailResume).requiredItemsAddInTab(it)
         }
 
     }
@@ -145,7 +146,12 @@ class InformationFragment() :
             jobedittext.setText(Helper.removeOneUnderscores(data.jobTitle))
             emailtext.setText(data.email)
             phoneedittext.setText(data.phone)
-            address.setText(data.address)
+            if (!data.address.isNullOrEmpty())
+            {
+                address.setText(data.address)
+            }else{
+                address.setText("--")
+            }
             dobEdit.setText(Helper.convertIsoToCustomFormat(data.dob))
             manageGenderSelection(Genders.findGender(data.gender))
             Glide.with(ResumeMakerApplication.instance).load(Constants.BASE_MEDIA_URL + data.path)

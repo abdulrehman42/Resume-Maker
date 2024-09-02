@@ -1,7 +1,9 @@
 package com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume
 
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+
 data class ReferenceRequest(
-    val references: List<Reference>
+    val references: ArrayList<ProfileModelAddDetailResponse.UserReference>
 )
 {
     data class Reference(

@@ -2,12 +2,13 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentSkillBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.deleteItemPopup
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
@@ -16,20 +17,18 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
+class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>(),
+    AddSkillFragment.SkillUpdates {
     val skillAdapter = SingleStringAdapter()
-
     val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     var list = ArrayList<String>()
-
     override val inflate: Inflate<FragmentSkillBinding>
         get() = FragmentSkillBinding::inflate
-
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userSkills.isNullOrEmpty(), binding.popup)
             list = it.userSkills as ArrayList<String>
-            setadapter(list)
+            setadapter()
         }
     }
 
@@ -39,22 +38,14 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
     }
 
     override fun onMoveNextClicked(): Boolean {
-        return true
-    }
-
-    private fun check(): Boolean {
-        if (list.isNotEmpty()) {
-            return true
-        } else {
-            AppsKitSDKUtils.makeToast("please add at least one skill")
-            return false
-        }
+        callSaveApi()
+        return false
     }
 
     override fun onResume() {
         super.onResume()
         parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-            apiCall()
+            getProfileDetail()
         }
     }
 
@@ -65,37 +56,38 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
             placeholder = ""
         )
         onclick()
-        apiCall()
+        getProfileDetail()
 
     }
 
 
-    private fun apiCall() {
+    private fun getProfileDetail() {
         addDetailResumeVM.getProfileDetail()
     }
 
-    private fun setadapter(userSkills: List<String>) {
-        skillAdapter.submitList(userSkills)
+    private fun setadapter() {
+        skillAdapter.submitList(list)
         skillAdapter.setOnEditItemClickCallback { item, position ->
             (requireActivity() as AddDetailResume).openFragment(
                 AddSkillFragment(
-                    userSkills,
-                    item,
-                    position,
-                    true
+                    list,
+                    position, this
                 )
             )
         }
         skillAdapter.setOnItemDeleteClickCallback {
-            if (list.size != 0) {
-                list.removeAt(it)
-            }
-            //   setadapter(list)
-            if (list.size != 0) {
-                callSaveApi()
-                apiCall()
-
-            }
+            deleteItemPopup(currentActivity(), "Do you want to delete this Skill record",
+                object : DialogueBoxes.DialogCallback {
+                    override fun onButtonClick(isConfirmed: Boolean) {
+                        if (isConfirmed) {
+                            if (list.isNotEmpty()) {
+                                list.removeAt(it)
+                                skillAdapter.submitList(list)
+                                skillAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                })
         }
 
         binding.recyclerviewSkill.apply {
@@ -115,10 +107,15 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>() {
                 AddSkillFragment(
                     list,
                     null,
-                    0,
-                    false
+                    this
                 )
             )
         }
+    }
+
+    override fun skillUpdate(skillList: List<String>) {
+        list = ArrayList(skillList)
+        AppsKitSDKUtils.setVisibility(skillList.isEmpty(), binding.popup)
+        skillAdapter.submitList(skillList)
     }
 }

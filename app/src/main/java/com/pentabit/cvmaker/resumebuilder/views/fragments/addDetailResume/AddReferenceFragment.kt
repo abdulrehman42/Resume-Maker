@@ -1,13 +1,12 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddReferenceBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
@@ -19,23 +18,23 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddReferenceFragment(
-    val userReference: ProfileModelAddDetailResponse.UserReference?,
-    val list: ArrayList<ProfileModelAddDetailResponse.UserReference>?,
-    val isedit: Boolean,
-    val position: Int
+    val list: List<ProfileModelAddDetailResponse.UserReference>,
+    val position: Int?,
+    val callback:OnReferenceUpdate
 ) : BaseFragment<FragmentAddReferenceBinding>() {
-    private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
+    lateinit var addDetailResumeVM: AddDetailResumeVM
     private val screenId = ScreenIDs.ADD_REFERENCE
     private lateinit var companyPredictiveSearchAdapter: PredictiveSearchHandler
     private lateinit var titlePredictiveSearchAdapter: PredictiveSearchHandler
-    var oldList = ArrayList<ProfileModelAddDetailResponse.UserReference>()
-    val updateList = ArrayList<ReferenceRequest.Reference>()
+    private var isCompanyInDB = false
+    private var isTitleInDB = false
 
     override val inflate: Inflate<FragmentAddReferenceBinding>
         get() = FragmentAddReferenceBinding::inflate
 
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text = getString(R.string.add_referrence)
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         populateDataIfRequired()
         handlePredictiveSearch()
         handleClicks()
@@ -49,45 +48,35 @@ class AddReferenceFragment(
     override fun observeLiveData() {
         addDetailResumeVM.referenceResponse.observe(this) {
             parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
-            currentActivity().onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
 
     private fun populateDataIfRequired() {
-        list?.let {
-            oldList = list
-            for (i in 0 until oldList.size) {
-                updateList.add(
-                    ReferenceRequest.Reference(
-                        "1__" + Helper.removeOneUnderscores(oldList[i].company),
-                        Helper.removeOneUnderscores(oldList[i].email),
-                        Helper.removeOneUnderscores(oldList[i].name),
-                        oldList[i].phone,
-                        "1__" + Helper.removeOneUnderscores(oldList[i].position),
-                    )
-                )
-            }
+        if (position != null) {
+            val model = list[position]
+            isTitleInDB= model.position.startsWith("1_")
+            isCompanyInDB = model.company.startsWith("1_")
+
+            binding.companyName.setText(Helper.removeOneUnderscores(model.company))
+            binding.jobedittext.setText(Helper.removeOneUnderscores(model.position))
+            binding.emailedit.setText(model.email)
+            binding.phone.setText(model.phone)
+            binding.referrencenameedit.setText(model.name)
         }
-        userReference?.let {
-            binding.referrencenameedit.setText(Helper.removeOneUnderscores(userReference.name))
-            binding.companyName.setText(Helper.removeOneUnderscores(userReference.company))
-            binding.jobedittext.setText(Helper.removeOneUnderscores(userReference.position))
-            binding.phone.setText(Helper.removeOneUnderscores(userReference.phone))
-            binding.emailedit.setText(Helper.removeOneUnderscores(userReference.email))
-            binding.phone.setText(userReference.phone)
-        }
+
     }
 
     private fun handlePredictiveSearch() {
         companyPredictiveSearchAdapter = PredictiveSearchHandler(
             key = Constants.company,
-            isAlreadyInDB = isedit,
+            isAlreadyInDB = isCompanyInDB,
             autoCompleteTextView = binding.companyName,
             viewModel = addDetailResumeVM
         )
         titlePredictiveSearchAdapter = PredictiveSearchHandler(
             key = Constants.position,
-            isAlreadyInDB = isedit,
+            isAlreadyInDB = isTitleInDB,
             autoCompleteTextView = binding.jobedittext,
             viewModel = addDetailResumeVM
         )
@@ -102,35 +91,35 @@ class AddReferenceFragment(
         }
 
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
 
 
     private fun saveReference() {
-        if (!isedit) {
-            updateList.add(
-                ReferenceRequest.Reference(
-                    companyPredictiveSearchAdapter.getText(),
-                    binding.emailedit.text.toString(),
-                    binding.referrencenameedit.text.toString(),
-                    binding.phone.text.toString(),
-                    titlePredictiveSearchAdapter.getText()
-                )
-            )
+        val newReference = ProfileModelAddDetailResponse.UserReference(
+            name = binding.referrencenameedit.text.toString(),
+            company = companyPredictiveSearchAdapter.getText(),
+            position = titlePredictiveSearchAdapter.getText(),
+            email = binding.emailedit.text.toString(),
+            phone = binding.phone.text.toString()
+        )
+
+        val updatedList =
+            ArrayList<ProfileModelAddDetailResponse.UserReference>(list)
+
+        if (position != null) {
+            updatedList[position] = newReference
         } else {
-            updateList[position] = ReferenceRequest.Reference(
-                companyPredictiveSearchAdapter.getText(),
-                binding.emailedit.text.toString(),
-                binding.referrencenameedit.text.toString(),
-                binding.phone.text.toString(),
-                titlePredictiveSearchAdapter.getText()
-            )
+            updatedList.add(newReference)
         }
+        callback.referenceUpdate(updatedList)
+        currentActivity().onBackPressedDispatcher.onBackPressed()
+    }
 
 
-        val referenceRequest = ReferenceRequest(references = updateList)
 
-        addDetailResumeVM.editReference(referenceRequest)
+    interface  OnReferenceUpdate{
+        fun referenceUpdate(listReference:List<ProfileModelAddDetailResponse.UserReference>)
     }
 }

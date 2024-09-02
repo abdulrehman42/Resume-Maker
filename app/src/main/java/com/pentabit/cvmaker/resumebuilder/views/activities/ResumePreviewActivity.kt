@@ -1,4 +1,4 @@
-package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
+package com.pentabit.cvmaker.resumebuilder.views.activities
 
 import android.content.Context
 import android.content.ContextWrapper
@@ -15,8 +15,7 @@ import androidx.activity.addCallback
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.R
-import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
-import com.pentabit.cvmaker.resumebuilder.base.Inflate
+import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentResumePreviewBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseDownload
@@ -24,9 +23,6 @@ import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
-import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
-import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
-import com.pentabit.cvmaker.resumebuilder.views.activities.ChoiceTemplate
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
@@ -42,8 +38,9 @@ import java.util.Locale
 
 
 @AndroidEntryPoint
-class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
+class ResumePreviewActivity : BaseActivity() {
     lateinit var templateViewModel: TemplateViewModel
+    lateinit var binding: FragmentResumePreviewBinding
     var cv = ""
     var isResume = false
     var id = ""
@@ -52,18 +49,24 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
 
     lateinit var targetDirectoryPdf: File
     lateinit var targetDirectoryImage: File
-    override val inflate: Inflate<FragmentResumePreviewBinding>
-        get() = FragmentResumePreviewBinding::inflate
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = FragmentResumePreviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initView()
+        observer()
 
-    override fun observeLiveData() {
-        templateViewModel.loadingState.observe(currentActivity()) {
+    }
+
+    private fun observer() {
+        templateViewModel.loadingState.observe(this) {
             if (it) {
                 binding.loader.isGone = false
             } else {
                 binding.loader.isGone = true
             }
         }
-        templateViewModel.getString.observe(currentActivity()) {
+        templateViewModel.getString.observe(this) {
             cv = it
             binding.resumePreviewImage.settings.apply {
                 setSupportZoom(true)
@@ -84,30 +87,41 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
         }
     }
 
-    override fun init(savedInstanceState: Bundle?) {
+    private fun initView() {
         binding.includeTool.textView.text = getString(R.string.preview)
-
-        isResume = AppsKitSDKPreferencesManager.getInstance()
-            .getBooleanPreferences(Constants.IS_RESUME, true)
+        templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
+        isResume = intent.getBooleanExtra(Constants.IS_RESUME,false)
         if (!isResume) {
             binding.editText.setText(getString(R.string.editcover))
             screenId = ScreenIDs.PREVIEW_COVER_LETTER
         }
-        templateViewModel = ViewModelProvider(currentActivity())[TemplateViewModel::class.java]
         binding.resumePreviewImage.webViewClient = WebViewClient()
         onApi()
         onclick()
         manageAds()
     }
 
+
+
+    override fun attachViewMode() {
+
+    }
+
     override fun onResume() {
         super.onResume()
-        (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
+        (this as AdBaseActivity).askAdOnFragment(screenId)
+    }
+
+    override fun onInternetConnectivityChange(p0: Boolean?) {
+    }
+
+    override fun getScreenId(): ScreenIDs {
+        return screenId
     }
 
     private fun manageAds() {
         AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
+            this,
             binding.bannerAd,
             placeholder = Utils.createAdKeyFromScreenId(screenId)
         )
@@ -132,40 +146,40 @@ class ResumePreviewFragment : BaseFragment<FragmentResumePreviewBinding>() {
     private fun onclick() {
 
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().finish()
+            finish()
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            currentActivity().finish()
+       onBackPressedDispatcher.addCallback(this) {
+            finish()
         }
 
         binding.changeTemplate.setOnClickListener {
-            val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
+            val intent = Intent(this, ChoiceTemplate::class.java)
             if (isResume) {
                 intent.putExtra(Constants.IS_RESUME, true)
             } else {
                 intent.putExtra(Constants.IS_RESUME, false)
             }
             startActivity(intent)
-            currentActivity().finish()
+            finish()
         }
         binding.editProfile.setOnClickListener {
             if (isResume) {
-                val intent = Intent(currentActivity(), AddDetailResume::class.java)
+                val intent = Intent(this, AddDetailResume::class.java)
                 intent.putExtra(Constants.IS_EDIT, id)
                 startActivity(intent)
             } else {
-                currentActivity().onBackPressedDispatcher.onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
             }
         }
         binding.homeConstraint.setOnClickListener {
-            currentActivity().finish()
+            finish()
         }
         binding.includeTool.share.setOnClickListener {
-            shareAppMethod(currentActivity())
+            shareAppMethod(this)
         }
         binding.downloadConstraint.setOnClickListener {
-            alertboxChooseDownload(currentActivity(),
+            alertboxChooseDownload(this,
                 object :
                     com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringValueDialogCallback {
                     override fun onButtonClick(value: String) {

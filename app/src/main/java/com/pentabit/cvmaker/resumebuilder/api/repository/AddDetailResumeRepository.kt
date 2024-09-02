@@ -391,17 +391,16 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun editReference(
         profileId: String,
-        referenceRequestModel: ReferenceRequest,
+        referenceRequestModel: ArrayList<ProfileModelAddDetailResponse.UserReference>,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editReference(profileId, referenceRequestModel).enqueue(
+        chooseTemplateService.editReference(profileId, ReferenceRequest(referenceRequestModel)).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
-                        com.pentabit.cvmaker.resumebuilder.json.JSONManager.getInstance()
-                            .getFormattedResponse(
-                                com.pentabit.cvmaker.resumebuilder.json.JSONKeys.MESSAGE,
+                        JSONManager.getInstance()
+                            .getFormattedResponse(JSONKeys.MESSAGE,
                                 response.body(),
                                 object : TypeToken<String>() {}.type
                             ) as String,
@@ -423,11 +422,11 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun editAchievement(
         profileId: String,
-        achievRequestModel: AchievementRequest,
+        achievRequestModel: ArrayList<ProfileModelAddDetailResponse.UserAchievement>,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editAchievment(profileId, achievRequestModel).enqueue(
+        chooseTemplateService.editAchievment(profileId, AchievementRequest( achievRequestModel)).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
@@ -455,11 +454,11 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun editExperience(
         profileId: String,
-        experienceRequestModel: ExperienceRequest,
+        experienceRequestModel: ArrayList<ProfileModelAddDetailResponse.UserExperience>,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editExperience(profileId, experienceRequestModel).enqueue(
+        chooseTemplateService.editExperience(profileId, ExperienceRequest(experienceRequestModel)).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(
@@ -485,11 +484,11 @@ class AddDetailResumeRepository @Inject constructor(
 
     fun editProjects(
         profileId: String,
-        projectRequestModel: ProjectRequest,
+        projectRequestModel: ArrayList<ProfileModelAddDetailResponse.UserProject>,
         callback: ResponseCallback
     ) {
         _resumeResponse.postValue(NetworkResult.Loading())
-        chooseTemplateService.editProject(profileId, projectRequestModel).enqueue(
+        chooseTemplateService.editProject(profileId, ProjectRequest(projectRequestModel)).enqueue(
             SinglePointOfResponse(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     callback.onSuccess(

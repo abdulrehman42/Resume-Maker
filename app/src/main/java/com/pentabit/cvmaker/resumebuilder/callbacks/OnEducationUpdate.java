@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface OnEducationUpdate {
     void onEducationUpdated(List<ProfileModelAddDetailResponse.UserQualification> userQualificationsList);
+
 }

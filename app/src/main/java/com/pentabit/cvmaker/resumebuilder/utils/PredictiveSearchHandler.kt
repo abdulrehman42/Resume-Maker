@@ -47,7 +47,7 @@ class PredictiveSearchHandler(
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         if (searchRunnable != null) {
-            handler.removeCallbacks(searchRunnable!!);
+            handler.removeCallbacks(searchRunnable!!)
         }
 
         searchRunnable = Runnable {
@@ -57,9 +57,11 @@ class PredictiveSearchHandler(
             } else {
                 enableBtn?.visibility = View.GONE
             }
+            // Ensuring the search box retains focus
+            autoCompleteTextView?.requestFocus()
         }
 
-        handler.postDelayed(searchRunnable!!, 500);  // Delay of 500ms
+        handler.postDelayed(searchRunnable!!, 500)
 
     }
 

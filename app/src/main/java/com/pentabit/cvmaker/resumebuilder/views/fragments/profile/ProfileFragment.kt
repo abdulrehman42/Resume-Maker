@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
+import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -18,7 +19,7 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.ProfileVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileAdapter
-import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
+import com.pentabit.cvmaker.resumebuilder.views.activities.ResumePreviewActivity
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.ads_manager.ads_callback.RewardedLoadAndShowCallback
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
@@ -114,7 +115,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 requireActivity(),
                 object : RewardedLoadAndShowCallback {
                     override fun onAdFailed() {
-                        AppsKitSDKUtils.makeToast("Ad not available")
+                        if (BuildConfig.DEBUG) {
+                            startActivity(Intent(currentActivity(),AddDetailResume::class.java))
+                        }else{
+                            AppsKitSDKUtils.makeToast("Ad not available")
+                        }
                     }
 
                     override fun onAdRewarded() {
@@ -151,10 +156,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     viewModelStore
                     currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
                 } else {
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.profileHostFragment, ResumePreviewFragment())
-                        .addToBackStack(null)
-                        .commit()
+                    val intent = Intent(currentActivity(), ResumePreviewActivity::class.java)
+                    intent.putExtra(Constants.IS_RESUME, true)
+                    startActivity(intent)
+
                 }
             }
 

@@ -1,43 +1,36 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.activity.addCallback
-import androidx.core.view.isGone
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
-import com.pentabit.cvmaker.resumebuilder.callbacks.OnLookUpResult
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddSkillBinding
-import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.SkillRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
+import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
-import com.pentabit.cvmaker.resumebuilder.views.adapter.SuggestionAdapter
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddSkillFragment(
-    val userSkills: List<String>?,
-    val skillName: String?,
-    val position: Int,
-    val isedit: Boolean
+    val userSkills: List<String>,
+    val position: Int?,
+    val callback: SkillUpdates
 ) : BaseFragment<FragmentAddSkillBinding>() {
-    private lateinit var suggestionAdapter: SuggestionAdapter
     private val screenId = ScreenIDs.ADD_SKILLS
     private val userSkillAdapter = UserSkillAdapter()
-    private lateinit var addDetailResumeVM: AddDetailResumeVM
+    private lateinit var skillPredictiveSearchHandler: PredictiveSearchHandler
+    private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private val list = mutableListOf<String>()
-    var startWord = "-1__"
     private var alreadyUserSkills = mutableListOf<String>()
+    private var isSkillInDB = false
 
     override val inflate: Inflate<FragmentAddSkillBinding>
         get() = FragmentAddSkillBinding::inflate
@@ -48,104 +41,50 @@ class AddSkillFragment(
     }
 
     override fun observeLiveData() {
-        addDetailResumeVM.skillResponse.observe(this) {
-            parentFragmentManager.setFragmentResult(Constants.REFRESH_DATA, Bundle.EMPTY)
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-        }
-        addDetailResumeVM.looksupResponse.observe(this) {
-            setupAdapters(it)
-        }
+
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
         binding.includeTool.textView.text = getString(R.string.add_skill)
         AppsKitSDKAdsManager.showNative(requireActivity(), binding.bannerAdd, "")
-
-        userSkills?.let {
-            alreadyUserSkills = userSkills as MutableList<String>
-            for (i in 0 until alreadyUserSkills.size) {
-                list.add(alreadyUserSkills[i])
-            }
-        }
-        skillName?.let {
-            binding.skillEdittext.setText(Helper.removeOneUnderscores(it))
-        }
-
-
-        binding.skillEdittext.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // No action needed here
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val textLength = s?.length ?: 0
-                if (textLength > 2) {
-                    binding.tickBtn.isGone = false
-                } else {
-                    binding.tickBtn.isGone = true
-                }
-                val query = s.toString()
-                callLookUpApi(query)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                val query = s.toString()
-                callLookUpApi(query)
-            }
-
-        })
-        userSkillAdapter.submitList(userSkills)
-
-        binding.recyclerviewSkill.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3)
-            adapter = userSkillAdapter
-        }
-        setupClickListeners()
-    }
-
-
-    private fun callLookUpApi(query: String) {
-        addDetailResumeVM.getLookUp(Constants.skills, query, 0, 20, object : OnLookUpResult {
-            override fun onLookUpResult(list: MutableList<LookUpResponse>?) {
-
-            }
-        })
-    }
-
-    private fun setupAdapters(lookUpResponses: List<LookUpResponse>) {
-        suggestionAdapter = SuggestionAdapter(lookUpResponses) {
-            binding.skillEdittext.setText(it.text)
-        }
-        binding.recyclerviewSuggestions.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3)
-            adapter = suggestionAdapter
-        }
+        manageAds()
+        populateInfoIfRequired()
+        handleClicks()
+        managePredictiveSearchAdapter()
+        userSkillAdapter.submitList(list.toList())
         binding.recyclerviewSkill.apply {
             layoutManager = GridLayoutManager(requireContext(), 3)
             adapter = userSkillAdapter
         }
     }
 
-    private fun setupClickListeners() {
+    private fun manageAds() {
+
+    }
+
+    private fun handleClicks() {
         binding.tickBtn.setOnClickListener {
             val skill = binding.skillEdittext.text.toString().trim()
             if (skill.isNotEmpty()) {
-                if (isedit) {
-                    list[position] = startWord + skill
+                if (position!=null) {
+                    list[position] = skillPredictiveSearchHandler.getText()
                 } else {
-                    list.add(startWord + skill)
+                    list.add(skillPredictiveSearchHandler.getText())
                 }
                 binding.skillEdittext.setText("")
 
                 userSkillAdapter.submitList(list.toList())
+                binding.recyclerviewSkill.apply {
+                    layoutManager = GridLayoutManager(requireContext(), 3)
+                    adapter = userSkillAdapter
+                }
             }
         }
 
 
         binding.savebtn.setOnClickListener {
             if (!list.isEmpty()) {
-                apiCall()
+                saveSkill()
             } else {
                 binding.skillTextInputLayout.error = ("please add skill")
             }
@@ -161,8 +100,39 @@ class AddSkillFragment(
         }
     }
 
-    private fun apiCall() {
+    private fun saveSkill() {
 
-        addDetailResumeVM.editSkill(SkillRequestModel(list))
+        callback.skillUpdate(list)
+        currentActivity().onBackPressedDispatcher.onBackPressed()
+    }
+
+    private fun managePredictiveSearchAdapter() {
+        skillPredictiveSearchHandler = PredictiveSearchHandler(
+            key = Constants.languages,
+            isAlreadyInDB = isSkillInDB,
+            autoCompleteTextView = binding.skillEdittext,
+            viewModel = addDetailResumeVM,
+            enableBtn = binding.tickBtn
+        )
+    }
+
+    private fun populateInfoIfRequired() {
+
+
+        if (position != null) {
+                val model = userSkills[position]
+            binding.skillEdittext.setText(Helper.removeOneUnderscores(userSkills[position]))
+            isSkillInDB = model.startsWith("1_")
+
+            }
+            alreadyUserSkills = userSkills as MutableList<String>
+            for (i in 0 until alreadyUserSkills.size) {
+                list.add(alreadyUserSkills[i])
+            }
+    }
+
+    interface SkillUpdates
+    {
+        fun skillUpdate(skillList:List<String>)
     }
 }

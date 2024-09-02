@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pentabit.cvmaker.resumebuilder.databinding.EducationitemsBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 
 class ProjectAdapter : ListAdapter<ProfileModelAddDetailResponse.UserProject, ProjectAdapter.ViewHolder>(TemplateDiffCallback) {
     inner class ViewHolder(private val binding: EducationitemsBinding) :
@@ -15,7 +16,7 @@ class ProjectAdapter : ListAdapter<ProfileModelAddDetailResponse.UserProject, Pr
         @SuppressLint("SetTextI18n")
         fun setData(model: ProfileModelAddDetailResponse.UserProject) {
             binding.degreeName.text=model.description
-            binding.universityname.text=model.title
+            binding.universityname.text=Helper.removeOneUnderscores(model.title)
             binding.editEdu.setOnClickListener {
                 editItemClickCallback?.invoke(model,position)
             }
@@ -39,7 +40,7 @@ class ProjectAdapter : ListAdapter<ProfileModelAddDetailResponse.UserProject, Pr
 
     object TemplateDiffCallback : DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserProject>() {
         override fun areItemsTheSame(oldItem: ProfileModelAddDetailResponse.UserProject, newItem: ProfileModelAddDetailResponse.UserProject): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: ProfileModelAddDetailResponse.UserProject, newItem: ProfileModelAddDetailResponse.UserProject): Boolean {

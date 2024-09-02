@@ -2,7 +2,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
@@ -12,6 +11,8 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ReferenceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IS_RESUME
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.deleteItemPopup
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
@@ -22,28 +23,92 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
+class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>(),AddReferenceFragment.OnReferenceUpdate {
     val referenceAdapter = ReferenceAdapter()
-
     val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
-    lateinit var tabhost: TabLayout
+    var iscalled=false
     var list = ArrayList<ProfileModelAddDetailResponse.UserReference>()
     override val inflate: Inflate<FragmentReferrenceBinding>
         get() = FragmentReferrenceBinding::inflate
 
+    override fun init(savedInstanceState: Bundle?) {
+        handleAdapter()
+        handleClicks()
+        fetchProfileInfo()
+    }
+
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userReferences.isNullOrEmpty(), binding.popup)
-            list = it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>
-            setadapter(list)
+            populateAdapter(it.userReferences as ArrayList<ProfileModelAddDetailResponse.UserReference>)
+            iscalled=true
+        }
+    }
+    private fun fetchProfileInfo() {
+        if (!iscalled)
+        {
+            addDetailResumeVM.getProfileDetail()
+        }
+
+    }
+
+    private fun handleClicks() {
+        binding.addreferrenebtn.setOnClickListener {
+            (requireActivity() as AddDetailResume).openFragment(AddReferenceFragment(list, null, this))
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-            apiCall()
+    private fun populateAdapter(referenceList: List<ProfileModelAddDetailResponse.UserReference>) {
+        if (!iscalled)
+        {
+            saveInListWithRequiredFormat(referenceList)
+            referenceAdapter.submitList(list)
         }
+
+    }
+
+    private fun saveInListWithRequiredFormat(referenceList: List<ProfileModelAddDetailResponse.UserReference>) {
+        for (reference in referenceList) {
+            val model = ProfileModelAddDetailResponse.UserReference(
+                position = "1__" + Helper.removeOneUnderscores(reference.position),
+                company = "1__" + Helper.removeOneUnderscores(reference.company),
+                phone = reference.phone,
+                email = reference.email,
+                name = reference.name
+            )
+            list.add(model)
+        }
+    }
+
+    private fun saveReferenceData() {
+        addDetailResumeVM.editReference(
+            list
+        )
+    }
+    private fun handleAdapter() {
+        referenceAdapter.setOnItemDeleteClickCallback {
+            deleteItemPopup(currentActivity(), "Do you want to delete this education record",
+                object : DialogueBoxes.DialogCallback {
+                    override fun onButtonClick(isConfirmed: Boolean) {
+                        if (isConfirmed) {
+                            if (list.isNotEmpty()) {
+                                list.removeAt(it)
+                                referenceAdapter.submitList(list)
+                                referenceAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                })
+
+        }
+
+        referenceAdapter.setOnEditItemClickCallback { _, position ->
+            (requireActivity() as AddDetailResume).openFragment(
+                AddReferenceFragment(list,position,this)
+            )
+        }
+
+        binding.recyclerviewReference.adapter = referenceAdapter
     }
 
     override fun csnMoveForward(): Boolean {
@@ -51,85 +116,14 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>() {
     }
 
     override fun onMoveNextClicked(): Boolean {
-        return true
+        saveReferenceData()
+        return false
+    }
+    override fun referenceUpdate(listReference: List<ProfileModelAddDetailResponse.UserReference>) {
+        list = ArrayList(listReference)
+        AppsKitSDKUtils.setVisibility(listReference.isEmpty(), binding.popup)
+        referenceAdapter.submitList(listReference)
     }
 
-    private fun check(): Boolean {
-        if (list.isNotEmpty()) {
-            return true
-        } else {
-            AppsKitSDKUtils.makeToast("please add at least one reference")
-            return false
-        }
-    }
 
-    override fun init(savedInstanceState: Bundle?) {
-        tabhost = currentActivity().findViewById(R.id.tab_layout_adddetail)!!
-
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
-
-        /*if ((currentActivity() as AddDetailResume).isLast())
-        {
-            binding.addreferrenebtn
-        }*/
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(IS_RESUME, true)
-        apiCall()
-        onclick()
-    }
-
-    private fun apiCall() {
-        addDetailResumeVM.getProfileDetail()
-    }
-
-    private fun setadapter(userReferences: List<ProfileModelAddDetailResponse.UserReference>) {
-        referenceAdapter.submitList(userReferences)
-        referenceAdapter.setOnEditItemClickCallback {item,position->
-            (requireActivity() as AddDetailResume).openFragment( AddReferenceFragment(item, list,true,position))
-
-        }
-        referenceAdapter.setOnItemDeleteClickCallback {
-            if (list.size!=0)
-            {
-                list.removeAt(it)
-
-            }
-           //setadapter(list)
-            if (list.size != 0) {
-                callSaveApi()
-                apiCall()
-
-            }
-        }
-        binding.recyclerviewReference.adapter = referenceAdapter
-    }
-
-    private fun callSaveApi() {
-        var reference = ArrayList<ReferenceRequest.Reference>()
-        for (i in 0 until list.size) {
-            reference.add(
-                ReferenceRequest.Reference(
-                    Helper.removeOneUnderscores(list[i].company),
-                    list[i].email,
-                    list[i].name,
-                    list[i].phone,
-                    Helper.removeOneUnderscores(list[i].position)
-                )
-            )
-        }
-        val referenceRequest = ReferenceRequest(references = reference)
-
-        addDetailResumeVM.editReference(
-            referenceRequest
-        )
-    }
-
-    private fun onclick() {
-        binding.addreferrenebtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).openFragment( AddReferenceFragment(null, list, false, 0))
-        }
-    }
 }

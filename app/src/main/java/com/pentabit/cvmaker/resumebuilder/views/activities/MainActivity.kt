@@ -169,7 +169,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                     .addInPreferences(Constants.AUTH_TOKEN, "")
                                 AppsKitSDKPreferencesManager.getInstance()
                                     .addInPreferences(Constants.IS_LOGGED, false)
-//                                sharePref.writeBoolean(Constants.IS_LOGGED, false)
                                 templateViewModel.isLogin.value = false
                             }
                         }

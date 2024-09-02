@@ -66,6 +66,7 @@ class AddEducation(
             val model = userQualificationsList[position]
             isInstituteInDB = model.institute.startsWith("1_")
             isDegreeInDB = model.degree.startsWith("1_")
+
             binding.instituenameedittext.setText(Helper.removeOneUnderscores(model.institute))
             binding.degreeName.setText(Helper.removeOneUnderscores(model.degree))
             binding.startdateedittext.setText(
@@ -130,7 +131,7 @@ class AddEducation(
         }
 
         binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().onBackPressed()
+            currentActivity().supportFragmentManager.popBackStackImmediate()
         }
     }
 
@@ -160,7 +161,7 @@ class AddEducation(
             updatedList.add(newQualification)
         }
         callback.onEducationUpdated(updatedList)
-        currentActivity().onBackPressed()
+        currentActivity().onBackPressedDispatcher.onBackPressed()
     }
 
 }

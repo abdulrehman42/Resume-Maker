@@ -22,32 +22,23 @@ data class ProfileModelAddDetailResponse(
     val userSkills: List<String>?
 ) {
     data class UserAchievement(
-        val createdAt: String,
         val description: String,
-        val id: Int,
         val issueDate: String,
         val title: String,
-        val updatedAt: String
     )
 
     data class UserExperience(
         val company: String,
-        val createdAt: String,
         val description: String,
         val employmentType: String,
-        val endDate: String,
-        val id: Int,
+        val endDate: String?,
         val startDate: String,
         val title: String,
-        val updatedAt: String
     )
 
     data class UserProject(
-        val createdAt: String,
         val description: String,
-        val id: Int,
         val title: String,
-        val updatedAt: String
     )
 
     data class UserQualification(
@@ -61,12 +52,9 @@ data class ProfileModelAddDetailResponse(
 
     data class UserReference(
         val company: String,
-        val createdAt: String,
         val email: String,
-        val id: Int,
         val name: String,
         val phone: String,
         val position: String,
-        val updatedAt: String
     )
 }

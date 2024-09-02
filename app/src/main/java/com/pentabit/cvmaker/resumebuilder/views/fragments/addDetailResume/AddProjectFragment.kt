@@ -11,13 +11,16 @@ import com.google.android.material.textfield.TextInputLayout
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
+import com.pentabit.cvmaker.resumebuilder.callbacks.OnEducationUpdate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddProjectBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Project
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ProjectRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
+import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
@@ -28,18 +31,72 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddProjectFragment(
-    val data: ProfileModelAddDetailResponse.UserProject?,
-    val userProjectsList: List<ProfileModelAddDetailResponse.UserProject>?,
-    val isedit: Boolean,
-    val position: Int
+    val userProjectsList: List<ProfileModelAddDetailResponse.UserProject>,
+    val position: Int?,
+    val callback: OnAddProjectUpdate
 ) :
     BaseFragment<FragmentAddProjectBinding>() {
     lateinit var addDetailResumeVM: AddDetailResumeVM
     val screenId = ScreenIDs.ADD_PROJECT
-    var oldList = ArrayList<ProfileModelAddDetailResponse.UserProject>()
-    val updateList = ArrayList<Project>()
     override val inflate: Inflate<FragmentAddProjectBinding>
         get() = FragmentAddProjectBinding::inflate
+
+
+    override fun init(savedInstanceState: Bundle?) {
+        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
+        binding.includeTool.textView.text = getString(R.string.add_project)
+        manageAds()
+        populateInfoIfRequired()
+        handleClicks()
+
+    }
+
+    private fun manageAds() {
+        AppsKitSDKAdsManager.showNative(
+            currentActivity(), binding.bannerAdd, ""
+        )
+    }
+
+
+    private fun populateInfoIfRequired() {
+        if (position != null) {
+            val model=userProjectsList[position]
+            binding.projectedittext.setText(Helper.removeOneUnderscores(model.title))
+            binding.descriptionedittext.setText(model.description)
+        }
+    }
+
+
+    private fun handleClicks() {
+        binding.savebtn.setOnClickListener {
+            if (Validations.isConditionMetProject(binding)) {
+                saveProject()
+            }
+        }
+
+        binding.includeTool.backbtn.setOnClickListener {
+            currentActivity().supportFragmentManager.popBackStackImmediate()
+        }
+    }
+
+    private fun saveProject() {
+        val newProject = ProfileModelAddDetailResponse.UserProject(
+            title = binding.projectedittext.text.toString(),
+            description = binding.descriptionedittext.text.toString(),
+        )
+
+        val updatedList =
+            ArrayList<ProfileModelAddDetailResponse.UserProject>(userProjectsList)
+
+        if (position != null) {
+            updatedList[position] = newProject
+        } else {
+            updatedList.add(newProject)
+        }
+        callback.onProject(updatedList)
+        currentActivity().onBackPressedDispatcher.onBackPressed()
+    }
+
 
     override fun observeLiveData() {
         addDetailResumeVM.projectResponse.observe(this) {
@@ -59,84 +116,8 @@ class AddProjectFragment(
         (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun init(savedInstanceState: Bundle?) {
-        addDetailResumeVM = ViewModelProvider(this)[AddDetailResumeVM::class.java]
-        binding.includeTool.textView.text = getString(R.string.add_project)
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
-        userProjectsList?.let {
-            oldList = userProjectsList as ArrayList<ProfileModelAddDetailResponse.UserProject>
-            for (i in 0 until oldList.size) {
-                updateList.add(
-                    Project(
-                        oldList[i].description,
-                        Helper.removeOneUnderscores(oldList[i].title),
-                    )
-                )
-            }
-        }
-        data?.let {
-            binding.projectedittext.setText(Helper.removeOneUnderscores(data.title))
-            binding.descriptionedittext.setText(Helper.removeOneUnderscores(data.description))
-        }
-        binding.projecttitleTextInputLayout.apply {
-            // Adjust the layout parameters of the end icon
-            endIconMode = TextInputLayout.END_ICON_CUSTOM // If not already set
-            val endIconView =
-                findViewById<ImageView>(com.google.android.material.R.id.text_input_end_icon)
 
-            val params = endIconView.layoutParams as FrameLayout.LayoutParams
-            params.gravity = Gravity.BOTTOM or Gravity.END
-            params.marginEnd = 8.dpToPx(context) // Adjust margin to your needs
-            params.bottomMargin = 8.dpToPx(context)
-            endIconView.layoutParams = params
-        }
-        onclick()
-
-    }
-
-
-    private fun onclick() {
-        binding.savebtn.setOnClickListener {
-            if (Validations.isConditionMetProject(binding)) {
-                apiCall()
-            }
-        }
-        binding.includeTool.backbtn.setOnClickListener {
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-
-        }
-        requireActivity().onBackPressedDispatcher.addCallback {
-            currentActivity().supportFragmentManager.popBackStackImmediate()
-        }
-
-    }
-
-
-    private fun apiCall() {
-        if (!isedit) {
-            updateList.add(
-                Project(
-                    binding.descriptionedittext.text.toString(),
-                    binding.projectedittext.text.toString()
-                )
-            )
-        } else {
-            updateList[position] = Project(
-                binding.descriptionedittext.text.toString(),
-                binding.projectedittext.text.toString()
-            )
-        }
-
-
-        val projectRequest = ProjectRequest(projects = updateList)
-
-        addDetailResumeVM.editProjects(
-            projectRequest
-        )
+    interface  OnAddProjectUpdate{
+        fun onProject(projectList:List<ProfileModelAddDetailResponse.UserProject>)
     }
 }

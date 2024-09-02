@@ -2,7 +2,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentExperienceBinding
@@ -10,63 +9,98 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.deleteItemPopup
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ExperienceAdapter
-import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
+class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>(),
+    AddExperienceFragment.OnExperienceUpdate {
 
     val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
-    var list = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
     val experienceAdapter = ExperienceAdapter()
+    var list = ArrayList<ProfileModelAddDetailResponse.UserExperience>()
+
     override val inflate: Inflate<FragmentExperienceBinding>
         get() = FragmentExperienceBinding::inflate
+
+    override fun init(savedInstanceState: Bundle?) {
+        handleAdapter()
+        handleClicks()
+    }
+
+    private fun handleClicks() {
+
+
+        binding.addexperiencebtn.setOnClickListener {
+            (requireActivity() as AddDetailResume).openFragment(
+                AddExperienceFragment(
+                    list,
+                    null, this
+                )
+            )
+        }
+
+    }
+
 
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userExperiences.isNullOrEmpty(), binding.popup)
-
-            list = it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>
-            setadapter()
+            populateAdapter(it.userExperiences as ArrayList<ProfileModelAddDetailResponse.UserExperience>)
         }
     }
+
+
+    private fun handleAdapter() {
+
+        experienceAdapter.setOnEditItemClickCallback { item, position ->
+
+            (requireActivity() as AddDetailResume).openFragment(
+                AddExperienceFragment(
+                    list,
+                    position,
+                    this
+                )
+            )
+
+        }
+        experienceAdapter.setOnItemDeleteClickCallback {
+            deleteItemPopup(currentActivity(), "Do you want to delete this Experience record",
+                object : DialogueBoxes.DialogCallback {
+                    override fun onButtonClick(isConfirmed: Boolean) {
+                        if (isConfirmed) {
+                            if (list.isNotEmpty()) {
+                                list.removeAt(it)
+                                experienceAdapter.submitList(list)
+                                experienceAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                })
+
+        }
+        binding.recyclerviewExperience.adapter = experienceAdapter
+
+    }
+
 
     override fun csnMoveForward(): Boolean {
         return true
     }
 
     override fun onMoveNextClicked(): Boolean {
-        return true
-    }
-
-    private fun check(): Boolean {
-        if (list.isNotEmpty()) {
-            return true
-        } else {
-            AppsKitSDKUtils.makeToast("please add at least one experience")
-            return false
-        }
-    }
-
-    override fun init(savedInstanceState: Bundle?) {
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
-        apiCall()
-        onclick()
+        saveExperienceData()
+        return false
     }
 
     private fun apiCall() {
-        addDetailResumeVM.getProfileDetail(
-
-        )
+        addDetailResumeVM.getProfileDetail()
     }
 
     override fun onResume() {
@@ -76,60 +110,40 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>() {
         }
     }
 
-    private fun setadapter() {
-        experienceAdapter.submitList(list)
 
-        experienceAdapter.setOnEditItemClickCallback {item,position->
-
-            (requireActivity() as AddDetailResume).openFragment( AddExperienceFragment(item, list, true,position))
-
-        }
-        experienceAdapter.setOnItemDeleteClickCallback {
-            if (list.size!=0)
-            {
-                list.removeAt(it)
-            }
-            setadapter()
-            if (list.size != 0) {
-                callSaveApi()
-                apiCall()
-
-            }
-
-        }
-        binding.recyclerviewExperience.adapter = experienceAdapter
-    }
-
-    private fun callSaveApi() {
-        var experience = ArrayList<Experience>()
-        for (i in 0 until list.size) {
-            experience.add(
-                Experience(
-                    "1__"+Helper.removeOneUnderscores(list[i].company),
-                    list[i].description,
-                    "fullTime",
-                    list[i].endDate, list[i].startDate, "1__"+Helper.removeOneUnderscores(list[i].title)
-                )
-            )
-        }
-        val experienceRequest = ExperienceRequest(experiences = experience)
+    private fun saveExperienceData() {
         addDetailResumeVM.editExperience(
-            experienceRequest
+            list
         )
     }
 
-    private fun onclick() {
+    private fun populateAdapter(qualificationList: List<ProfileModelAddDetailResponse.UserExperience>) {
+        saveInListWithRequiredFormat(qualificationList)
+        experienceAdapter.submitList(list)
+    }
 
-        binding.addexperiencebtn.setOnClickListener {
-            (requireActivity() as AddDetailResume).openFragment(
-                AddExperienceFragment(
-                    null,
-                    list,
-                    false,
-                    0
-                ))
-
+    private fun saveInListWithRequiredFormat(experienceList: List<ProfileModelAddDetailResponse.UserExperience>) {
+        for (experience in experienceList) {
+            val model = ProfileModelAddDetailResponse.UserExperience(
+                company = "1__" + Helper.removeOneUnderscores(experience.company),
+                description = experience.description,
+                employmentType = "fullTime",
+                startDate = experience.startDate,
+                endDate = experience.endDate,
+                title = "1__" + Helper.removeOneUnderscores(experience.title),
+            )
+            list.add(model)
         }
+    }
+
+
+
+    override fun onExperience(experiencelist: ArrayList<ProfileModelAddDetailResponse.UserExperience>?) {
+        list = ArrayList(experiencelist)
+        experiencelist?.let {
+            AppsKitSDKUtils.setVisibility(experiencelist.isEmpty(), binding.popup)
+        }
+        experienceAdapter.submitList(experiencelist)
     }
 
 

@@ -19,12 +19,12 @@ import com.pentabit.cvmaker.resumebuilder.databinding.ChoosecreateprofileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ChoosedownloadLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.CreationdialogueBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.DeleteAccountBinding
+import com.pentabit.cvmaker.resumebuilder.databinding.DeleteitemalertdialogueBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.ImportProfileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.LogoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.PreviewdownloadBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.RatingLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplateSelectLayoutBinding
-import java.io.File
 import java.util.Calendar
 
 
@@ -54,6 +54,26 @@ object DialogueBoxes {
             .into(binding.templateimage)
         binding.linearbtn.setOnClickListener {
             param.onButtonClick(true)
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+        dialogBuilder.setCancelable(true)
+        dialogBuilder.show()
+    }
+
+
+
+
+    fun deleteItemPopup(curentactivity: Activity, msg: String, param: DialogCallback) {
+        val binding = DeleteitemalertdialogueBinding.inflate(curentactivity.layoutInflater)
+        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.textshow.setText(msg)
+        binding.yesBtn.setOnClickListener {
+            param.onButtonClick(true)
+            dialogBuilder.dismiss()
+        }
+        binding.noBtn.setOnClickListener {
             dialogBuilder.dismiss()
         }
         dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)

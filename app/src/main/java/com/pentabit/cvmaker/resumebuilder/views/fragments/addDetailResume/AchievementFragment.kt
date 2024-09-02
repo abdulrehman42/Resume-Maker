@@ -9,6 +9,9 @@ import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailRespon
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Achievement
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.AchievementRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.deleteItemPopup
+import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.AchievementAdapter
@@ -17,8 +20,10 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>() {
+class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>(),
+    AddAchievementsFRagment.OnAchievemntUpdate {
     val achievementAdapter = AchievementAdapter()
+    var isCalled=false
     val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     var list = ArrayList<ProfileModelAddDetailResponse.UserAchievement>()
 
@@ -26,19 +31,19 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     override val inflate: Inflate<FragmentAchievementBinding>
         get() = FragmentAchievementBinding::inflate
 
+
+    override fun init(savedInstanceState: Bundle?) {
+        handleAdapter()
+        handleClicks()
+        fetchProfileData()
+    }
+
+
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userAchievement.isNullOrEmpty(), binding.popup)
-            list.clear()
-            list = it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>
-            setAdapter()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-            apiCall()
+            populateAdapter(it.userAchievement as ArrayList<ProfileModelAddDetailResponse.UserAchievement>)
+            isCalled=true
         }
     }
 
@@ -48,83 +53,87 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
 
     override fun onMoveNextClicked(): Boolean {
-        return true
+        saveEducationData()
+        return false
     }
 
-    private fun check(): Boolean {
-        if (list.isNotEmpty()) {
-            return true
-        } else {
-            AppsKitSDKUtils.makeToast("please add at least one achievement")
-            return false
-        }
-    }
-
-    override fun init(savedInstanceState: Bundle?) {
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
-        apiCall()
-        onclick()
-    }
-
-    private fun apiCall() {
-        addDetailResumeVM.getProfileDetail()
-    }
-
-    private fun onclick() {
+    private fun handleClicks() {
         binding.addachievementbtn.setOnClickListener {
             (requireActivity() as AddDetailResume).openFragment(
                 AddAchievementsFRagment(
-                    null,
                     list,
-                    0,
-                    false
+                    null,
+                    this
                 )
             )
         }
     }
 
-    private fun setAdapter() {
-        achievementAdapter.submitList(list)
-        achievementAdapter.setOnEditItemClickCallback { item, position ->
+    private fun handleAdapter() {
+        achievementAdapter.setOnItemDeleteClickCallback {
+            deleteItemPopup(currentActivity(), "Do you want to delete this achievement record",
+                object : DialogueBoxes.DialogCallback {
+                    override fun onButtonClick(isConfirmed: Boolean) {
+                        if (isConfirmed) {
+                            if (list.isNotEmpty()) {
+                                list.removeAt(it)
+                                achievementAdapter.submitList(list)
+                                achievementAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                })
+        }
+
+        achievementAdapter.setOnEditItemClickCallback { _, position ->
             (requireActivity() as AddDetailResume).openFragment(
                 AddAchievementsFRagment(
-                    item,
                     list,
                     position,
-                    true
+                    this
                 )
             )
         }
-        achievementAdapter.setOnItemDeleteClickCallback {
-            if (list.size != 0) {
-                list.removeAt(it)
-            }
-            // setAdapter()
-            if (list.size != 0) {
-                callSaveApi()
-                apiCall()
 
-            }
-        }
-        binding.recyclerviewAchievements.adapter = achievementAdapter
+        achievementAdapter.submitList(list)
+        binding.recyclerviewAchievements.adapter=achievementAdapter
+
     }
 
-    private fun callSaveApi() {
-        var achievement = ArrayList<Achievement>()
-        for (i in 0 until list.size) {
-            achievement.add(
-                Achievement(list[i].description, list[i].issueDate, list[0].title)
-            )
-        }
-        val achievementRequest = AchievementRequest(achievements = achievement)
+    private fun populateAdapter(achievementList: ArrayList<ProfileModelAddDetailResponse.UserAchievement>) {
+        saveInListWithRequiredFormat(achievementList)
+        achievementAdapter.submitList(list)
+    }
 
+    private fun saveInListWithRequiredFormat(achievementList: List<ProfileModelAddDetailResponse.UserAchievement>) {
+        for (achievement in achievementList) {
+            val model = ProfileModelAddDetailResponse.UserAchievement(
+                title = "1__" + Helper.removeOneUnderscores(achievement.title),
+                description = achievement.description,
+                issueDate = achievement.issueDate,
+            )
+            list.add(model)
+        }
+    }
+
+    private fun saveEducationData() {
         addDetailResumeVM.editAchievement(
-            achievementRequest
+            list
         )
+    }
+
+    private fun fetchProfileData() {
+        if (!isCalled)
+        {
+            addDetailResumeVM.getProfileDetail()
+        }
+    }
+
+    override fun onAchievemnet(listAchievement: ArrayList<ProfileModelAddDetailResponse.UserAchievement>) {
+        list = ArrayList(listAchievement)
+        AppsKitSDKUtils.setVisibility(listAchievement.isEmpty(), binding.popup)
+        achievementAdapter.submitList(listAchievement)
+        achievementAdapter.notifyDataSetChanged()
     }
 
 }

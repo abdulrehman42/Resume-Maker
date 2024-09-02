@@ -2,12 +2,12 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentLanguageBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.LanguageRequestModel
-import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.deleteItemPopup
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.SingleStringAdapter
@@ -16,7 +16,7 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
+class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>(),AddLanguageFragment.OnLanguageUpdate {
     val singleStringAdapter = SingleStringAdapter()
     val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     var list = ArrayList<String>()
@@ -27,7 +27,8 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userLanguages.isNullOrEmpty(), binding.popup)
             list = it.userLanguages as ArrayList<String>
-            setadapter(list)
+            singleStringAdapter.submitList(list)
+            setadapter()
         }
 
     }
@@ -38,53 +39,43 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
 
 
     override fun onMoveNextClicked(): Boolean {
-        return true
-    }
-
-    private fun check(): Boolean {
-        if (list.isNotEmpty()) {
-            return true
-        } else {
-            AppsKitSDKUtils.makeToast("please add at least one language")
-            return false
-        }
+        saveCallApi()
+        return false
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        AppsKitSDKAdsManager.showNative(
-            currentActivity(), binding.bannerAdd, ""
-
-        )
-        apiCall()
+        fetchProfileData()
         onclick()
     }
 
-    private fun apiCall() {
+    private fun fetchProfileData() {
         addDetailResumeVM.getProfileDetail()
     }
 
-    private fun setadapter(userLanguages: List<String>) {
-        singleStringAdapter.submitList(userLanguages)
+    private fun setadapter() {
+        singleStringAdapter.submitList(list)
         singleStringAdapter.setOnEditItemClickCallback { item, position ->
             (requireActivity() as AddDetailResume).openFragment(
                 AddLanguageFragment(
-                    userLanguages,
-                    item,
-                    true,
-                    position
+                    list,
+                    position,
+                    this
                 )
             )
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
-            if (list.size != 0) {
-                list.removeAt(it)
-            }
-            //setadapter(list)
-            if (list.size != 0) {
-                saveCallApi()
-                apiCall()
+            deleteItemPopup(currentActivity(), "Do you want to delete this Skill record",
+                object : DialogueBoxes.DialogCallback {
+                    override fun onButtonClick(isConfirmed: Boolean) {
+                        if (isConfirmed) {
+                            if (list.isNotEmpty()) {
+                                list.removeAt(it)
+                                singleStringAdapter.submitList(list)
 
-            }
+                            }
+                        }
+                    }
+                })
         }
         binding.recyclerviewLanguage.apply {
             adapter = singleStringAdapter
@@ -103,17 +94,16 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>() {
                 AddLanguageFragment(
                     list,
                     null,
-                    false,
-                    0
+                    this
                 )
             )
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-            apiCall()
-        }
+    override fun languageUpdate(languagelist: List<String>) {
+        list = ArrayList(languagelist)
+        AppsKitSDKUtils.setVisibility(languagelist.isEmpty(), binding.popup)
+        singleStringAdapter.submitList(list)
+        singleStringAdapter.notifyDataSetChanged()
     }
 }

@@ -1,7 +1,9 @@
 package com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume
 
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
+
 data class ExperienceRequest(
-    val experiences: List<Experience>
+    val experiences: ArrayList<ProfileModelAddDetailResponse.UserExperience>
 )
 data class Experience(
     val company: String,

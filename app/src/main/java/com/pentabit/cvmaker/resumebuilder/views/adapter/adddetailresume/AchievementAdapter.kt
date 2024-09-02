@@ -41,7 +41,7 @@ class AchievementAdapter : ListAdapter<ProfileModelAddDetailResponse.UserAchieve
 
     object TemplateDiffCallback : DiffUtil.ItemCallback<ProfileModelAddDetailResponse.UserAchievement>() {
         override fun areItemsTheSame(oldItem: ProfileModelAddDetailResponse.UserAchievement, newItem: ProfileModelAddDetailResponse.UserAchievement): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: ProfileModelAddDetailResponse.UserAchievement, newItem: ProfileModelAddDetailResponse.UserAchievement): Boolean {

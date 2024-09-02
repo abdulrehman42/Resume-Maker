@@ -22,7 +22,6 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
-import com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume.ResumePreviewFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.choose.BasicFragment
 import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.AddDetailCoverLetterFragment
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
@@ -224,10 +223,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     private fun navigateToPreviewScreen() {
-        supportFragmentManager.beginTransaction()
+        val intent=Intent(this, ResumePreviewActivity::class.java)
+        startActivity(intent)
+        /*supportFragmentManager.beginTransaction()
             .replace(R.id.choice_template_container, ResumePreviewFragment())
             .addToBackStack(null)
-            .commit()
+            .commit()*/
     }
 
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
