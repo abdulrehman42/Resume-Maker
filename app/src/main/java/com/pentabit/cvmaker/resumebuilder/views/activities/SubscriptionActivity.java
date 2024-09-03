@@ -196,7 +196,7 @@ public class SubscriptionActivity extends AdBaseActivity implements PurchasesUpd
             onSubscriptionSelected(lastSelected);
         });
         binding.crossIconIv.setOnClickListener(view -> {
-            onBackPressed();
+            finish();
         });
     }
 

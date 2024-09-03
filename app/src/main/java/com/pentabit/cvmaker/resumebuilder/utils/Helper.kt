@@ -497,4 +497,8 @@ object Helper {
             AppsKitSDKUtils.makeToast("$e")
         }
     }
+
+    fun removeSpaceFromString(text: String): String {
+        return text.replace("\\s+".toRegex(), "").toLowerCase()
+    }
 }

@@ -48,7 +48,6 @@ class AddDetailResume : BaseActivity() {
     private lateinit var binding: ActivityAddDetailResumeBinding
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
-    var getdataResponse: ProfileModelAddDetailResponse? = null
     lateinit var imageSourceSelectionHelper: ImageSourceSelectionHelper
 
     private val addDetailResumeVM: AddDetailResumeVM by viewModels()
@@ -262,7 +261,6 @@ class AddDetailResume : BaseActivity() {
         if (currentTabPosition < allTabs.size - 1) {
             binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
         } else {
-            //    if (!iseditProfile) {
             DialogueBoxes.alertboxChooseCreation(
                 this,
                 object : DialogueBoxes.StringValueDialogCallback {
@@ -270,6 +268,7 @@ class AddDetailResume : BaseActivity() {
                         if (value == Constants.PROFILE) {
                             AppsKitSDKPreferencesManager.getInstance()
                                 .addInPreferences(Constants.VIEW_PROFILE, true)
+                            startActivity(Intent(this@AddDetailResume,ProfileActivity::class.java))
                             finish()
                         } else {
                             val intent = Intent(this@AddDetailResume, ChoiceTemplate::class.java)
@@ -279,9 +278,7 @@ class AddDetailResume : BaseActivity() {
                             finish()
                         }
                     }
-                })/*}else{
-                finish()
-            }*/
+                })
         }
     }
 

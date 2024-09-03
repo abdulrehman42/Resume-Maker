@@ -223,6 +223,8 @@ class ImageSourceSelectionHelper(val activity: AdBaseActivity) {
                 dialog.dismiss()
             }
         })
+        dialog.setCancelable(true)
+
 
     }
 

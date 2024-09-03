@@ -146,10 +146,12 @@ class InformationFragment() :
             jobedittext.setText(Helper.removeOneUnderscores(data.jobTitle))
             emailtext.setText(data.email)
             phoneedittext.setText(data.phone)
-            if (!data.address.isNullOrEmpty())
-            {
+            if (data.address == "null") {
+                address.setText("--")
+            }
+            else if (!data.address.isNullOrEmpty()) {
                 address.setText(data.address)
-            }else{
+            } else {
                 address.setText("--")
             }
             dobEdit.setText(Helper.convertIsoToCustomFormat(data.dob))

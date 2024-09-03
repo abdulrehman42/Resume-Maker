@@ -92,10 +92,8 @@ class AddExperienceFragment(
             )
             binding.description.setText(Helper.removeOneUnderscores(model.description))
             binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(model.endDate))
-            if (model.endDate=="null")
-            {
-                binding.checkItscontinue.isChecked=true
-            }
+            binding.checkItscontinue.isChecked = model.endDate.isNullOrEmpty()
+            binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
         }
     }
 

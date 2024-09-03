@@ -57,9 +57,7 @@ class LoginActivity : BaseActivity() {
     private fun liveDataObserve() {
         templateViewModel.loadingState.observe(this) {
             AppsKitSDKUtils.setVisibility(it, binding.loader)
-            /*if (it.msg.isNotBlank()) {
-                AppsKitSDKUtils.makeToast(it.msg)
-            }*/
+
         }
         templateViewModel.loginResponse.observe(this) {
             AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.IS_LOGGED, true)
@@ -97,6 +95,7 @@ class LoginActivity : BaseActivity() {
         val intent: Intent = googleclient.signInIntent
         startActivityForResult(intent, 100)
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

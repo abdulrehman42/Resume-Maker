@@ -42,13 +42,6 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>(),
         return false
     }
 
-    override fun onResume() {
-        super.onResume()
-        parentFragmentManager.setFragmentResultListener(Constants.REFRESH_DATA, this) { _, _ ->
-            getProfileDetail()
-        }
-    }
-
     override fun init(savedInstanceState: Bundle?) {
         AppsKitSDKAdsManager.showBanner(
             currentActivity(),
@@ -76,18 +69,24 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>(),
             )
         }
         skillAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this Skill record",
-                object : DialogueBoxes.DialogCallback {
-                    override fun onButtonClick(isConfirmed: Boolean) {
-                        if (isConfirmed) {
-                            if (list.isNotEmpty()) {
-                                list.removeAt(it)
-                                skillAdapter.submitList(list)
-                                skillAdapter.notifyDataSetChanged()
+            if (list.size!=1){
+
+                deleteItemPopup(currentActivity(), "Do you want to delete this Skill record",
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                if (list.isNotEmpty()) {
+                                    list.removeAt(it)
+                                    skillAdapter.submitList(list)
+                                    skillAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
-                })
+                    })
+            }else{
+                AppsKitSDKUtils.makeToast("sorry at least one skill required")
+
+            }
         }
 
         binding.recyclerviewSkill.apply {

@@ -45,10 +45,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>(),A
         }
     }
     private fun fetchProfileInfo() {
-        if (!iscalled)
-        {
             addDetailResumeVM.getProfileDetail()
-        }
 
     }
 
@@ -87,18 +84,22 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>(),A
     }
     private fun handleAdapter() {
         referenceAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this reference record",
-                object : DialogueBoxes.DialogCallback {
-                    override fun onButtonClick(isConfirmed: Boolean) {
-                        if (isConfirmed) {
-                            if (list.isNotEmpty()) {
-                                list.removeAt(it)
-                                referenceAdapter.submitList(list)
-                                referenceAdapter.notifyDataSetChanged()
+            if (list.size!=1){
+                deleteItemPopup(currentActivity(), "Do you want to delete this reference record",
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                if (list.isNotEmpty()) {
+                                    list.removeAt(it)
+                                    referenceAdapter.submitList(list)
+                                    referenceAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
-                })
+                    })
+            }else{
+                  AppsKitSDKUtils.makeToast("sorry at least one reference required")
+            }
 
         }
 

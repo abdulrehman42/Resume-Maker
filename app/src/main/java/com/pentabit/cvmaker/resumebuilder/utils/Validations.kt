@@ -47,6 +47,7 @@ object Validations {
             return false
         }
 
+
         if (binding.phoneedittext.text.toString().length <= 6) {
             binding.textInputLayout4.error = ("Enter a valid number")
             return false

@@ -42,18 +42,23 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>(),AddProj
 
     private fun handleAdapter() {
         projectAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this project record",
-                object : DialogueBoxes.DialogCallback {
-                    override fun onButtonClick(isConfirmed: Boolean) {
-                        if (isConfirmed) {
-                            if (list.isNotEmpty()) {
-                                list.removeAt(it)
-                                projectAdapter.submitList(list)
-                                projectAdapter.notifyDataSetChanged()
+            if (list.size!=1){
+                deleteItemPopup(currentActivity(), "Do you want to delete this project record",
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                if (list.isNotEmpty()) {
+                                    list.removeAt(it)
+                                    projectAdapter.submitList(list)
+                                    projectAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
-                })
+                    })
+            }else{
+                AppsKitSDKUtils.makeToast("sorry at least one project required")
+
+            }
         }
 
         projectAdapter.setOnEditItemClickCallback { _, position ->

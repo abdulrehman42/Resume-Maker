@@ -14,17 +14,18 @@ import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddInterestFragment(
     val userInterests: List<String>,
     val position: Int?,
-    val callback:OnInterestUpdate
+    val callback: OnInterestUpdate
 ) : BaseFragment<FragmentAddInterestBinding>() {
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private lateinit var addInterestPredictiveSearchHandler: PredictiveSearchHandler
-    var isInterestInDB=false
+    var isInterestInDB = false
     private val screenId = ScreenIDs.ADD_INTERESTS
     private val userlanguasAdapter = UserSkillAdapter()
     var oldList = ArrayList<String>()
@@ -51,7 +52,6 @@ class AddInterestFragment(
         super.onResume()
         (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
     }
-
 
 
     private fun populateDataIfRequired() {
@@ -83,17 +83,22 @@ class AddInterestFragment(
         }
         binding.tickBtn.setOnClickListener {
             val interest = addInterestPredictiveSearchHandler.getText()
-            if (interest.isNotEmpty()) {
-                if (position!=null) {
-                    updateList[position] = addInterestPredictiveSearchHandler.getText()
-                } else {
-                    updateList.add(addInterestPredictiveSearchHandler.getText())
-
+            val isNumeric = interest.matches(Regex("\\d+"))
+            if (!isNumeric) {
+                if (interest.isNotEmpty()) {
+                    if (position != null) {
+                        updateList[position] = addInterestPredictiveSearchHandler.getText()
+                    } else {
+                        updateList.add(addInterestPredictiveSearchHandler.getText())
+                    }
+                    binding.interestEdittext.setText("")
+                    userlanguasAdapter.submitList(updateList.toList())
                 }
-                binding.interestEdittext.setText("")
-                userlanguasAdapter.submitList(updateList.toList())
+            }else{
+                AppsKitSDKUtils.makeToast("please add interest don't ")
             }
         }
+
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().supportFragmentManager.popBackStackImmediate()
         }
@@ -118,8 +123,7 @@ class AddInterestFragment(
         currentActivity().onBackPressedDispatcher.onBackPressed()
     }
 
-    interface OnInterestUpdate
-    {
+    interface OnInterestUpdate {
         fun onInterest(interesList: List<String>)
     }
 

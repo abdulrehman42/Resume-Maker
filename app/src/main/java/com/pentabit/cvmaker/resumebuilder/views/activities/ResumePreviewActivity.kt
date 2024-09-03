@@ -77,7 +77,7 @@ class ResumePreviewActivity : BaseActivity() {
                 useWideViewPort = true
             }
             binding.resumePreviewImage.loadDataWithBaseURL(
-                Constants.BASE_URL_PRODUCTION,
+                Constants.BASE_URL_DEVELOPMENT,
                 it,
                 "text/html",
                 "UTF-8",
@@ -146,11 +146,13 @@ class ResumePreviewActivity : BaseActivity() {
     private fun onclick() {
 
         binding.includeTool.backbtn.setOnClickListener {
-            finish()
+            startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
+            finishAffinity()
         }
 
-       onBackPressedDispatcher.addCallback(this) {
-            finish()
+       onBackPressedDispatcher.addCallback {
+           startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
+           finishAffinity()
         }
 
         binding.changeTemplate.setOnClickListener {

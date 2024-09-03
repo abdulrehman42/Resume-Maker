@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.pentabit.cvmaker.resumebuilder.callbacks.OnLookUpResult
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
+import com.pentabit.cvmaker.resumebuilder.utils.Helper.removeSpaceFromString
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 
 class PredictiveSearchHandler(
@@ -34,7 +35,7 @@ class PredictiveSearchHandler(
         val text = autoCompleteTextView.text.toString().trim()
         return if (text.isEmpty()) {
             ""
-        } else if ((isAlreadyInDB && text == startingText) || lst.contains(text)) {
+        } else if ((isAlreadyInDB && text == startingText) || lst.contains(removeSpaceFromString(text))) {
             "1__$text"
         } else {
             "-1__$text"
@@ -49,7 +50,6 @@ class PredictiveSearchHandler(
         if (searchRunnable != null) {
             handler.removeCallbacks(searchRunnable!!)
         }
-
         searchRunnable = Runnable {
             if (s != null && s.length > 1) {
                 enableBtn?.visibility = View.VISIBLE
@@ -64,6 +64,8 @@ class PredictiveSearchHandler(
         handler.postDelayed(searchRunnable!!, 500)
 
     }
+
+
 
     override fun afterTextChanged(s: Editable?) {
         // do nothing
@@ -99,4 +101,6 @@ class PredictiveSearchHandler(
         // Show dropdown suggestions
         autoCompleteTextView.showDropDown()
     }
+
+
 }

@@ -40,10 +40,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             AppsKitSDKUtils.setVisibility(it, binding.loader)
         }
         profileVM.getString.observe(currentActivity()) {
-            apiCall()
+            fetchProfileData()
         }
         profileVM.dataResponse.observe(currentActivity()) {
             if (it.isNullOrEmpty()) {
+                profileAdapter.submitList(it)
+                profileAdapter.notifyDataSetChanged()
                 startActivity(Intent(currentActivity(), AddDetailResume::class.java))
                 binding.addTabshide.isGone = false
                 binding.popupmsg.isGone = false
@@ -59,6 +61,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun onResume() {
         super.onResume()
+        fetchProfileData()
         (requireActivity() as AdBaseActivity).askAdOnFragment(screeId)
     }
 
@@ -71,7 +74,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             profileAdapter.isViewProfile = true
         }
         setadapter()
-        apiCall()
         onclick()
         handleAds()
     }
@@ -85,7 +87,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         )
     }
 
-    private fun apiCall() {
+    private fun fetchProfileData() {
         profileVM.getProfileList()
     }
 

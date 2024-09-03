@@ -72,8 +72,9 @@ class AddEducation(
             binding.startdateedittext.setText(
                 Helper.convertIsoToCustomFormat(model.startDate)
             )
-            binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(model.endDate))
             binding.checkItscontinue.isChecked = model.endDate.isNullOrEmpty()
+            binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
+            binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(model.endDate))
         }
     }
 

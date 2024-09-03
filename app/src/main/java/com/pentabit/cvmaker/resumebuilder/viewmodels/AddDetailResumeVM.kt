@@ -64,7 +64,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                         override fun onSuccess(message: String?, data: Any?) {
                             informationResponse.postValue(data as Profile)
                             isInEditMode = true
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
                         }
 
                         override fun onFailure(errorMessage: String?) {
@@ -87,7 +87,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     createProfileRequestModel,
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                             informationResponse.postValue(data as Profile)
                         }
@@ -113,7 +113,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             objectiveResponse.postValue(data as ProfileModelAddDetailResponse)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -190,7 +190,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             skillResponse.postValue(data as List<String>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -216,7 +216,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             interestResponse.postValue(data as List<String>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -242,7 +242,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             languageResponse.postValue(data as List<String>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -268,7 +268,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             experienceResponse.postValue(data as List<ExperienceResponse>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -294,7 +294,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             referenceResponse.postValue(data as List<ReferrenceResponseModel>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -320,7 +320,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             achievementResponse.postValue(data as List<AchievementResponse>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 
@@ -346,7 +346,7 @@ class AddDetailResumeVM @Inject constructor(val addDetailResumeRepository: AddDe
                     object : ResponseCallback {
                         override fun onSuccess(message: String?, data: Any?) {
                             projectResponse.postValue(data as List<ProjectResponse>)
-                            loadingState.postValue(LoaderModel(false, ""))
+                            loadingState.postValue(LoaderModel(false, message!!))
 
                         }
 

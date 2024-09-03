@@ -37,6 +37,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
         educationAdapter.disableEditing(false)
 
         educationAdapter.onDelete {
+            if (list.size!=1){
             deleteItemPopup(currentActivity(), "Do you want to delete this education record",
                 object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
@@ -49,6 +50,9 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
                         }
                     }
                 })
+            }else{
+                AppsKitSDKUtils.makeToast("sorry at least one education required")
+            }
 
         }
 

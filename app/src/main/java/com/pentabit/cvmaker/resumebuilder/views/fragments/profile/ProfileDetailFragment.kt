@@ -96,7 +96,9 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
         }
 
         binding.createProfile.setOnClickListener {
-            startActivity(Intent(currentActivity(), AddDetailResume::class.java))
+            val intent = Intent(currentActivity(), ChoiceTemplate::class.java)
+            intent.putExtra(Constants.IS_RESUME, true)
+            startActivity(intent)
         }
         binding.createCoverletter.setOnClickListener {
             val intent = Intent(currentActivity(), ChoiceTemplate::class.java)

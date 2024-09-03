@@ -88,7 +88,7 @@ object DialogueBoxes {
         dialogBuilder.setContentView(binding.root)
         binding.templateimage.webViewClient = WebViewClient()
         binding.templateimage.loadDataWithBaseURL(
-            Constants.BASE_URL_PRODUCTION,
+            Constants.BASE_URL_DEVELOPMENT,
             template,
             "text/html",
             "UTF-8",

@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/red"
+            android:textColor="@color/black"
             android:backgroundTint="@color/grey_less_dark"
             android:layout_marginEnd="@dimen/_5sdp"
             android:text="Yes"/>

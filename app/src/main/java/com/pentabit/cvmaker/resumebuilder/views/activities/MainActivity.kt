@@ -140,13 +140,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED)) {
             binding.logout.setText("Logout")
-        } else {
+        }
+        else {
             binding.logout.setText("Login")
         }
     }
-
 
     private fun refreshToken() {
         if (AppsKitSDKPreferencesManager.getInstance()

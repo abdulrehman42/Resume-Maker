@@ -70,18 +70,23 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>(),AddIn
 
     private fun handleAdapter() {
         interestAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this interest record",
-                object : DialogueBoxes.DialogCallback {
-                    override fun onButtonClick(isConfirmed: Boolean) {
-                        if (isConfirmed) {
-                            if (list.isNotEmpty()) {
-                                list.removeAt(it)
-                                interestAdapter.submitList(list)
-                                interestAdapter.notifyDataSetChanged()
+            if (list.size!=1){
+                deleteItemPopup(currentActivity(), "Do you want to delete this interest record",
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                if (list.isNotEmpty()) {
+                                    list.removeAt(it)
+                                    interestAdapter.submitList(list)
+                                    interestAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
-                })
+                    })
+            }else{
+                AppsKitSDKUtils.makeToast("sorry at least one interest required")
+
+            }
 
         }
 

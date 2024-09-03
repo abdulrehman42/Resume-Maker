@@ -71,18 +71,23 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>(),
 
         }
         experienceAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this Experience record",
-                object : DialogueBoxes.DialogCallback {
-                    override fun onButtonClick(isConfirmed: Boolean) {
-                        if (isConfirmed) {
-                            if (list.isNotEmpty()) {
-                                list.removeAt(it)
-                                experienceAdapter.submitList(list)
-                                experienceAdapter.notifyDataSetChanged()
+            if (list.size!=1){
+                deleteItemPopup(currentActivity(), "Do you want to delete this Experience record",
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                if (list.isNotEmpty()) {
+                                    list.removeAt(it)
+                                    experienceAdapter.submitList(list)
+                                    experienceAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
-                })
+                    })
+            }else{
+                AppsKitSDKUtils.makeToast("sorry at least one experience required")
+
+            }
 
         }
         binding.recyclerviewExperience.adapter = experienceAdapter
