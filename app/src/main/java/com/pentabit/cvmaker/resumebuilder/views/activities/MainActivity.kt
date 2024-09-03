@@ -16,7 +16,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.BillingClient
@@ -24,6 +26,7 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryPurchasesParams
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
@@ -486,5 +489,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun getScreenId(): ScreenIDs {
         return ScreenIDs.HOME
     }
+
+    override fun onStart() {
+        super.onStart()
+        window.navigationBarColor = getColor(R.color.navy_blue)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+
+        navView.post {
+            navView.itemIconTintList = null
+        }
+    }
+
 
 }
