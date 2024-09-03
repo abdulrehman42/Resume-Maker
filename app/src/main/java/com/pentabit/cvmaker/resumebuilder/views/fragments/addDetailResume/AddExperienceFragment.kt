@@ -92,7 +92,10 @@ class AddExperienceFragment(
             )
             binding.description.setText(Helper.removeOneUnderscores(model.description))
             binding.enddateedittext.setText(Helper.convertIsoToCustomFormat(model.endDate))
-            binding.checkItscontinue.isChecked = model.endDate.isNullOrEmpty()
+            if (model.endDate=="null")
+            {
+                binding.checkItscontinue.isChecked=true
+            }
         }
     }
 
@@ -164,7 +167,7 @@ class AddExperienceFragment(
             companyPredictiveSearchHandler.getText(),
             binding.description.text.toString(),
             "fullTime",
-            endDate = endDate.toString(),
+            endDate = endDate,
             Helper.convertToUTCTimeForma(binding.startdateedittext.text.toString()),
             titlePredictiveSearchHandler.getText(),
         )

@@ -64,7 +64,7 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>(),AddLa
             )
         }
         singleStringAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this Skill record",
+            deleteItemPopup(currentActivity(), "Do you want to delete this language record",
                 object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {

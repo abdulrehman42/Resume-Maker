@@ -101,8 +101,12 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
     private fun populateAdapter(achievementList: ArrayList<ProfileModelAddDetailResponse.UserAchievement>) {
-        saveInListWithRequiredFormat(achievementList)
-        achievementAdapter.submitList(list)
+       if (!isCalled)
+       {
+           saveInListWithRequiredFormat(achievementList)
+           achievementAdapter.submitList(list)
+       }
+
     }
 
     private fun saveInListWithRequiredFormat(achievementList: List<ProfileModelAddDetailResponse.UserAchievement>) {
@@ -123,10 +127,7 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
     }
 
     private fun fetchProfileData() {
-        if (!isCalled)
-        {
-            addDetailResumeVM.getProfileDetail()
-        }
+        addDetailResumeVM.getProfileDetail()
     }
 
     override fun onAchievemnet(listAchievement: ArrayList<ProfileModelAddDetailResponse.UserAchievement>) {

@@ -70,7 +70,7 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>(),AddIn
 
     private fun handleAdapter() {
         interestAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this education record",
+            deleteItemPopup(currentActivity(), "Do you want to delete this interest record",
                 object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {

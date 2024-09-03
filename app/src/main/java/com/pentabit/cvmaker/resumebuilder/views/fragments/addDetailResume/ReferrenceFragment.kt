@@ -87,7 +87,7 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>(),A
     }
     private fun handleAdapter() {
         referenceAdapter.setOnItemDeleteClickCallback {
-            deleteItemPopup(currentActivity(), "Do you want to delete this education record",
+            deleteItemPopup(currentActivity(), "Do you want to delete this reference record",
                 object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {

@@ -183,6 +183,7 @@ object Helper {
             return "Invalid date range"
         }
 
+
         // Define input and output formatters
         val inputFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME // Adjusted to handle offsets
         val outputFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
@@ -194,6 +195,9 @@ object Helper {
 
             // If endDate is null, return "startFormatted - Present"
             if (endDate.isNullOrEmpty()) {
+                return "$startFormatted - Present"
+            }
+            if (endDate=="null") {
                 return "$startFormatted - Present"
             }
 
