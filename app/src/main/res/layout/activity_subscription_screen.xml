@@ -50,7 +50,7 @@
                 android:id="@+id/cross_icon_iv"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -68,7 +68,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/top_container"
                 tools:listitem="@layout/storage_package_list_item" />
-
             <ImageView
                 android:id="@+id/subs_info_iv"
                 android:layout_width="0dp"

@@ -18,6 +18,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -145,27 +146,32 @@ class AddEducation(
         } else {
             Helper.convertToUTCTimeForma(binding.enddateedittext.text.toString().trim())
         }
+        val checkEndDate = userQualificationsList.filter { it.endDate == endDate }
 
-        val newQualification = ProfileModelAddDetailResponse.UserQualification(
-            degree = degreePredictiveSearchHandler.getText(),
-            institute = institutePredictiveSearchHandler.getText(),
-            startDate = Helper.convertToUTCTimeForma(
-                binding.startdateedittext.text.toString().trim()
-            ),
-            endDate = endDate,
-            qualificationType = "degree"
-        )
-
-        val updatedList =
-            ArrayList<ProfileModelAddDetailResponse.UserQualification>(userQualificationsList)
-
-        if (position != null) {
-            updatedList[position] = newQualification
+        if (checkEndDate.isNotEmpty()) {
+            AppsKitSDKUtils.makeToast("you had already added this end date")
         } else {
-            updatedList.add(newQualification)
+            val newQualification = ProfileModelAddDetailResponse.UserQualification(
+                degree = degreePredictiveSearchHandler.getText(),
+                institute = institutePredictiveSearchHandler.getText(),
+                startDate = Helper.convertToUTCTimeForma(
+                    binding.startdateedittext.text.toString().trim()
+                ),
+                endDate = endDate,
+                qualificationType = "degree"
+            )
+
+            val updatedList =
+                ArrayList<ProfileModelAddDetailResponse.UserQualification>(userQualificationsList)
+
+            if (position != null) {
+                updatedList[position] = newQualification
+            } else {
+                updatedList.add(newQualification)
+            }
+            callback.onEducationUpdated(updatedList)
+            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
-        callback.onEducationUpdated(updatedList)
-        currentActivity().onBackPressedDispatcher.onBackPressed()
     }
 
 }
