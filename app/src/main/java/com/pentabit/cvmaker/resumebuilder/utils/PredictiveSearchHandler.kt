@@ -30,6 +30,26 @@ class PredictiveSearchHandler(
 
     init {
         autoCompleteTextView.addTextChangedListener(this)
+        autoCompleteTextView.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            val s = autoCompleteTextView.text.toString()
+            if (hasFocus) {
+                if (searchRunnable != null) {
+                    handler.removeCallbacks(searchRunnable!!)
+                }
+                searchRunnable = Runnable {
+                    if (s != null && s.length > 1) {
+                        enableBtn?.visibility = View.VISIBLE
+                        getSuggestions(s.toString())
+                    } else {
+                        enableBtn?.visibility = View.GONE
+                    }
+                    // Ensuring the search box retains focus
+                    autoCompleteTextView?.requestFocus()
+                }
+
+                handler.postDelayed(searchRunnable!!, 500)
+            }
+        }
     }
 
     fun getText(): String {
@@ -57,7 +77,7 @@ class PredictiveSearchHandler(
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        if (searchRunnable != null) {
+       /* if (searchRunnable != null) {
             handler.removeCallbacks(searchRunnable!!)
         }
         searchRunnable = Runnable {
@@ -71,10 +91,9 @@ class PredictiveSearchHandler(
             autoCompleteTextView?.requestFocus()
         }
 
-        handler.postDelayed(searchRunnable!!, 500)
+        handler.postDelayed(searchRunnable!!, 500)*/
 
     }
-
 
 
 

@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.views.adapter
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isGone
@@ -11,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplatelayoutitemsBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
 import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
+import com.pentabit.cvmaker.resumebuilder.views.activities.SubscriptionActivity
 
 class TempResListAdpter :
     ListAdapter<TemplateModel, TempResListAdpter.ViewHolder>(TemplateDiffCallback) {
@@ -25,7 +27,7 @@ class TempResListAdpter :
                 binding.videoIconId.isGone = true
             } else if(model.contentType==2)
             {
-
+                binding.root.context.startActivity(Intent( binding.root.context,SubscriptionActivity::class.java))
             }
             else {
                 binding.videoIconId.isGone = FreeTaskManager.getInstance().isProPurchased
