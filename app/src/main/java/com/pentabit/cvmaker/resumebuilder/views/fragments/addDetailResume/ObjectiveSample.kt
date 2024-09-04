@@ -8,9 +8,11 @@ import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentObjectiveSampleBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.SampleResponseModel
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.ObjSampleAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,6 +53,15 @@ class ObjectiveSample(val list: ArrayList<SampleResponseModel>?) :
                 currentActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
+        manageAds()
+    }
+
+    private fun manageAds() {
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.banner,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
 

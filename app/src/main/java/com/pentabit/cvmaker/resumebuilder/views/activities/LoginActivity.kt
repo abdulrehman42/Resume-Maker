@@ -179,10 +179,6 @@ class LoginActivity : BaseActivity() {
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
     }
 
-    override fun attachViewMode() {
-
-    }
-
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
         AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
     }

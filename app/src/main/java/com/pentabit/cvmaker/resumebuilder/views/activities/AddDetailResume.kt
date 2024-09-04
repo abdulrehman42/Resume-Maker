@@ -139,12 +139,12 @@ class AddDetailResume : BaseActivity() {
                     object : DialogueBoxes.StringValueDialogCallback {
                         override fun onButtonClick(value: String) {
                             if (value == Constants.YES) {
-                               finish()
+                                finish()
                             }
                         }
                     })
             else
-            finish()
+                finish()
         }
         binding.back.setOnClickListener {
             moveBack()
@@ -279,7 +279,7 @@ class AddDetailResume : BaseActivity() {
                         if (value == Constants.PROFILE) {
                             AppsKitSDKPreferencesManager.getInstance()
                                 .addInPreferences(Constants.VIEW_PROFILE, true)
-                            startActivity(Intent(this@AddDetailResume,ProfileActivity::class.java))
+                            startActivity(Intent(this@AddDetailResume, ProfileActivity::class.java))
                             finish()
                         } else {
                             val intent = Intent(this@AddDetailResume, ChoiceTemplate::class.java)
@@ -291,10 +291,6 @@ class AddDetailResume : BaseActivity() {
                     }
                 })
         }
-    }
-
-    override fun attachViewMode() {
-
     }
 
     fun addItems() {

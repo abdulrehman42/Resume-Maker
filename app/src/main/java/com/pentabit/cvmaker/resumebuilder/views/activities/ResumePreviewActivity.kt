@@ -101,19 +101,10 @@ class ResumePreviewActivity : BaseActivity() {
         manageAds()
     }
 
-
-
-    override fun attachViewMode() {
-
+    override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
+        AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
     }
 
-    override fun onResume() {
-        super.onResume()
-        (this as AdBaseActivity).askAdOnFragment(screenId)
-    }
-
-    override fun onInternetConnectivityChange(p0: Boolean?) {
-    }
 
     override fun getScreenId(): ScreenIDs {
         return screenId

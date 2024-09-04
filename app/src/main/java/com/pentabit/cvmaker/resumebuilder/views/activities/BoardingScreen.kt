@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.ads.AdSize
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityBoardingScreenBinding
@@ -39,12 +40,12 @@ class BoardingScreen : BaseActivity() {
         AppsKitSDKAdsManager.showBanner(
             this,
             binding.banner,
-            Utils.createAdKeyFromScreenId(screenId)
+            null,
+            Utils.createAdKeyFromScreenId(screenId),
+            false,
+            null,
+            AdSize.MEDIUM_RECTANGLE
         )
-    }
-
-    override fun attachViewMode() {
-        TODO("Not yet implemented")
     }
 
     private fun mpveToNextActivity() {

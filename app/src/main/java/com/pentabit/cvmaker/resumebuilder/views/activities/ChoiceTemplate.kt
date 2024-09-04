@@ -23,7 +23,6 @@ import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.fragments.choose.BasicFragment
-import com.pentabit.cvmaker.resumebuilder.views.fragments.coverletter.AddDetailCoverLetterFragment
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -43,7 +42,6 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityChoiceTemplateBinding.inflate(layoutInflater)
         binding.includeTool.textView.text = getString(R.string.choose_templates)
         setContentView(binding.root)
@@ -92,10 +90,6 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         templateViewModel.fetchTemplates(if (isResume) Constants.RESUME else Constants.COVER_LETTER)
     }
 
-    override fun attachViewMode() {
-
-    }
-
     private fun onclick() {
         binding.includeTool.backbtn.setOnClickListener {
             finish()
@@ -139,25 +133,6 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         }
     }
 
-    private fun enableEdgeToEdge() {
-        val window = window
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
-        }
-
-        window.statusBarColor = ContextCompat.getColor(this, R.color.navy_blue)
-        window.navigationBarColor = Color.TRANSPARENT
-
-        var flags = window.decorView.systemUiVisibility
-        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // Light status bar (dark icons)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            flags =
-                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR // Light navigation bar (dark icons)
-        }
-        window.decorView.systemUiVisibility = flags
-    }
-
     override fun onTemplateSelected(model: TemplateModel) {
         val check = AppsKitSDKPreferencesManager.getInstance()
             .getBooleanPreferences(Constants.IS_LOGGED, false)
@@ -183,24 +158,6 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val isCoverLetter = intent.getBooleanExtra(Constants.Is_CoverLtter, false)
-        if (isCoverLetter) {
-            binding.choiceTemplateContainer.isGone = false
-            supportFragmentManager.beginTransaction().setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out,
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-            )
-                .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-    }
-
     private fun navigateToProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
         AppsKitSDKPreferencesManager.getInstance()
@@ -209,25 +166,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     private fun navigateToCoverLetterResumeActivity() {
-        binding.choiceTemplateContainer.isGone = false
-        supportFragmentManager.beginTransaction().setCustomAnimations(
-            android.R.anim.fade_in,
-            android.R.anim.fade_out,
-            android.R.anim.fade_in,
-            android.R.anim.fade_out
-        )
-            .replace(R.id.choice_template_container, AddDetailCoverLetterFragment())
-            .addToBackStack(null)
-            .commit()
+        startActivity(Intent(this, CreateCoverLetterActivity::class.java))
     }
 
     private fun navigateToPreviewScreen() {
-        val intent=Intent(this, ResumePreviewActivity::class.java)
+        val intent = Intent(this, ResumePreviewActivity::class.java)
         startActivity(intent)
-        /*supportFragmentManager.beginTransaction()
-            .replace(R.id.choice_template_container, ResumePreviewFragment())
-            .addToBackStack(null)
-            .commit()*/
     }
 
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {

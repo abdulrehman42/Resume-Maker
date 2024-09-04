@@ -166,5 +166,7 @@
     <string name="remove_ads_restored_successfully">Remove Ads restored successfully</string>
     <string name="no_purchases_to_restore">No purchases to restore</string>
     <string name="back_questiom">Do you really want to go back?</string>
+    <string name="rate_us_txt">Rate Us</string>
+    <string name="may_be_later">Maybe later</string>
 
 </resources>

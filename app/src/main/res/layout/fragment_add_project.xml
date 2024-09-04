@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:clickable="true"
-    android:focusable="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
->
+    android:focusable="true">
+
     <include
+        android:id="@+id/include_tool"
+        layout="@layout/toolbars"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
-        layout="@layout/toolbars"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:id="@+id/include_tool"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/banner_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/include_tool"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/include_tool" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/projecttitle_textInputLayout"
@@ -31,14 +32,14 @@
         app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner_add"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/banner_add">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/projectedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Project"
-            android:id="@+id/projectedittext"
             tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,24 +47,25 @@
         android:id="@+id/description_textInputLayout2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_85sdp"
-        app:boxStrokeColor="@color/green_light"
-        app:hintTextColor="@color/green_light"
         android:layout_margin="@dimen/_10sdp"
+        app:boxStrokeColor="@color/green_light"
         app:counterEnabled="true"
-        app:endIconTint="@null"
-        app:endIconMode="custom"
         app:counterMaxLength="300"
+        app:endIconMode="custom"
+        app:endIconTint="@null"
+        app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/projecttitle_textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/descriptionedittext"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_65sdp"
-            android:id="@+id/descriptionedittext"
             android:gravity="top"
             android:hint="@string/description" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
         android:id="@+id/savebtn"
         style="@style/button_style_round"
@@ -71,11 +73,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_15sdp"
         android:text="@string/save"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/banner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.659"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
     <ProgressBar
         android:id="@+id/loader"
         android:layout_width="wrap_content"
@@ -85,4 +88,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

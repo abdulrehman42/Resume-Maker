@@ -22,6 +22,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
@@ -52,8 +53,10 @@ class AddProjectFragment(
     }
 
     private fun manageAds() {
-        AppsKitSDKAdsManager.showNative(
-            currentActivity(), binding.bannerAdd, ""
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            Utils.createAdKeyFromScreenId(screenId)
         )
     }
 

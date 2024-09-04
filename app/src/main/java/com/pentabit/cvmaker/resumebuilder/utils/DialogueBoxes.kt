@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebViewClient
 import android.widget.DatePicker
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.databinding.AddRemoveBinding
@@ -25,6 +26,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.LogoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.PreviewdownloadBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.RatingLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplateSelectLayoutBinding
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import java.util.Calendar
 
 
@@ -60,8 +62,6 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
-
-
 
 
     fun deleteItemPopup(curentactivity: Activity, msg: String, param: DialogCallback) {
@@ -103,17 +103,34 @@ object DialogueBoxes {
 
     }
 
-    fun alertboxRate(curentactivity: Activity) {
-        val binding = RatingLayoutBinding.inflate(curentactivity.layoutInflater)
-        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
-        dialogBuilder.setContentView(binding.root)
-        binding.rateBtn.setOnClickListener {
-
-            dialogBuilder.dismiss()
-        }
-        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
-        dialogBuilder.setCancelable(true)
-        dialogBuilder.show()
+    fun alertboxRate(curentactivity: Activity, screen: ScreenIDs) {
+        AppsKitSDKUtils.showRateUsCustomDialog(
+            curentactivity,
+            screen.id,
+            R.drawable.rate_us_dialog_background,
+            R.drawable.ratting_selected,
+            R.drawable.rating_unselected,
+            R.drawable.rating_headericon,
+            R.drawable.rate_us_bg,
+            ContextCompat.getColor(curentactivity, R.color.white),
+            ContextCompat.getColor(curentactivity, R.color.trans_white),
+            ContextCompat.getColor(curentactivity, R.color.white),
+            ContextCompat.getColor(curentactivity, R.color.white),
+            curentactivity.getString(R.string.are_you_enjoying_our_app),
+            curentactivity.getString(R.string.sharing_your_experience_helps_us_grow),
+            curentactivity.getString(R.string.rate_us_txt),
+            curentactivity.getString(R.string.may_be_later)
+        )
+//        val binding = RatingLayoutBinding.inflate(curentactivity.layoutInflater)
+//        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+//        dialogBuilder.setContentView(binding.root)
+//        binding.rateBtn.setOnClickListener {
+//
+//            dialogBuilder.dismiss()
+//        }
+//        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+//        dialogBuilder.setCancelable(true)
+//        dialogBuilder.show()
     }
 
     fun alertboxPurchase(curentactivity: Activity, param: DialogCallback) {

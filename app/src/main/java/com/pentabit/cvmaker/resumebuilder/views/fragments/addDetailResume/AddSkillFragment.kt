@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
@@ -59,14 +60,18 @@ class AddSkillFragment(
     }
 
     private fun manageAds() {
-
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.banner,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     private fun handleClicks() {
         binding.tickBtn.setOnClickListener {
             val skill = skillPredictiveSearchHandler.getText()
             if (skill.isNotEmpty()) {
-                if (position!=null) {
+                if (position != null) {
                     list[position] = skillPredictiveSearchHandler.getText()
                 } else {
                     list.add(skillPredictiveSearchHandler.getText())
@@ -120,19 +125,18 @@ class AddSkillFragment(
 
 
         if (position != null) {
-                val model = userSkills[position]
+            val model = userSkills[position]
             binding.skillEdittext.setText(Helper.removeOneUnderscores(userSkills[position]))
             isSkillInDB = model.startsWith("1_")
 
-            }
-            alreadyUserSkills = userSkills as MutableList<String>
-            for (i in 0 until alreadyUserSkills.size) {
-                list.add(alreadyUserSkills[i])
-            }
+        }
+        alreadyUserSkills = userSkills as MutableList<String>
+        for (i in 0 until alreadyUserSkills.size) {
+            list.add(alreadyUserSkills[i])
+        }
     }
 
-    interface SkillUpdates
-    {
-        fun skillUpdate(skillList:List<String>)
+    interface SkillUpdates {
+        fun skillUpdate(skillList: List<String>)
     }
 }

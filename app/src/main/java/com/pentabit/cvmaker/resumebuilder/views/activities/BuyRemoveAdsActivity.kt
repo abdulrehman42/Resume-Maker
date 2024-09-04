@@ -49,10 +49,6 @@ class BuyRemoveAdsActivity : BaseActivity() {
 
     }
 
-    override fun attachViewMode() {
-
-    }
-
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
         AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
     }

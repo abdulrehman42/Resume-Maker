@@ -11,9 +11,11 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.adapter.adddetailresume.UserSkillAdapter
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,6 +49,15 @@ class AddLanguageFragment(
         populateDataIfRequired()
         handlePredictiveSearch()
         handleClicks()
+        manageAds()
+    }
+
+    private fun manageAds() {
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
     override fun observeLiveData() {

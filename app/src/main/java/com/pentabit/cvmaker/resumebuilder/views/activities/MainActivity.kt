@@ -9,18 +9,16 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.get
-import androidx.core.view.isGone
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.BillingClient
@@ -28,17 +26,14 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryPurchasesParams
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.elevation.SurfaceColors
+import com.google.android.gms.ads.AdSize
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityMainActivtyBinding
-import com.pentabit.cvmaker.resumebuilder.databinding.ToolbarsBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.REMOVE_ADS_ID
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.SKU_SUBS
@@ -56,10 +51,10 @@ import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.ads_manager.ad_utils.CollapsibleOrientation
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
-import com.pentabit.pentabitessentials.utils.BUILD_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -67,7 +62,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     lateinit var drawerLayout: DrawerLayout
     lateinit var templateViewModel: TemplateViewModel
     private lateinit var binding: ActivityMainActivtyBinding
-    lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
     private var flagDrawer = false
     private val scaleFactor = 6f
 
@@ -92,8 +86,29 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         AppsKitSDKAdsManager.showBanner(
             this,
             binding.appBarMainActivty.contentmain.bannerAdd,
-            placeholder = Utils.createAdKeyFromScreenId(screenId)
+            null,
+            Utils.createAdKeyFromScreenId(screenId),
+            true,
+            CollapsibleOrientation.BOTTOM,
+            getAdSize(binding.appBarMainActivty.contentmain.bannerAdd)
         )
+    }
+
+    fun getAdSize(adContainerView: FrameLayout): AdSize {
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = adContainerView.width.toFloat()
+
+        if (adWidthPixels == 0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
     }
 
     private fun initView() {
@@ -113,21 +128,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             binding.appBarMainActivty.toolbar.menu.getItem(R.id.ads_remove).isVisible = false
 
         }
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-    }
-
-    private fun onFcm() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    templateViewModel.onFCM(task.result)
-                } else {
-                    val exception = task.exception
-                    if (exception != null) {
-                        showToast(exception.message)
-                    }
-                }
-            }
     }
 
     private fun onObserver() {
@@ -296,7 +296,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_rate -> alertboxRate(this)
+            R.id.nav_rate -> alertboxRate(this@MainActivity, screenId)
             R.id.nav_share -> shareAppMethod(this)
             R.id.nav_delete -> alertboxDelete(this,
                 object : DialogueBoxes.StringValueDialogCallback {
@@ -320,10 +320,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun attachViewMode() {
-
     }
 
     override fun onBackPressed() {

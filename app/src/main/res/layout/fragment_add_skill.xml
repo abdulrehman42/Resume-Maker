@@ -29,10 +29,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
         android:enabled="true"
+        app:boxStrokeColor="@color/green_light"
         app:endIconCheckable="true"
         app:endIconMode="custom"
         app:endIconTint="@null"
-        app:boxStrokeColor="@color/green_light"
         app:hintTextColor="@color/green_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,26 +70,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/skill_textInputLayout" />
 
-   <!-- <TextView
-        android:id="@+id/textView6"
-        style="@style/heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Suggestions"
-        app:layout_constraintStart_toStartOf="@+id/skill_textInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerview_skill" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_suggestions"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/_5sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/savebtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
--->
     <TextView
         android:id="@+id/savebtn"
         style="@style/button_style_round"
@@ -97,10 +77,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_15sdp"
         android:text="@string/save"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/banner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.659"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
+
+    <FrameLayout
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

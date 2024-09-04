@@ -49,7 +49,6 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
             }
         }
 
-
         binding.selectSamplebtn.setOnClickListener {
             currentActivity().supportFragmentManager.beginTransaction().setCustomAnimations(
                 android.R.anim.fade_in,

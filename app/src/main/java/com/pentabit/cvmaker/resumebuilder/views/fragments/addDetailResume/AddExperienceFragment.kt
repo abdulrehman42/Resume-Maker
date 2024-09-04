@@ -1,11 +1,9 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputLayout
 import com.pentabit.cvmaker.resumebuilder.R
@@ -13,17 +11,17 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentAddExperienceBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.Experience
-import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.ExperienceRequest
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.Helper
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.dpToPx
 import com.pentabit.cvmaker.resumebuilder.utils.PredictiveSearchHandler
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
+import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
+import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,6 +51,15 @@ class AddExperienceFragment(
         managePredictiveSearch()
         handleUI()
         handleClicks()
+        manageAds()
+    }
+
+    private fun manageAds() {
+        AppsKitSDKAdsManager.showBanner(
+            currentActivity(),
+            binding.bannerAdd,
+            Utils.createAdKeyFromScreenId(screenId)
+        )
     }
 
 

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.pentabit.cvmaker.resumebuilder.base.BaseActivity;
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityPreviewImageResumeBinding;
 import com.pentabit.cvmaker.resumebuilder.utils.ImageFileUtils;
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs;
@@ -19,7 +20,7 @@ import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils;
 
 import java.io.File;
 
-public class PreviewImageResumeActivity extends AdBaseActivity {
+public class PreviewImageResumeActivity extends BaseActivity {
 
     ActivityPreviewImageResumeBinding binding;
     private File file;

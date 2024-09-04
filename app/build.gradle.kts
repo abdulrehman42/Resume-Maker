@@ -73,8 +73,8 @@ dependencies {
     implementation(libs.ssp.android)
 
     //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+//    implementation(libs.retrofit)
+//    implementation(libs.converter.gson)
 
     //Okhttp logging intercepter
     implementation(libs.logging.interceptor)
@@ -92,6 +92,8 @@ dependencies {
     implementation(files("libs/AppsKitSDK_v380.aar"))
     implementation("com.github.ome450901:SimpleRatingBar:1.5.1")
     implementation("io.supercharge:shimmerlayout:2.1.0")
+    implementation("com.ethanhua:skeleton:1.1.2")
+    implementation ("com.google.code.gson:gson:2.9.1")
 
 //    implementation("com.google.android.gms:play-services-ads:22.6.0")
     implementation("com.google.android.gms:play-services-ads-lite:22.2.0")

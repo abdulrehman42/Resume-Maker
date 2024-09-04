@@ -163,10 +163,6 @@ class SplashScreen : BaseActivity() {
             }
     }
 
-
-    override fun attachViewMode() {
-    }
-
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {
         AppsKitSDKUtils.setVisibility(!isInternetAvailable, binding.myCoordinatorLayout)
         if (java.lang.Boolean.TRUE == isInternetAvailable) requestConsents("C4FEB06EFDF64FBB3C5334B0239CBEA6")
