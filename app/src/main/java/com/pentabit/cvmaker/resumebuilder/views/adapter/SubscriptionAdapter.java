@@ -53,6 +53,9 @@ public class SubscriptionAdapter extends ListAdapter<SubscriptionPackageModel, A
         binding.price.setText(model.getPrice());
         binding.timePeriod.setText(model.getTimePeriod());
         if (currentLayout == null && holder.getAbsoluteAdapterPosition() == 1) {
+            binding.discount.setTextColor(ContextCompat.getColorStateList(binding.getRoot().getContext(),R.color.white));
+            binding.discount.setText("Most Popular");
+            binding.discount.setBackgroundTintList(ContextCompat.getColorStateList(binding.getRoot().getContext(), R.color.red));
             updateLayoutAsSelected(1);
         }
     }
@@ -73,7 +76,7 @@ public class SubscriptionAdapter extends ListAdapter<SubscriptionPackageModel, A
         currentbinding=view;
         currentLayout = view.mainContainer;
         currentLayout.setBackground(ContextCompat.getDrawable(ResumeMakerApplication.Companion.getInstance(), R.drawable.selected_storage_subscription_bg));
-        view.name.setTextColor(ContextCompat.getColor(view.getRoot().getContext(), R.color.purple));
+        view.name.setTextColor(ContextCompat.getColor(view.getRoot().getContext(), R.color.black));
         view.price.setTextColor(ContextCompat.getColor(view.getRoot().getContext(),R.color.purple));
         view.timePeriod.setTextColor(ContextCompat.getColor(view.getRoot().getContext(),R.color.purple));
 

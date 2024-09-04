@@ -175,6 +175,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     val intent = Intent(currentActivity(), ResumePreviewActivity::class.java)
                     intent.putExtra(Constants.IS_RESUME, true)
                     startActivity(intent)
+                    currentActivity().finish()
 
                 }
             }

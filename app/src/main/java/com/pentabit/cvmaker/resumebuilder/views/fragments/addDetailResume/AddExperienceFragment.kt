@@ -24,6 +24,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -135,13 +136,13 @@ class AddExperienceFragment(
             )
         }
         binding.checkItscontinue.setOnClickListener {
+            binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
             if (binding.checkItscontinue.isChecked) {
-                binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
-                if (binding.checkItscontinue.isChecked) {
-                    binding.enddateedittext.setText("")
-                }
+                binding.enddateedittext.setText("")
             }
         }
+
+
         binding.savebtn.setOnClickListener {
             if (Validations.isConditionMetExperience(binding)) {
                 saveExperience()
@@ -160,27 +161,31 @@ class AddExperienceFragment(
         } else {
             Helper.convertToUTCTimeForma(binding.enddateedittext.text.toString().trim())
         }
-
-        val experienceupdate = ProfileModelAddDetailResponse.UserExperience(
-            companyPredictiveSearchHandler.getText(),
-            binding.description.text.toString(),
-            "fullTime",
-            endDate = endDate,
-            Helper.convertToUTCTimeForma(binding.startdateedittext.text.toString()),
-            titlePredictiveSearchHandler.getText(),
-        )
-
-        val updatedListExperience =
-            ArrayList<ProfileModelAddDetailResponse.UserExperience>(experienceList)
-
-        if (position != null) {
-            updatedListExperience[position] = experienceupdate
-
+        val checkEndDate = experienceList.filter { it.endDate == endDate }
+        if (checkEndDate.isNotEmpty()) {
+            AppsKitSDKUtils.makeToast("you had already added this end date")
         } else {
-            updatedListExperience.add(experienceupdate)
+            val experienceupdate = ProfileModelAddDetailResponse.UserExperience(
+                companyPredictiveSearchHandler.getText(),
+                binding.description.text.toString(),
+                "fullTime",
+                endDate = endDate,
+                Helper.convertToUTCTimeForma(binding.startdateedittext.text.toString()),
+                titlePredictiveSearchHandler.getText(),
+            )
+
+            val updatedListExperience =
+                ArrayList<ProfileModelAddDetailResponse.UserExperience>(experienceList)
+
+            if (position != null) {
+                updatedListExperience[position] = experienceupdate
+
+            } else {
+                updatedListExperience.add(experienceupdate)
+            }
+            callback.onExperience(updatedListExperience)
+            currentActivity().onBackPressedDispatcher.onBackPressed()
         }
-        callback.onExperience(updatedListExperience)
-        currentActivity().onBackPressedDispatcher.onBackPressed()
     }
 
 

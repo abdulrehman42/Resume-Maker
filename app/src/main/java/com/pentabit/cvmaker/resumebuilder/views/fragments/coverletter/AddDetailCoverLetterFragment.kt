@@ -16,7 +16,11 @@ import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.activities.ResumePreviewActivity
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBinding>() {
@@ -24,13 +28,18 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
     lateinit var title: String
     val screenId= ScreenIDs.CREATE_COVER_LETTER
     lateinit var coverletter: String
+    var isCalled=false
     override val inflate: Inflate<FragmentAddDetailCoverLetterBinding>
         get() = FragmentAddDetailCoverLetterBinding::inflate
 
     override fun observeLiveData() {
+        templateViewModel.loadingState.observe(currentActivity())
+        {
+            AppsKitSDKUtils.setVisibility(it,binding.loader)
+        }
         templateViewModel.coverLetterResponse.observe(currentActivity()) {
             AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.PROFILE_ID, it.id.toString())
-            moveToFragment()
+            isCalled=true
         }
     }
 
@@ -64,6 +73,13 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
         binding.nextbtn.setOnClickListener {
             if (!binding.coverletterTextInput.text.isNullOrEmpty()) {
                 apiCall()
+                MainScope().launch {
+                    delay(3000)
+                    if (isCalled)
+                    {
+                        moveToFragment()
+                    }
+                }
             } else {
                 currentActivity().showToast(getString(R.string.cover_letter_missing_field))
             }
@@ -84,7 +100,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
     override fun onResume() {
         super.onResume()
         (requireActivity() as AdBaseActivity).askAdOnFragment(screenId)
-        coverletter = arguments?.getString(com.pentabit.cvmaker.resumebuilder.utils.Constants.DATA).toString()
+        coverletter = arguments?.getString(Constants.DATA).toString()
         if (coverletter != "null") {
             binding.coverletterTextInput.setText(coverletter)
         }
@@ -95,20 +111,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
         intent.putExtra(Constants.IS_RESUME,false)
         intent.putExtra(Constants.CREATION_TIME,true)
         startActivity(intent)
-        /*val bundle = Bundle()
-        val fragment = ResumePreviewFragment()
-        bundle.putBoolean(Constants.IS_RESUME, false)
-
-        fragment.arguments = bundle
-        currentActivity().supportFragmentManager.beginTransaction().setCustomAnimations(
-            android.R.anim.fade_in,
-            android.R.anim.fade_out,
-            android.R.anim.fade_in,
-            android.R.anim.fade_out
-        )
-            .replace(R.id.choice_template_container, fragment)
-            .addToBackStack(null)
-            .commit()*/
+      //  currentActivity().finish()
     }
 
 }

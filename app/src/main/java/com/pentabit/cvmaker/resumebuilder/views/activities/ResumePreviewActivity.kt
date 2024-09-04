@@ -18,12 +18,15 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentResumePreviewBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseDownload
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
+import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.ads_manager.ads_callback.RewardedLoadAndShowCallback
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
@@ -151,7 +154,6 @@ class ResumePreviewActivity : BaseActivity() {
         }
 
        onBackPressedDispatcher.addCallback {
-           //startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
            finish()
         }
 
@@ -159,8 +161,10 @@ class ResumePreviewActivity : BaseActivity() {
             val intent = Intent(this, ChoiceTemplate::class.java)
             if (isResume) {
                 intent.putExtra(Constants.IS_RESUME, true)
+                intent.putExtra(Constants.TEMPLATE_ID,templateId)
             } else {
                 intent.putExtra(Constants.IS_RESUME, false)
+                intent.putExtra(Constants.TEMPLATE_ID,templateId)
             }
             startActivity(intent)
             finish()
@@ -175,26 +179,60 @@ class ResumePreviewActivity : BaseActivity() {
             }
         }
         binding.homeConstraint.setOnClickListener {
-            finish()
+            startActivity(Intent(this,MainActivity::class.java))
+            finishAffinity()
         }
         binding.includeTool.share.setOnClickListener {
             shareAppMethod(this)
         }
         binding.downloadConstraint.setOnClickListener {
-            alertboxChooseDownload(this,
-                object :
-                    com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.StringValueDialogCallback {
-                    override fun onButtonClick(value: String) {
-                        if (value == Constants.JPG) {
-                            convertWebViewToImage()
-                        } else {
-                            saveWebViewAsPdf(binding.resumePreviewImage)
-                        }
-                    }
+            if (FreeTaskManager.getInstance().isProPurchased) {
+               popupDialogue()
+            }else{
+                DialogueBoxes.alertboxImport(this,
+                    object :
+                        DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.YES) {
+                                AppsKitSDKAdsManager.loadAndShowRewardedAd(
+                                    this@ResumePreviewActivity,
+                                    object : RewardedLoadAndShowCallback {
+                                        override fun onAdFailed() {
+                                            AppsKitSDKUtils.makeToast("Ad failed to load")
+                                        }
+                                        override fun onAdRewarded() {
+                                            AppsKitSDKPreferencesManager.getInstance()
+                                                .addInPreferences(
+                                                    Constants.TEMPLATE_ID,
+                                                    it.id.toString()
+                                                )
+                                            popupDialogue()
+                                        }
 
-                })
+                                    }, Utils.createAdKeyFromScreenId(screenId)
+                                )
+
+                            }
+                        }
+
+                    })
+            }
 
         }
+    }
+
+    private fun popupDialogue() {
+        alertboxChooseDownload(this,
+            object :DialogueBoxes.StringValueDialogCallback {
+                override fun onButtonClick(value: String) {
+                    if (value == Constants.JPG) {
+                        convertWebViewToImage()
+                    } else {
+                        saveWebViewAsPdf(binding.resumePreviewImage)
+                    }
+                }
+
+            })
     }
 
     private fun convertWebViewToImage() {

@@ -38,6 +38,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     private var dataMap: Map<String, List<TemplateModel>> = HashMap<String, List<TemplateModel>>()
     private var isResume = false
     private var isCreation = false
+    private var templateId=""
     private var screenId = ScreenIDs.CHOOSE_RESUME_TEMPLATES
 
     @SuppressLint("SetTextI18n")
@@ -53,6 +54,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             false
         )
         isCreation = intent.getBooleanExtra(Constants.CREATION_TIME, false)
+        templateId= intent.getStringExtra(Constants.TEMPLATE_ID).toString()
         if (!isResume) {
             screenId = ScreenIDs.CHOOSE_COVER_LETTER_TEMPELATES
         }
@@ -89,7 +91,11 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     private fun fetchTemplates() {
-        templateViewModel.fetchTemplates(if (isResume) Constants.RESUME else Constants.COVER_LETTER)
+        templateViewModel.fetchTemplates(
+            if (isResume)
+                Constants.RESUME
+        else
+            Constants.COVER_LETTER)
     }
 
     override fun attachViewMode() {
@@ -162,10 +168,16 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         val check = AppsKitSDKPreferencesManager.getInstance()
             .getBooleanPreferences(Constants.IS_LOGGED, false)
         if (check) {
+
             if (isCreation) {
                 navigateToPreviewScreen()
             } else if (isResume) {
-                navigateToProfileActivity()
+                if (templateId!="null")
+                {
+                    navigateToPreviewScreenFinish()
+                }else {
+                    navigateToProfileActivity()
+                }
             } else {
                 navigateToCoverLetterResumeActivity()
             }
@@ -181,6 +193,19 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             }
 
         }
+    }
+
+    private fun navigateToPreviewScreenFinish() {
+        val intent=Intent(this, ResumePreviewActivity::class.java)
+        if (isResume)
+        {
+            intent.putExtra(Constants.IS_RESUME,true)
+        }else{
+            intent.putExtra(Constants.IS_RESUME,false)
+
+        }
+        startActivity(intent)
+        finish()
     }
 
     override fun onResume() {
@@ -223,11 +248,14 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
 
     private fun navigateToPreviewScreen() {
         val intent=Intent(this, ResumePreviewActivity::class.java)
+       if (isResume)
+       {
+           intent.putExtra(Constants.IS_RESUME,true)
+       }else{
+           intent.putExtra(Constants.IS_RESUME,false)
+
+       }
         startActivity(intent)
-        /*supportFragmentManager.beginTransaction()
-            .replace(R.id.choice_template_container, ResumePreviewFragment())
-            .addToBackStack(null)
-            .commit()*/
     }
 
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {

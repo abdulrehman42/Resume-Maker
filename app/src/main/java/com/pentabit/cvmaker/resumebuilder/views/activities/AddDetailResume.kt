@@ -134,17 +134,18 @@ class AddDetailResume : BaseActivity() {
 
     private fun handleClicks() {
         binding.includeTool.backbtn.setOnClickListener {
-            if (currentTabPosition == allTabs.size - 1)
+            if (currentTabPosition == 0)
+                finish()
+            else
                 backPressedcheck(this,
                     object : DialogueBoxes.StringValueDialogCallback {
                         override fun onButtonClick(value: String) {
                             if (value == Constants.YES) {
-                               finish()
+                                finish()
                             }
                         }
                     })
-            else
-            finish()
+
         }
         binding.back.setOnClickListener {
             moveBack()

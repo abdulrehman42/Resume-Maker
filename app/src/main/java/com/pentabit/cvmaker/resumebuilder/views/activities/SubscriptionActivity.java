@@ -227,9 +227,9 @@ public class SubscriptionActivity extends AdBaseActivity implements PurchasesUpd
 
                         @Override
                         public void onSubscriptionPricesExtracted(Map<String, List<String>> map) {
-                            packagesList.add(manageSubscriptionPriceDisplay(SKU_SUBS, "Weekly Pro", map.get(SKU_SUBS), "per week"));
-                            packagesList.add(manageSubscriptionPriceDisplay(SKU_SUBS_2, "Yearly Pro", map.get(SKU_SUBS_2), "per year"));
-                            packagesList.add(manageSubscriptionPriceDisplay(SKU_SUBS_1, "Monthly Pro", map.get(SKU_SUBS_1), "per month"));
+                            packagesList.add(manageSubscriptionPriceDisplay(SKU_SUBS_1, "6 Months", map.get(SKU_SUBS_1), "per 6 months"));
+                            packagesList.add(manageSubscriptionPriceDisplay(SKU_SUBS_2, "1 month", map.get(SKU_SUBS_2), "per month"));
+                            packagesList.add(manageSubscriptionPriceDisplay(SKU_SUBS, "12 months", map.get(SKU_SUBS), "per year"));
                             addDiscounts(packagesList);
                             AppsKitSDKUtils.setVisibility(true, binding.subscribe);
                             AppsKitSDKUtils.setVisibility(false, binding.loading);
@@ -310,10 +310,15 @@ public class SubscriptionActivity extends AdBaseActivity implements PurchasesUpd
                 price = "0";
             double currentModelPrice = Float.parseFloat(price);
 
-            if (modelPriceModel.getId().equals(SKU_SUBS_1)) {
+            if (modelPriceModel.getId().equals(SKU_SUBS_2)) {
                 double monthlyPriceAgainstWeeks = (weeklyPrice * 4);
                 return ((int) (((monthlyPriceAgainstWeeks - currentModelPrice) / monthlyPriceAgainstWeeks) * 100)) + "";
-            } else if (modelPriceModel.getId().equals(SKU_SUBS_2)) {
+            }
+            else if (modelPriceModel.getId().equals(SKU_SUBS_1)) {
+                double yearlyPriceAgainstWeeks = (weeklyPrice * 26);
+                return ((int) (((yearlyPriceAgainstWeeks - currentModelPrice) / yearlyPriceAgainstWeeks) * 100)) + "";
+            }
+            else if (modelPriceModel.getId().equals(SKU_SUBS)) {
                 double yearlyPriceAgainstWeeks = (weeklyPrice * 52);
                 return ((int) (((yearlyPriceAgainstWeeks - currentModelPrice) / yearlyPriceAgainstWeeks) * 100)) + "";
             } else {

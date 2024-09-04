@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +45,9 @@ class ProfileAdapter : ListAdapter<ProfileListingModel, AppsKitSDKRecyclerBaseVi
         if (isViewProfile)
         {
             binding.textView4.setText("View Profile")
+            binding.settingMenu.isGone=false
+        }else{
+            binding.settingMenu.isGone=true
         }
         binding.name.text = model.name.replaceFirstChar { it.uppercase() }
         binding.profession.text = Helper.removeOneUnderscores(model.jobTitle)
