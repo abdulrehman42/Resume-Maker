@@ -42,8 +42,15 @@ class InterestFragment : AddDetailsBaseFragment<FragmentInterestBinding>(),AddIn
     }
 
     override fun onMoveNextClicked(): Boolean {
-        savedInterestApi()
-        return false
+        if (list.isEmpty())
+        {
+            AppsKitSDKUtils.makeToast("please Add at least one interest")
+            return false
+
+        }else{
+            savedInterestApi()
+            return false
+        }
     }
 
     private fun savedInterestApi() {

@@ -23,14 +23,17 @@
     <string name="rate_us">Rate Us</string>
     <string name="menu_more_app">More Apps</string>
     <string name="menu_privacy">Privacy Policy</string>
+    <string name="menu_privacy_nav">Privacy\n Policy</string>
     <string name="menu_restore">Restore Purchases</string>
+    <string name="menu_restore_nav">Restore\n Purchases</string>
+
     <string name="menu_share">Share App</string>
     <string name="menu_term">Terms of Use</string>
     <string name="menu_delete">Delete Account</string>
     <string name="pro_text"><![CDATA["You'll get a smooth ad-free experience, our devs will get their morning coffee it's a win-win deal! 🤝 "]]></string>
     <string name="delete">Delete</string>
     <string name="logout">Logout</string>
-    <string name="version_2_7">Version 2.07</string>
+    <string name="version_2_7">Version 2.4.1</string>
     <string name="add_more_sections">Add More Sections</string>
     <string name="interest">Interest</string>
     <string name="language">Language</string>
@@ -162,5 +165,6 @@
     <string name="pro_subscription_restored_successfully">Pro subscription restored successfully</string>
     <string name="remove_ads_restored_successfully">Remove Ads restored successfully</string>
     <string name="no_purchases_to_restore">No purchases to restore</string>
+    <string name="back_questiom">Do you really want to go back?</string>
 
 </resources>

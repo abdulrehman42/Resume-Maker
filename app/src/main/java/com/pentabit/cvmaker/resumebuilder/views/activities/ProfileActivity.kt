@@ -7,9 +7,11 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
+import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
+import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -59,5 +61,14 @@ class ProfileActivity : BaseActivity() {
 
     override fun getScreenId(): ScreenIDs {
         return ScreenIDs.PROFILE_LISTING
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppsKitSDKPreferencesManager.getInstance()
+            .addInPreferences(
+                Constants.TEMPLATE_ID,
+                ""
+            )
     }
 }

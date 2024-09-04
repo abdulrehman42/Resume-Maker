@@ -83,8 +83,8 @@ class AddInterestFragment(
         }
         binding.tickBtn.setOnClickListener {
             val interest = addInterestPredictiveSearchHandler.getText()
-            val isNumeric = interest.matches(Regex("\\d+"))
-            if (!isNumeric) {
+           /* val isNumeric = interest.matches(Regex("\\d+"))
+            if (!isNumeric) {*/
                 if (interest.isNotEmpty()) {
                     if (position != null) {
                         updateList[position] = addInterestPredictiveSearchHandler.getText()
@@ -94,9 +94,9 @@ class AddInterestFragment(
                     binding.interestEdittext.setText("")
                     userlanguasAdapter.submitList(updateList.toList())
                 }
-            }else{
+            /*}else{
                 AppsKitSDKUtils.makeToast("please add interest don't ")
-            }
+            }*/
         }
 
         binding.includeTool.backbtn.setOnClickListener {

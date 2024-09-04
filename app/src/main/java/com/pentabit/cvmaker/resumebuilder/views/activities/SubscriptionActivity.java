@@ -64,6 +64,8 @@ public class SubscriptionActivity extends AdBaseActivity implements PurchasesUpd
         binding = ActivitySubscriptionScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        View decorView = getWindow().getDecorView();
+        makeStatusBarTransparent(decorView);
         init();
         skuKeys.add(SKU_SUBS);
         skuKeys.add(SKU_SUBS_1);
@@ -500,7 +502,13 @@ public class SubscriptionActivity extends AdBaseActivity implements PurchasesUpd
             });
         }
     }
-
+    private void makeStatusBarTransparent(View view) {
+        view.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        );
+    }
     private interface SubscriptionsPricesListener {
         void onSubscriptionPriceFormatFinalize(String var1);
 

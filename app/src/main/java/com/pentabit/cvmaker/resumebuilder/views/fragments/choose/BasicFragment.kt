@@ -70,7 +70,6 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
                                                         override fun onAdFailed() {
                                                             AppsKitSDKUtils.makeToast("Ad failed to load")
                                                         }
-
                                                         override fun onAdRewarded() {
                                                             AppsKitSDKPreferencesManager.getInstance()
                                                                 .addInPreferences(

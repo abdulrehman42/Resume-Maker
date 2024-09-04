@@ -11,6 +11,7 @@ import com.pentabit.cvmaker.resumebuilder.utils.Constants.HELIUM_SIGNATURES
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.IRON_SOURCE_APP_KEY
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.MAX_SDK_KEY
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.SHOW_LOADING_BEFORE_INTERSTITIAL
+import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager.initializeAds
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.views.AppsKitSDKApplication
@@ -67,6 +68,7 @@ class ResumeMakerApplication : AppsKitSDKApplication() {
             false, false, true, false
         )
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
     }
 
 

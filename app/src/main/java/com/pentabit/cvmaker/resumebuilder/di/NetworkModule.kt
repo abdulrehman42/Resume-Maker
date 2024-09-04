@@ -25,13 +25,13 @@ class NetworkModule {
     @Named("GsonRetrofit")
     fun providesRetrofit(): Retrofit.Builder {
         return Retrofit.Builder().apply {
-            if (BuildConfig.DEBUG)
+           /* if (BuildConfig.DEBUG)
             {
                 baseUrl(Constants.BASE_URL_DEVELOPMENT)
 
-            }else{
+            }else{*/
                 baseUrl(Constants.BASE_URL_PRODUCTION)
-            }
+           // }
             client(provideOkHttpClient(AppIntercepter()))
             addConverterFactory(GsonConverterFactory.create())
         }
@@ -42,13 +42,13 @@ class NetworkModule {
     @Named("ScalarsRetrofit")
     fun providesRetrofitWithScalarsConverterFactory(): Retrofit.Builder {
         return Retrofit.Builder().apply {
-            if (BuildConfig.DEBUG)
+           /* if (BuildConfig.DEBUG)
             {
                 baseUrl(Constants.BASE_URL_DEVELOPMENT)
 
-            }else{
+            }else{*/
                 baseUrl(Constants.BASE_URL_PRODUCTION)
-            }
+           // }
             client(provideOkHttpClient(AppIntercepter()))
             addConverterFactory(ScalarsConverterFactory.create())
         }

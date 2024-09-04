@@ -206,7 +206,6 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         AppsKitSDKPreferencesManager.getInstance()
             .addInPreferences(Constants.FRAGMENT_CALLED, Constants.RESUME)
         startActivity(intent)
-        finish()
     }
 
     private fun navigateToCoverLetterResumeActivity() {

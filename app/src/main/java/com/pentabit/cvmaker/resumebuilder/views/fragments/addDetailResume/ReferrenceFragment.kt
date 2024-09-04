@@ -117,8 +117,15 @@ class ReferrenceFragment : AddDetailsBaseFragment<FragmentReferrenceBinding>(),A
     }
 
     override fun onMoveNextClicked(): Boolean {
-        saveReferenceData()
-        return false
+        if (list.isEmpty())
+        {
+            //AppsKitSDKUtils.makeToast("Please Add at least one reference")
+            return true
+
+        }else{
+            saveReferenceData()
+            return false
+        }
     }
     override fun referenceUpdate(listReference: List<ProfileModelAddDetailResponse.UserReference>) {
         list = ArrayList(listReference)

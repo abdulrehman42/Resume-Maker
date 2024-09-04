@@ -14,11 +14,13 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
+import androidx.core.view.isGone
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.BillingClient
@@ -26,6 +28,7 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryPurchasesParams
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
@@ -35,6 +38,7 @@ import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityMainActivtyBinding
+import com.pentabit.cvmaker.resumebuilder.databinding.ToolbarsBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.REMOVE_ADS_ID
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.SKU_SUBS
@@ -55,6 +59,7 @@ import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.firebase.AppsKitSDK
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
+import com.pentabit.pentabitessentials.utils.BUILD_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -92,6 +97,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun initView() {
+        binding.version.text = BuildConfig.VERSION_NAME
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
         if (AppsKitSDKPreferencesManager.getInstance()
                 .getBooleanPreferences(Constants.IS_LOGGED, false)
@@ -147,8 +153,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onResume()
         if (AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(Constants.IS_LOGGED)) {
             binding.logout.setText("Logout")
-        }
-        else {
+        } else {
             binding.logout.setText("Login")
         }
     }
@@ -453,7 +458,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
 
             override fun onBillingServiceDisconnected() {
-                // do nothing
+
             }
         })
     }
@@ -503,6 +508,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.post {
             navView.itemIconTintList = null
         }
+
     }
 
 

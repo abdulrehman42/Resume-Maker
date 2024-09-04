@@ -29,7 +29,7 @@ class AddDetailCoverLetterFragment : BaseFragment<FragmentAddDetailCoverLetterBi
 
     override fun observeLiveData() {
         templateViewModel.coverLetterResponse.observe(currentActivity()) {
-            AppsKitSDKPreferencesManager.getInstance().addInPreferences(com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID, it.id.toString())
+            AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.PROFILE_ID, it.id.toString())
             moveToFragment()
         }
     }

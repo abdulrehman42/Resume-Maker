@@ -38,8 +38,15 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>(),
     }
 
     override fun onMoveNextClicked(): Boolean {
-        callSaveApi()
-        return false
+        if (list.isEmpty())
+        {
+            AppsKitSDKUtils.makeToast("please Add at least one skill")
+            return false
+
+        }else{
+            callSaveApi()
+            return false
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {

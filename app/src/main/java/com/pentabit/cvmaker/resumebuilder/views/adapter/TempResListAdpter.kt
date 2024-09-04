@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplatelayoutitemsBinding
 import com.pentabit.cvmaker.resumebuilder.models.api.TemplateModel
+import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
 
 class TempResListAdpter :
     ListAdapter<TemplateModel, TempResListAdpter.ViewHolder>(TemplateDiffCallback) {
@@ -23,7 +24,7 @@ class TempResListAdpter :
             if (model.contentType == 0) {
                 binding.videoIconId.isGone = true
             } else {
-                binding.videoIconId.isGone = false
+                binding.videoIconId.isGone = FreeTaskManager.getInstance().isProPurchased
             }
             binding.eyeIconId.setOnClickListener {
                 eyeItemClickCallback?.invoke(model)

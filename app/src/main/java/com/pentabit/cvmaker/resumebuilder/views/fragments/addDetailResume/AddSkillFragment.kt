@@ -64,7 +64,7 @@ class AddSkillFragment(
 
     private fun handleClicks() {
         binding.tickBtn.setOnClickListener {
-            val skill = binding.skillEdittext.text.toString().trim()
+            val skill = skillPredictiveSearchHandler.getText()
             if (skill.isNotEmpty()) {
                 if (position!=null) {
                     list[position] = skillPredictiveSearchHandler.getText()

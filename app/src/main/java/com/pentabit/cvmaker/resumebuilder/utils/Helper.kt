@@ -54,7 +54,7 @@ object Helper {
                 binding.dot1.setImageResource(R.drawable.blue_dot)
                 binding.dot2.setImageResource(R.drawable.grey_dot)
                 binding.dot3.setImageResource(R.drawable.grey_dot)
-                binding.dot4.setImageResource(R.drawable.grey_dot)
+           //     binding.dot4.setImageResource(R.drawable.grey_dot)
                 binding.skipbtn.setText(R.string.skip)
                 binding.nextbtn.setText("Next")
                 binding.skipbtn.isGone = false
@@ -64,7 +64,7 @@ object Helper {
                 binding.dot1.setImageResource(R.drawable.grey_dot)
                 binding.dot2.setImageResource(R.drawable.blue_dot)
                 binding.dot3.setImageResource(R.drawable.grey_dot)
-                binding.dot4.setImageResource(R.drawable.grey_dot)
+           //     binding.dot4.setImageResource(R.drawable.grey_dot)
                 binding.skipbtn.setText(R.string.skip)
 
                 binding.nextbtn.setText("Next")
@@ -75,14 +75,16 @@ object Helper {
                 binding.dot1.setImageResource(R.drawable.grey_dot)
                 binding.dot2.setImageResource(R.drawable.grey_dot)
                 binding.dot3.setImageResource(R.drawable.blue_dot)
-                binding.dot4.setImageResource(R.drawable.grey_dot)
+           //     binding.dot4.setImageResource(R.drawable.grey_dot)
                 binding.skipbtn.setText(R.string.skip)
 
-                binding.nextbtn.setText("Next")
-                binding.skipbtn.isGone = false
+                binding.skipbtn.setText("")
+                binding.nextbtn.setText("Done")
+                /*binding.nextbtn.setText("Next")
+                binding.skipbtn.isGone = false*/
             }
 
-            3 -> {
+            /*3 -> {
                 binding.dot1.setImageResource(R.drawable.grey_dot)
                 binding.dot2.setImageResource(R.drawable.grey_dot)
                 binding.dot3.setImageResource(R.drawable.grey_dot)
@@ -90,7 +92,7 @@ object Helper {
                 binding.skipbtn.setText("")
                 binding.nextbtn.setText("Done")
 
-            }
+            }*/
         }
     }
 

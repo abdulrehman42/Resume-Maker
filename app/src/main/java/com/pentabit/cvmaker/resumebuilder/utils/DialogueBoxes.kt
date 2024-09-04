@@ -132,6 +132,25 @@ object DialogueBoxes {
         dialogBuilder.show()
     }
 
+    fun backPressedcheck(curentactivity: Activity, param: StringValueDialogCallback) {
+        val binding = LogoutBinding.inflate(curentactivity.layoutInflater)
+        val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
+        dialogBuilder.setContentView(binding.root)
+        binding.textView7.text = ""
+        binding.textView15.text = curentactivity.getString(R.string.back_questiom)
+        binding.yesBtn.setOnClickListener {
+            param.onButtonClick(Constants.YES)
+            dialogBuilder.dismiss()
+        }
+        binding.noBtn.setOnClickListener {
+
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.window?.setBackgroundDrawableResource(R.drawable.alertdialogue_radius)
+        dialogBuilder.setCancelable(true)
+        dialogBuilder.show()
+    }
+
     fun alertboxLogout(curentactivity: Activity, param: StringValueDialogCallback) {
         val binding = LogoutBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
@@ -201,6 +220,7 @@ object DialogueBoxes {
         dialogBuilder.setCancelable(true)
         dialogBuilder.show()
     }
+
 
     fun alertboxChooseCreation(curentactivity: Activity, param: StringValueDialogCallback) {
         val binding = CreationdialogueBinding.inflate(curentactivity.layoutInflater)

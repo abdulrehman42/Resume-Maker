@@ -146,13 +146,13 @@ class ResumePreviewActivity : BaseActivity() {
     private fun onclick() {
 
         binding.includeTool.backbtn.setOnClickListener {
-            startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
-            finishAffinity()
+            //startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
+            finish()
         }
 
        onBackPressedDispatcher.addCallback {
-           startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
-           finishAffinity()
+           //startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
+           finish()
         }
 
         binding.changeTemplate.setOnClickListener {
@@ -168,7 +168,7 @@ class ResumePreviewActivity : BaseActivity() {
         binding.editProfile.setOnClickListener {
             if (isResume) {
                 val intent = Intent(this, AddDetailResume::class.java)
-                intent.putExtra(Constants.IS_EDIT, id)
+                intent.putExtra(Constants.IS_EDIT, true)
                 startActivity(intent)
             } else {
                 onBackPressedDispatcher.onBackPressed()

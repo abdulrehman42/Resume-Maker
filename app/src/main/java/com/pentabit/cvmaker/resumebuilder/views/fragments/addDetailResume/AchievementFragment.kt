@@ -53,8 +53,15 @@ class AchievementFragment : AddDetailsBaseFragment<FragmentAchievementBinding>()
 
 
     override fun onMoveNextClicked(): Boolean {
-        saveEducationData()
-        return false
+        if (list.isEmpty())
+        {
+            //AppsKitSDKUtils.makeToast("please Add at least one achievement")
+            return true
+
+        }else{
+            saveEducationData()
+            return false
+        }
     }
 
     private fun handleClicks() {

@@ -12,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.callbacks.OnLookUpResult
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.removeSpaceFromString
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
+import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 class PredictiveSearchHandler(
     private val key: String,
@@ -33,13 +34,24 @@ class PredictiveSearchHandler(
 
     fun getText(): String {
         val text = autoCompleteTextView.text.toString().trim()
-        return if (text.isEmpty()) {
-            ""
-        } else if ((isAlreadyInDB && text == startingText) || lst.contains(removeSpaceFromString(text))) {
-            "1__$text"
-        } else {
-            "-1__$text"
-        }
+        val isNumeric = text.matches(Regex("\\d+"))
+        if (isNumeric)
+            AppsKitSDKUtils.makeToast("please write correct")
+         else
+            return if (text.isEmpty()) {
+                ""
+            } else if ((isAlreadyInDB && text == startingText) || lst.contains(
+                    removeSpaceFromString(
+                        text
+                    )
+                )
+            ) {
+                "1__$text"
+            } else {
+                "-1__$text"
+            }
+
+        return ""
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

@@ -10,9 +10,9 @@ object Constants {
     const val GUEST_TOKEN = "guestToken"
     const val AUTH_TOKEN = "AUTH_TOKEN"
 
-    const val SKU_SUBS_1 = "SKU_SUBS_1"
-    const val SKU_SUBS_2 = "SKU_SUBS_2"
-    const val SKU_SUBS = "SKU_SUBS"
+    const val SKU_SUBS_1 = "half_year_pro"
+    const val SKU_SUBS_2 = "monthly_pro"
+    const val SKU_SUBS = "yearly_pro"
 
     const val IS_PRO_SUBSCRIBED = "IS_PRO_SUBSCRIBED"
 

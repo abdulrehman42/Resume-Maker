@@ -10,6 +10,7 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.callbacks.ProfileItemCallbacks
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileBinding
+import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
@@ -30,6 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     lateinit var profileVM: ProfileVM
     private val screeId = ScreenIDs.PROFILE_LISTING
+    var isListEmpty=false
+    var isCalled=false
     override val inflate: Inflate<FragmentProfileBinding>
         get() = FragmentProfileBinding::inflate
 
@@ -44,19 +47,29 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
         profileVM.dataResponse.observe(currentActivity()) {
             if (it.isNullOrEmpty()) {
+                isListEmpty=true
                 profileAdapter.submitList(it)
                 profileAdapter.notifyDataSetChanged()
-                startActivity(Intent(currentActivity(), AddDetailResume::class.java))
                 binding.addTabshide.isGone = false
                 binding.popupmsg.isGone = false
                 binding.addTabs.isGone = true
             } else {
+                isListEmpty=false
                 binding.popupmsg.isGone = true
                 binding.addTabshide.isGone = true
                 binding.addTabs.isGone = false
                 profileAdapter.submitList(it)
             }
+            if (!isCalled) {
+                if (AppsKitSDKPreferencesManager.getInstance()
+                        .getStringPreferences(Constants.TEMPLATE_ID).isNotEmpty() && isListEmpty
+                ) {
+                    isCalled = true
+                    startActivity(Intent(currentActivity(), AddDetailResume::class.java))
+                }
+            }
         }
+
     }
 
     override fun onResume() {
@@ -73,6 +86,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         ) {
             profileAdapter.isViewProfile = true
         }
+
         setadapter()
         onclick()
         handleAds()

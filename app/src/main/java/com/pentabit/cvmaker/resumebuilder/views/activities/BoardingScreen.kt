@@ -55,7 +55,7 @@ class BoardingScreen : BaseActivity() {
 
     private fun onclick() {
         binding.nextbtn.setOnClickListener {
-            if (binding.viewPager.currentItem == 3) {
+            if (binding.viewPager.currentItem == 2) {
                 mpveToNextActivity()
             } else {
                 binding.viewPager.setCurrentItem(getItem(+1), true)

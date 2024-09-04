@@ -100,8 +100,15 @@ class ExperienceFragment : AddDetailsBaseFragment<FragmentExperienceBinding>(),
     }
 
     override fun onMoveNextClicked(): Boolean {
-        saveExperienceData()
-        return false
+        if (list.isEmpty())
+        {
+           // AppsKitSDKUtils.makeToast("please Add at least one skill")
+            return true
+
+        }else{
+            saveExperienceData()
+            return false
+        }
     }
 
     private fun apiCall() {

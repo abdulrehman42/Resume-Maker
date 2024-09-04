@@ -45,7 +45,7 @@ class BoardingFragment : Fragment() {
         onBoardAssets.add(R.drawable.img1)
         onBoardAssets.add(R.drawable.img2)
         onBoardAssets.add(R.drawable.img3)
-        onBoardAssets.add(R.drawable.img4)
+       // onBoardAssets.add(R.drawable.img4)
         return onBoardAssets
     }
 

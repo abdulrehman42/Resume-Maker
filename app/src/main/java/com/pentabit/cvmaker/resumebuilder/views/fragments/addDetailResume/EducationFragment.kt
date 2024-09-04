@@ -121,8 +121,15 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     }
 
     override fun onMoveNextClicked(): Boolean {
-        saveEducationData()
-        return false
+        if (list.isEmpty())
+        {
+            AppsKitSDKUtils.makeToast("please Add at least one education")
+            return false
+
+        }else{
+            saveEducationData()
+            return false
+        }
     }
 
     override fun onEducationUpdated(userQualificationsList: MutableList<ProfileModelAddDetailResponse.UserQualification>) {

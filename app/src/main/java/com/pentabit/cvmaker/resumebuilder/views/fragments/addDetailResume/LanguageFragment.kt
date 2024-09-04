@@ -39,8 +39,15 @@ class LanguageFragment : AddDetailsBaseFragment<FragmentLanguageBinding>(),AddLa
 
 
     override fun onMoveNextClicked(): Boolean {
-        saveCallApi()
-        return false
+        if (list.isEmpty())
+        {
+            AppsKitSDKUtils.makeToast("please Add at least one language")
+            return false
+
+        }else{
+            saveCallApi()
+            return false
+        }
     }
 
     override fun init(savedInstanceState: Bundle?) {

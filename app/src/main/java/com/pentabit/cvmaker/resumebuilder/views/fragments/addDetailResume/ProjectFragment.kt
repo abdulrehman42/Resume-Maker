@@ -110,8 +110,15 @@ class ProjectFragment : AddDetailsBaseFragment<FragmentProjectBinding>(),AddProj
     }
 
     override fun onMoveNextClicked(): Boolean {
-        saveProjectsData()
-        return false
+        if (list.isEmpty())
+        {
+            AppsKitSDKUtils.makeToast("please Add at least one project")
+            return false
+
+        }else{
+            saveProjectsData()
+            return false
+        }
     }
 
     private fun fetchProfileData() {

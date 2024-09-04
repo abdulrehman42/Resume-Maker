@@ -41,10 +41,8 @@ class SplashScreen : BaseActivity() {
         callFirebaseToken()
     }
 
-
     private lateinit var consentInformation: ConsentInformation
     var isContentFiled = AtomicBoolean(false)
-
     fun requestConsents(testId: String?) {
         consentInformation = UserMessagingPlatform.getConsentInformation(this)
         val debugSettings = ConsentDebugSettings.Builder(this)

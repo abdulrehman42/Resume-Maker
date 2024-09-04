@@ -23,7 +23,8 @@ import java.util.Map;
 public class SubscriptionAdapter extends ListAdapter<SubscriptionPackageModel, AppsKitSDKRecyclerBaseViewBinding> {
 
     LinearLayout currentLayout;
-    Map<Integer, LinearLayout> itemsLst = new HashMap<>();
+    StoragePackageListItemBinding currentbinding;
+    Map<Integer, StoragePackageListItemBinding> itemsLst = new HashMap<>();
 
     public SubscriptionAdapter() {
         super(new StorageSubscriptionPackageDiffUtils());
@@ -39,7 +40,7 @@ public class SubscriptionAdapter extends ListAdapter<SubscriptionPackageModel, A
     public void onBindViewHolder(@NonNull AppsKitSDKRecyclerBaseViewBinding holder, int position) {
         StoragePackageListItemBinding binding = (StoragePackageListItemBinding) holder.binding;
         SubscriptionPackageModel model = getItem(holder.getAbsoluteAdapterPosition());
-        itemsLst.put(holder.getAbsoluteAdapterPosition(), binding.mainContainer);
+        itemsLst.put(holder.getAbsoluteAdapterPosition(), binding);
         binding.name.setText(model.getName());
         if (model.getDiscount().equals("0")) {
             binding.discount.setVisibility(View.GONE);
@@ -62,11 +63,21 @@ public class SubscriptionAdapter extends ListAdapter<SubscriptionPackageModel, A
     }
 
 
-    private void manageUIUpdate(LinearLayout view) {
-        if (currentLayout != null)
+    private void manageUIUpdate(StoragePackageListItemBinding view) {
+        if (currentLayout != null && currentbinding!=null) {
             currentLayout.setBackground(ContextCompat.getDrawable(ResumeMakerApplication.Companion.getInstance(), R.drawable.unselected_storage_subscription_bg));
-        currentLayout = view;
+            currentbinding.name.setTextColor(ContextCompat.getColor(view.getRoot().getContext(), R.color.white));
+            currentbinding.price.setTextColor(ContextCompat.getColor(view.getRoot().getContext(), R.color.white));
+            currentbinding.timePeriod.setTextColor(ContextCompat.getColor(view.getRoot().getContext(), R.color.white));
+        }
+        currentbinding=view;
+        currentLayout = view.mainContainer;
         currentLayout.setBackground(ContextCompat.getDrawable(ResumeMakerApplication.Companion.getInstance(), R.drawable.selected_storage_subscription_bg));
+        view.name.setTextColor(ContextCompat.getColor(view.getRoot().getContext(), R.color.purple));
+        view.price.setTextColor(ContextCompat.getColor(view.getRoot().getContext(),R.color.purple));
+        view.timePeriod.setTextColor(ContextCompat.getColor(view.getRoot().getContext(),R.color.purple));
+
+
     }
 
     @Override

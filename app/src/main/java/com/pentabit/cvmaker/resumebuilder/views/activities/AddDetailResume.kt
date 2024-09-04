@@ -22,6 +22,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.AddmorealertdialogueBindin
 import com.pentabit.cvmaker.resumebuilder.models.api.ProfileModelAddDetailResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
+import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.backPressedcheck
 import com.pentabit.cvmaker.resumebuilder.utils.ImageSourceSelectionHelper
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
@@ -133,6 +134,16 @@ class AddDetailResume : BaseActivity() {
 
     private fun handleClicks() {
         binding.includeTool.backbtn.setOnClickListener {
+            if (currentTabPosition == allTabs.size - 1)
+                backPressedcheck(this,
+                    object : DialogueBoxes.StringValueDialogCallback {
+                        override fun onButtonClick(value: String) {
+                            if (value == Constants.YES) {
+                               finish()
+                            }
+                        }
+                    })
+            else
             finish()
         }
         binding.back.setOnClickListener {

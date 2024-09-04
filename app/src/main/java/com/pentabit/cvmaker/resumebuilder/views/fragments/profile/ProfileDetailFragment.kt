@@ -146,6 +146,7 @@ class ProfileDetailFragment : BaseFragment<FragmentProfileDetailBinding>() {
             userName.text = profileModelAddDetailResponse.name
             binding.userIntro.setText(Helper.removeOneUnderscores(profileModelAddDetailResponse.jobTitle))
             gender.text = profileModelAddDetailResponse.gender!!.replaceFirstChar { it.uppercase() }
+            location.text=profileModelAddDetailResponse.address.toString().replaceFirstChar { it.uppercase() }
             seeMore(profileModelAddDetailResponse)
             skillRecyclerview.apply {
                 layoutManager = GridLayoutManager(currentActivity(), 3)
