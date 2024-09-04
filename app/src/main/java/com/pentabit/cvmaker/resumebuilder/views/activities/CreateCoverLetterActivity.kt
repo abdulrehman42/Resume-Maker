@@ -9,6 +9,8 @@ import com.pentabit.cvmaker.resumebuilder.callbacks.OnCoverLetterSampleSelected
 import com.pentabit.cvmaker.resumebuilder.databinding.ActivityCreateCoverLetterBinding
 import com.pentabit.cvmaker.resumebuilder.models.request.addDetailResume.CoverLetterRequestModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.LAST_COVER_LETTER
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.LAST_COVER_LETTER_TITLE
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.TemplateViewModel
@@ -25,12 +27,21 @@ class CreateCoverLetterActivity : BaseActivity(), OnCoverLetterSampleSelected {
     private lateinit var templateViewModel: TemplateViewModel
     lateinit var title: String
     lateinit var coverletter: String
+    private var isEdit = false
     private val screenId = ScreenIDs.CREATE_COVER_LETTER
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateCoverLetterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        isEdit = intent.getBooleanExtra(Constants.IS_EDIT, false)
+        if (isEdit) {
+            onCoverLetterSampleSelected(
+                AppsKitSDKPreferencesManager.getInstance()
+                    .getStringPreferences(LAST_COVER_LETTER_TITLE),
+                AppsKitSDKPreferencesManager.getInstance().getStringPreferences(LAST_COVER_LETTER)
+            )
+        }
         init()
         handleClicks()
         observeLiveData()
@@ -99,7 +110,9 @@ class CreateCoverLetterActivity : BaseActivity(), OnCoverLetterSampleSelected {
         intent.putExtra(Constants.IS_RESUME, false)
         intent.putExtra(Constants.CREATION_TIME, true)
         startActivity(intent)
-//        finish()
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(LAST_COVER_LETTER_TITLE, title)
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(LAST_COVER_LETTER, coverletter)
+        finish()
     }
 
     override fun onInternetConnectivityChange(isInternetAvailable: Boolean) {

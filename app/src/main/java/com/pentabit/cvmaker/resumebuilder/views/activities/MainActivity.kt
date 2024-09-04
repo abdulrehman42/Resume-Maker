@@ -222,8 +222,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (AppsKitSDKPreferencesManager.getInstance()
                     .getBooleanPreferences(Constants.IS_LOGGED, false)
             ) {
-                AppsKitSDKPreferencesManager.getInstance()
-                    .addInPreferences(Constants.VIEW_PROFILE, true)
                 AppsKitSDKPreferencesManager.getInstance().addInPreferences(
                     Constants.FRAGMENT_CALLED,
                     Constants.PROFILE

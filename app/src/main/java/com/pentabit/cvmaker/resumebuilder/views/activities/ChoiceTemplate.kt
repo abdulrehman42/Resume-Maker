@@ -2,11 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +33,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     private var dataMap: Map<String, List<TemplateModel>> = HashMap<String, List<TemplateModel>>()
     private var isResume = false
     private var isCreation = false
+    private var templateId = ""
     private var screenId = ScreenIDs.CHOOSE_RESUME_TEMPLATES
 
     @SuppressLint("SetTextI18n")
@@ -51,6 +48,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             false
         )
         isCreation = intent.getBooleanExtra(Constants.CREATION_TIME, false)
+        templateId = intent.getStringExtra(Constants.TEMPLATE_ID).toString()
         if (!isResume) {
             screenId = ScreenIDs.CHOOSE_COVER_LETTER_TEMPELATES
         }
@@ -87,7 +85,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
     }
 
     private fun fetchTemplates() {
-        templateViewModel.fetchTemplates(if (isResume) Constants.RESUME else Constants.COVER_LETTER)
+        templateViewModel.fetchTemplates(
+            if (isResume)
+                Constants.RESUME
+            else
+                Constants.COVER_LETTER
+        )
     }
 
     private fun onclick() {
@@ -137,12 +140,21 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         val check = AppsKitSDKPreferencesManager.getInstance()
             .getBooleanPreferences(Constants.IS_LOGGED, false)
         if (check) {
+
             if (isCreation) {
                 navigateToPreviewScreen()
             } else if (isResume) {
-                navigateToProfileActivity()
+                if (templateId != "null") {
+                    navigateToPreviewScreenFinish()
+                } else {
+                    navigateToProfileActivity()
+                }
             } else {
-                navigateToCoverLetterResumeActivity()
+                if (templateId != "null") {
+                    navigateToPreviewScreenFinish()
+                }else {
+                    navigateToCoverLetterResumeActivity()
+                }
             }
         } else {
             if (isResume) {
@@ -158,6 +170,18 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         }
     }
 
+    private fun navigateToPreviewScreenFinish() {
+        val intent = Intent(this, ResumePreviewActivity::class.java)
+        if (isResume) {
+            intent.putExtra(Constants.IS_RESUME, true)
+        } else {
+            intent.putExtra(Constants.IS_RESUME, false)
+
+        }
+        startActivity(intent)
+        finish()
+    }
+
     private fun navigateToProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
         AppsKitSDKPreferencesManager.getInstance()
@@ -171,6 +195,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
 
     private fun navigateToPreviewScreen() {
         val intent = Intent(this, ResumePreviewActivity::class.java)
+        if (isResume) {
+            intent.putExtra(Constants.IS_RESUME, true)
+        } else {
+            intent.putExtra(Constants.IS_RESUME, false)
+
+        }
         startActivity(intent)
     }
 

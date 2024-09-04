@@ -18,6 +18,7 @@ import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentResumePreviewBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseDownload
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
@@ -93,7 +94,7 @@ class ResumePreviewActivity : BaseActivity() {
     private fun initView() {
         binding.includeTool.textView.text = getString(R.string.preview)
         templateViewModel = ViewModelProvider(this)[TemplateViewModel::class.java]
-        isResume = intent.getBooleanExtra(Constants.IS_RESUME,false)
+        isResume = intent.getBooleanExtra(Constants.IS_RESUME, false)
         if (!isResume) {
             binding.editText.setText(getString(R.string.editcover))
             screenId = ScreenIDs.PREVIEW_COVER_LETTER
@@ -140,22 +141,21 @@ class ResumePreviewActivity : BaseActivity() {
     private fun onclick() {
 
         binding.includeTool.backbtn.setOnClickListener {
-            //startActivity(Intent(this@ResumePreviewActivity,MainActivity::class.java))
             finish()
         }
 
-       onBackPressedDispatcher.addCallback {
-           finish()
+        onBackPressedDispatcher.addCallback {
+            finish()
         }
 
         binding.changeTemplate.setOnClickListener {
             val intent = Intent(this, ChoiceTemplate::class.java)
             if (isResume) {
                 intent.putExtra(Constants.IS_RESUME, true)
-                intent.putExtra(Constants.TEMPLATE_ID,templateId)
+                intent.putExtra(Constants.TEMPLATE_ID, templateId)
             } else {
                 intent.putExtra(Constants.IS_RESUME, false)
-                intent.putExtra(Constants.TEMPLATE_ID,templateId)
+                intent.putExtra(Constants.TEMPLATE_ID, templateId)
             }
             startActivity(intent)
             finish()
@@ -166,11 +166,15 @@ class ResumePreviewActivity : BaseActivity() {
                 intent.putExtra(Constants.IS_EDIT, true)
                 startActivity(intent)
             } else {
-                onBackPressedDispatcher.onBackPressed()
+                val intent = Intent(this, CreateCoverLetterActivity::class.java)
+                intent.putExtra(Constants.IS_EDIT, true)
+                startActivity(intent)
+//                onBackPressedDispatcher.onBackPressed()
             }
+            finish()
         }
         binding.homeConstraint.setOnClickListener {
-            startActivity(Intent(this,MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finishAffinity()
         }
         binding.includeTool.share.setOnClickListener {
@@ -178,8 +182,8 @@ class ResumePreviewActivity : BaseActivity() {
         }
         binding.downloadConstraint.setOnClickListener {
             if (FreeTaskManager.getInstance().isProPurchased) {
-               popupDialogue()
-            }else{
+                popupDialogue()
+            } else {
                 DialogueBoxes.alertboxImport(this,
                     object :
                         DialogueBoxes.StringValueDialogCallback {
@@ -191,6 +195,7 @@ class ResumePreviewActivity : BaseActivity() {
                                         override fun onAdFailed() {
                                             AppsKitSDKUtils.makeToast("Ad failed to load")
                                         }
+
                                         override fun onAdRewarded() {
                                             AppsKitSDKPreferencesManager.getInstance()
                                                 .addInPreferences(
@@ -214,7 +219,7 @@ class ResumePreviewActivity : BaseActivity() {
 
     private fun popupDialogue() {
         alertboxChooseDownload(this,
-            object :DialogueBoxes.StringValueDialogCallback {
+            object : DialogueBoxes.StringValueDialogCallback {
                 override fun onButtonClick(value: String) {
                     if (value == Constants.JPG) {
                         convertWebViewToImage()
@@ -365,6 +370,11 @@ class ResumePreviewActivity : BaseActivity() {
             AppsKitSDKUtils.makeToast("Error ${e.message}")
             e.printStackTrace()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(PROFILE_ID,"")
     }
 
 }

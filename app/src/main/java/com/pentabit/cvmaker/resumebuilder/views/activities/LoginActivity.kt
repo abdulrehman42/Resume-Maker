@@ -154,7 +154,6 @@ class LoginActivity : BaseActivity() {
         finish()
     }
     private fun navigateToProfileActivitySimple() {
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE,true)
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
         finish()

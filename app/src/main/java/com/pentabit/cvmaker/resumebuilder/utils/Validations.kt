@@ -73,7 +73,7 @@ object Validations {
     fun isConditionMetEducation(binding: FragmentAddEducationBinding): Boolean {
         val startDate = binding.startdateedittext.text.toString()
         val endDate = binding.enddateedittext.text.toString()
-        val isEndDateRequired = binding.checkItscontinue.isChecked
+        val isEndDateRequired = !binding.checkItscontinue.isChecked
 
         return when {
             binding.instituenameedittext.text.toString().isEmpty() -> {
@@ -91,21 +91,15 @@ object Validations {
                 false
             }
 
-            !isEndDateRequired && endDate.isEmpty() -> {
+            isEndDateRequired && endDate.isEmpty() -> {
                 binding.enddateTextInputLayout2.error =
                     ("End date is required")
                 false
             }
 
-            startDate == endDate -> {
-                binding.startdateTextInputLayout2.error =
-                    ("Start date and end date should not be the same.")
-                false
-            }
-
-            endDate.isNotEmpty() && startDate > endDate -> {
+            isEndDateRequired && !Utils.isEndDateGrater(startDate, endDate) -> {
                 binding.enddateTextInputLayout2.error =
-                    ("Start date should not be greater than End date.")
+                    ("Start date should not be less than End date.")
                 false
             }
 
@@ -116,7 +110,7 @@ object Validations {
     fun isConditionMetExperience(binding: FragmentAddExperienceBinding): Boolean {
         val startDate = binding.startdateedittext.text.toString()
         val endDate = binding.enddateedittext.text.toString()
-        val isEndDateRequired = binding.checkItscontinue.isChecked
+        val isEndDateRequired = !binding.checkItscontinue.isChecked
 
         return when {
             binding.companyName.text.toString().isNullOrEmpty() -> {
@@ -140,19 +134,13 @@ object Validations {
                 false
             }
 
-            startDate == endDate -> {
-                binding.enddateTextInputLayout2.error =
-                    ("Start date and end date should not be the same.")
-                false
-            }
-
-            !isEndDateRequired && endDate.isNullOrEmpty() -> {
+            isEndDateRequired && endDate.isEmpty() -> {
                 binding.enddateTextInputLayout2.error =
                     ("End date is required if 'Continue' is unchecked.")
                 false
             }
 
-            !endDate.isNullOrEmpty() && startDate > endDate -> {
+            isEndDateRequired && !Utils.isEndDateGrater(startDate, endDate) -> {
                 binding.startdateTextInputLayout2.error =
                     ("Start date should not be greater than End date.")
                 false

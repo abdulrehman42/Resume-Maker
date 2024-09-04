@@ -18,7 +18,6 @@ import com.pentabit.cvmaker.resumebuilder.utils.Validations
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
-import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -30,7 +29,7 @@ class AddEducation(
 ) : BaseFragment<FragmentAddEducationBinding>() {
 
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
-    private val screenId=ScreenIDs.ADD_EDUCATION
+    private val screenId = ScreenIDs.ADD_EDUCATION
     var endDate: String? = null
     private lateinit var degreePredictiveSearchHandler: PredictiveSearchHandler
     private lateinit var institutePredictiveSearchHandler: PredictiveSearchHandler
@@ -55,9 +54,7 @@ class AddEducation(
 
     private fun manageAds() {
         AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            Utils.createAdKeyFromScreenId(screenId)
+            currentActivity(), binding.bannerAdd, Utils.createAdKeyFromScreenId(screenId)
         )
     }
 
@@ -83,13 +80,12 @@ class AddEducation(
     }
 
     private fun managePredictiveSearchAdapter() {
-        degreePredictiveSearchHandler =
-            PredictiveSearchHandler(
-                key = Constants.degree,
-                isAlreadyInDB = isDegreeInDB,
-                autoCompleteTextView = binding.degreeName,
-                viewModel = addDetailResumeVM
-            )
+        degreePredictiveSearchHandler = PredictiveSearchHandler(
+            key = Constants.degree,
+            isAlreadyInDB = isDegreeInDB,
+            autoCompleteTextView = binding.degreeName,
+            viewModel = addDetailResumeVM
+        )
         institutePredictiveSearchHandler = PredictiveSearchHandler(
             key = Constants.institute,
             isAlreadyInDB = isInstituteInDB,
@@ -107,25 +103,21 @@ class AddEducation(
         }
 
         binding.startdateedittext.setOnClickListener {
-            DialogueBoxes.showWheelDatePickerDialog(
-                currentActivity(),
+            DialogueBoxes.showWheelDatePickerDialog(currentActivity(),
                 object : DialogueBoxes.StringDialogCallback {
                     override fun onButtonClick(date: String) {
                         binding.startdateedittext.setText(date)
                     }
-                }
-            )
+                })
         }
 
         binding.enddateedittext.setOnClickListener {
-            DialogueBoxes.showWheelDatePickerDialog(
-                currentActivity(),
+            DialogueBoxes.showWheelDatePickerDialog(currentActivity(),
                 object : DialogueBoxes.StringDialogCallback {
                     override fun onButtonClick(date: String) {
                         binding.enddateedittext.setText(date)
                     }
-                }
-            )
+                })
         }
 
 
@@ -148,30 +140,30 @@ class AddEducation(
         }
         val checkEndDate = userQualificationsList.filter { it.endDate == endDate }
 
-        if (checkEndDate.isNotEmpty()) {
-            AppsKitSDKUtils.makeToast("you had already added this end date")
+//        if (checkEndDate.isNotEmpty()) {
+//            AppsKitSDKUtils.makeToast("you had already added this end date")
+//        } else {
+        val newQualification = ProfileModelAddDetailResponse.UserQualification(
+            degree = degreePredictiveSearchHandler.getText(),
+            institute = institutePredictiveSearchHandler.getText(),
+            startDate = Helper.convertToUTCTimeForma(
+                binding.startdateedittext.text.toString().trim()
+            ),
+            endDate = endDate,
+            qualificationType = "degree"
+        )
+
+        val updatedList =
+            ArrayList<ProfileModelAddDetailResponse.UserQualification>(userQualificationsList)
+
+        if (position != null) {
+            updatedList[position] = newQualification
         } else {
-            val newQualification = ProfileModelAddDetailResponse.UserQualification(
-                degree = degreePredictiveSearchHandler.getText(),
-                institute = institutePredictiveSearchHandler.getText(),
-                startDate = Helper.convertToUTCTimeForma(
-                    binding.startdateedittext.text.toString().trim()
-                ),
-                endDate = endDate,
-                qualificationType = "degree"
-            )
-
-            val updatedList =
-                ArrayList<ProfileModelAddDetailResponse.UserQualification>(userQualificationsList)
-
-            if (position != null) {
-                updatedList[position] = newQualification
-            } else {
-                updatedList.add(newQualification)
-            }
-            callback.onEducationUpdated(updatedList)
-            currentActivity().onBackPressedDispatcher.onBackPressed()
+            updatedList.add(newQualification)
         }
+        callback.onEducationUpdated(updatedList)
+        currentActivity().onBackPressedDispatcher.onBackPressed()
+//        }
     }
 
 }

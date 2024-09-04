@@ -29,8 +29,7 @@ class AddExperienceFragment(
     val experienceList: ArrayList<ProfileModelAddDetailResponse.UserExperience>,
     val position: Int?,
     val callback: OnExperienceUpdate
-) :
-    BaseFragment<FragmentAddExperienceBinding>() {
+) : BaseFragment<FragmentAddExperienceBinding>() {
 
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private val screenId = ScreenIDs.ADD_EXPERIENCE
@@ -56,9 +55,7 @@ class AddExperienceFragment(
 
     private fun manageAds() {
         AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            Utils.createAdKeyFromScreenId(screenId)
+            currentActivity(), binding.bannerAdd, Utils.createAdKeyFromScreenId(screenId)
         )
     }
 
@@ -86,7 +83,6 @@ class AddExperienceFragment(
     }
 
     private fun populateDataIfRequired() {
-        // TODO Need to Edit
         if (position != null) {
             val model = experienceList[position]
             isCompanyInDB = model.company.startsWith("1_")
@@ -105,7 +101,6 @@ class AddExperienceFragment(
     }
 
     private fun managePredictiveSearch() {
-        // TODO Need to edit
         companyPredictiveSearchHandler = PredictiveSearchHandler(
             key = Constants.company,
             isAlreadyInDB = isCompanyInDB,
@@ -122,32 +117,27 @@ class AddExperienceFragment(
 
     private fun handleClicks() {
         binding.startdateedittext.setOnClickListener {
-            DialogueBoxes.showWheelDatePickerDialog(
-                currentActivity(),
+            DialogueBoxes.showWheelDatePickerDialog(currentActivity(),
                 object : DialogueBoxes.StringDialogCallback {
                     override fun onButtonClick(date: String) {
                         binding.startdateedittext.setText(date)
                     }
-                }
-            )
+                })
         }
         binding.enddateedittext.setOnClickListener {
-            DialogueBoxes.showWheelDatePickerDialog(
-                currentActivity(),
+            DialogueBoxes.showWheelDatePickerDialog(currentActivity(),
                 object : DialogueBoxes.StringDialogCallback {
                     override fun onButtonClick(date: String) {
                         binding.enddateedittext.setText(date)
                     }
-                }
-            )
+                })
         }
         binding.checkItscontinue.setOnClickListener {
+            binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
             if (binding.checkItscontinue.isChecked) {
-                binding.enddateTextInputLayout2.isEnabled = !binding.checkItscontinue.isChecked
-                if (binding.checkItscontinue.isChecked) {
-                    binding.enddateedittext.setText("")
-                }
+                binding.enddateedittext.setText("")
             }
+
         }
         binding.savebtn.setOnClickListener {
             if (Validations.isConditionMetExperience(binding)) {
@@ -161,13 +151,15 @@ class AddExperienceFragment(
 
 
     private fun saveExperience() {
-        //updateList()
         endDate = if (binding.checkItscontinue.isChecked) {
             null
         } else {
             Helper.convertToUTCTimeForma(binding.enddateedittext.text.toString().trim())
         }
-
+        val checkEndDate = experienceList.filter { it.endDate == endDate }
+//        if (checkEndDate.isNotEmpty()) {
+//            AppsKitSDKUtils.makeToast("you had already added this end date")
+//        } else {
         val experienceupdate = ProfileModelAddDetailResponse.UserExperience(
             companyPredictiveSearchHandler.getText(),
             binding.description.text.toString(),
@@ -188,6 +180,7 @@ class AddExperienceFragment(
         }
         callback.onExperience(updatedListExperience)
         currentActivity().onBackPressedDispatcher.onBackPressed()
+//        }
     }
 
 

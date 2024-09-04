@@ -1,6 +1,7 @@
 package com.pentabit.cvmaker.resumebuilder.utils;
 
 import static com.pentabit.cvmaker.resumebuilder.utils.Constants.SHOW_LOADING_BEFORE_INTERSTITIAL;
+import static com.pentabit.cvmaker.resumebuilder.utils.Constants.SIMPLE_TIME_FORMAT;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -10,6 +11,8 @@ import com.pentabit.cvmaker.resumebuilder.application.ResumeMakerApplication;
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Utils {
     private static final boolean isInterstitialLoadingEnabled = AppsKitSDKPreferencesManager.getInstance().getBooleanPreferences(SHOW_LOADING_BEFORE_INTERSTITIAL, true);
@@ -42,6 +45,21 @@ public class Utils {
             }
         }
         return InternetConnectionType.NO_INTERNET;
+    }
+
+
+    public static boolean isEndDateGrater(String startDateStr, String endDateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat(SIMPLE_TIME_FORMAT);
+        try {
+            Date startDate = sdf.parse(startDateStr);
+            Date endDate = sdf.parse(endDateStr);
+
+            return endDate.after(startDate);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

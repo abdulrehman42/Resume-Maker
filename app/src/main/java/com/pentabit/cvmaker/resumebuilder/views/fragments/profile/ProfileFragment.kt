@@ -2,7 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.view.isGone
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
@@ -10,7 +10,6 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.callbacks.ProfileItemCallbacks
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileBinding
-import com.pentabit.cvmaker.resumebuilder.models.api.ProfileListingModel
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
@@ -19,8 +18,8 @@ import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.ProfileVM
 import com.pentabit.cvmaker.resumebuilder.views.activities.AdBaseActivity
 import com.pentabit.cvmaker.resumebuilder.views.activities.AddDetailResume
-import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileAdapter
 import com.pentabit.cvmaker.resumebuilder.views.activities.ResumePreviewActivity
+import com.pentabit.cvmaker.resumebuilder.views.adapter.ProfileAdapter
 import com.pentabit.pentabitessentials.ads_manager.AppsKitSDKAdsManager
 import com.pentabit.pentabitessentials.ads_manager.ads_callback.RewardedLoadAndShowCallback
 import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
@@ -29,14 +28,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
-    lateinit var profileVM: ProfileVM
+    private val profileVM: ProfileVM by activityViewModels()
     private val screeId = ScreenIDs.PROFILE_LISTING
-    var isListEmpty=false
-    var isCalled=false
+    private var isCreateResume = false
     override val inflate: Inflate<FragmentProfileBinding>
         get() = FragmentProfileBinding::inflate
 
-    val profileAdapter = ProfileAdapter()
+    private val profileAdapter = ProfileAdapter()
 
     override fun observeLiveData() {
         profileVM.loadingState.observe(currentActivity()) {
@@ -46,48 +44,37 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             fetchProfileData()
         }
         profileVM.dataResponse.observe(currentActivity()) {
-            if (it.isNullOrEmpty()) {
-                isListEmpty=true
-                profileAdapter.submitList(it)
-                profileAdapter.notifyDataSetChanged()
-                binding.addTabshide.isGone = false
-                binding.popupmsg.isGone = false
-                binding.addTabs.isGone = true
-            } else {
-                isListEmpty=false
-                binding.popupmsg.isGone = true
-                binding.addTabshide.isGone = true
-                binding.addTabs.isGone = false
-                profileAdapter.submitList(it)
-            }
-            if (!isCalled) {
-                if (AppsKitSDKPreferencesManager.getInstance()
-                        .getStringPreferences(Constants.TEMPLATE_ID).isNotEmpty() && isListEmpty
-                ) {
-                    isCalled = true
-                    startActivity(Intent(currentActivity(), AddDetailResume::class.java))
-                }
+            AppsKitSDKUtils.setVisibility(
+                it.isNullOrEmpty(), binding.popupmsg, binding.addTabshide, binding.addTabs
+            )
+
+            profileAdapter.submitList(it)
+            profileAdapter.notifyDataSetChanged()
+
+            if (isCreateResume && it.isNullOrEmpty()
+            ) {
+                startActivity(
+                    Intent(
+                        currentActivity(),
+                        AddDetailResume::class.java
+                    ).putExtra("CreateResume", true)
+                )
+                currentActivity().finish()
             }
         }
-
     }
 
     override fun onResume() {
         super.onResume()
-        fetchProfileData()
         (requireActivity() as AdBaseActivity).askAdOnFragment(screeId)
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        profileVM = ViewModelProvider(currentActivity())[ProfileVM::class.java]
         binding.includeTool.textView.text = getString(R.string.profile)
-        if (AppsKitSDKPreferencesManager.getInstance()
-                .getBooleanPreferences(Constants.VIEW_PROFILE)
-        ) {
-            profileAdapter.isViewProfile = true
-        }
-
-        setadapter()
+        isCreateResume = AppsKitSDKPreferencesManager.getInstance()
+            .getStringPreferences(Constants.TEMPLATE_ID).isNotEmpty()
+        profileAdapter.isViewProfile = isCreateResume
+        setAdapter()
         onclick()
         handleAds()
     }
@@ -95,9 +82,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private fun handleAds() {
         AppsKitSDKAdsManager.showBanner(
-            requireActivity(),
-            binding.banner,
-            Utils.createAdKeyFromScreenId(screeId)
+            requireActivity(), binding.banner, Utils.createAdKeyFromScreenId(screeId)
         )
     }
 
@@ -106,7 +91,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun onclick() {
-
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().finish()
         }
@@ -118,8 +102,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         binding.addTabshide.setOnClickListener {
             startActivity(
                 Intent(
-                    currentActivity(),
-                    AddDetailResume::class.java
+                    currentActivity(), AddDetailResume::class.java
                 )
             )
         }
@@ -128,12 +111,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun onCreateProfileClicked() {
         if (profileAdapter.currentList.isNotEmpty()) {
             AppsKitSDKAdsManager.loadAndShowRewardedAd(
-                requireActivity(),
-                object : RewardedLoadAndShowCallback {
+                requireActivity(), object : RewardedLoadAndShowCallback {
                     override fun onAdFailed() {
                         if (BuildConfig.DEBUG) {
-                            startActivity(Intent(currentActivity(),AddDetailResume::class.java))
-                        }else{
+                            startActivity(Intent(currentActivity(), AddDetailResume::class.java))
+                        } else {
                             AppsKitSDKUtils.makeToast("Ad not available")
                         }
                     }
@@ -141,34 +123,28 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     override fun onAdRewarded() {
                         startActivity(
                             Intent(
-                                currentActivity(),
-                                AddDetailResume::class.java
+                                currentActivity(), AddDetailResume::class.java
                             )
                         )
                     }
 
-                },
-                Utils.createAdKeyFromScreenId(screeId)
+                }, Utils.createAdKeyFromScreenId(screeId)
             )
         } else {
             startActivity(
                 Intent(
-                    currentActivity(),
-                    AddDetailResume::class.java
+                    currentActivity(), AddDetailResume::class.java
                 )
             )
         }
     }
 
-    private fun setadapter() {
+    private fun setAdapter() {
         profileAdapter.setCallback(object : ProfileItemCallbacks {
             override fun onItemClicked(id: String) {
-                val fromCalled =
-                    AppsKitSDKPreferencesManager.getInstance()
-                        .getStringPreferences(Constants.FRAGMENT_CALLED)
                 AppsKitSDKPreferencesManager.getInstance()
                     .addInPreferences(Constants.PROFILE_ID, id)
-                if (fromCalled == Constants.PROFILE) {
+                if (!isCreateResume) {
                     viewModelStore
                     currentActivity().replaceProfileFragment(R.id.nav_profileDetailFragment)
                 } else {
@@ -176,7 +152,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     intent.putExtra(Constants.IS_RESUME, true)
                     startActivity(intent)
                     currentActivity().finish()
-
                 }
             }
 
@@ -203,9 +178,5 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.VIEW_PROFILE, false)
-    }
 }
 

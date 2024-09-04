@@ -50,7 +50,7 @@ class AddDetailResume : BaseActivity() {
     private val extraTabs = ArrayList<TabModel>()
     private val allTabs = ArrayList<TabModel>()
     lateinit var imageSourceSelectionHelper: ImageSourceSelectionHelper
-
+    private var isCreateResume = false
     private val addDetailResumeVM: AddDetailResumeVM by viewModels()
     private var screenId = ScreenIDs.ADD_BASIC_INFO
 
@@ -61,8 +61,9 @@ class AddDetailResume : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddDetailResumeBinding.inflate(layoutInflater)
+        isCreateResume = intent.getBooleanExtra("CreateResume", false)
         bottomNavigationColor()
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContentView(binding.root)
         addDetailResumeVM.isInEditMode = intent.getBooleanExtra(Constants.IS_EDIT, false)
         imageSourceSelectionHelper = ImageSourceSelectionHelper(this)
@@ -134,17 +135,7 @@ class AddDetailResume : BaseActivity() {
 
     private fun handleClicks() {
         binding.includeTool.backbtn.setOnClickListener {
-            if (currentTabPosition == allTabs.size - 1)
-                backPressedcheck(this,
-                    object : DialogueBoxes.StringValueDialogCallback {
-                        override fun onButtonClick(value: String) {
-                            if (value == Constants.YES) {
-                                finish()
-                            }
-                        }
-                    })
-            else
-                finish()
+            onBackPressed()
         }
         binding.back.setOnClickListener {
             moveBack()
@@ -164,9 +155,15 @@ class AddDetailResume : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         if (!supportFragmentManager.popBackStackImmediate()) {
-            finish()
+            backPressedcheck(this,
+                object : DialogueBoxes.StringValueDialogCallback {
+                    override fun onButtonClick(value: String) {
+                        if (value == Constants.YES) {
+                            finish()
+                        }
+                    }
+                })
         }
     }
 
@@ -272,24 +269,12 @@ class AddDetailResume : BaseActivity() {
         if (currentTabPosition < allTabs.size - 1) {
             binding.tabLayoutAdddetail.getTabAt(currentTabPosition + 1)!!.select()
         } else {
-            DialogueBoxes.alertboxChooseCreation(
-                this,
-                object : DialogueBoxes.StringValueDialogCallback {
-                    override fun onButtonClick(value: String) {
-                        if (value == Constants.PROFILE) {
-                            AppsKitSDKPreferencesManager.getInstance()
-                                .addInPreferences(Constants.VIEW_PROFILE, true)
-                            startActivity(Intent(this@AddDetailResume, ProfileActivity::class.java))
-                            finish()
-                        } else {
-                            val intent = Intent(this@AddDetailResume, ChoiceTemplate::class.java)
-                            intent.putExtra(Constants.IS_RESUME, true)
-                            intent.putExtra(Constants.CREATION_TIME, true)
-                            startActivity(intent)
-                            finish()
-                        }
-                    }
-                })
+            if (isCreateResume) {
+                val intent = Intent(this, ResumePreviewActivity::class.java)
+                intent.putExtra(Constants.IS_RESUME, true)
+                startActivity(intent)
+            }
+            finish()
         }
     }
 
