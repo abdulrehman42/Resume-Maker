@@ -23,7 +23,11 @@ class TempResListAdpter :
                 .into(binding.templateimage)
             if (model.contentType == 0) {
                 binding.videoIconId.isGone = true
-            } else {
+            } else if(model.contentType==2)
+            {
+
+            }
+            else {
                 binding.videoIconId.isGone = FreeTaskManager.getInstance().isProPurchased
             }
             binding.eyeIconId.setOnClickListener {

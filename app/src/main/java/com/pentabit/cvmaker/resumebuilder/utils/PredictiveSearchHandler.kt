@@ -41,9 +41,7 @@ class PredictiveSearchHandler(
             return if (text.isEmpty()) {
                 ""
             } else if ((isAlreadyInDB && text == startingText) || lst.contains(
-                    removeSpaceFromString(
-                        text
-                    )
+                    removeSpaceFromString(text)
                 )
             ) {
                 "1__$text"
@@ -76,6 +74,8 @@ class PredictiveSearchHandler(
         handler.postDelayed(searchRunnable!!, 500)
 
     }
+
+
 
 
 
