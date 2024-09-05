@@ -1,18 +1,22 @@
 package com.pentabit.cvmaker.resumebuilder.utils
 
 import android.R
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.pentabit.cvmaker.resumebuilder.callbacks.OnLookUpResult
 import com.pentabit.cvmaker.resumebuilder.models.api.LookUpResponse
 import com.pentabit.cvmaker.resumebuilder.utils.Helper.removeSpaceFromString
 import com.pentabit.cvmaker.resumebuilder.viewmodels.AddDetailResumeVM
-import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
+import com.pentabit.pentabitessentials.firebase.AppsKitSDK
+
 
 class PredictiveSearchHandler(
     private val key: String,
@@ -20,56 +24,45 @@ class PredictiveSearchHandler(
     private val autoCompleteTextView: AutoCompleteTextView,
     private val viewModel: AddDetailResumeVM,
     private val enableBtn: View? = null
-) : TextWatcher {
+) : TextWatcher, View.OnFocusChangeListener, AdapterView.OnItemClickListener {
     private var handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
     private lateinit var adapter: ArrayAdapter<String>
     private var lst = ArrayList<String>()
     private val startingText: String = autoCompleteTextView.text.toString().trim()
-
+    private var isItemSelected = false
 
     init {
+//        autoCompleteTextView.onFocusChangeListener = this
+        autoCompleteTextView.onItemClickListener = this
         autoCompleteTextView.addTextChangedListener(this)
-        autoCompleteTextView.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            val s = autoCompleteTextView.text.toString()
-            if (hasFocus) {
-                if (searchRunnable != null) {
-                    handler.removeCallbacks(searchRunnable!!)
-                }
-                searchRunnable = Runnable {
-                    if (s != null && s.length > 1) {
-                        enableBtn?.visibility = View.VISIBLE
-                        getSuggestions(s.toString())
-                    } else {
-                        enableBtn?.visibility = View.GONE
-                    }
-                    // Ensuring the search box retains focus
-                    autoCompleteTextView?.requestFocus()
-                }
+    }
 
-                handler.postDelayed(searchRunnable!!, 500)
-            }
+    private fun clearFocusFromAutoComplete() {
+//         Hide the keyboard
+        val imm =
+            autoCompleteTextView.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
+        if (imm != null && AppsKitSDK.getInstance().currentActivity.currentFocus != null) {
+            imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
         }
+
+        // Clear focus from AutoCompleteTextView
+        autoCompleteTextView.dismissDropDown()
+        autoCompleteTextView.clearFocus()
     }
 
     fun getText(): String {
         val text = autoCompleteTextView.text.toString().trim()
-        val isNumeric = text.matches(Regex("\\d+"))
-        if (isNumeric)
-            AppsKitSDKUtils.makeToast("please write correct")
-         else
-            return if (text.isEmpty()) {
-                ""
-            } else if ((isAlreadyInDB && text == startingText) || lst.contains(
-                    removeSpaceFromString(text)
-                )
-            ) {
-                "1__$text"
-            } else {
-                "-1__$text"
-            }
-
-        return ""
+        return if (text.isEmpty()) {
+            ""
+        } else if ((isAlreadyInDB && text == startingText) || lst.contains(
+                removeSpaceFromString(text)
+            )
+        ) {
+            "1__$text"
+        } else {
+            "-1__$text"
+        }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -77,25 +70,34 @@ class PredictiveSearchHandler(
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-       /* if (searchRunnable != null) {
-            handler.removeCallbacks(searchRunnable!!)
+        if (searchRunnable != null) {
+            handler.removeCallbacks(searchRunnable!!);
         }
-        searchRunnable = Runnable {
-            if (s != null && s.length > 1) {
-                enableBtn?.visibility = View.VISIBLE
-                getSuggestions(s.toString())
-            } else {
-                enableBtn?.visibility = View.GONE
+        handler.postDelayed({
+            if (isItemSelected) {
+                handler.removeCallbacks(searchRunnable!!)
+                autoCompleteTextView.dismissDropDown()
+                isItemSelected = false // Reset the flag
+                return@postDelayed
             }
-            // Ensuring the search box retains focus
-            autoCompleteTextView?.requestFocus()
-        }
 
-        handler.postDelayed(searchRunnable!!, 500)*/
+//            if (searchRunnable != null) {
+//                handler.removeCallbacks(searchRunnable!!);
+//            }
+
+            searchRunnable = Runnable {
+                if (s != null && s.length > 1) {
+                    enableBtn?.visibility = View.VISIBLE
+                    getSuggestions(s.toString())
+                } else {
+                    enableBtn?.visibility = View.GONE
+                }
+            }
+
+            handler.post(searchRunnable!!);  // Delay of 500 ms
+        }, 500)
 
     }
-
-
 
 
     override fun afterTextChanged(s: Editable?) {
@@ -131,6 +133,19 @@ class PredictiveSearchHandler(
 
         // Show dropdown suggestions
         autoCompleteTextView.showDropDown()
+    }
+
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+        if (!hasFocus && autoCompleteTextView.getText().toString().isEmpty()) {
+            // Clear focus if no input and the view has lost focus
+            clearFocusFromAutoComplete();
+        }
+    }
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        autoCompleteTextView.dismissDropDown()  // Hide the suggestions after selection
+        isItemSelected = true
+//        clearFocusFromAutoComplete()  // Optionally clear focus
     }
 
 

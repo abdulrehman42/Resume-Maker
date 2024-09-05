@@ -168,5 +168,9 @@
     <string name="back_questiom">Do you really want to go back?</string>
     <string name="rate_us_txt">Rate Us</string>
     <string name="may_be_later">Maybe later</string>
+    <string name="watch_ad_to_download">Watch Ad to download your resume</string>
+    <string name="watch_ad_to_download_coverLetter">Watch Ad to download your cover letter</string>
+    <string name="watch_ad_to_user_resume_template">Watch Ad to use this resume template</string>
+    <string name="watch_ad_to_user_cover_letter_template">Watch Ad to use this cover letter template</string>
 
 </resources>

@@ -50,11 +50,6 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>(),
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        AppsKitSDKAdsManager.showBanner(
-            currentActivity(),
-            binding.bannerAdd,
-            placeholder = ""
-        )
         onclick()
         getProfileDetail()
 

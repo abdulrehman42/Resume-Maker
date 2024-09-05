@@ -44,8 +44,9 @@ class InformationFragment() :
         if (addDetailResumeVM.isInEditMode) {
             isJobTitleFromDB = true
             fetchProfileInfo()
+        } else {
+            manageLookUpsAdapter()
         }
-        manageLookUpsAdapter()
         handleClicks()
     }
 
@@ -53,6 +54,7 @@ class InformationFragment() :
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             populateProfileInfo(it)
+            manageLookUpsAdapter()
             (currentActivity() as AddDetailResume).requiredItemsAddInTab(it)
         }
 
@@ -148,8 +150,7 @@ class InformationFragment() :
             phoneedittext.setText(data.phone)
             if (data.address == "null") {
                 address.setText("--")
-            }
-            else if (!data.address.isNullOrEmpty()) {
+            } else if (!data.address.isNullOrEmpty()) {
                 address.setText(data.address)
             } else {
                 address.setText("--")

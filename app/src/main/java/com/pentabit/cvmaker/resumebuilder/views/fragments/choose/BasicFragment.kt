@@ -3,6 +3,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.choose
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
 import com.pentabit.cvmaker.resumebuilder.callbacks.OnTemplateSelected
@@ -21,7 +22,11 @@ import com.pentabit.pentabitessentials.pref_manager.AppsKitSDKPreferencesManager
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 
 
-class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
+class BasicFragment(
+    val list: List<TemplateModel>?,
+    val screenId: ScreenIDs,
+    private val isResume: Boolean
+) :
     BaseFragment<FragmentBasicBinding>() {
     private val templateAdapter = TempResListAdpter()
     private var callback: OnTemplateSelected? = null
@@ -54,12 +59,13 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
                 object : DialogueBoxes.DialogCallback {
                     override fun onButtonClick(isConfirmed: Boolean) {
                         if (isConfirmed) {
-                            if (it.contentType == 0 || it.contentType == 1 && AppsKitSDK.getInstance().removeAdsStatus) {
+                            if (it.contentType == 0 || AppsKitSDK.getInstance().removeAdsStatus) {
                                 AppsKitSDKPreferencesManager.getInstance()
                                     .addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                                 callback?.onTemplateSelected(it)
                             } else if (it.contentType == 1) {
-                                DialogueBoxes.alertboxImport(currentActivity(),
+                                DialogueBoxes.alertboxImport(
+                                    currentActivity(),
                                     object :
                                         DialogueBoxes.StringValueDialogCallback {
                                         override fun onButtonClick(value: String) {
@@ -68,8 +74,9 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
                                                     currentActivity(),
                                                     object : RewardedLoadAndShowCallback {
                                                         override fun onAdFailed() {
-                                                            AppsKitSDKUtils.makeToast("Ad failed to load")
+                                                            AppsKitSDKUtils.makeToast("Sorry Ad not available")
                                                         }
+
                                                         override fun onAdRewarded() {
                                                             AppsKitSDKPreferencesManager.getInstance()
                                                                 .addInPreferences(
@@ -85,7 +92,13 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
                                             }
                                         }
 
-                                    })
+                                    }, if (isResume) {
+                                        getString(R.string.watch_ad_to_user_resume_template)
+
+                                    } else {
+                                        getString(R.string.watch_ad_to_user_cover_letter_template)
+                                    }
+                                )
                             } else {
                                 startActivity(
                                     Intent(
@@ -101,12 +114,13 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
         }
 
         templateAdapter.setOnItemClickCallback {
-            if (it.contentType == 0 || it.contentType == 1 && AppsKitSDK.getInstance().removeAdsStatus) {
+            if (it.contentType == 0 || AppsKitSDK.getInstance().removeAdsStatus) {
                 AppsKitSDKPreferencesManager.getInstance()
                     .addInPreferences(Constants.TEMPLATE_ID, it.id.toString())
                 callback?.onTemplateSelected(it)
             } else if (it.contentType == 1) {
-                DialogueBoxes.alertboxImport(currentActivity(),
+                DialogueBoxes.alertboxImport(
+                    currentActivity(),
                     object :
                         DialogueBoxes.StringValueDialogCallback {
                         override fun onButtonClick(value: String) {
@@ -115,7 +129,7 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
                                     currentActivity(),
                                     object : RewardedLoadAndShowCallback {
                                         override fun onAdFailed() {
-                                            AppsKitSDKUtils.makeToast("Ad failed to load")
+                                            AppsKitSDKUtils.makeToast("Sorry Ad not available")
                                         }
 
                                         override fun onAdRewarded() {
@@ -131,7 +145,13 @@ class BasicFragment(val list: List<TemplateModel>?, val screenId: ScreenIDs) :
                             }
                         }
 
-                    })
+                    }, if (isResume) {
+                        getString(R.string.watch_ad_to_user_resume_template)
+
+                    } else {
+                        getString(R.string.watch_ad_to_user_cover_letter_template)
+                    }
+                )
             } else {
                 startActivity(Intent(currentActivity(), SubscriptionActivity::class.java))
             }

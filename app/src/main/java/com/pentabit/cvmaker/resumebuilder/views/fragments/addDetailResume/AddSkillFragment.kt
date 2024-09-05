@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddSkillFragment(
-    val userSkills: List<String>,
+    private val userSkills: List<String>,
     val position: Int?,
     val callback: SkillUpdates
 ) : BaseFragment<FragmentAddSkillBinding>() {
@@ -47,7 +47,6 @@ class AddSkillFragment(
 
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text = getString(R.string.add_skill)
-        AppsKitSDKAdsManager.showNative(requireActivity(), binding.bannerAdd, "")
         manageAds()
         populateInfoIfRequired()
         handleClicks()
@@ -106,7 +105,6 @@ class AddSkillFragment(
     }
 
     private fun saveSkill() {
-
         callback.skillUpdate(list)
         currentActivity().onBackPressedDispatcher.onBackPressed()
     }
@@ -122,8 +120,6 @@ class AddSkillFragment(
     }
 
     private fun populateInfoIfRequired() {
-
-
         if (position != null) {
             val model = userSkills[position]
             binding.skillEdittext.setText(Helper.removeOneUnderscores(userSkills[position]))

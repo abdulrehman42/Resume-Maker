@@ -156,6 +156,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } else {
             binding.logout.setText("Login")
         }
+//        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.PROFILE_ID,"")
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID,"")
     }
 
     private fun refreshToken() {

@@ -3,8 +3,6 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -73,7 +71,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         binding.includeTool.textView.text = getString(R.string.profile)
         isCreateResume = AppsKitSDKPreferencesManager.getInstance()
             .getStringPreferences(Constants.TEMPLATE_ID).isNotEmpty()
-        profileAdapter.isViewProfile = isCreateResume
+        profileAdapter.isViewProfile = !isCreateResume
         setAdapter()
         onclick()
         handleAds()
@@ -100,11 +98,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
 
         binding.addTabshide.setOnClickListener {
-            startActivity(
-                Intent(
-                    currentActivity(), AddDetailResume::class.java
-                )
-            )
+            onCreateProfileClicked()
         }
     }
 
@@ -113,11 +107,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             AppsKitSDKAdsManager.loadAndShowRewardedAd(
                 requireActivity(), object : RewardedLoadAndShowCallback {
                     override fun onAdFailed() {
-                        if (BuildConfig.DEBUG) {
-                            startActivity(Intent(currentActivity(), AddDetailResume::class.java))
-                        } else {
-                            AppsKitSDKUtils.makeToast("Ad not available")
-                        }
+                        AppsKitSDKUtils.makeToast("Ad not available")
                     }
 
                     override fun onAdRewarded() {

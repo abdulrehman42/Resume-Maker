@@ -58,6 +58,12 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         handleAds()
     }
 
+    override fun onResume() {
+        super.onResume()
+//        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.PROFILE_ID,"")
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, "")
+    }
+
     private fun handleAds() {
         AppsKitSDKAdsManager.showBanner(
             this,
@@ -132,7 +138,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
         override fun getItemCount(): Int = templatesTitle.size
 
         override fun createFragment(position: Int): Fragment {
-            return BasicFragment(dataMap.get(templatesTitle[position]), screenId)
+            return BasicFragment(dataMap.get(templatesTitle[position]), screenId, isResume)
         }
     }
 
@@ -152,7 +158,7 @@ class ChoiceTemplate : BaseActivity(), OnTemplateSelected {
             } else {
                 if (templateId != "null") {
                     navigateToPreviewScreenFinish()
-                }else {
+                } else {
                     navigateToCoverLetterResumeActivity()
                 }
             }

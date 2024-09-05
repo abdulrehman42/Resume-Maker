@@ -19,6 +19,7 @@ import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
 import com.pentabit.cvmaker.resumebuilder.databinding.FragmentResumePreviewBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.Constants.PROFILE_ID
+import com.pentabit.cvmaker.resumebuilder.utils.Constants.TEMPLATE_ID
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseDownload
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
@@ -184,7 +185,8 @@ class ResumePreviewActivity : BaseActivity() {
             if (FreeTaskManager.getInstance().isProPurchased) {
                 popupDialogue()
             } else {
-                DialogueBoxes.alertboxImport(this,
+                DialogueBoxes.alertboxImport(
+                    this,
                     object :
                         DialogueBoxes.StringValueDialogCallback {
                         override fun onButtonClick(value: String) {
@@ -193,7 +195,7 @@ class ResumePreviewActivity : BaseActivity() {
                                     this@ResumePreviewActivity,
                                     object : RewardedLoadAndShowCallback {
                                         override fun onAdFailed() {
-                                            AppsKitSDKUtils.makeToast("Ad failed to load")
+                                            AppsKitSDKUtils.makeToast("Sorry Ad not available")
                                         }
 
                                         override fun onAdRewarded() {
@@ -211,7 +213,12 @@ class ResumePreviewActivity : BaseActivity() {
                             }
                         }
 
-                    })
+                    }, if (isResume) {
+                        getString(R.string.watch_ad_to_download)
+                    } else {
+                        getString(R.string.watch_ad_to_download_coverLetter)
+                    }
+                )
             }
 
         }
@@ -374,7 +381,8 @@ class ResumePreviewActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(PROFILE_ID,"")
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(PROFILE_ID, "")
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(TEMPLATE_ID, "")
     }
 
 }

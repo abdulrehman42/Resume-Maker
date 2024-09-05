@@ -24,7 +24,6 @@ import com.pentabit.cvmaker.resumebuilder.databinding.DeleteitemalertdialogueBin
 import com.pentabit.cvmaker.resumebuilder.databinding.ImportProfileBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.LogoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.PreviewdownloadBinding
-import com.pentabit.cvmaker.resumebuilder.databinding.RatingLayoutBinding
 import com.pentabit.cvmaker.resumebuilder.databinding.TemplateSelectLayoutBinding
 import com.pentabit.pentabitessentials.utils.AppsKitSDKUtils
 import java.util.Calendar
@@ -373,10 +372,15 @@ object DialogueBoxes {
         dialog.show()
     }
 
-    fun alertboxImport(curentactivity: Activity, param: StringValueDialogCallback) {
+    fun alertboxImport(
+        curentactivity: Activity,
+        param: StringValueDialogCallback,
+        description: String
+    ) {
         val binding = ImportProfileBinding.inflate(curentactivity.layoutInflater)
         val dialogBuilder = Dialog(curentactivity, R.style.Custom_Dialog)
         dialogBuilder.setContentView(binding.root)
+        binding.textView20.text = description
         binding.cancelBtn.setOnClickListener {
             dialogBuilder.dismiss()
         }
