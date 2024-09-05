@@ -82,6 +82,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         handleAds()
     }
 
+
+    override fun enableAppAutoUpdate(): Boolean {
+        return true
+    }
+
     private fun handleAds() {
         AppsKitSDKAdsManager.showBanner(
             this,
@@ -157,7 +162,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             binding.logout.setText("Login")
         }
 //        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.PROFILE_ID,"")
-        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID,"")
+        AppsKitSDKPreferencesManager.getInstance().addInPreferences(Constants.TEMPLATE_ID, "")
     }
 
     private fun refreshToken() {
