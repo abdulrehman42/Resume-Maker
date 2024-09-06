@@ -15,8 +15,8 @@ android {
         applicationId = "com.pentabit.cvmaker.resumebuilder"
         minSdk = 24
         targetSdk = 34
-        versionCode = 20
-        versionName = "2.4.3"
+        versionCode = 21
+        versionName = "2.4.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
