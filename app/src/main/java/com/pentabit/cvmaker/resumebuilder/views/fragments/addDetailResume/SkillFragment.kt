@@ -52,7 +52,6 @@ class SkillFragment : AddDetailsBaseFragment<FragmentSkillBinding>(),
     override fun init(savedInstanceState: Bundle?) {
         onclick()
         getProfileDetail()
-
     }
 
 

@@ -3,7 +3,8 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -53,7 +54,9 @@ class AddSkillFragment(
         managePredictiveSearchAdapter()
         userSkillAdapter.submitList(list.toList())
         binding.recyclerviewSkill.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3)
+            val layoutManager1 = FlexboxLayoutManager(context)
+            layoutManager1.flexDirection = FlexDirection.ROW
+            layoutManager = layoutManager1
             adapter = userSkillAdapter
         }
     }
@@ -76,12 +79,8 @@ class AddSkillFragment(
                     list.add(skillPredictiveSearchHandler.getText())
                 }
                 binding.skillEdittext.setText("")
-
                 userSkillAdapter.submitList(list.toList())
-                binding.recyclerviewSkill.apply {
-                    layoutManager = GridLayoutManager(requireContext(), 3)
-                    adapter = userSkillAdapter
-                }
+                userSkillAdapter.notifyDataSetChanged()
             }
         }
 

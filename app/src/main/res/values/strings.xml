@@ -172,5 +172,6 @@
     <string name="watch_ad_to_download_coverLetter">Watch Ad to download your cover letter</string>
     <string name="watch_ad_to_user_resume_template">Watch Ad to use this resume template</string>
     <string name="watch_ad_to_user_cover_letter_template">Watch Ad to use this cover letter template</string>
+    <string name="watch_ad_to_create_profile">Watch Ad to create more profiles</string>
 
 </resources>

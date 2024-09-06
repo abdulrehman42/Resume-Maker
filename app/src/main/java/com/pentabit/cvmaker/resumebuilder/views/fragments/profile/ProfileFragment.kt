@@ -2,6 +2,7 @@ package com.pentabit.cvmaker.resumebuilder.views.fragments.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseFragment
@@ -11,6 +12,7 @@ import com.pentabit.cvmaker.resumebuilder.databinding.FragmentProfileBinding
 import com.pentabit.cvmaker.resumebuilder.utils.Constants
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxChooseProfile
+import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
 import com.pentabit.cvmaker.resumebuilder.utils.Utils
 import com.pentabit.cvmaker.resumebuilder.viewmodels.ProfileVM
@@ -43,21 +45,23 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
         profileVM.dataResponse.observe(currentActivity()) {
             AppsKitSDKUtils.setVisibility(
-                it.isNullOrEmpty(), binding.popupmsg, binding.addTabshide, binding.addTabs
+                it.isNullOrEmpty(), binding.popupmsg, binding.addTabshide
             )
 
             profileAdapter.submitList(it)
             profileAdapter.notifyDataSetChanged()
 
-            if (isCreateResume && it.isNullOrEmpty()
-            ) {
-                startActivity(
-                    Intent(
-                        currentActivity(),
-                        AddDetailResume::class.java
-                    ).putExtra("CreateResume", true)
-                )
-                currentActivity().finish()
+            if (isCreateResume) {
+                binding.addTabs.visibility = View.GONE
+
+                if (it.isNullOrEmpty()) {
+                    startActivity(
+                        Intent(
+                            currentActivity(), AddDetailResume::class.java
+                        ).putExtra("CreateResume", true)
+                    )
+                    currentActivity().finish()
+                }
             }
         }
     }
@@ -69,11 +73,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun init(savedInstanceState: Bundle?) {
         binding.includeTool.textView.text = getString(R.string.profile)
-        isCreateResume = AppsKitSDKPreferencesManager.getInstance()
-            .getStringPreferences(Constants.TEMPLATE_ID).isNotEmpty()
+        isCreateResume =
+            AppsKitSDKPreferencesManager.getInstance().getStringPreferences(Constants.TEMPLATE_ID)
+                .isNotEmpty()
         profileAdapter.isViewProfile = !isCreateResume
         setAdapter()
-        onclick()
+        handleClicks()
         handleAds()
     }
 
@@ -88,7 +93,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         profileVM.getProfileList()
     }
 
-    private fun onclick() {
+    private fun handleClicks() {
         binding.includeTool.backbtn.setOnClickListener {
             currentActivity().finish()
         }
@@ -103,23 +108,32 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun onCreateProfileClicked() {
-        if (profileAdapter.currentList.isNotEmpty()) {
-            AppsKitSDKAdsManager.loadAndShowRewardedAd(
-                requireActivity(), object : RewardedLoadAndShowCallback {
-                    override fun onAdFailed() {
-                        AppsKitSDKUtils.makeToast("Ad not available")
-                    }
+        if (profileAdapter.currentList.isNotEmpty() && !FreeTaskManager.getInstance().isProPurchased) {
+            DialogueBoxes.alertboxImport(
+                currentActivity(), object : DialogueBoxes.StringValueDialogCallback {
+                    override fun onButtonClick(value: String) {
+                        if (value == Constants.YES) {
+                            AppsKitSDKAdsManager.loadAndShowRewardedAd(
+                                requireActivity(), object : RewardedLoadAndShowCallback {
+                                    override fun onAdFailed() {
+                                        AppsKitSDKUtils.makeToast("Sorry Ad not available")
+                                    }
 
-                    override fun onAdRewarded() {
-                        startActivity(
-                            Intent(
-                                currentActivity(), AddDetailResume::class.java
+                                    override fun onAdRewarded() {
+                                        startActivity(
+                                            Intent(
+                                                currentActivity(), AddDetailResume::class.java
+                                            )
+                                        )
+                                    }
+                                }, Utils.createAdKeyFromScreenId(screeId)
                             )
-                        )
+                        }
                     }
 
-                }, Utils.createAdKeyFromScreenId(screeId)
+                }, getString(R.string.watch_ad_to_create_profile)
             )
+
         } else {
             startActivity(
                 Intent(
@@ -146,7 +160,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
 
             override fun onOptionsClicked(id: String) {
-                alertboxChooseProfile(requireActivity(),
+                alertboxChooseProfile(
+                    requireActivity(),
                     object : DialogueBoxes.StringValueDialogCallback {
                         override fun onButtonClick(value: String) {
                             if (value == Constants.EDIT) {

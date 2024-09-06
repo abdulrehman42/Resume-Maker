@@ -94,6 +94,7 @@ dependencies {
     implementation("io.supercharge:shimmerlayout:2.1.0")
     implementation("com.ethanhua:skeleton:1.1.2")
     implementation ("com.google.code.gson:gson:2.9.1")
+    implementation ("com.google.android.play:app-update:2.1.0")
 
 //    implementation("com.google.android.gms:play-services-ads:22.6.0")
     implementation("com.google.android.gms:play-services-ads-lite:22.2.0")
@@ -221,8 +222,8 @@ dependencies {
     implementation ("com.github.chrisbanes:PhotoView:2.3.0")
 
     implementation ("com.github.mhiew:android-pdf-viewer:3.2.0-beta.1")
-//    implementation ("com.chenlittleping:recyclercoverflow:1.0.6")
     implementation(files("libs/recyclercoverflow-1.0.6.aar"))
+    implementation(files("libs/flexbox-3.0.0.aar"))
     /*//KProgressHud
     implementation ("com.kaopiz:kprogresshud:1.2.0")
 */

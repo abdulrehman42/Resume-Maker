@@ -29,7 +29,6 @@ import com.android.billingclient.api.QueryPurchasesParams
 import com.google.android.gms.ads.AdSize
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.messaging.FirebaseMessaging
 import com.pentabit.cvmaker.resumebuilder.BuildConfig
 import com.pentabit.cvmaker.resumebuilder.R
 import com.pentabit.cvmaker.resumebuilder.base.BaseActivity
@@ -44,7 +43,6 @@ import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxDelete
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxLogout
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxPurchase
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.alertboxRate
-import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.link
 import com.pentabit.cvmaker.resumebuilder.utils.DialogueBoxes.shareAppMethod
 import com.pentabit.cvmaker.resumebuilder.utils.FreeTaskManager
 import com.pentabit.cvmaker.resumebuilder.utils.ScreenIDs
@@ -316,12 +314,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 onRestorePurchase(true)
             }
 
-            R.id.nav_privacy -> link("https://www.pentabitapps.com/privacy-policy", this)
-            R.id.nav_term -> link("https://www.pentabitapps.com/terms-of-use", this)
-            R.id.nav_more -> link(
-                "https://play.google.com/store/apps/developer?id=Pentabit Apps",
-                this
-            )
+            R.id.nav_privacy -> AppsKitSDKUtils.actionOnPrivacyPolicy(this)
+            R.id.nav_term -> AppsKitSDKUtils.actionOnTermsOfUse(this)
+            R.id.nav_more -> AppsKitSDKUtils.actionOnMoreApps(this, "Pentabit Apps")
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true

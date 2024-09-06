@@ -1,7 +1,6 @@
 package com.pentabit.cvmaker.resumebuilder.views.fragments.addDetailResume
 
 import android.os.Bundle
-import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import com.pentabit.cvmaker.resumebuilder.base.AddDetailsBaseFragment
 import com.pentabit.cvmaker.resumebuilder.base.Inflate
@@ -23,7 +22,6 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     private val addDetailResumeVM: AddDetailResumeVM by activityViewModels()
     private val educationAdapter = EducationAdapter()
     private var list = ArrayList<ProfileModelAddDetailResponse.UserQualification>()
-    var iscalled = false
 
     override val inflate: Inflate<FragmentEducationBinding>
         get() = FragmentEducationBinding::inflate
@@ -31,27 +29,28 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     override fun init(savedInstanceState: Bundle?) {
         handleAdapter()
         handleClicks()
+        fetchProfileInfo()
     }
 
     private fun handleAdapter() {
         educationAdapter.disableEditing(false)
 
         educationAdapter.onDelete {
-            if (list.size!=1){
-            deleteItemPopup(currentActivity(), "Do you want to delete this education record",
-                object : DialogueBoxes.DialogCallback {
-                    override fun onButtonClick(isConfirmed: Boolean) {
-                        if (isConfirmed) {
-                            if (list.isNotEmpty()) {
-                                list.removeAt(it)
-                                educationAdapter.submitList(list)
-                                educationAdapter.notifyDataSetChanged()
+            if (list.size != 1) {
+                deleteItemPopup(currentActivity(), "Do you want to delete this education record",
+                    object : DialogueBoxes.DialogCallback {
+                        override fun onButtonClick(isConfirmed: Boolean) {
+                            if (isConfirmed) {
+                                if (list.isNotEmpty()) {
+                                    list.removeAt(it)
+                                    educationAdapter.submitList(list)
+                                    educationAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
-                })
-            }else{
-                AppsKitSDKUtils.makeToast("sorry at least one education required")
+                    })
+            } else {
+                AppsKitSDKUtils.makeToast("You need at least one education to proceed")
             }
 
         }
@@ -70,15 +69,8 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     override fun observeLiveData() {
         addDetailResumeVM.dataResponse.observe(this) {
             AppsKitSDKUtils.setVisibility(it.userQualifications.isNullOrEmpty(), binding.popup)
-            populateAdapter(it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>)
-            iscalled = true
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!iscalled) {
-            fetchProfileInfo()
+            if (!it.userQualifications.isNullOrEmpty())
+                populateAdapter(it.userQualifications as ArrayList<ProfileModelAddDetailResponse.UserQualification>)
         }
     }
 
@@ -98,6 +90,7 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     }
 
     private fun saveInListWithRequiredFormat(qualificationList: List<ProfileModelAddDetailResponse.UserQualification>) {
+        list.clear()
         for (qualification in qualificationList) {
             val model = ProfileModelAddDetailResponse.UserQualification(
                 degree = "1__" + Helper.removeOneUnderscores(qualification.degree),
@@ -121,12 +114,11 @@ class EducationFragment : AddDetailsBaseFragment<FragmentEducationBinding>(), On
     }
 
     override fun onMoveNextClicked(): Boolean {
-        if (list.isEmpty())
-        {
-            AppsKitSDKUtils.makeToast("please Add at least one education")
+        if (list.isEmpty()) {
+            AppsKitSDKUtils.makeToast("Please add at least one education")
             return false
 
-        }else{
+        } else {
             saveEducationData()
             return false
         }
