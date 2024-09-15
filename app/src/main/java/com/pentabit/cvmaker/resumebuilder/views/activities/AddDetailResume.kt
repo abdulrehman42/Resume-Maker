@@ -65,6 +65,7 @@ class AddDetailResume : BaseActivity() {
         bottomNavigationColor()
 //        enableEdgeToEdge()
         setContentView(binding.root)
+
         addDetailResumeVM.isInEditMode = intent.getBooleanExtra(Constants.IS_EDIT, false)
         imageSourceSelectionHelper = ImageSourceSelectionHelper(this)
         handleAds()
