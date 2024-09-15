@@ -51,6 +51,7 @@ class AddDetailResume : BaseActivity() {
     private val allTabs = ArrayList<TabModel>()
     lateinit var imageSourceSelectionHelper: ImageSourceSelectionHelper
     private var isCreateResume = false
+
     private val addDetailResumeVM: AddDetailResumeVM by viewModels()
     private var screenId = ScreenIDs.ADD_BASIC_INFO
 
